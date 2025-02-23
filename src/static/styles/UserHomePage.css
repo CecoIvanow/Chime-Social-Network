@@ -71,7 +71,7 @@
 }
 
 .user-home-page .friends-section .friends-list .friend-item:hover {
-    background-color: #f0f0f0;
+    background-color: #e0e0e0;
     transform: scale(1.05);
     transition: ease-in, 0.25s;
 }
