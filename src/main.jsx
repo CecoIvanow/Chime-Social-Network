@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
-import MenuBar from './MenuBar.jsx'
+import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
-    <MenuBar />
+    <App />
 )
