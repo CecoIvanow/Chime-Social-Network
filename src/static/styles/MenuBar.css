@@ -15,6 +15,7 @@ nav {
     height: 75px;
     background: #2980b9;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
 nav .navbar {
@@ -48,6 +49,30 @@ nav .navbar .menu {
     font-size: 17px;
     font-weight: 500;
     text-decoration: none;
+}
+
+.navbar .menu li a img {
+    width: 20px;
+}
+
+nav .navbar .auth-menu {
+    display: flex;
+} 
+
+.navbar .auth-menu li {
+    list-style: none;
+    margin: 0 15px;
+}
+
+.navbar .auth-menu li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.navbar .auth-menu li a img {
+    width: 20px;
 }
 
 section {
