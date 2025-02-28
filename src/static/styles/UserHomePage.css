@@ -91,7 +91,7 @@
     height: 30px;
     margin: 10px;
     border-radius: 50%;
-    border-color: #808080;
+    border-color: #2980b9;
     border-style: solid;
     border-width: 1px;
 }
@@ -110,8 +110,20 @@
 
 .post-header{
     display: flex;
+    justify-content: space-between;
     align-items: center;
     margin: 15px 15px 10px 0px;
+}
+
+.post-header div {
+    display: flex;
+    align-items: center;
+}
+
+.created-on {
+    font-size: small;
+    font-weight: 500;
+    color:  #777777;
 }
 
 .owner-picture {
@@ -137,7 +149,7 @@
     height: 50px;
     margin: 10px;
     border-radius: 50%;
-    border-color: #808080;
+    border-color: #2980b9;
     border-style: solid;
     border-width: 1px;
 }
@@ -185,7 +197,7 @@
     border-radius: 15px;
     padding: 5px;
     background-color: #f3f3f3;
-    margin: 10px 5px 10px 5px;
+    margin: 10px 5px 20px 5px;
     list-style-type: none;
     border-color: #dad9d9;
     border-style: solid;
@@ -221,14 +233,13 @@
 .profile-avatar {
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
 .profile-picture {
     height: 150px;
     width: 150px;
     border-radius: 50%;
-    border-color: #808080;
+    border-color: #2980b9;
     border-style: solid;
     border-width: 1px;
 }
