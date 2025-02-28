@@ -14,13 +14,17 @@
 }
 
 .profile-section {
-    height:75vh;
-    width: 50vh;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-color: #f0f0f0;
+    height: 75vh;
+    width: 55vh;
+    padding: 20px;
     border-width: 2px;
-    border-color: black;
     border-style: groove;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 }
 
 .posts-section {
@@ -85,8 +89,11 @@
 .friend-item img{
     width: 30px;
     height: 30px;
-    border-radius: 50%;
     margin: 10px;
+    border-radius: 50%;
+    border-color: #808080;
+    border-style: solid;
+    border-width: 1px;
 }
 
 .post-create {
@@ -104,7 +111,7 @@
 .post-header{
     display: flex;
     align-items: center;
-    margin: 15px 15px 0px 0px;
+    margin: 15px 15px 10px 0px;
 }
 
 .owner-picture {
@@ -128,8 +135,11 @@
 .post-header img {
     width: 50px;
     height: 50px;
-    border-radius: 50%;
     margin: 10px;
+    border-radius: 50%;
+    border-color: #808080;
+    border-style: solid;
+    border-width: 1px;
 }
 
 .submit-button {
@@ -206,4 +216,29 @@
     margin-left: 10px;
     margin-right: 10px;
     margin-bottom: 10px;
+}
+
+.profile-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-picture {
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    border-color: #808080;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.profile-info h2 {
+    font-weight: 700;
+    margin: 8px 0px 8px 0px;
+}
+
+.profile-info p {
+    font-weight: 400;
+    margin-bottom: 5px;
 }

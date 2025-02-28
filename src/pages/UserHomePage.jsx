@@ -4,7 +4,18 @@ export default function UserHomePage() {
     return <>
         <div className='user-home-page'>
             <div className="profile-section">
-                <p>fddff</p>
+                <div className='profile-avatar'>
+                    <img className='profile-picture' src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg" alt="" />
+                </div>
+                <div className='profile-info'>
+                    <h2>John Doe</h2>
+                    <p>New York, USA</p>
+                    <p>27 years old</p>
+                    <p>Web Developer</p>
+                    <p>Harvard University</p>
+                    <p>Single</p>
+                    <p>Joined February 2025</p>
+                </div>
             </div>
 
             <div className="posts-section">
@@ -122,7 +133,7 @@ export default function UserHomePage() {
                         </li>
                     </ul>
                 </div>
-            </div>``
+            </div>
 
             <div className="friends-section">
                 <h2 className='friends-counter'>Friends (248)</h2>
