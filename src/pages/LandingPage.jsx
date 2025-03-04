@@ -25,7 +25,7 @@ export default function LandingPage() {
                             <i className="fas fa-user-friends"></i>
                         </div>
                         <h3 id="profile-heading" className="feature-title">Personal Profiles</h3>
-                        <p className="feature-description">Create your unique profile, share your story, and showcase your personality with photos and interests.</p>
+                        <p className="feature-description">Create your profile, share your story, and showcase your personality.</p>
                     </article>
 
                     <article className="feature-card" aria-labelledby="chat-heading">
@@ -33,7 +33,7 @@ export default function LandingPage() {
                             <i className="fas fa-comments"></i>
                         </div>
                         <h3 id="chat-heading" className="feature-title">Real-time Chat</h3>
-                        <p className="feature-description">Stay in touch with instant messaging, group chats, and video calls with friends and family.</p>
+                        <p className="feature-description">Stay in touch with instant messaging with friends and family.</p>
                     </article>
 
                     <article className="feature-card" aria-labelledby="groups-heading">
