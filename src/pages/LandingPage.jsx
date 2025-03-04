@@ -11,7 +11,8 @@ export default function LandingPage() {
                     <p className="hero-subheading">Share moments, connect with friends, and discover new communities in a safe and welcoming environment.</p>
                     <div className="cta-buttons">
                         <a href="#Register" className="cta-button primary-cta">Join Free Today</a>
-                        <a href="#Catalog" className="cta-button secondary-cta">Log into your profile</a>
+                        <a href="#Login" className="cta-button primary-cta">Log into your account</a>
+                        <a href="#Catalog" className="cta-button secondary-cta">Check public posts</a>
                     </div>
                 </div>
             </section>
