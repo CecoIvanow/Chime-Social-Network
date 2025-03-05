@@ -119,7 +119,7 @@ form input[type="radio"] {
 
 form .button {
     height: 45px;
-    margin: 35px 0
+    margin: 35px 35px 15px 35px;
 }
 
 form .button input {
@@ -139,6 +139,17 @@ form .button input {
 form .button input:hover {
     transform: scale(1.05);
     transition: ease-in, 0.25s;
+}
+
+div .to-login {
+    display: flex;
+    justify-content: center;
+}
+
+div .to-login a {
+    font-weight: 500;
+    text-decoration: none;
+    color: #2980b9;
 }
 
 /* Responsive media query code for mobile devices */
