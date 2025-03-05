@@ -8,13 +8,14 @@
     font-family: 'Poppins', sans-serif;
 }
 
-body {
+.register-page {
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 10px;
-    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    background-color: #f0f0f0;
+    margin-top: 75px;
 }
 
 .container {
@@ -40,7 +41,7 @@ body {
     height: 3px;
     width: 30px;
     border-radius: 5px;
-    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    background-color: #2980b9;
 }
 
 .content form .user-details {
@@ -75,7 +76,7 @@ form .input-box span.details {
 
 .user-details .input-box input:focus,
 .user-details .input-box input:valid {
-    border-color: #9b59b6;
+    border-color: #2980b9;
 }
 
 form .gender-details .gender-title {
@@ -87,7 +88,7 @@ form .category {
     display: flex;
     width: 80%;
     margin: 14px 0;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 form .category label {
@@ -107,8 +108,7 @@ form .category label .dot {
 }
 
 #dot-1:checked~.category label .one,
-#dot-2:checked~.category label .two,
-#dot-3:checked~.category label .three {
+#dot-2:checked~.category label .two {
     background: #9b59b6;
     border-color: #d9d9d9;
 }
@@ -133,11 +133,12 @@ form .button input {
     letter-spacing: 1px;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    background-color: #2980b9;
 }
 
 form .button input:hover {
-    background: linear-gradient(-135deg, #71b7e6, #9b59b6);
+    transform: scale(1.05);
+    transition: ease-in, 0.25s;
 }
 
 /* Responsive media query code for mobile devices */

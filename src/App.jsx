@@ -5,7 +5,7 @@ import UserHomePage from './pages/UserHomePage.jsx'
 
 export default function App() {
     return <>
-        {/* <MenuBar />  */}
+        <MenuBar /> 
         {/* <UserHomePage /> */}
         {/* <LandingPage /> */}
         <RegisterPage />
