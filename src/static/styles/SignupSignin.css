@@ -8,7 +8,7 @@
     font-family: 'Poppins', sans-serif;
 }
 
-.register-page {
+.register-page{
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -18,9 +18,27 @@
     margin-top: 75px;
 }
 
-.container {
+.login-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+.register-page .container {
     max-width: 700px;
     width: 100%;
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 5px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+.login-page .container {
+    max-width: 700px;
+    width: 400px;
     background-color: #fff;
     padding: 25px 30px;
     border-radius: 5px;
@@ -44,16 +62,28 @@
     background-color: #2980b9;
 }
 
-.content form .user-details {
+.register-page .content form .user-details {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     margin: 20px 0 12px 0;
 }
 
-form .user-details .input-box {
+.login-page .content form .user-details {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 20px 0 12px 0;
+}
+
+.register-page form .user-details .input-box {
     margin-bottom: 15px;
     width: calc(100% / 2 - 20px);
+}
+
+.login-page form .user-details .input-box {
+    margin-bottom: 15px;
+    width: 100%;
 }
 
 form .input-box span.details {
@@ -141,12 +171,14 @@ form .button input:hover {
     transition: ease-in, 0.25s;
 }
 
-div .to-login {
+div .to-login,
+div .to-register {
     display: flex;
     justify-content: center;
 }
 
-div .to-login a {
+div .to-login a,
+div .to-register a {
     font-weight: 500;
     text-decoration: none;
     color: #2980b9;

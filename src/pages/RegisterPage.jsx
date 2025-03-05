@@ -1,4 +1,4 @@
-import '../static/styles/RegisterPage.css'
+import '../static/styles/SignupSignin.css'
 
 export default function RegisterPage() {
     return <>
