@@ -27,8 +27,8 @@ export default function RegisterPage() {
                             </div>
                             {/* <!-- Input for Phone Number --> */}
                             <div className="input-box">
-                                <span className="details">Birth place</span>
-                                <input type="text" placeholder="Enter your birth place" required />
+                                <span className="details">Birthday</span>
+                                <input type="date" placeholder="Enter your birthday" required />
                             </div>
                             {/* <!-- Input for Password --> */}
                             <div className="input-box">
