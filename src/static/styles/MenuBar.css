@@ -28,11 +28,16 @@ nav .navbar {
     margin: auto;
 }
 
-nav .navbar .logo a {
+nav .navbar .logo a,
+nav .navbar .hidden-logo {
     color: #fff;
     font-size: 27px;
     font-weight: 600;
     text-decoration: none;
+}
+
+nav .navbar .hidden-logo {
+    color: #2980b9;
 }
 
 nav .navbar .menu {
