@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 
 export default function LandingPage() {
     return <>
@@ -9,9 +11,9 @@ export default function LandingPage() {
                     <h1 className="hero-heading" id="main-heading">Stay Connected with Your Social Circle</h1>
                     <p className="hero-subheading">Share moments, connect with friends, and discover new communities in a safe and welcoming environment.</p>
                     <div className="cta-buttons">
-                        <a href="#Register" className="cta-button primary-cta">Join Free Today</a>
-                        <a href="#Login" className="cta-button primary-cta">Log into your account</a>
-                        <a href="#Catalog" className="cta-button secondary-cta">Check public posts</a>
+                        <Link to="/register" className="cta-button primary-cta">Join Free Today</Link>
+                        <Link to="/login" className="cta-button primary-cta">Log into your account</Link>
+                        <Link to="/catalog" className="cta-button secondary-cta">Check public posts</Link>
                     </div>
                 </div>
             </section>

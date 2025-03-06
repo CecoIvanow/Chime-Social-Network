@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 import MenuBar from "../components/MenuBar";
 
 export default function RegisterPage() {
@@ -66,7 +68,7 @@ export default function RegisterPage() {
                             <input type="submit" value="Register" />
                         </div>
                         <div className='to-login'>
-                            <a href="#Login">Already have an account?</a>
+                            <Link to="/login">Already have an account?</Link>
                         </div>
                     </form>
                 </div>

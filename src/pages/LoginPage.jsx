@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 import MenuBar from "../components/MenuBar";
 
 export default function LoginPage() {
@@ -28,7 +30,7 @@ export default function LoginPage() {
                             <input type="submit" value="Login" />
                         </div>
                         <div className='to-register'>
-                            <a href="#Login">Don`t have an account?</a>
+                            <Link to="/register">Don`t have an account?</Link>
                         </div>
                     </form>
                 </div>
