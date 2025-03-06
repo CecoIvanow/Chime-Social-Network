@@ -1,6 +1,9 @@
+import MenuBar from "../components/MenuBar";
 
 export default function LoginPage() {
     return <>
+        <MenuBar />
+
         <div className="login-page">
             <div className="container">
                 {/* <!-- Title section --> */}

@@ -1,6 +1,9 @@
+import MenuBar from "../components/MenuBar";
 
 export default function RegisterPage() {
     return <>
+        <MenuBar />
+
         <div className='register-page'>
             <div className="container">
                 {/* <!-- Title section --> */}
