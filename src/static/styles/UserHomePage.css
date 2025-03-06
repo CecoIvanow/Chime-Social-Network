@@ -24,6 +24,8 @@
     padding: 20px;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
+        overflow-y: scroll;
+            scrollbar-width: none;
 }
 
 .posts-section {
@@ -245,7 +247,12 @@
 }
 
 .profile-info p {
-    font-weight: 400;
-    margin-bottom: 5px;
-    overflow-wrap: anywhere;
+    color: #666;
+    margin-bottom: 10px;
+    font-size: 0.95em;
+}
+
+.info-label {
+    color: #2980b9;
+    font-weight: 500;
 }
