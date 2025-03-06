@@ -6,8 +6,8 @@ export default function UserHomePage() {
 
         <div className='user-home-page'>
             <div className="profile-section">
-                <div className='profile-avatar'>
-                    <img className='profile-picture' src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg" alt="" />
+                <div className='profile-user-avatar'>
+                    <img className='profile-picture' src="https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D" alt="" />
                 </div>
                 <div className='profile-info'>
                     <h2>John Doe</h2>
@@ -24,7 +24,7 @@ export default function UserHomePage() {
                 <div className='post-create'>
                     <form >
                         <div className='post-header'>
-                            <img src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg" />
+                            <img src="https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D" />
                             <label htmlFor="post"></label>
                             <input type="text" name="post" id="post" />
                         </div>

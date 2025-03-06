@@ -93,8 +93,6 @@ export default function CatalogPage() {
                         <button className="action-button delete-btn">Delete</button>
                     </div>
                 </div>
-
-                {/* <!-- More post items... --> */}
             </div>
 
             {/* <!-- Users Catalog --> */}
@@ -160,8 +158,6 @@ export default function CatalogPage() {
                     </div>
                     <button className="action-button">Add</button>
                 </div>
-
-                {/* <!-- More user items... --> */}
             </div>
         </div>
     </>
