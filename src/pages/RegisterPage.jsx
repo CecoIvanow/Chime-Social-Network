@@ -1,7 +1,11 @@
-import '../static/styles/RegisterPage.css'
+import { Link } from "react-router";
+
+import MenuBar from "../components/MenuBar";
 
 export default function RegisterPage() {
     return <>
+        <MenuBar />
+
         <div className='register-page'>
             <div className="container">
                 {/* <!-- Title section --> */}
@@ -27,8 +31,8 @@ export default function RegisterPage() {
                             </div>
                             {/* <!-- Input for Phone Number --> */}
                             <div className="input-box">
-                                <span className="details">Birth place</span>
-                                <input type="text" placeholder="Enter your birth place" required />
+                                <span className="details">Birthday</span>
+                                <input type="date" placeholder="Enter your birthday" required />
                             </div>
                             {/* <!-- Input for Password --> */}
                             <div className="input-box">
@@ -64,7 +68,7 @@ export default function RegisterPage() {
                             <input type="submit" value="Register" />
                         </div>
                         <div className='to-login'>
-                            <a href="#Login">Already have an account?</a>
+                            <Link to="/login">Already have an account?</Link>
                         </div>
                     </form>
                 </div>

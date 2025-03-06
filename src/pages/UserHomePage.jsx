@@ -1,7 +1,9 @@
-import '../static/styles/UserHomePage.css'
+import MenuBar from "../components/MenuBar";
 
 export default function UserHomePage() {
     return <>
+        <MenuBar />
+
         <div className='user-home-page'>
             <div className="profile-section">
                 <div className='profile-avatar'>

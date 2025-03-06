@@ -23,16 +23,21 @@ nav .navbar {
     align-items: center;
     justify-content: space-between;
     height: 100%;
-    max-width: 90%;
+    max-width: 95%;
     background: #2980b9;
     margin: auto;
 }
 
-nav .navbar .logo a {
+nav .navbar .logo a,
+nav .navbar .hidden-logo {
     color: #fff;
     font-size: 27px;
     font-weight: 600;
     text-decoration: none;
+}
+
+nav .navbar .hidden-logo {
+    color: #2980b9;
 }
 
 nav .navbar .menu {
