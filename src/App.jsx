@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
 import CatalogPage from './pages/CatalogPage';
 import SettingsPage from './pages/SettingsPage';
+import ProfilePage from './pages/ProfilePage';
 
 export default function App() {
     return <>
@@ -18,6 +19,7 @@ export default function App() {
             <Route path='/register' element={<RegisterPage />} />
             <Route path='/catalog' element={<CatalogPage />} />
             <Route path='/settings' element={<SettingsPage />} />
+            <Route path='/profile' element={<ProfilePage />} />
             <Route path='/*' element={<NotFoundPage />} />
         </Routes>
     </>
