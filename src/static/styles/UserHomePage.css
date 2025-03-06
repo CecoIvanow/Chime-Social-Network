@@ -18,11 +18,9 @@
     flex-direction: column;
     background-color: white;
     border-color: #f0f0f0;
-    height: 75vh;
+    height: 83.7vh;
     width: 55vh;
     padding: 20px;
-    border-width: 2px;
-    border-style: groove;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
 }
@@ -30,11 +28,9 @@
 .posts-section {
     background-color: white;
     border-color: #f0f0f0;
-    height: 75vh;
+    height: 83.7vh;
     width: 40%;
     padding: 20px;
-    border-width: 2px;
-    border-style: groove;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
     overflow-y: scroll;
@@ -44,11 +40,9 @@
 .friends-section {
     background-color: white;
     border-color: #f0f0f0;
-    height: 75vh;
+    height: 83.7vh;
     width: 55vh;
     padding: 20px;
-    border-width: 2px;
-    border-style: groove;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
     overflow-y: scroll;
@@ -252,4 +246,5 @@
 .profile-info p {
     font-weight: 400;
     margin-bottom: 5px;
+    overflow-wrap: anywhere;
 }

@@ -11,6 +11,7 @@ export default function UserHomePage() {
                 </div>
                 <div className='profile-info'>
                     <h2>John Doe</h2>
+                    <p><h4>Some random bio about taaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahe user</h4></p>
                     <p>New York, USA</p>
                     <p>27 years old</p>
                     <p>Web Developer</p>
