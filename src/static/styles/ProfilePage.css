@@ -71,10 +71,15 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 15px;
+    font-size: medium;
+    font-weight: 500;
 }
 
 .edit-profile-btn:hover {
-    background-color: #256fa3;
+    cursor: pointer;
+    top: -2px;
+    background-color: #3889be;
+    transition: ease-in, 0.25s;
     transform: translateY(-2px);
 }
 
@@ -125,11 +130,14 @@ body {
 }
 
 .post-button {
-    padding: 8px 15px;
+    height: 31px;
+    width: 75px;
     border: none;
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-size: medium;
+    font-weight: 500;
 }
 
 .edit-btn {
@@ -137,14 +145,20 @@ body {
     color: white;
 }
 
-.delete-btn {
-    background-color: #e74c3c;
+.edit-btn:hover {
+    transform: translateY(-2px);
+    background-color: #3889be;
     color: white;
 }
 
-.post-button:hover {
+.delete-btn {
+    background-color: #dd3240;
+    color: white;
+}
+
+.delete-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    background-color: #e93947;
 }
 
 @media (max-width: 768px) {

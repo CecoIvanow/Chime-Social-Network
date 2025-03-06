@@ -11,6 +11,7 @@
     display: flex;
     justify-content: space-around;
     align-items: end;
+    gap: 30px;
 }
 
 .profile-section {
@@ -206,8 +207,8 @@
 .post-buttons:hover {
     cursor: pointer;
     top: -2px;
-    background-color: #3889be;
     transition: ease-in, 0.25s;
+    background-color: #3889be;
 }
 
 .delete-btn {
