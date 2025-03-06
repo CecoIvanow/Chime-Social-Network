@@ -8,15 +8,15 @@ export default function ProfilePage() {
             <div className="profile-info-section">
                 <div className="profile-header">
                     <img src="https://randomuser.me/api/portraits/men/1.jpg" className="profile-avatar" alt="Profile picture" />
-                    <div className="profile-details">
+                    <div className="profile-info">
                         <h2>John Doe</h2>
-                        <p><h4>Some random bio about the user which might or might not be important, dunno, just testing atm</h4></p>
-                        <p>New York, USA</p>
-                        <p>27 years old</p>
-                        <p>Web Developer</p>
-                        <p>Harvard University</p>
-                        <p>Single</p>
-                        <p>Joined February 2025</p>
+                        <p><span className="info-label">Bio:</span> Some random bio about the user which might or might not be important, currently in testing phase</p>
+                        <p><span className="info-label">Location:</span> New York, USA</p>
+                        <p><span className="info-label">Age:</span> 27 years</p>
+                        <p><span className="info-label">Occupation:</span> Web Developer</p>
+                        <p><span className="info-label">Education:</span> Harvard University</p>
+                        <p><span className="info-label">Status:</span> Single</p>
+                        <p><span className="info-label">Member Since:</span> February 2025</p>
                         <a href="/edit"><button className="edit-profile-btn">Edit Profile</button></a>
                     </div>
                 </div>
