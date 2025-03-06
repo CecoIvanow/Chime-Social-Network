@@ -59,6 +59,7 @@ body {
 
 .post-header {
     display: flex;
+    justify-content: start;
     align-items: center;
     margin-bottom: 15px;
 }
@@ -72,7 +73,9 @@ body {
 }
 
 .post-author-info {
-    flex-grow: 1;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
 
 .post-author-name {
