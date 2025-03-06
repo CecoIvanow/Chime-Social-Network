@@ -153,8 +153,8 @@ body {
 }
 
 .action-button {
-        height: 31px;
-            width: 75px;
+    height: 31px;
+    width: 75px;
     border: none;
     border-radius: 25px;
     cursor: pointer;
@@ -171,6 +171,7 @@ body {
 }
 
 .action-button:hover {
+    cursor: pointer;
     transform: translateY(-2px);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    background-color: #3889be;
 }

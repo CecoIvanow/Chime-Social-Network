@@ -24,8 +24,8 @@
     padding: 20px;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
-        overflow-y: scroll;
-            scrollbar-width: none;
+    overflow-y: scroll;
+    scrollbar-width: none;
 }
 
 .posts-section {
