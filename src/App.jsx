@@ -1,3 +1,5 @@
+import './static/styles/styles.css';
+
 import MenuBar from './components/MenuBar.jsx'
 import LandingPage from './pages/LandingPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'

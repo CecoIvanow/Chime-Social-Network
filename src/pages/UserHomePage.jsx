@@ -1,4 +1,3 @@
-import '../static/styles/UserHomePage.css'
 
 export default function UserHomePage() {
     return <>

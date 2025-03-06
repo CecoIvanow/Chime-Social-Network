@@ -1,4 +1,3 @@
-        import '../static/styles/MenuBar.css'
 
         export default function MenuBar() {
             return <>

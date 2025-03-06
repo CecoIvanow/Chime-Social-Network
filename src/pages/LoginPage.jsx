@@ -1,4 +1,3 @@
-import '../static/styles/SignupSignin.css'
 
 export default function LoginPage() {
     return <>
