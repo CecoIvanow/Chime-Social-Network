@@ -157,8 +157,8 @@
 .submit-button {
     position: relative;
     top: 0px;
-    height: 24%;
-    width: 21%;
+    height: 31px;
+    width: 75px;
     border-radius: 25px;
     background-color: #2980b9;
     color: white;
