@@ -11,6 +11,7 @@
     display: flex;
     justify-content: space-around;
     align-items: end;
+    gap: 30px;
 }
 
 .profile-section {
@@ -18,23 +19,21 @@
     flex-direction: column;
     background-color: white;
     border-color: #f0f0f0;
-    height: 75vh;
+    height: 83.7vh;
     width: 55vh;
     padding: 20px;
-    border-width: 2px;
-    border-style: groove;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
+    overflow-y: scroll;
+    scrollbar-width: none;
 }
 
 .posts-section {
     background-color: white;
     border-color: #f0f0f0;
-    height: 75vh;
+    height: 83.7vh;
     width: 40%;
     padding: 20px;
-    border-width: 2px;
-    border-style: groove;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
     overflow-y: scroll;
@@ -44,11 +43,9 @@
 .friends-section {
     background-color: white;
     border-color: #f0f0f0;
-    height: 75vh;
+    height: 83.7vh;
     width: 55vh;
     padding: 20px;
-    border-width: 2px;
-    border-style: groove;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
     overflow-y: scroll;
@@ -157,8 +154,8 @@
 .submit-button {
     position: relative;
     top: 0px;
-    height: 24%;
-    width: 21%;
+    height: 31px;
+    width: 75px;
     border-radius: 25px;
     background-color: #2980b9;
     color: white;
@@ -212,8 +209,8 @@
 .post-buttons:hover {
     cursor: pointer;
     top: -2px;
-    background-color: #3889be;
     transition: ease-in, 0.25s;
+    background-color: #3889be;
 }
 
 .delete-btn {
@@ -230,8 +227,9 @@
     margin-bottom: 10px;
 }
 
-.profile-avatar {
+.profile-user-avatar {
     display: flex;
+    align-items: center;
     flex-direction: column;
 }
 
@@ -241,7 +239,7 @@
     border-radius: 50%;
     border-color: #2980b9;
     border-style: solid;
-    border-width: 1px;
+    border-width: 3px;
 }
 
 .profile-info h2 {
@@ -250,6 +248,12 @@
 }
 
 .profile-info p {
-    font-weight: 400;
-    margin-bottom: 5px;
+    color: #666;
+    margin-bottom: 10px;
+    font-size: 0.95em;
+}
+
+.info-label {
+    color: #2980b9;
+    font-weight: 500;
 }
