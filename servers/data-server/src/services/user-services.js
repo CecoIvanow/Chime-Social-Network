@@ -1,21 +1,23 @@
 import bcrypt from 'bcrypt';
 import User from "../models/User.js";
 
-async function register(bodyData) {
-    const { email, password, rePass, ...profileData } = bodyData;
+async function register(data) {
+    const userData = data;
 
-    const userData = {};
-    userData.email = email;
-    userData.password = password;
-    userData.rePass = rePass;
-    userData.profileData = profileData;
-
-    if (userData.password !== userData.rePass) {
-        return;
+    for (const data in userData) {
+        if (!userData[data]) {
+            throw new Error(`Empty field found!`);
+        }
     }
 
-    if(!userData.password) {
-        return;
+    if (userData.password !== userData.rePass) {
+        throw new Error("Passwords do not match");
+    }
+
+    const isEmailUsed = await User.findOne({ email: userData.email }).select('email').lean();
+    
+    if (isEmailUsed) {
+        throw new Error("A user with this email already exists");
     }
 
     userData.password = await bcrypt.hash(userData.password, 13);
