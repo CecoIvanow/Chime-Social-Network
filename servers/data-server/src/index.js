@@ -1,9 +1,9 @@
 import express, { urlencoded } from 'express'
 import mongoose from 'mongoose'
-import 'dotenv/config'
 import routes from './routes.js';
+import 'dotenv/config'
 
-const port = process.env.PORT
+const port = 4012;
 const app = express();
 
 // MongoDB setup
@@ -17,8 +17,16 @@ try {
     console.error(error.message)
 }
 
+//CORS enable
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', '*');
+    next();
+})
+
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(routes);
 
 // Express starting
-app.listen(port, () => console.log(`Server is listening on port http://localhost:${port}`));
+app.listen(port, () => console.log(`Server is listening on port http://localhost:4012`));
