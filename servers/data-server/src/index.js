@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { urlencoded } from 'express'
 import mongoose from 'mongoose'
 import 'dotenv/config'
 import routes from './routes.js';
@@ -17,6 +17,7 @@ try {
     console.error(error.message)
 }
 
+app.use(express.urlencoded({ extended: false }));
 app.use(routes);
 
 // Express starting
