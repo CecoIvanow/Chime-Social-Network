@@ -1,25 +1,11 @@
 import { Router } from "express";
-
-import bcrypt from 'bcrypt';
-import User from "../models/User.js";
+import userServices from "../services/user-services.js";
 
 const userController = Router();
 
 userController.post('/register', async (req, res) => {
-    const { email, password, rePass, ...profileData } = req.body;
-
-    const userData = {};
-    userData.email = email;
-    userData.password = password;
-    userData.profileData = profileData;
     
-    if (password !== rePass) {
-        return;
-    }
-    
-    userData.password = await bcrypt.hash(password, 13);
-
-    await User.create(userData);
+    await userServices.register(req.body);
 })
 
 export default userController;
