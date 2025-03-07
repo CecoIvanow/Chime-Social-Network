@@ -1,8 +1,19 @@
 import { Link } from "react-router";
 
 import MenuBar from "../components/MenuBar";
+import clientServices from "../client-services/client-user-services";
 
 export default function RegisterPage() {
+
+    const submitFormClickHandler = async (e) => {
+        e.preventDefault(); 
+
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData);
+
+        await clientServices.registerUser(data);
+    }
+
     return <>
         <MenuBar />
 
@@ -12,7 +23,7 @@ export default function RegisterPage() {
                 <div className="title">Registration</div>
                 <div className="content">
 
-                    <form action="http://localhost:4012/register" method="post">
+                    <form onSubmit={submitFormClickHandler}>
                         <div className="user-details">
 
                             <div className="input-box">

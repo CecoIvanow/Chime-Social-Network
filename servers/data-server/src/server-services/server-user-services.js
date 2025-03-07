@@ -23,6 +23,7 @@ async function register(data) {
     userData.password = await bcrypt.hash(userData.password, 13);
 
     return await User.create(userData);
+    
 }
 
 const userServices = {

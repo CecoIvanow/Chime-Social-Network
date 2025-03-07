@@ -1,11 +1,13 @@
 import { Router } from "express";
-import userServices from "../services/user-services.js";
+import userServices from "../server-services/server-user-services.js";
 
 const userController = Router();
 
 userController.post('/register', async (req, res) => {
+    const bodyData = req.body;
+
     try {
-        await userServices.register(req.body);
+        await userServices.register(bodyData);
     } catch (error) {
         console.error(error.message)
     }
