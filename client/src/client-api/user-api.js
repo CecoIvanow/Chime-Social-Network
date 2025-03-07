@@ -1,6 +1,6 @@
 const BASE_URL = "http://localhost:4012"
 
-async function registerUser(data) {
+async function register(data) {
 
     await fetch(BASE_URL + '/register', {
         method: 'post',
@@ -12,8 +12,8 @@ async function registerUser(data) {
 
 }
 
-const clientServices = {
-    registerUser,
+const userClientApi = {
+    register,
 }
 
-export default clientServices;
+export default userClientApi;

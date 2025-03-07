@@ -11,13 +11,13 @@ async function register(data) {
     }
 
     if (userData.password !== userData.rePass) {
-        throw new Error("Passwords do not match");
+        throw new Error("Passwords do not match!");
     }
 
     const isEmailUsed = await User.findOne({ email: userData.email }).select('email').lean();
     
     if (isEmailUsed) {
-        throw new Error("A user with this email already exists");
+        throw new Error("A user with this email already exists!");
     }
 
     userData.password = await bcrypt.hash(userData.password, 13);
@@ -26,8 +26,8 @@ async function register(data) {
     
 }
 
-const userServices = {
+const userServerApi = {
     register
 }
 
-export default userServices;
+export default userServerApi;

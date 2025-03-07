@@ -1,5 +1,5 @@
 import { Router } from "express";
-import userServices from "../server-services/server-user-services.js";
+import userServerApi from "../server-api/user-api.js";
 
 const userController = Router();
 
@@ -7,7 +7,7 @@ userController.post('/register', async (req, res) => {
     const bodyData = req.body;
 
     try {
-        await userServices.register(bodyData);
+        await userServerApi.register(bodyData);
     } catch (error) {
         console.error(error.message)
     }
