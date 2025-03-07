@@ -1,10 +1,23 @@
 import express from 'express'
+import mongoose from 'mongoose'
+import 'dotenv/config'
+import routes from './routes.js';
 
-const port = 3031;
+const port = process.env.PORT
 const app = express();
 
-app.get('/', (req, res) => {
-    res.send('Works successfully!');
-})
+// MongoDB setup
+const URI = process.env.DATABASE_URI;
+try {
+    await mongoose.connect(URI);
 
-app.listen(port, () => console.log('Server is listening on port http://localhost:3031'));
+    console.log('Successfully connected to DB');
+} catch (error) {
+    console.log('Failed to connect to DB');
+    console.error(error.message)
+}
+
+app.use(routes);
+
+// Express starting
+app.listen(port, () => console.log(`Server is listening on port http://localhost:${port}`));
