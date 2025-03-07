@@ -1,6 +1,6 @@
 import { Schema, Types, model } from "mongoose";
 
-const userSchema = Schema({
+const userSchema = new Schema({
     email: {
         type: String,
         // required: [true, 'Email is requred!'],
@@ -34,9 +34,11 @@ const userSchema = Schema({
     }],
     createdPosts: [{
         type: Types.ObjectId,
-        red: 'Post',
+        ref: 'Post',
     }]
-})
+},
+    { timestamps: true }
+)
 
 const User = model('User', userSchema);
 
