@@ -1,62 +1,76 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
-import MenuBar from "../components/MenuBar";
+import userServices from "../client-services/user-client-services.js";
 
-export default function RegisterPage() {
+export default function RegisterPage({
+    setIsUser
+}) {
+
+    const navigateTo = useNavigate();
+
+    const submitFormClickHandler = async (e) => {
+        e.preventDefault();
+
+        const actions = {
+            navigateTo,
+            setIsUser,
+        }
+
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData);
+
+        await userServices.registerMiddleware(data, actions);
+    }
+
     return <>
-        <MenuBar />
-
         <div className='register-page'>
             <div className="container">
-                {/* <!-- Title section --> */}
+
                 <div className="title">Registration</div>
                 <div className="content">
-                    {/* <!-- Registration form --> */}
-                    <form action="#">
+
+                    <form onSubmit={submitFormClickHandler}>
                         <div className="user-details">
-                            {/* <!-- Input for Full Name --> */}
+
                             <div className="input-box">
                                 <span className="details">First name</span>
-                                <input type="text" placeholder="Enter your first name" required />
+                                <input type="text" placeholder="Enter your first name" name="firstName" />
                             </div>
-                            {/* <!-- Input for Username --> */}
                             <div className="input-box">
+
                                 <span className="details">Last name</span>
-                                <input type="text" placeholder="Enter your last name" required />
+                                <input type="text" placeholder="Enter your last name" name="lastName" />
                             </div>
-                            {/* <!-- Input for Email --> */}
+
                             <div className="input-box">
                                 <span className="details">Email</span>
-                                <input type="text" placeholder="Enter your email" required />
+                                <input type="text" placeholder="Enter your email" name="email" />
                             </div>
-                            {/* <!-- Input for Phone Number --> */}
+
                             <div className="input-box">
                                 <span className="details">Birthday</span>
-                                <input type="date" placeholder="Enter your birthday" required />
+                                <input type="text" placeholder="Enter your birthday" name="birthday" />
                             </div>
-                            {/* <!-- Input for Password --> */}
+
                             <div className="input-box">
                                 <span className="details">Password</span>
-                                <input type="text" placeholder="Enter your password" required />
+                                <input type="text" placeholder="Enter your password" name="password" />
                             </div>
-                            {/* <!-- Input for Confirm Password --> */}
+
                             <div className="input-box">
                                 <span className="details">Confirm Password</span>
-                                <input type="text" placeholder="Confirm your password" required />
+                                <input type="text" placeholder="Confirm your password" name="rePass" />
                             </div>
                         </div>
                         <div className="gender-details">
-                            {/* <!-- Radio buttons for gender selection --> */}
-                            <input type="radio" name="gender" id="dot-1" />
-                            <input type="radio" name="gender" id="dot-2" />
+                            <input type="radio" value="Male" name="gender" id="dot-1" />
+                            <input type="radio" value="Female" name="gender" id="dot-2" />
                             <span className="gender-title">Gender</span>
                             <div className="category">
-                                {/* <!-- Label for Male --> */}
                                 <label htmlFor="dot-1">
                                     <span className="dot one"></span>
                                     <span className="gender">Male</span>
                                 </label>
-                                {/* <!-- Label for Female --> */}
                                 <label htmlFor="dot-2">
                                     <span className="dot two"></span>
                                     <span className="gender">Female</span>

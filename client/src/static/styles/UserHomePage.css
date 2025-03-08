@@ -96,7 +96,7 @@
 .post-create {
     display: flex;
     justify-content: start;
-    background-color: #f3f3f3;
+    background-color: #f8f9fa;
     padding: 10px 15px 25px 15px;
     border-color: #dad9d9;
     border-style: solid;
@@ -193,7 +193,7 @@
 .post-item {
     border-radius: 15px;
     padding: 5px;
-    background-color: #f3f3f3;
+    background-color: #f8f9fa;
     margin: 10px 5px 20px 5px;
     list-style-type: none;
     border-color: #dad9d9;

@@ -1,11 +1,5 @@
-import MenuBar from "../components/MenuBar"
-
 export default function SettingsPage() {
     return <>
-        <MenuBar />
-
-        
-
         <div className="settings-container">
             <form>
                 <div className="settings-card password-section">
