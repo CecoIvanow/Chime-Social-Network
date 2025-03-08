@@ -15,6 +15,20 @@ async function register(data) {
     return userId;
 }
 
+async function login(data) {
+        const resp = await fetch(BASE_URL + '/login', {
+        method: 'post',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        credentials: 'include',
+    });
+    const userId = resp.json();
+
+    return userId;
+}
+
 async function logout() {
     await fetch(BASE_URL + '/logout', {
         credentials: 'include',
@@ -23,7 +37,8 @@ async function logout() {
 
 const userApi = {
     register,
-    logout
+    logout,
+    login
 }
 
 export default userApi;
