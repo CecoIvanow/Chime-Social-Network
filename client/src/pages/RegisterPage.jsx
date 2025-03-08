@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-import userClientApi from "../client-api/user-api.js";
+import userServices from "../client-services/user-client-services.js";
 
 import MenuBar from "../components/MenuBar";
 
@@ -12,7 +12,7 @@ export default function RegisterPage() {
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData);
 
-        await userClientApi.register(data);
+        await userServices.registerMiddleware(data);
     }
 
     return <>

@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import User from "../models/User.js";
+import { userTokenCreation } from '../utils/token-utils.js';
 
 async function register(data) {
     const userData = data;
@@ -15,15 +16,17 @@ async function register(data) {
     }
 
     const isEmailUsed = await User.findOne({ email: userData.email }).select('email').lean();
-    
+
     if (isEmailUsed) {
         throw new Error("A user with this email already exists!");
     }
 
     userData.password = await bcrypt.hash(userData.password, 13);
 
-    return await User.create(userData);
-    
+    const newUser = await User.create(userData);
+
+    return userTokenCreation(newUser);
+
 }
 
 const userServerApi = {

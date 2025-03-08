@@ -8,8 +8,8 @@ async function register(data) {
             'Content-type': 'application/json',
         },
         body: JSON.stringify(data),
+        credentials: 'include',
     });
-
 }
 
 const userClientApi = {
