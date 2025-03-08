@@ -25,7 +25,10 @@ async function register(data) {
 
     const newUser = await User.create(userData);
 
-    return userTokenCreation(newUser);
+    const token = userTokenCreation(newUser);
+    const { _id } = newUser;
+
+    return [token, _id];
 
 }
 

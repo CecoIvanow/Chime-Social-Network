@@ -4,15 +4,17 @@ import userServices from "../client-services/user-client-services.js";
 
 import MenuBar from "../components/MenuBar";
 
-export default function RegisterPage() {
+export default function RegisterPage({
+    setIsUser
+}) {
 
     const submitFormClickHandler = async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData);
 
-        await userServices.registerMiddleware(data);
+        await userServices.registerMiddleware(data, setIsUser);
     }
 
     return <>
@@ -29,7 +31,7 @@ export default function RegisterPage() {
 
                             <div className="input-box">
                                 <span className="details">First name</span>
-                                <input type="text" placeholder="Enter your first name" name="firstName"/>
+                                <input type="text" placeholder="Enter your first name" name="firstName" />
                             </div>
                             <div className="input-box">
 

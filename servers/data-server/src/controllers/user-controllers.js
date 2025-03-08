@@ -11,10 +11,10 @@ userController.post('/register', async (req, res) => {
     const bodyData = req.body;
 
     try {
-        const token = await userServerApi.register(bodyData);
+        const [token, userId] = await userServerApi.register(bodyData);
 
         res.cookie(COOKIE_NAME, token, { httpOnly: false });
-        res.end();
+        res.json(userId);
     } catch (error) {
         console.error(error.message);
     }
