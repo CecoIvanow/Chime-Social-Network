@@ -1,10 +1,7 @@
 import { Link } from "react-router";
-import MenuBar from "../components/MenuBar";
 
 export default function NotFoundPage() {
     return <>
-        <MenuBar />
-
         <div id="notfound">
             <div className="notfound">
                 <div className="notfound-404">

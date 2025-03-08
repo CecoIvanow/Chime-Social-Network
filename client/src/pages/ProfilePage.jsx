@@ -1,9 +1,5 @@
-import MenuBar from "../components/MenuBar";
-
 export default function ProfilePage() {
     return <>
-        <MenuBar />
-
         <div className="profile-container">
             <div className="profile-info-section">
                 <div className="profile-header">

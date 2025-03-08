@@ -1,7 +1,7 @@
 import './static/styles/styles.css';
 
 import { useState } from 'react';
-import { Routes, Route } from 'react-router';
+import { Routes, Route, useLocation } from 'react-router';
 
 import LandingPage from './pages/LandingPage';
 import UserHomePage from './pages/UserHomePage';
@@ -11,13 +11,19 @@ import NotFoundPage from './pages/NotFoundPage';
 import CatalogPage from './pages/CatalogPage';
 import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
+import MenuBar from './components/MenuBar';
 
 export default function App() {
     const [isUser, setIsUser] = useState(null);
 
-    return <>
-        <Routes>
+    const location = useLocation();
 
+    return <>
+        {(location.pathname !== '/' && !isUser) && (
+            <MenuBar isUser={isUser} />
+        )}
+
+        <Routes>
             {/* User only pages */}
             {isUser && (
                 <>

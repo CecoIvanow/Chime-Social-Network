@@ -2,8 +2,6 @@ import { Link, useNavigate } from "react-router";
 
 import userServices from "../client-services/user-client-services.js";
 
-import MenuBar from "../components/MenuBar";
-
 export default function RegisterPage({
     setIsUser
 }) {
@@ -13,15 +11,18 @@ export default function RegisterPage({
     const submitFormClickHandler = async (e) => {
         e.preventDefault();
 
+        const actions = {
+            navigateTo,
+            setIsUser,
+        }
+
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData);
 
-        await userServices.registerMiddleware(data, setIsUser, navigateTo);
+        await userServices.registerMiddleware(data, actions);
     }
 
     return <>
-        <MenuBar />
-
         <div className='register-page'>
             <div className="container">
 

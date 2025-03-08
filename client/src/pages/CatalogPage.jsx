@@ -1,9 +1,5 @@
-import MenuBar from "../components/MenuBar";
-
 export default function CatalogPage() {
     return <>
-        <MenuBar />
-
         <div className="dashboard-container">
             {/* <!-- Posts Catalog --> */}
             <div className="posts-catalog">
