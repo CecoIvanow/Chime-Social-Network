@@ -32,8 +32,30 @@ async function register(data) {
 
 }
 
-const userServerApi = {
-    register
+async function login(data) {
+    const loginData = data;
+
+    const foundUser = await User.findOne({ email: loginData.email }).select('email password _id').lean();
+
+    if (!foundUser) {
+        throw new Error("Invalid email or password!");
+    }
+
+    const isPasswordValid = await bcrypt.compare(loginData.password, foundUser.password);
+
+    if (!isPasswordValid) {
+        throw new Error("Invalid email or password!");
+    }
+
+    const token = userTokenCreation(foundUser);
+    const { _id } = foundUser;
+
+    return [token, _id];
 }
 
-export default userServerApi;
+const repositories = {
+    register,
+    login
+}
+
+export default repositories;

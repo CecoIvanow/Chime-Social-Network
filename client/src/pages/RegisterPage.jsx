@@ -1,25 +1,18 @@
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 
-import userServices from "../client-services/user-client-services.js";
+import userServices from "../services/user-services.js";
 
 export default function RegisterPage({
     setIsUser
 }) {
 
-    const navigateTo = useNavigate();
-
     const submitFormClickHandler = async (e) => {
         e.preventDefault();
-
-        const actions = {
-            navigateTo,
-            setIsUser,
-        }
 
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData);
 
-        await userServices.registerMiddleware(data, actions);
+        await userServices.handleRegister(data, setIsUser);
     }
 
     return <>

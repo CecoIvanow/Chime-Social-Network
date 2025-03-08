@@ -1,7 +1,7 @@
-import './static/styles/styles.css';
+import './assets/styles/styles.css';
 
 import { useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router';
+import { Routes, Route, useLocation, Navigate } from 'react-router';
 
 import LandingPage from './pages/LandingPage';
 import UserHomePage from './pages/UserHomePage';
@@ -11,36 +11,31 @@ import NotFoundPage from './pages/NotFoundPage';
 import CatalogPage from './pages/CatalogPage';
 import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
+import Logout from './pages/Logout';
 import MenuBar from './components/MenuBar';
 
 export default function App() {
-    const [isUser, setIsUser] = useState(null);
+    const [isUser, setIsUser] = useState(false);
 
     const location = useLocation();
 
     return <>
-        {(location.pathname !== '/' && !isUser) && (
+        {(isUser || (!isUser && location.pathname !== '/')) && (
             <MenuBar isUser={isUser} />
         )}
 
         <Routes>
+            {/* State dependent pages */}
+            <Route path='/' element={isUser ? <UserHomePage /> : <LandingPage />} />
+
             {/* User only pages */}
-            {isUser && (
-                <>
-                    <Route path='/' element={<UserHomePage />} />
-                    <Route path='/settings' element={<SettingsPage />} />
-                    <Route path='/profile' element={<ProfilePage />} />
-                </>
-            )}
+            <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
+            <Route path='/profile' element={isUser ? <ProfilePage /> : <Navigate to="/login" />} />
+            <Route path='/logout' element={isUser ? <Logout setIsUser={setIsUser} /> : <Navigate to="/" />} />
 
             {/* Guest only pages */}
-            {!isUser && (
-                <>
-                    <Route path='/' element={<LandingPage />} />
-                    <Route path='/login' element={<LoginPage setIsUser={setIsUser} />} />
-                    <Route path='/register' element={<RegisterPage setIsUser={setIsUser} />} />
-                </>
-            )}
+            <Route path='/login' element={!isUser ? <LoginPage setIsUser={setIsUser} /> : <Navigate to="/" />} />
+            <Route path='/register' element={!isUser ? <RegisterPage setIsUser={setIsUser} /> : <Navigate to="/" />} />
 
             {/* Public pages */}
             <Route path='/catalog' element={<CatalogPage />} />
