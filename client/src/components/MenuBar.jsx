@@ -22,17 +22,17 @@ export default function MenuBar({
                 </ul>
                 <ul className='auth-menu'>
                     {isUser && (
-                        <>
+                        <div className="user-auth-menu">
                             <li><Link to="/settings" title='Settings'><img src="src\static\images\settings-icon.png" alt="Catalog" /></Link></li>
                             <li><Link to="/logout" title='Logout'><img src="src\static\images\logout-icon.png" alt="Notifications" /></Link></li>
-                        </>
+                        </div>
                     )}
 
                     {!isUser && (
-                        <>
+                        <div className="guest-auth-menu">
                             <li><Link to="/login" title="Login">Login</Link></li>
                             <li><Link to="/register" title="Register">Register</Link></li>
-                        </>
+                        </div>
                     )}
                 </ul>
             </div>

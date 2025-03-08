@@ -60,7 +60,8 @@ nav .navbar .menu {
     width: 20px;
 }
 
-nav .navbar .auth-menu {
+nav .navbar .auth-menu .user-auth-menu,
+nav .navbar .auth-menu .guest-auth-menu {
     display: flex;
 } 
 
@@ -68,8 +69,8 @@ nav .navbar .auth-menu {
     list-style: none;
 }
 
-.navbar .auth-menu li:first-of-type {
-        margin: 0 15px;
+nav .navbar .auth-menu li:first-of-type{
+    margin-right: 30px;
 }
 
 .navbar .auth-menu li a {
