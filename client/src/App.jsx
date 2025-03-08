@@ -19,7 +19,7 @@ export default function App() {
     const location = useLocation();
 
     return <>
-        {(location.pathname !== '/' && !isUser) && (
+        {(isUser || (!isUser && location.pathname !== '/')) && (
             <MenuBar isUser={isUser} />
         )}
 
