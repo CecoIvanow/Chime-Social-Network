@@ -12,7 +12,7 @@ export default function RegisterPage({
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData);
 
-        await userServices.registerMiddleware(data, setIsUser);
+        await userServices.handleRegister(data, setIsUser);
     }
 
     return <>

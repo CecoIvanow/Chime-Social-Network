@@ -1,13 +1,13 @@
-import userClientApi from "../api/user-api.js";
+import userApi from "../api/user-api.js";
 
-async function registerMiddleware(data, setIsUser) {
-    const userId = await userClientApi.register(data);
+async function handleRegister(data, setIsUser) {
+    const userId = await userApi.register(data);
     
     setIsUser(userId);
 }
 
 const userServices = {
-    registerMiddleware
+    handleRegister
 }
 
 export default userServices;

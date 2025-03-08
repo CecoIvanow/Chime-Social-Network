@@ -15,8 +15,8 @@ async function register(data) {
     return userId;
 }
 
-const userClientApi = {
+const userApi = {
     register,
 }
 
-export default userClientApi;
+export default userApi;
