@@ -16,9 +16,9 @@ export default function App() {
     const [isUser, setIsUser] = useState(null);
 
     return <>
-        {/* Guest/public pages */}
         <Routes>
 
+            {/* User only pages */}
             {isUser && (
                 <>
                     <Route path='/' element={<UserHomePage />} />
@@ -27,6 +27,7 @@ export default function App() {
                 </>
             )}
 
+            {/* Guest only pages */}
             {!isUser && (
                 <>
                     <Route path='/' element={<LandingPage />} />
@@ -35,6 +36,7 @@ export default function App() {
                 </>
             )}
 
+            {/* Public pages */}
             <Route path='/catalog' element={<CatalogPage />} />
             <Route path='/*' element={<NotFoundPage />} />
         </Routes>
