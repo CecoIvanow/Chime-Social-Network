@@ -66,7 +66,10 @@ nav .navbar .auth-menu {
 
 .navbar .auth-menu li {
     list-style: none;
-    margin: 0 15px;
+}
+
+.navbar .auth-menu li:first-of-type {
+        margin: 0 15px;
 }
 
 .navbar .auth-menu li a {

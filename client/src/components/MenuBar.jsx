@@ -30,8 +30,8 @@ export default function MenuBar({
 
                     {!isUser && (
                         <>
-                            <li><Link to="/register" title="Register">Login</Link></li>
-                            <li><Link to="/login" title="Login">Register</Link></li>
+                            <li><Link to="/login" title="Login">Login</Link></li>
+                            <li><Link to="/register" title="Register">Register</Link></li>
                         </>
                     )}
                 </ul>
