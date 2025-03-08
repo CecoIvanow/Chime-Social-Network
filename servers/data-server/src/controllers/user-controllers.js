@@ -1,7 +1,7 @@
 import { Router } from "express";
 import 'dotenv/config';
 
-import userServerApi from "../repositories/user-repositories.js";
+import repositories from "../repositories/user-repositories.js";
 
 const COOKIE_AUTH_NAME = process.env.COOKIE_AUTH_NAME;
 
@@ -11,7 +11,7 @@ userController.post('/register', async (req, res) => {
     const bodyData = req.body;
 
     try {
-        const [token, userId] = await userServerApi.register(bodyData);
+        const [token, userId] = await repositories.register(bodyData);
 
         res.cookie(COOKIE_AUTH_NAME, token, { httpOnly: false });
         res.json(userId);
@@ -20,9 +20,19 @@ userController.post('/register', async (req, res) => {
     }
 })
 
+userController.post('/login', async (req, res) => {
+    const bodyData = req.body;
+
+    try {
+        const [token, userId] = await repositories.login(bodyData);
+        res.cookie(COOKIE_AUTH_NAME, token, { httpOnly: false });
+        res.json(userId);
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 userController.get('/logout', (req, res) => {
-    console.log('this works?');
-    
     res.clearCookie(COOKIE_AUTH_NAME);
     res.end();
 })
