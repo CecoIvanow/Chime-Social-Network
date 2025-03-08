@@ -1,7 +1,7 @@
 import './static/styles/styles.css';
 
-import { useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router';
 
 import LandingPage from './pages/LandingPage';
 import UserHomePage from './pages/UserHomePage';
@@ -25,22 +25,13 @@ export default function App() {
 
         <Routes>
             {/* User only pages */}
-            {isUser && (
-                <>
-                    <Route path='/' element={<UserHomePage />} />
-                    <Route path='/settings' element={<SettingsPage />} />
-                    <Route path='/profile' element={<ProfilePage />} />
-                </>
-            )}
+            <Route path='/' element={isUser ? <UserHomePage /> : <LandingPage />} />
+            <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
+            <Route path='/profile' element={isUser ? <ProfilePage /> : <Navigate to="/login" />} />
 
             {/* Guest only pages */}
-            {!isUser && (
-                <>
-                    <Route path='/' element={<LandingPage />} />
-                    <Route path='/login' element={<LoginPage setIsUser={setIsUser} />} />
-                    <Route path='/register' element={<RegisterPage setIsUser={setIsUser} />} />
-                </>
-            )}
+            <Route path='/login' element={!isUser ? <LoginPage setIsUser={setIsUser} /> : <Navigate to="/" />} />
+            <Route path='/register' element={!isUser ? <RegisterPage setIsUser={setIsUser} /> : <Navigate to="/" />} />
 
             {/* Public pages */}
             <Route path='/catalog' element={<CatalogPage />} />

@@ -1,9 +1,9 @@
 import userClientApi from "../client-api/user-client-api.js";
 
-async function registerMiddleware(data, actions) {
+async function registerMiddleware(data, setIsUser) {
     const userId = await userClientApi.register(data);
-    actions.setIsUser(userId);
-    actions.navigateTo('/');
+    
+    setIsUser(userId);
 }
 
 const userServices = {
