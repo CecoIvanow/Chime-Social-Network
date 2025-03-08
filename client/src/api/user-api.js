@@ -15,8 +15,15 @@ async function register(data) {
     return userId;
 }
 
+async function logout() {
+    await fetch(BASE_URL + '/logout', {
+        credentials: 'include',
+    });
+}
+
 const userApi = {
     register,
+    logout
 }
 
 export default userApi;

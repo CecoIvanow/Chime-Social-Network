@@ -11,10 +11,11 @@ import NotFoundPage from './pages/NotFoundPage';
 import CatalogPage from './pages/CatalogPage';
 import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
+import Logout from './pages/Logout';
 import MenuBar from './components/MenuBar';
 
 export default function App() {
-    const [isUser, setIsUser] = useState(null);
+    const [isUser, setIsUser] = useState(false);
 
     const location = useLocation();
 
@@ -24,10 +25,13 @@ export default function App() {
         )}
 
         <Routes>
-            {/* User only pages */}
+            {/* State dependent pages */}
             <Route path='/' element={isUser ? <UserHomePage /> : <LandingPage />} />
+
+            {/* User only pages */}
             <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
             <Route path='/profile' element={isUser ? <ProfilePage /> : <Navigate to="/login" />} />
+            <Route path='/logout' element={isUser ? <Logout setIsUser={setIsUser} /> : <Navigate to="/login" />} />
 
             {/* Guest only pages */}
             <Route path='/login' element={!isUser ? <LoginPage setIsUser={setIsUser} /> : <Navigate to="/" />} />

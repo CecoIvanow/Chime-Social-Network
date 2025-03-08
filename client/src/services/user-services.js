@@ -6,8 +6,14 @@ async function handleRegister(data, setIsUser) {
     setIsUser(userId);
 }
 
+async function handleLogout(setIsUser) {
+    await userApi.logout();
+    setIsUser(false);
+}
+
 const userServices = {
-    handleRegister
+    handleRegister,
+    handleLogout
 }
 
 export default userServices;
