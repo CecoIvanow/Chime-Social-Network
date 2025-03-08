@@ -28,6 +28,21 @@ const userSchema = new Schema({
     imageUrl: {
         type: String,
     },
+    bio: {
+        type: String,
+    },
+    location: {
+        type: String,
+    },
+    occpation: {
+        type: String,
+    },
+    education: {
+        type: String,
+    },
+    status: {
+        type: String,
+    },
     friends: [{
         type: Types.ObjectId,
         ref: 'User',
