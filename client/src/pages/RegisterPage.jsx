@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-import userServices from "../client-services/user-client-services.js";
+import userServices from "../services/user-services.js";
 
 export default function RegisterPage({
     setIsUser

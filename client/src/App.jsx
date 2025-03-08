@@ -1,7 +1,7 @@
-import './static/styles/styles.css';
+import './assets/styles/styles.css';
 
-import { useEffect, useState } from 'react';
-import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router';
+import { useState } from 'react';
+import { Routes, Route, useLocation, Navigate } from 'react-router';
 
 import LandingPage from './pages/LandingPage';
 import UserHomePage from './pages/UserHomePage';

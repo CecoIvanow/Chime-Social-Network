@@ -1,7 +1,7 @@
 import { Router } from "express";
 import 'dotenv/config';
 
-import userServerApi from "../server-api/user-server-api.js";
+import userServerApi from "../repositories/user-repositories.js";
 
 const COOKIE_NAME = process.env.COOKIE_AUTH_NAME;
 
@@ -18,7 +18,6 @@ userController.post('/register', async (req, res) => {
     } catch (error) {
         console.error(error.message);
     }
-
 })
 
 export default userController;

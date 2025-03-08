@@ -1,4 +1,4 @@
-import userClientApi from "../client-api/user-client-api.js";
+import userClientApi from "../api/user-api.js";
 
 async function registerMiddleware(data, setIsUser) {
     const userId = await userClientApi.register(data);
