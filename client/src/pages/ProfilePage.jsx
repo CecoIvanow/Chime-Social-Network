@@ -4,6 +4,7 @@ import { useParams } from "react-router"
 import userServices from "../services/user-services";
 
 import defaultAvatar from '../assets/images/default-profile-avatar.png'
+import PostItem from "../components/PostItem";
 
 export default function ProfilePage() {
     const { userId } = useParams();
@@ -38,82 +39,10 @@ export default function ProfilePage() {
 
             <div className="posts-section">
                 <h2 className="posts-heading">My Posts ({userData.createdPosts?.length || 0})</h2>
-
-                <div className="post-item">
-                    <div className="post-header">
-                        <img src="https://randomuser.me/api/portraits/men/1.jpg" className="post-author-img" alt="User avatar" />                            <div>
-                            <div className="post-date">Posted 2 hours ago</div>
-                        </div>
-                    </div>
-                    <div className="post-content">
-                        Just climbed Mount Everest! What an incredible experience! Can&apos;t wait to share more photos soon.
-                    </div>
-                    <div className="post-actions">
-                        <button className="post-button edit-btn">Edit</button>
-                        <button className="post-button delete-btn">Delete</button>
-                    </div>
-                </div>
-
-                <div className="post-item">
-                    <div className="post-header">
-                        <img src="https://randomuser.me/api/portraits/men/1.jpg" className="post-author-img" alt="User avatar" />                            <div>
-                            <div className="post-date">Posted 2 hours ago</div>
-                        </div>
-                    </div>
-                    <div className="post-content">
-                        Just climbed Mount Everest! What an incredible experience! Can&apos;t wait to share more photos soon.
-                    </div>
-                    <div className="post-actions">
-                        <button className="post-button edit-btn">Edit</button>
-                        <button className="post-button delete-btn">Delete</button>
-                    </div>
-                </div>
-
-                <div className="post-item">
-                    <div className="post-header">
-                        <img src="https://randomuser.me/api/portraits/men/1.jpg" className="post-author-img" alt="User avatar" />                            <div>
-                            <div className="post-date">Posted 2 hours ago</div>
-                        </div>
-                    </div>
-                    <div className="post-content">
-                        Just climbed Mount Everest! What an incredible experience! Can&apos;t wait to share more photos soon.
-                    </div>
-                    <div className="post-actions">
-                        <button className="post-button edit-btn">Edit</button>
-                        <button className="post-button delete-btn">Delete</button>
-                    </div>
-                </div>
-
-                <div className="post-item">
-                    <div className="post-header">
-                        <img src="https://randomuser.me/api/portraits/men/1.jpg" className="post-author-img" alt="User avatar" />                            <div>
-                            <div className="post-date">Posted 2 hours ago</div>
-                        </div>
-                    </div>
-                    <div className="post-content">
-                        Just climbed Mount Everest! What an incredible experience! Can&apos;t wait to share more photos soon.
-                    </div>
-                    <div className="post-actions">
-                        <button className="post-button edit-btn">Edit</button>
-                        <button className="post-button delete-btn">Delete</button>
-                    </div>
-                </div>
-
-                <div className="post-item">
-                    <div className="post-header">
-                        <img src="https://randomuser.me/api/portraits/men/1.jpg" className="post-author-img" alt="User avatar" />                            <div>
-                            <div className="post-date">Posted 2 hours ago</div>
-                        </div>
-                    </div>
-                    <div className="post-content">
-                        Just climbed Mount Everest! What an incredible experience! Can&apos;t wait to share more photos soon.
-                    </div>
-                    <div className="post-actions">
-                        <button className="post-button edit-btn">Edit</button>
-                        <button className="post-button delete-btn">Delete</button>
-                    </div>
-                </div>
-
+                <PostItem />
+                <PostItem />
+                <PostItem />
+                <PostItem />
             </div>
         </div>
     </>

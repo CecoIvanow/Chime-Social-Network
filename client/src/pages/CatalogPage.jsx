@@ -1,3 +1,5 @@
+import PostItem from "../components/PostItem";
+
 export default function CatalogPage() {
     return <>
         <div className="dashboard-container">
@@ -9,86 +11,11 @@ export default function CatalogPage() {
                 </div>
 
                 {/* <!-- Post Items --> */}
-                <div className="post-item">
-                    <div className="post-header">
-                        <img src="https://randomuser.me/api/portraits/men/1.jpg" className="post-author-img" alt="User avatar" />
-                        <div className="post-author-info">
-                            <div className="post-author-name">John Doe</div>
-                            <div className="post-date">Posted on: 2024-02-15 14:30</div>
-                        </div>
-                    </div>
-                    <div className="post-content">
-                        Jbutton reached 10k frienderbuttoAdd you everyone for the support!
-                    </div>
-                    <div className="post-actions">
-                        <button className="action-button">Edit</button>
-                        <button className="action-button delete-btn">Delete</button>
-                    </div>
-                </div>
-                <div className="post-item">
-                    <div className="post-header">
-                        <img src="https://randomuser.me/api/portraits/men/1.jpg" className="post-author-img" alt="User avatar" />
-                        <div className="post-author-info">
-                            <div className="post-author-name">John Doe</div>
-                            <div className="post-date">Posted on: 2024-02-15 14:30</div>
-                        </div>
-                    </div>
-                    <div className="post-content">
-                        Jbutton reached 10k frienderbuttoAdd you everyone for the support!
-                    </div>
-                    <div className="post-actions">
-                        <button className="action-button">Edit</button>
-                        <button className="action-button delete-btn">Delete</button>
-                    </div>
-                </div>
-                <div className="post-item">
-                    <div className="post-header">
-                        <img src="https://randomuser.me/api/portraits/men/1.jpg" className="post-author-img" alt="User avatar" />
-                        <div className="post-author-info">
-                            <div className="post-author-name">John Doe</div>
-                            <div className="post-date">Posted on: 2024-02-15 14:30</div>
-                        </div>
-                    </div>
-                    <div className="post-content">
-                        Jbutton reached 10k frienderbuttoAdd you everyone for the support!
-                    </div>
-                    <div className="post-actions">
-                        <button className="action-button">Edit</button>
-                        <button className="action-button delete-btn">Delete</button>
-                    </div>
-                </div>
-                <div className="post-item">
-                    <div className="post-header">
-                        <img src="https://randomuser.me/api/portraits/men/1.jpg" className="post-author-img" alt="User avatar" />
-                        <div className="post-author-info">
-                            <div className="post-author-name">John Doe</div>
-                            <div className="post-date">Posted on: 2024-02-15 14:30</div>
-                        </div>
-                    </div>
-                    <div className="post-content">
-                        Jbutton reached 10k frienderbuttoAdd you everyone for the support!
-                    </div>
-                    <div className="post-actions">
-                        <button className="action-button">Edit</button>
-                        <button className="action-button delete-btn">Delete</button>
-                    </div>
-                </div>
-                <div className="post-item">
-                    <div className="post-header">
-                        <img src="https://randomuser.me/api/portraits/men/1.jpg" className="post-author-img" alt="User avatar" />
-                        <div className="post-author-info">
-                            <div className="post-author-name">John Doe</div>
-                            <div className="post-date">Posted on: 2024-02-15 14:30</div>
-                        </div>
-                    </div>
-                    <div className="post-content">
-                        Jbutton reached 10k frienderbuttoAdd you everyone for the support!
-                    </div>
-                    <div className="post-actions">
-                        <button className="action-button">Edit</button>
-                        <button className="action-button delete-btn">Delete</button>
-                    </div>
-                </div>
+                <PostItem />
+                <PostItem />
+                <PostItem />
+                <PostItem />
+                <PostItem />
             </div>
 
             {/* <!-- Users Catalog --> */}
