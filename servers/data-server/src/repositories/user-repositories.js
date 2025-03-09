@@ -53,9 +53,14 @@ async function login(data) {
     return [token, _id];
 }
 
-const repositories = {
-    register,
-    login
+async function fetchOne(userId) {
+    return await User.findById(userId).select('-password -updatedAt -email -friends');
 }
 
-export default repositories;
+const userRepositories = {
+    register,
+    fetchOne,
+    login,
+}
+
+export default userRepositories;
