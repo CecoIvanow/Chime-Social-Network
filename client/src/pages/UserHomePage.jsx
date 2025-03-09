@@ -1,6 +1,7 @@
 import CreatePostItem from "../components/CreatePostItem";
 import FriendItem from "../components/FriendItem";
 import PostItem from "../components/PostItem";
+import SearchField from "../components/SearchField";
 
 export default function UserHomePage() {
     return <>
@@ -33,6 +34,7 @@ export default function UserHomePage() {
 
             <div className="friends-section">
                 <h2 className='friends-counter'>Friends (248)</h2>
+                <SearchField />
                 <div className='friends-list'>
                     <FriendItem />
                     <FriendItem />
