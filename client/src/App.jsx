@@ -37,7 +37,7 @@ export default function App() {
             <Route path='/register' element={!isUser ? <RegisterPage setIsUser={setIsUser} /> : <Navigate to="/" />} />
 
             {/* Public pages */}
-            <Route path='/profile/:userId' element={<ProfilePage />} />
+            <Route path='/profile/:userId' element={<ProfilePage isUser={isUser}/>} />
             <Route path='/catalog' element={<CatalogPage />} />
             <Route path='/*' element={<NotFoundPage />} />
         </Routes>
