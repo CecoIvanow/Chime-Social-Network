@@ -1,7 +1,9 @@
+import postServices from "../services/post-services.js";
+
 export default function CreatePostItem({
     userId
 }) {
-    const onPostSubmitHandler = (e) => {
+    const onPostSubmitHandler = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
@@ -13,7 +15,7 @@ export default function CreatePostItem({
 
         postData.owner = userId;
 
-        
+        await postServices.handlePostCreate(postData);
     }
 
     return <>
