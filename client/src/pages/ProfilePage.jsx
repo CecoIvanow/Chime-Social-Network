@@ -42,6 +42,7 @@ export default function ProfilePage() {
                 <h2 className="posts-heading">My Posts ({userData.createdPosts?.length || 0})</h2>
                 <CreatePostItem
                     userId={userId}
+                    imageUrl={(userData.imageUrl ? userData.imageUrl : defaultAvatar)}
                 />
 
                 {userData.createdPosts?.map(post =>
@@ -49,6 +50,7 @@ export default function ProfilePage() {
                         key={post._id}
                         text={post.text}
                         postedOn={post.postedOn}
+                        imageUrl={(userData.imageUrl ? userData.imageUrl : defaultAvatar)}
                     />
                 )}
 
