@@ -35,15 +35,15 @@ async function logout() {
     });
 }
 
-async function retrieveUserData(userId) {
-    const resp = await fetch(BASE_URL + `/user/${userId}`);
+async function retrieveUserWithPosts(userId) {
+    const resp = await fetch(BASE_URL + `/user/${userId}/with-posts`);
     const userData = await resp.json();
 
     return userData;
 }
 
 const userApi = {
-    retrieveUserData,
+    retrieveUserWithPosts,
     register,
     logout,
     login

@@ -13,7 +13,7 @@ export default function ProfilePage() {
     const [userData, setUserData] = useState({});
 
     useEffect(() => {
-        userServices.handleDataRequest(userId)
+        userServices.handleUserDataWithPosts(userId)
             .then(data => setUserData(data))
             .catch(error => console.error(error.message));
     }, [userId])
@@ -43,10 +43,15 @@ export default function ProfilePage() {
                 <CreatePostItem
                     userId={userId}
                 />
-                <PostItem />
-                <PostItem />
-                <PostItem />
-                <PostItem />
+
+                {userData.createdPosts?.map(post =>
+                    <PostItem
+                        key={post._id}
+                        text={post.text}
+                        postedOn={post.postedOn}
+                    />
+                )}
+
             </div>
         </div>
     </>

@@ -15,3 +15,14 @@ export function ageCalculator(date) {
     
     return age;
 }
+
+export function postedOnDateConverter(createdAt) {
+    let [isoDate, isoTime] = createdAt.split('T');
+
+    const formattedDate = isoDate;
+    const formattedTime = isoTime.split(':').splice(0, 2).join(':');
+
+    const result = `${formattedDate} in ${formattedTime}`
+
+    return result;
+}
