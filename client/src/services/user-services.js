@@ -1,4 +1,5 @@
 import userApi from "../api/user-api.js";
+import { memberSinceDateConverter } from "../utils/date-time-utils.js";
 
 async function handleRegister(data, setIsUser) {
     const userId = await userApi.register(data);
@@ -19,7 +20,11 @@ async function handleLogout(setIsUser) {
 }
 
 async function handleDataRequest(userId) {
-    return await userApi.retrieveUserData(userId);
+    const userData = await userApi.retrieveUserData(userId);
+
+    userData.memberSince = memberSinceDateConverter(userData.createdAt);
+
+    return userData;
 }
 
 const userServices = {
