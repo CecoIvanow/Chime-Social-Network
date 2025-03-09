@@ -10,7 +10,9 @@ async function createPost(postData) {
         credentials: 'include',
     });
 
-    console.log(resp);
+    const newPost = await resp.json();
+
+    return newPost;
 }
 
 const postApi = {
