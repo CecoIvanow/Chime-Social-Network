@@ -57,7 +57,16 @@ async function fetchOne(userId) {
     return await User.findById(userId).select('-password -updatedAt -email -friends');
 }
 
+async function attachPostToUser(ownerId, postId) {
+    const userPosts = await User.findById(ownerId);
+
+    userPosts.createdPosts.push(postId);
+
+    await userPosts.save();
+}
+
 const userRepositories = {
+    attachPostToUser,
     register,
     fetchOne,
     login,
