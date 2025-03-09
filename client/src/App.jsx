@@ -26,11 +26,10 @@ export default function App() {
 
         <Routes>
             {/* State dependent pages */}
-            <Route path='/' element={isUser ? <UserHomePage isUser={isUser} /> : <LandingPage />} />
+            <Route path='/' element={isUser ? <UserHomePage setIsUser={setIsUser} /> : <LandingPage />} />
 
             {/* User only pages */}
             <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
-            <Route path='/profile/:userId' element={isUser ? <ProfilePage /> : <Navigate to="/login" />} />
             <Route path='/logout' element={isUser ? <Logout setIsUser={setIsUser} /> : <Navigate to="/" />} />
 
             {/* Guest only pages */}
@@ -38,6 +37,7 @@ export default function App() {
             <Route path='/register' element={!isUser ? <RegisterPage setIsUser={setIsUser} /> : <Navigate to="/" />} />
 
             {/* Public pages */}
+            <Route path='/profile/:userId' element={<ProfilePage />} />
             <Route path='/catalog' element={<CatalogPage />} />
             <Route path='/*' element={<NotFoundPage />} />
         </Routes>
