@@ -18,7 +18,12 @@ async function handleLogout(setIsUser) {
     setIsUser(false);
 }
 
+async function handleDataRequest(userId) {
+    return await userApi.retrieveUserData(userId);
+}
+
 const userServices = {
+    handleDataRequest,
     handleRegister,
     handleLogout,
     handleLogin,
