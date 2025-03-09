@@ -39,7 +39,9 @@ export default function ProfilePage({
                         <p><span className="info-label">Education:</span> {userData.education ? userData.education : 'N\\A'}</p>
                         <p><span className="info-label">Status:</span> {userData.status ? userData.status : 'N\\A'}</p>
                         <p><span className="info-label">Member Since:</span> {userData.memberSince ? userData.memberSince : 'N\\A'}</p>
-                        <a href="/edit"><button className="edit-profile-btn">Edit Profile</button></a>
+                        {isUser && (
+                            <a href="/edit"><button className="edit-profile-btn">Edit Profile</button></a>
+                        )}
                     </div>
                 </div>
             </div>
