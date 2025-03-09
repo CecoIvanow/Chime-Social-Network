@@ -10,7 +10,7 @@ export default function MenuBar({
                 <ul className="menu">
                     <li><Link to="/" title='Home'><img src="src\assets\images\home-icon.png" alt="Home" /></Link></li>
                     {isUser && (
-                        <li><Link to="/profile" title='Profile'><img src="src\assets\images\profile-icon.png" alt="Profile" /></Link></li>
+                        <li><Link to={`/profile/${isUser}`} title='Profile'><img src="src\assets\images\profile-icon.png" alt="Profile" /></Link></li>
                     )}
                     <li><Link to="/catalog" title='Catalog'><img src="src\assets\images\catalog-icon.png" alt="Catalog" /></Link></li>
                     {isUser && (
