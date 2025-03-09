@@ -36,7 +36,7 @@ async function logout() {
 }
 
 async function retrieveUserWithPosts(userId) {
-    const resp = await fetch(BASE_URL + `/user/${userId}`);
+    const resp = await fetch(BASE_URL + `/user/${userId}/with-posts`);
     const userData = await resp.json();
 
     return userData;

@@ -37,11 +37,11 @@ userController.get('/logout', (req, res) => {
     res.end();
 })
 
-userController.get('/user/:userId',async (req, res) => {
+userController.get('/user/:userId/with-posts',async (req, res) => {
     const userId = req.params.userId;
 
     try {
-        const userData = await userRepositories.fetchOne(userId);
+        const userData = await userRepositories.fetchUserAndPopulatePosts(userId);
 
         res.json(userData);
         res.end()

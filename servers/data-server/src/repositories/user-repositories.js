@@ -53,7 +53,7 @@ async function login(data) {
     return [token, _id];
 }
 
-async function fetchOne(userId) {
+async function fetchUserAndPopulatePosts(userId) {
     return await User.findById(userId).select('-password -updatedAt -email -friends');
 }
 
@@ -66,9 +66,9 @@ async function attachPostToUser(ownerId, postId) {
 }
 
 const userRepositories = {
+    fetchUserAndPopulatePosts,
     attachPostToUser,
     register,
-    fetchOne,
     login,
 }
 
