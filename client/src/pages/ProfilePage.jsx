@@ -40,7 +40,9 @@ export default function ProfilePage() {
 
             <div className="posts-section">
                 <h2 className="posts-heading">My Posts ({userData.createdPosts?.length || 0})</h2>
-                <CreatePostItem/>
+                <CreatePostItem
+                    userId={userId}
+                />
                 <PostItem />
                 <PostItem />
                 <PostItem />
