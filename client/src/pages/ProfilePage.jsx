@@ -43,10 +43,15 @@ export default function ProfilePage() {
                 <CreatePostItem
                     userId={userId}
                 />
-                <PostItem />
-                <PostItem />
-                <PostItem />
-                <PostItem />
+
+                {userData.createdPosts?.map(post =>
+                    <PostItem
+                        key={post._id}
+                        text={post.text}
+                        postedOn={post.postedOn}
+                    />
+                )}
+
             </div>
         </div>
     </>
