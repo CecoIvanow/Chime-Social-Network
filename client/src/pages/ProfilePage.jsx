@@ -11,10 +11,14 @@ export default function ProfilePage() {
     const { userId } = useParams();
 
     const [userData, setUserData] = useState({});
+    const [totalUserPosts, setTotalUserPosts] = useState([]);
 
     useEffect(() => {
         userServices.handleUserDataWithPosts(userId)
-            .then(data => setUserData(data))
+            .then(data => {
+                setUserData(data);
+                setTotalUserPosts(data.createdPosts.reverse());
+            })
             .catch(error => console.error(error.message));
     }, [userId])
 
@@ -39,16 +43,20 @@ export default function ProfilePage() {
             </div>
 
             <div className="posts-section">
-                <h2 className="posts-heading">My Posts ({userData.createdPosts?.length || 0})</h2>
+                <h2 className="posts-heading">My Posts ({totalUserPosts.length})</h2>
                 <CreatePostItem
                     userId={userId}
+                    imageUrl={(userData.imageUrl ? userData.imageUrl : defaultAvatar)}
+                    totalUserPosts={totalUserPosts}
+                    setTotalUserPosts={setTotalUserPosts}
                 />
-
-                {userData.createdPosts?.map(post =>
+                
+                {totalUserPosts.map(post =>
                     <PostItem
                         key={post._id}
                         text={post.text}
                         postedOn={post.postedOn}
+                        imageUrl={(userData.imageUrl ? userData.imageUrl : defaultAvatar)}
                     />
                 )}
 
