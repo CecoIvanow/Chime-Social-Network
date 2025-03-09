@@ -54,7 +54,11 @@ async function login(data) {
 }
 
 async function fetchUserAndPopulatePosts(userId) {
-    return await User.findById(userId).select('-password -updatedAt -email -friends');
+    const userData = await User.findById(userId).select('-password -updatedAt -email -friends');
+
+    await userData.populate('createdPosts');
+
+    return userData
 }
 
 async function attachPostToUser(ownerId, postId) {
