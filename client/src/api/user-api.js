@@ -35,7 +35,7 @@ async function logout() {
     });
 }
 
-async function retrieveUserData(userId) {
+async function retrieveUserWithPosts(userId) {
     const resp = await fetch(BASE_URL + `/user/${userId}`);
     const userData = await resp.json();
 
@@ -43,7 +43,7 @@ async function retrieveUserData(userId) {
 }
 
 const userApi = {
-    retrieveUserData,
+    retrieveUserWithPosts,
     register,
     logout,
     login

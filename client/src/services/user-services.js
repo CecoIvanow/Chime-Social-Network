@@ -19,8 +19,8 @@ async function handleLogout(setIsUser) {
     setIsUser(false);
 }
 
-async function handleDataRequest(userId) {
-    const userData = await userApi.retrieveUserData(userId);
+async function handleUserDataWithPosts(userId) {
+    const userData = await userApi.retrieveUserWithPosts(userId);
 
     userData.memberSince = memberSinceDateConverter(userData.createdAt);
     userData.age = ageCalculator(userData.birthday);
@@ -29,7 +29,7 @@ async function handleDataRequest(userId) {
 }
 
 const userServices = {
-    handleDataRequest,
+    handleUserDataWithPosts,
     handleRegister,
     handleLogout,
     handleLogin,
