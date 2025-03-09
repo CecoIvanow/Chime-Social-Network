@@ -3,7 +3,9 @@ import FriendItem from "../components/FriendItem";
 import PostItem from "../components/PostItem";
 import SearchField from "../components/SearchField";
 
-export default function UserHomePage() {
+export default function UserHomePage({
+    isUser: userId
+}) {
     return <>
         <div className='user-home-page'>
             <div className="profile-section">
@@ -23,7 +25,9 @@ export default function UserHomePage() {
             </div>
 
             <div className="posts-section">
-                <CreatePostItem />
+                <CreatePostItem
+                    userId={userId}
+                />
                 <div className='posts-list'>
                     <PostItem />
                     <PostItem />

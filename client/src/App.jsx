@@ -26,7 +26,7 @@ export default function App() {
 
         <Routes>
             {/* State dependent pages */}
-            <Route path='/' element={isUser ? <UserHomePage /> : <LandingPage />} />
+            <Route path='/' element={isUser ? <UserHomePage isUser={isUser} /> : <LandingPage />} />
 
             {/* User only pages */}
             <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
