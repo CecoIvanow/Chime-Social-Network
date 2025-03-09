@@ -5,6 +5,7 @@ import userServices from "../services/user-services";
 
 import defaultAvatar from '../assets/images/default-profile-avatar.png'
 import PostItem from "../components/PostItem";
+import CreatePostItem from "../components/CreatePostItem";
 
 export default function ProfilePage() {
     const { userId } = useParams();
@@ -39,6 +40,7 @@ export default function ProfilePage() {
 
             <div className="posts-section">
                 <h2 className="posts-heading">My Posts ({userData.createdPosts?.length || 0})</h2>
+                <CreatePostItem/>
                 <PostItem />
                 <PostItem />
                 <PostItem />
