@@ -1,5 +1,5 @@
 import userApi from "../api/user-api.js";
-import { memberSinceDateConverter } from "../utils/date-time-utils.js";
+import { ageCalculator, memberSinceDateConverter } from "../utils/date-time-utils.js";
 
 async function handleRegister(data, setIsUser) {
     const userId = await userApi.register(data);
@@ -23,6 +23,7 @@ async function handleDataRequest(userId) {
     const userData = await userApi.retrieveUserData(userId);
 
     userData.memberSince = memberSinceDateConverter(userData.createdAt);
+    userData.age = ageCalculator(userData.birthday);
 
     return userData;
 }

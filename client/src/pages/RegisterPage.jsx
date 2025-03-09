@@ -42,7 +42,7 @@ export default function RegisterPage({
 
                             <div className="input-box">
                                 <span className="details">Birthday</span>
-                                <input type="text" placeholder="Enter your birthday" name="birthday" />
+                                <input type="date" placeholder="Enter your birthday" name="birthday" />
                             </div>
 
                             <div className="input-box">

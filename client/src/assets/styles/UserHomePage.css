@@ -105,11 +105,16 @@
     margin-bottom: 30px;
 }
 
+.post-create form {
+    width: 100%;
+}
+
 .post-header{
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 15px 15px 10px 0px;
+    width: 100%;
 }
 
 .post-header div {
@@ -134,11 +139,13 @@
 }
 
 .post-header input {
-    height: 100px;
-    width: 350px;
-    border-radius: 15px;
+    height: 55px;
+    width: 80%;
+    padding: 12px;
+    border-radius: 25px;
     border-style: solid;
     border-color: #e0e0e0;
+    margin-left: 3%;
 }
 
 .post-header img {
