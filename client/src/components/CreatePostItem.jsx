@@ -3,6 +3,8 @@ import postServices from "../services/post-services.js";
 export default function CreatePostItem({
     userId,
     imageUrl,
+    totalUserPosts,
+    setTotalUserPosts,
 }) {
     const onPostSubmitHandler = async (e) => {
         e.preventDefault();
@@ -16,7 +18,8 @@ export default function CreatePostItem({
 
         postData.owner = userId;
 
-        await postServices.handlePostCreate(postData);
+        const newPost = await postServices.handlePostCreate(postData);
+        setTotalUserPosts([...totalUserPosts, newPost]);
     }
 
     return <>
