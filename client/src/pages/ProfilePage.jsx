@@ -17,7 +17,7 @@ export default function ProfilePage() {
         userServices.handleUserDataWithPosts(userId)
             .then(data => {
                 setUserData(data);
-                setTotalUserPosts(data.createdPosts);
+                setTotalUserPosts(data.createdPosts.reverse());
             })
             .catch(error => console.error(error.message));
     }, [userId])
@@ -50,8 +50,6 @@ export default function ProfilePage() {
                     totalUserPosts={totalUserPosts}
                     setTotalUserPosts={setTotalUserPosts}
                 />
-
-                {console.log(totalUserPosts)};
                 
                 {totalUserPosts.map(post =>
                     <PostItem

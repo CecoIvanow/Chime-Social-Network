@@ -19,7 +19,7 @@ export default function CreatePostItem({
         postData.owner = userId;
 
         const newPost = await postServices.handlePostCreate(postData);
-        setTotalUserPosts([...totalUserPosts, newPost]);
+        setTotalUserPosts([newPost, ...totalUserPosts]);
     }
 
     return <>
