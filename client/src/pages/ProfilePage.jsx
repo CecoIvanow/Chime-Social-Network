@@ -7,7 +7,9 @@ import defaultAvatar from '../assets/images/default-profile-avatar.png'
 import PostItem from "../components/PostItem";
 import CreatePostItem from "../components/CreatePostItem";
 
-export default function ProfilePage() {
+export default function ProfilePage({
+    isUser
+}) {
     const { userId } = useParams();
 
     const [userData, setUserData] = useState({});
@@ -44,15 +46,19 @@ export default function ProfilePage() {
 
             <div className="posts-section">
                 <h2 className="posts-heading">My Posts ({totalUserPosts.length})</h2>
-                <CreatePostItem
-                    userId={userId}
-                    imageUrl={(userData.imageUrl ? userData.imageUrl : defaultAvatar)}
-                    totalUserPosts={totalUserPosts}
-                    setTotalUserPosts={setTotalUserPosts}
-                />
-                
+                {isUser && (
+                    <CreatePostItem
+                        isUser={isUser}
+                        userId={userId}
+                        imageUrl={(userData.imageUrl ? userData.imageUrl : defaultAvatar)}
+                        totalUserPosts={totalUserPosts}
+                        setTotalUserPosts={setTotalUserPosts}
+                    />
+                )}
+
                 {totalUserPosts.map(post =>
                     <PostItem
+                        isUser={isUser}
                         key={post._id}
                         text={post.text}
                         postedOn={post.postedOn}
