@@ -60,6 +60,7 @@ export default function ProfilePage({
 
                 {totalUserPosts.map(post =>
                     <PostItem
+                        ownerId={post.owner}
                         isUser={isUser}
                         key={post._id}
                         text={post.text}

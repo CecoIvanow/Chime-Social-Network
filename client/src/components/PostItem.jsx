@@ -1,6 +1,7 @@
 
 
 export default function PostItem({
+    ownerId,
     isUser,
     text,
     postedOn,
@@ -19,7 +20,7 @@ export default function PostItem({
             <div className='post-text'>{text}</div>
             <div className='post-buttons-div'>
                 <div>
-                    {isUser && (
+                    {(isUser && ownerId !== isUser) && (
                         <button className='post-buttons like-btn' type="button">Like</button>
                     )}
                 </div>
