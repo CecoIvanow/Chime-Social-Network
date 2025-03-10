@@ -1,7 +1,10 @@
 import Post from "../models/Post.js";
 
 async function fetchAllWithOwners() {
-    const allPosts = await Post.find({}).lean();
+    const allPosts = await Post.find({}).populate({
+        path: 'owner',
+        select: 'firstName lastName imageUrl'
+    });
 
     return allPosts
 }
