@@ -1,4 +1,4 @@
-
+import defaultAvatar from '../assets/images/default-profile-avatar.png'
 
 export default function PostItem({
     ownerId,
@@ -6,14 +6,15 @@ export default function PostItem({
     text,
     postedOn,
     imageUrl,
+    fullName,
 }) {
 
     return <>
         <li className='post-item'>
             <div className='post-header'>
                 <div>
-                    <img className='owner-picture' src={imageUrl} alt="" />
-                    <p className='post-owner'>John Doe</p>
+                    <img className='owner-picture' src={imageUrl ? imageUrl : defaultAvatar} alt="" />
+                    <p className='post-owner'>{fullName}</p>
                 </div>
                 <div className='created-on'>Posted on {postedOn}</div>
             </div>

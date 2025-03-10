@@ -30,13 +30,16 @@ export default function CatalogPage({
                 <SearchField />
 
                 {/* <!-- Post Items --> */}
+                {console.log(allPosts)}
                 {allPosts.map(post =>
                     <PostItem
-                        ownerId={post.owner}
-                        isUser={isUser}
                         key={post._id}
+                        ownerId={post.owner._id}
+                        isUser={isUser}
                         text={post.text}
                         postedOn={post.postedOn}
+                        imageUrl={post.owner.imageUrl}
+                        fullName={`${post.owner.firstName} ${post.owner.lastName}`}
                     />
                 )}
             </div>

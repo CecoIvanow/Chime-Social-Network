@@ -58,6 +58,8 @@ export default function ProfilePage({
                     />
                 )}
 
+                {console.log(userData.firstName)}
+
                 {totalUserPosts.map(post =>
                     <PostItem
                         ownerId={post.owner}
@@ -66,6 +68,7 @@ export default function ProfilePage({
                         text={post.text}
                         postedOn={post.postedOn}
                         imageUrl={(userData.imageUrl ? userData.imageUrl : defaultAvatar)}
+                        fullName={`${userData.firstName} ${userData.lastName}`}
                     />
                 )}
 
