@@ -27,9 +27,19 @@ async function getAllWithOwners(abortSignal) {
     return allPosts;
 }
 
+async function retrieveByContent(contentSearch, abortSignal) {
+    const resp = await fetch(BASE_URL + `/posts/search?content=${contentSearch}`, {
+        signal: abortSignal,
+    });
+    const allUsers = await resp.json();
+
+    return allUsers;
+}
+
 const postApi = {
-    createPost,
+    retrieveByContent,
     getAllWithOwners,
+    createPost,
 }
 
 export default postApi;
