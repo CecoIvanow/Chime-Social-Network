@@ -22,7 +22,19 @@ async function handlePostCreate(postData) {
     return newPost;
 }
 
+async function handleGetAllByContentWithOwners(searchParam, abortSignal) {
+    const matchedPosts = await postApi.retrieveByContent(searchParam, abortSignal);
+
+    matchedPosts.map(post => {
+        post.postedOn = postedOnDateConverter(post.createdAt)
+        post.owner.imageUrl = post.owner.imageUrl ? post.owner.imageUrl : defaultAvatar;
+    })
+
+    return matchedPosts;
+}
+
 const postServices = {
+    handleGetAllByContentWithOwners,
     handleGetAllWithOwners,
     handlePostCreate,
 }
