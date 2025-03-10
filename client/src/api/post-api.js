@@ -15,8 +15,20 @@ async function createPost(postData) {
     return newPost;
 }
 
+async function getAll() {
+
+    const resp = await fetch(BASE_URL + '/posts', {
+        credentials: 'include',
+    });
+
+    const allPosts = await resp.json();
+
+    return allPosts;
+}
+
 const postApi = {
-    createPost
+    createPost,
+    getAll,
 }
 
 export default postApi;
