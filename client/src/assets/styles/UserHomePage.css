@@ -133,6 +133,12 @@
     text-decoration: underline;
 }
 
+.post-owner a {
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
 .post-owner:hover {
     cursor: pointer;
     text-decoration: underline;

@@ -48,6 +48,17 @@ export default function CatalogPage({
     }, [userSearchParam])
 
     useEffect(() => {
+        const abortController = new AbortController();
+
+        const abortSignal = abortController.signal;
+
+        postServices.handleGetAllByContentWithOwners(postSearchParams, abortSignal)
+            .then(data => setAllPosts(data))
+            .catch(error => console.error(error.message))
+
+        return () => {
+            abortController.abort();
+        }
     }, [postSearchParams])
 
     return <>

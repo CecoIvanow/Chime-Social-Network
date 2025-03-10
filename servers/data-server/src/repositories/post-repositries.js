@@ -18,7 +18,23 @@ async function create(postData) {
     return newPost;
 }
 
+async function getAllWithMatchingText(filter) {
+    const textRegex = new RegExp(filter, 'i');
+
+    const filteredPosts = await Post
+        .find({})
+        .where({text: textRegex})
+        .populate({
+            path: 'owner',
+            select: 'firstName lastName imageUrl'
+        })
+        .lean();
+
+    return filteredPosts;
+}
+
 const postRepositories = {
+    getAllWithMatchingText,
     fetchAllWithOwners,
     create,
 }
