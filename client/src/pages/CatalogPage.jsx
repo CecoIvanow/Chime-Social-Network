@@ -26,7 +26,7 @@ export default function CatalogPage({
         <div className="dashboard-container">
             {/* <!-- Posts Catalog --> */}
             <div className="posts-catalog">
-                <h2 className="section-heading">All Posts (1,234)</h2>
+                <h2 className="section-heading">All Posts:</h2>
                 <SearchField />
 
                 {/* <!-- Post Items --> */}
@@ -43,7 +43,7 @@ export default function CatalogPage({
 
             {/* <!-- Users Catalog --> */}
             <div className="users-catalog">
-                <h2 className="section-heading">Registered Users (5,678)</h2>
+                <h2 className="section-heading">Registered Users:</h2>
                 <SearchField />
 
                 {/* <!-- User Items --> */}

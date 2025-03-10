@@ -47,7 +47,7 @@ export default function ProfilePage({
             </div>
 
             <div className="posts-section">
-                <h2 className="posts-heading">{isUser ? 'My' : `${userData.firstName}'s`} Posts ({totalUserPosts.length})</h2>
+                <h2 className="posts-heading">{isUser ? 'My' : `${userData.firstName}'s`} Posts:</h2>
                 {isUser && (
                     <CreatePostItem
                         isUser={isUser}
