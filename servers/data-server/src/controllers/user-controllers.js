@@ -37,7 +37,7 @@ userController.get('/logout', (req, res) => {
     res.end();
 })
 
-userController.get('/user/:userId/with-posts',async (req, res) => {
+userController.get('/user/:userId/with-posts', async (req, res) => {
     const userId = req.params.userId;
 
     try {
@@ -48,15 +48,28 @@ userController.get('/user/:userId/with-posts',async (req, res) => {
     } catch (error) {
         console.error(error);
     }
-    
+
 })
 
-userController.get('/user', async(req, res) => {
+userController.get('/user', async (req, res) => {
 
     try {
         const allUsers = await userRepositories.getAllUsers();
-        
+
         res.json(allUsers);
+        res.end();
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
+userController.get('/user/:userName', async (req, res) => {
+    const nameSearchParam = req.params.userName;
+
+    try {
+        const filteredUsers = await userRepositories.getAllWithMatchingNames(nameSearchParam);
+
+        res.json(filteredUsers);
         res.end();
     } catch (error) {
         console.error(error.message);
