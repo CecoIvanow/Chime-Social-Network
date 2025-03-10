@@ -34,7 +34,17 @@ export default function CatalogPage({
     }, [])
 
     useEffect(() => {
-        console.log(userSearchParam);
+        const abortController = new AbortController();
+
+        const abortSignal = abortController.signal;
+
+        userServices.handleGetAllWithMatchingNames(userSearchParam, abortSignal)
+            .then(data => setAllUsers(data))
+            .catch(error => console.error(error.message))
+
+        return () => {
+            abortController.abort();
+        }
     }, [userSearchParam])
 
     useEffect(() => {
