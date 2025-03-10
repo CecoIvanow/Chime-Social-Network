@@ -37,7 +37,7 @@ userController.get('/logout', (req, res) => {
     res.end();
 })
 
-userController.get('/user/:userId/with-posts', async (req, res) => {
+userController.get('/users/:userId/with-posts', async (req, res) => {
     const userId = req.params.userId;
 
     try {
@@ -51,7 +51,7 @@ userController.get('/user/:userId/with-posts', async (req, res) => {
 
 })
 
-userController.get('/user', async (req, res) => {
+userController.get('/users', async (req, res) => {
 
     try {
         const allUsers = await userRepositories.getAllUsers();
@@ -63,7 +63,7 @@ userController.get('/user', async (req, res) => {
     }
 })
 
-userController.get('/user/:userName', async (req, res) => {
+userController.get('/users/:userName', async (req, res) => {
     const nameSearchParam = req.params.userName;
 
     try {

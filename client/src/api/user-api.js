@@ -36,7 +36,7 @@ async function logout() {
 }
 
 async function retrieveUserWithPosts(userId, abortSignal) {
-    const resp = await fetch(BASE_URL + `/user/${userId}/with-posts`, {
+    const resp = await fetch(BASE_URL + `/users/${userId}/with-posts`, {
         signal: abortSignal
     });
     const userData = await resp.json();
@@ -45,7 +45,7 @@ async function retrieveUserWithPosts(userId, abortSignal) {
 }
 
 async function getAll(abortSignal) {
-    const resp = await fetch(BASE_URL + `/user`, {
+    const resp = await fetch(BASE_URL + `/users`, {
         signal: abortSignal,
     });
     const allUsers = await resp.json();
@@ -54,7 +54,7 @@ async function getAll(abortSignal) {
 }
 
 async function retrieveUsersByName(nameSearch, abortSignal) {
-    const resp = await fetch(BASE_URL + `/user/${nameSearch}`, {
+    const resp = await fetch(BASE_URL + `/users/${nameSearch}`, {
         signal: abortSignal,
     });
     const allUsers = await resp.json();
