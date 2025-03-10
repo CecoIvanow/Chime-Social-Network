@@ -123,6 +123,11 @@ body {
     margin-bottom: 5px;
 }
 
+.user-name:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .user-details {
     font-size: 0.9em;
     color: #666;
