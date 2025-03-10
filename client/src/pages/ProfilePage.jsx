@@ -65,8 +65,6 @@ export default function ProfilePage({
                     />
                 )}
 
-                {console.log(userData.firstName)}
-
                 {totalUserPosts.map(post =>
                     <PostItem
                         ownerId={post.owner}
