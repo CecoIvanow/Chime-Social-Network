@@ -17,7 +17,7 @@ async function createPost(postData) {
 
 async function getAllWithOwners() {
 
-    const resp = await fetch(BASE_URL + '/posts', {
+    const resp = await fetch(BASE_URL + '/posts/with-owners', {
         credentials: 'include',
     });
 

@@ -1,6 +1,6 @@
 import Post from "../models/Post.js";
 
-async function fetchAll() {
+async function fetchAllWithOwners() {
     const allPosts = await Post.find({}).lean();
 
     return allPosts
@@ -13,7 +13,7 @@ async function create(postData) {
 }
 
 const postRepositories ={
-    fetchAll,
+    fetchAllWithOwners,
     create,
 }
 
