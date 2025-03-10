@@ -45,12 +45,26 @@ async function handleGetAll(abortSignal) {
     return allUsers;
 }
 
+async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
+    const matchedUsers = await userApi.retrieveUsersByName(searchParam, abortSignal);
+
+    matchedUsers.map(user => {
+        user.memberSince = memberSinceDateConverter(user.createdAt)
+        user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar;
+
+        return user;
+    });
+
+    return matchedUsers;
+}
+
 const userServices = {
     handleUserDataWithPosts,
+    handleGetAllWithMatchingNames,
     handleRegister,
     handleLogout,
-    handleLogin,
     handleGetAll,
+    handleLogin,
 }
 
 export default userServices;
