@@ -33,4 +33,17 @@ postController.post('/posts', async (req, res) => {
     }
 })
 
+postController.get('/posts/search', async (req, res) => {
+    const { content } = req.query;
+
+    try {
+        const filteredPosts = await postRepositories.getAllWithMatchingText(content);
+
+        res.json(filteredPosts);
+        res.end();
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 export default postController;
