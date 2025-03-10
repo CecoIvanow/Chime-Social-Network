@@ -1,10 +1,15 @@
+import defaultAvatar from '../assets/images/default-profile-avatar.png'
+
 import postApi from "../api/post-api.js"
 import { postedOnDateConverter } from "../utils/date-time-utils.js";
 
-async function handleGetAllPosts() {
-    const allPosts = await postApi.getAll();
+async function handleGetAllWithOwners(abortSignal) {
+    const allPosts = await postApi.getAllWithOwners(abortSignal);
 
-    allPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt))
+    allPosts.map(post => {
+        post.postedOn = postedOnDateConverter(post.createdAt)
+        post.owner.imageUrl = post.owner.imageUrl ? post.owner.imageUrl : defaultAvatar;
+    })
 
     return allPosts
 }
@@ -18,7 +23,7 @@ async function handlePostCreate(postData) {
 }
 
 const postServices = {
-    handleGetAllPosts,
+    handleGetAllWithOwners,
     handlePostCreate,
 }
 

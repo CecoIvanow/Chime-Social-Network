@@ -35,15 +35,28 @@ async function logout() {
     });
 }
 
-async function retrieveUserWithPosts(userId) {
-    const resp = await fetch(BASE_URL + `/user/${userId}/with-posts`);
+async function retrieveUserWithPosts(userId, abortSignal) {
+    const resp = await fetch(BASE_URL + `/users/${userId}/with-posts`, {
+        signal: abortSignal
+    });
     const userData = await resp.json();
 
     return userData;
 }
 
-async function getAll() {
-    const resp = await fetch(BASE_URL + `/user`);
+async function getAll(abortSignal) {
+    const resp = await fetch(BASE_URL + `/users`, {
+        signal: abortSignal,
+    });
+    const allUsers = await resp.json();
+
+    return allUsers;
+}
+
+async function retrieveUsersByName(nameSearch, abortSignal) {
+    const resp = await fetch(BASE_URL + `/users/search?name=${nameSearch}`, {
+        signal: abortSignal,
+    });
     const allUsers = await resp.json();
 
     return allUsers;
@@ -51,6 +64,7 @@ async function getAll() {
 
 const userApi = {
     retrieveUserWithPosts,
+    retrieveUsersByName,
     register,
     getAll,
     logout,

@@ -1,3 +1,5 @@
+import defaultAvatar from '../assets/images/default-profile-avatar.png'
+
 import userApi from "../api/user-api.js";
 import { ageCalculator, memberSinceDateConverter, postedOnDateConverter } from "../utils/date-time-utils.js";
 
@@ -19,9 +21,10 @@ async function handleLogout(setIsUser) {
     setIsUser(false);
 }
 
-async function handleUserDataWithPosts(userId) {
-    const userData = await userApi.retrieveUserWithPosts(userId);
+async function handleUserDataWithPosts(userId, abortSignal) {
+    const userData = await userApi.retrieveUserWithPosts(userId, abortSignal);
 
+    userData.imageUrl = userData.imageUrl ? userData.imageUrl : defaultAvatar;
     userData.memberSince = memberSinceDateConverter(userData.createdAt);
     userData.age = ageCalculator(userData.birthday);
     userData.createdPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
@@ -29,20 +32,39 @@ async function handleUserDataWithPosts(userId) {
     return userData;
 }
 
-async function handleGetAll() {
-    const allUsers = await userApi.getAll();
+async function handleGetAll(abortSignal) {
+    const allUsers = await userApi.getAll(abortSignal);
     
-    allUsers.map(user => user.memberSince = memberSinceDateConverter(user.createdAt));
+    allUsers.map(user => {
+        user.memberSince = memberSinceDateConverter(user.createdAt)
+        user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar;
+
+        return user;
+    });
 
     return allUsers;
 }
 
+async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
+    const matchedUsers = await userApi.retrieveUsersByName(searchParam, abortSignal);
+
+    matchedUsers.map(user => {
+        user.memberSince = memberSinceDateConverter(user.createdAt)
+        user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar;
+
+        return user;
+    });
+
+    return matchedUsers;
+}
+
 const userServices = {
     handleUserDataWithPosts,
+    handleGetAllWithMatchingNames,
     handleRegister,
     handleLogout,
-    handleLogin,
     handleGetAll,
+    handleLogin,
 }
 
 export default userServices;

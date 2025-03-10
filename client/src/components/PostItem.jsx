@@ -1,11 +1,10 @@
-
-
 export default function PostItem({
     ownerId,
     isUser,
     text,
     postedOn,
     imageUrl,
+    fullName,
 }) {
 
     return <>
@@ -13,7 +12,7 @@ export default function PostItem({
             <div className='post-header'>
                 <div>
                     <img className='owner-picture' src={imageUrl} alt="" />
-                    <p className='post-owner'>John Doe</p>
+                    <p className='post-owner'>{fullName}</p>
                 </div>
                 <div className='created-on'>Posted on {postedOn}</div>
             </div>
