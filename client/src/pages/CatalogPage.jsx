@@ -1,8 +1,21 @@
+import { useEffect, useState } from "react";
+
 import PostItem from "../components/PostItem";
 import SearchField from "../components/SearchField";
 import UserItem from "../components/UserItem";
+import postServices from "../services/post-services";
 
-export default function CatalogPage() {
+export default function CatalogPage({
+    isUser
+}) {
+    const [allPosts, setAllPosts] = useState([]);
+
+    useEffect(() => {
+        postServices.handleGetAllPosts()
+            .then(data => setAllPosts(data))
+            .catch(error => console.error(error.message));
+    }, [])
+
     return <>
         <div className="dashboard-container">
             {/* <!-- Posts Catalog --> */}
@@ -11,11 +24,15 @@ export default function CatalogPage() {
                 <SearchField />
 
                 {/* <!-- Post Items --> */}
-                <PostItem />
-                <PostItem />
-                <PostItem />
-                <PostItem />
-                <PostItem />
+                {allPosts.map(post =>
+                    <PostItem
+                        ownerId={post.owner}
+                        isUser={isUser}
+                        key={post._id}
+                        text={post.text}
+                        postedOn={post.postedOn}
+                    />
+                )}
             </div>
 
             {/* <!-- Users Catalog --> */}

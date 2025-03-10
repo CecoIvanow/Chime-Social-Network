@@ -38,7 +38,7 @@ export default function App() {
 
             {/* Public pages */}
             <Route path='/profile/:userId' element={<ProfilePage isUser={isUser}/>} />
-            <Route path='/catalog' element={<CatalogPage />} />
+            <Route path='/catalog' element={<CatalogPage isUser={isUser}/>} />
             <Route path='/*' element={<NotFoundPage />} />
         </Routes>
     </>
