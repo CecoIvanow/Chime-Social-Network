@@ -4,15 +4,21 @@ import PostItem from "../components/PostItem";
 import SearchField from "../components/SearchField";
 import UserItem from "../components/UserItem";
 import postServices from "../services/post-services";
+import userServices from "../services/user-services";
 
 export default function CatalogPage({
     isUser
 }) {
     const [allPosts, setAllPosts] = useState([]);
+    const [allUsers, setAllUsers] = useState([]);
 
     useEffect(() => {
         postServices.handleGetAllPosts()
             .then(data => setAllPosts(data))
+            .catch(error => console.error(error.message));
+
+        userServices.handleGetAll()
+            .then(data => setAllUsers(data))
             .catch(error => console.error(error.message));
     }, [])
 
@@ -41,13 +47,19 @@ export default function CatalogPage({
                 <SearchField />
 
                 {/* <!-- User Items --> */}
-                <UserItem />
-                <UserItem />
-                <UserItem />
-                <UserItem />
-                <UserItem />
-                <UserItem />
-                <UserItem />
+                {allUsers.map(user =>
+                    <UserItem
+                        key={user._id}
+                        profileId={user._id}
+                        isUser={isUser}
+                        imageUrl={user.imageUrl}
+                        postsAmount={user.createdPosts.length}
+                        memberSince={user.memberSince}
+                        firstName={user.firstName}
+                        lastName={user.lastName}
+                    />
+                )}
+
             </div>
         </div>
     </>

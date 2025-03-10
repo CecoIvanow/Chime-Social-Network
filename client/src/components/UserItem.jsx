@@ -1,15 +1,27 @@
-export default function UserItem() {
+import defaultAvatar from '../assets/images/default-profile-avatar.png'
+
+export default function UserItem({
+    profileId,
+    isUser,
+    imageUrl,
+    postsAmount,
+    memberSince,
+    firstName,
+    lastName,
+}) {
     return <>
         <div className="user-item">
-            <img src="https://randomuser.me/api/portraits/women/1.jpg" className="user-avatar" alt="User avatar" />
+            <img src={imageUrl ? imageUrl : defaultAvatar} className="user-avatar" alt="User avatar" />
             <div className="user-info">
-                <div className="user-name">Jane Smith</div>
+                <div className="user-name">{firstName} {lastName}</div>
                 <div className="user-details">
-                    <div>Joined: Feb 2024</div>
-                    <div>Posts: 45</div>
+                    <div>Member since: {memberSince}</div>
+                    <div>Posts: {postsAmount}</div>
                 </div>
             </div>
-            <button className="action-button">Add</button>
+            {(isUser && profileId !== isUser) && (
+                <button className="action-button">Add</button>
+            )}
         </div>
     </>
 }
