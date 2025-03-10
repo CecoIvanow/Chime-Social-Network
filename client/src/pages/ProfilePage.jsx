@@ -15,12 +15,20 @@ export default function ProfilePage({
     const [totalUserPosts, setTotalUserPosts] = useState([]);
 
     useEffect(() => {
-        userServices.handleUserDataWithPosts(userId)
+        const abortController = new AbortController();
+
+        const abortSignal = abortController.signal;
+
+        userServices.handleUserDataWithPosts(userId, abortSignal)
             .then(data => {
                 setUserData(data);
                 setTotalUserPosts(data.createdPosts.reverse());
             })
             .catch(error => console.error(error.message));
+
+            return () => {
+                abortController.abort();
+            }
     }, [userId])
 
     return <>

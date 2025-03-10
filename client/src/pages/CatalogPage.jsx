@@ -13,13 +13,22 @@ export default function CatalogPage({
     const [allUsers, setAllUsers] = useState([]);
 
     useEffect(() => {
-        postServices.handleGetAllWithOwners()
+        const abortController = new AbortController();
+
+        const abortSignal = abortController.signal;
+
+        postServices.handleGetAllWithOwners(abortSignal)
             .then(data => setAllPosts(data))
             .catch(error => console.error(error.message));
 
-        userServices.handleGetAll()
+        userServices.handleGetAll(abortSignal)
             .then(data => setAllUsers(data))
             .catch(error => console.error(error.message));
+            console.log(allPosts);
+
+        return () =>{
+            abortController.abort();
+        }
     }, [])
 
     return <>
@@ -30,7 +39,6 @@ export default function CatalogPage({
                 <SearchField />
 
                 {/* <!-- Post Items --> */}
-                {console.log(allPosts)}
                 {allPosts.map(post =>
                     <PostItem
                         key={post._id}

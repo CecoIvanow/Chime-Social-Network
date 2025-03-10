@@ -3,8 +3,8 @@ import defaultAvatar from '../assets/images/default-profile-avatar.png'
 import postApi from "../api/post-api.js"
 import { postedOnDateConverter } from "../utils/date-time-utils.js";
 
-async function handleGetAllWithOwners() {
-    const allPosts = await postApi.getAllWithOwners();
+async function handleGetAllWithOwners(abortSignal) {
+    const allPosts = await postApi.getAllWithOwners(abortSignal);
 
     allPosts.map(post => {
         post.postedOn = postedOnDateConverter(post.createdAt)

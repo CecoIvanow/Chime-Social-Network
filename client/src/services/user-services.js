@@ -21,8 +21,8 @@ async function handleLogout(setIsUser) {
     setIsUser(false);
 }
 
-async function handleUserDataWithPosts(userId) {
-    const userData = await userApi.retrieveUserWithPosts(userId);
+async function handleUserDataWithPosts(userId, abortSignal) {
+    const userData = await userApi.retrieveUserWithPosts(userId, abortSignal);
 
     userData.imageUrl = userData.imageUrl ? userData.imageUrl : defaultAvatar;
     userData.memberSince = memberSinceDateConverter(userData.createdAt);
@@ -32,8 +32,8 @@ async function handleUserDataWithPosts(userId) {
     return userData;
 }
 
-async function handleGetAll() {
-    const allUsers = await userApi.getAll();
+async function handleGetAll(abortSignal) {
+    const allUsers = await userApi.getAll(abortSignal);
     
     allUsers.map(user => {
         user.memberSince = memberSinceDateConverter(user.createdAt)

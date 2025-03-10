@@ -15,9 +15,10 @@ async function createPost(postData) {
     return newPost;
 }
 
-async function getAllWithOwners() {
+async function getAllWithOwners(abortSignal) {
 
     const resp = await fetch(BASE_URL + '/posts/with-owners', {
+        signal: abortSignal,
         credentials: 'include',
     });
 
