@@ -11,12 +11,12 @@ export default function SettingsPage() {
                     </div>
 
                     <div className="form-group">
-                        <label className="form-label">Current Email</label>
+                        <label className="form-label">New Email</label>
                         <input type="text" className="form-input" name="currentEmail"/>
                     </div>
 
                     <div className="form-group">
-                        <label className="form-label">New Email</label>
+                        <label className="form-label">Repeat New Email</label>
                         <input type="text" className="form-input" name="newEmail" />
                     </div>
 
@@ -39,7 +39,7 @@ export default function SettingsPage() {
                     </div>
 
                     <div className="form-group">
-                        <label className="form-label">Confirm New Password</label>
+                        <label className="form-label">Repeat New Password</label>
                         <input type="password" className="form-input" name="rePassword" />
                     </div>
 
