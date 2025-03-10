@@ -54,10 +54,12 @@ async function login(data) {
 }
 
 async function fetchUserAndPopulatePosts(userId) {
-    const userData = await User.findById(userId).select('-password -updatedAt -email -friends');
-
-    await userData.populate('createdPosts');
-
+    const userData = await User
+        .findById(userId)
+        .select('-password -updatedAt -email -friends')
+        .populate('createdPosts')
+        .lean();
+        
     return userData
 }
 
@@ -70,7 +72,10 @@ async function attachPostToUser(ownerId, postId) {
 }
 
 async function getAllUsers() {
-    const allUsers = await User.find({}).select('firstName lastName createdPosts createdAt imageUrl').lean();
+    const allUsers = await User
+        .find({})
+        .select('firstName lastName createdPosts createdAt imageUrl')
+        .lean();
 
     return allUsers;
 }
