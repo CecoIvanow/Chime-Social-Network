@@ -83,9 +83,6 @@ async function getAllUsers() {
 async function getAllWithMatchingNames(filter) {
     const nameRegex = new RegExp(filter, 'i');
 
-    console.log(filter);
-    console.log(nameRegex);
-
     const filteredUsers = await User
         .find({})
         .or([

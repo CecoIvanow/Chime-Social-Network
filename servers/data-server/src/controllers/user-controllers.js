@@ -63,11 +63,11 @@ userController.get('/users', async (req, res) => {
     }
 })
 
-userController.get('/users/:userName', async (req, res) => {
-    const nameSearchParam = req.params.userName;
+userController.get('/users/search', async (req, res) => {
+    const { name } = req.query;
 
     try {
-        const filteredUsers = await userRepositories.getAllWithMatchingNames(nameSearchParam);
+        const filteredUsers = await userRepositories.getAllWithMatchingNames(name);
 
         res.json(filteredUsers);
         res.end();

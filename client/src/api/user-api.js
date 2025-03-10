@@ -54,7 +54,7 @@ async function getAll(abortSignal) {
 }
 
 async function retrieveUsersByName(nameSearch, abortSignal) {
-    const resp = await fetch(BASE_URL + `/users/${nameSearch}`, {
+    const resp = await fetch(BASE_URL + `/users/search?name=${nameSearch}`, {
         signal: abortSignal,
     });
     const allUsers = await resp.json();
