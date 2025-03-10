@@ -42,11 +42,19 @@ async function retrieveUserWithPosts(userId) {
     return userData;
 }
 
+async function getAll() {
+    const resp = await fetch(BASE_URL + `/user`);
+    const allUsers = await resp.json();
+
+    return allUsers;
+}
+
 const userApi = {
     retrieveUserWithPosts,
     register,
+    getAll,
     logout,
-    login
+    login,
 }
 
 export default userApi;
