@@ -29,11 +29,20 @@ async function handleUserDataWithPosts(userId) {
     return userData;
 }
 
+async function handleGetAll() {
+    const allUsers = await userApi.getAll();
+    
+    allUsers.map(user => user.memberSince = memberSinceDateConverter(user.createdAt));
+
+    return allUsers;
+}
+
 const userServices = {
     handleUserDataWithPosts,
     handleRegister,
     handleLogout,
     handleLogin,
+    handleGetAll,
 }
 
 export default userServices;

@@ -7,7 +7,9 @@ import defaultAvatar from '../assets/images/default-profile-avatar.png'
 import PostItem from "../components/PostItem";
 import CreatePostItem from "../components/CreatePostItem";
 
-export default function ProfilePage() {
+export default function ProfilePage({
+    isUser
+}) {
     const { userId } = useParams();
 
     const [userData, setUserData] = useState({});
@@ -37,22 +39,29 @@ export default function ProfilePage() {
                         <p><span className="info-label">Education:</span> {userData.education ? userData.education : 'N\\A'}</p>
                         <p><span className="info-label">Status:</span> {userData.status ? userData.status : 'N\\A'}</p>
                         <p><span className="info-label">Member Since:</span> {userData.memberSince ? userData.memberSince : 'N\\A'}</p>
-                        <a href="/edit"><button className="edit-profile-btn">Edit Profile</button></a>
+                        {isUser && (
+                            <a href="/edit"><button className="edit-profile-btn">Edit Profile</button></a>
+                        )}
                     </div>
                 </div>
             </div>
 
             <div className="posts-section">
-                <h2 className="posts-heading">My Posts ({totalUserPosts.length})</h2>
-                <CreatePostItem
-                    userId={userId}
-                    imageUrl={(userData.imageUrl ? userData.imageUrl : defaultAvatar)}
-                    totalUserPosts={totalUserPosts}
-                    setTotalUserPosts={setTotalUserPosts}
-                />
-                
+                <h2 className="posts-heading">{isUser ? 'My' : `${userData.firstName}'s`} Posts ({totalUserPosts.length})</h2>
+                {isUser && (
+                    <CreatePostItem
+                        isUser={isUser}
+                        userId={userId}
+                        imageUrl={(userData.imageUrl ? userData.imageUrl : defaultAvatar)}
+                        totalUserPosts={totalUserPosts}
+                        setTotalUserPosts={setTotalUserPosts}
+                    />
+                )}
+
                 {totalUserPosts.map(post =>
                     <PostItem
+                        ownerId={post.owner}
+                        isUser={isUser}
                         key={post._id}
                         text={post.text}
                         postedOn={post.postedOn}

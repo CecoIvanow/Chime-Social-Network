@@ -5,6 +5,18 @@ import userRepositories from "../repositories/user-repositories.js";
 
 const postController = Router();
 
+postController.get('/posts', async (req, res) => {
+
+    try {
+        const allPosts = await postRepositories.fetchAll();
+
+        res.json(allPosts);
+        res.end();
+    } catch (error) {
+        console.error(error);
+    }
+})
+
 postController.post('/posts', async (req, res) => {
     const postData = req.body;
     const ownerId = req.body.owner;
