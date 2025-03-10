@@ -53,8 +53,18 @@ async function getAll(abortSignal) {
     return allUsers;
 }
 
+async function retrieveUsersByName(nameSearch, abortSignal) {
+    const resp = await fetch(BASE_URL + `/user/${nameSearch}`, {
+        signal: abortSignal,
+    });
+    const allUsers = await resp.json();
+
+    return allUsers;
+}
+
 const userApi = {
     retrieveUserWithPosts,
+    retrieveUsersByName,
     register,
     getAll,
     logout,
