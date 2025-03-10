@@ -80,8 +80,27 @@ async function getAllUsers() {
     return allUsers;
 }
 
+async function getAllWithMatchingNames(filter) {
+    const nameRegex = new RegExp(filter, 'i');
+
+    console.log(filter);
+    console.log(nameRegex);
+
+    const filteredUsers = await User
+        .find({})
+        .or([
+            {firstName: nameRegex},
+            {lastName: nameRegex},
+        ])
+        .select('firstName lastName createdPosts createdAt imageUrl')
+        .lean();
+
+    return filteredUsers;
+}
+
 const userRepositories = {
     fetchUserAndPopulatePosts,
+    getAllWithMatchingNames,
     attachPostToUser,
     getAllUsers,
     register,
