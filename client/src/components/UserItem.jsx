@@ -1,5 +1,3 @@
-import defaultAvatar from '../assets/images/default-profile-avatar.png'
-
 export default function UserItem({
     profileId,
     isUser,
@@ -11,7 +9,7 @@ export default function UserItem({
 }) {
     return <>
         <div className="user-item">
-            <img src={imageUrl ? imageUrl : defaultAvatar} className="user-avatar" alt="User avatar" />
+            <img src={imageUrl} className="user-avatar" alt="User avatar" />
             <div className="user-info">
                 <div className="user-name">{firstName} {lastName}</div>
                 <div className="user-details">

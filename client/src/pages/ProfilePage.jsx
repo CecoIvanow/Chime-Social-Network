@@ -3,7 +3,6 @@ import { useParams } from "react-router"
 
 import userServices from "../services/user-services";
 
-import defaultAvatar from '../assets/images/default-profile-avatar.png'
 import PostItem from "../components/PostItem";
 import CreatePostItem from "../components/CreatePostItem";
 
@@ -28,7 +27,7 @@ export default function ProfilePage({
         <div className="profile-container">
             <div className="profile-info-section">
                 <div className="profile-header">
-                    <img src={(userData.imageUrl ? userData.imageUrl : defaultAvatar)} className="profile-avatar" alt="Profile picture" />
+                    <img src={userData.imageUrl} className="profile-avatar" alt="Profile picture" />
                     <div className="profile-info">
                         <h2>{(userData.firstName)} {(userData.lastName)}</h2>
                         <p><span className="info-label">Bio:</span> {userData.bio ? userData.bio : 'N\\A'}</p>
@@ -52,7 +51,7 @@ export default function ProfilePage({
                     <CreatePostItem
                         isUser={isUser}
                         userId={userId}
-                        imageUrl={(userData.imageUrl ? userData.imageUrl : defaultAvatar)}
+                        imageUrl={userData.imageUrl}
                         totalUserPosts={totalUserPosts}
                         setTotalUserPosts={setTotalUserPosts}
                     />
@@ -67,7 +66,7 @@ export default function ProfilePage({
                         key={post._id}
                         text={post.text}
                         postedOn={post.postedOn}
-                        imageUrl={(userData.imageUrl ? userData.imageUrl : defaultAvatar)}
+                        imageUrl={userData.imageUrl}
                         fullName={`${userData.firstName} ${userData.lastName}`}
                     />
                 )}

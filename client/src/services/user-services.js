@@ -1,3 +1,5 @@
+import defaultAvatar from '../assets/images/default-profile-avatar.png'
+
 import userApi from "../api/user-api.js";
 import { ageCalculator, memberSinceDateConverter, postedOnDateConverter } from "../utils/date-time-utils.js";
 
@@ -22,6 +24,7 @@ async function handleLogout(setIsUser) {
 async function handleUserDataWithPosts(userId) {
     const userData = await userApi.retrieveUserWithPosts(userId);
 
+    userData.imageUrl = userData.imageUrl ? userData.imageUrl : defaultAvatar;
     userData.memberSince = memberSinceDateConverter(userData.createdAt);
     userData.age = ageCalculator(userData.birthday);
     userData.createdPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
@@ -32,7 +35,12 @@ async function handleUserDataWithPosts(userId) {
 async function handleGetAll() {
     const allUsers = await userApi.getAll();
     
-    allUsers.map(user => user.memberSince = memberSinceDateConverter(user.createdAt));
+    allUsers.map(user => {
+        user.memberSince = memberSinceDateConverter(user.createdAt)
+        user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar;
+
+        return user;
+    });
 
     return allUsers;
 }
