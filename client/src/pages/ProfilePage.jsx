@@ -52,7 +52,7 @@ export default function ProfilePage({
                     <CreatePostItem
                         isUser={isUser}
                         userId={userId}
-                        imageUrl={(userData.imageUrl ? userData.imageUrl : defaultAvatar)}
+                        imageUrl={userData.imageUrl}
                         totalUserPosts={totalUserPosts}
                         setTotalUserPosts={setTotalUserPosts}
                     />
