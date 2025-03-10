@@ -13,7 +13,7 @@ export default function CatalogPage({
     const [allUsers, setAllUsers] = useState([]);
 
     useEffect(() => {
-        postServices.handleGetAllPosts()
+        postServices.handleGetAllWithOwners()
             .then(data => setAllPosts(data))
             .catch(error => console.error(error.message));
 

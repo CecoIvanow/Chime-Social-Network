@@ -1,8 +1,8 @@
 import postApi from "../api/post-api.js"
 import { postedOnDateConverter } from "../utils/date-time-utils.js";
 
-async function handleGetAllPosts() {
-    const allPosts = await postApi.getAll();
+async function handleGetAllWithOwners() {
+    const allPosts = await postApi.getAllWithOwners();
 
     allPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt))
 
@@ -18,7 +18,7 @@ async function handlePostCreate(postData) {
 }
 
 const postServices = {
-    handleGetAllPosts,
+    handleGetAllWithOwners,
     handlePostCreate,
 }
 

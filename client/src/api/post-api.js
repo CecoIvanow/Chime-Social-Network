@@ -15,7 +15,7 @@ async function createPost(postData) {
     return newPost;
 }
 
-async function getAll() {
+async function getAllWithOwners() {
 
     const resp = await fetch(BASE_URL + '/posts', {
         credentials: 'include',
@@ -28,7 +28,7 @@ async function getAll() {
 
 const postApi = {
     createPost,
-    getAll,
+    getAllWithOwners,
 }
 
 export default postApi;
