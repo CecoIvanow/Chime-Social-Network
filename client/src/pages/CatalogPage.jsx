@@ -48,7 +48,6 @@ export default function CatalogPage({
     }, [userSearchParam])
 
     useEffect(() => {
-        console.log(postSearchParams);
     }, [postSearchParams])
 
     return <>
