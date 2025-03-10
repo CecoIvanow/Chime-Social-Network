@@ -29,7 +29,7 @@ export default function App() {
             <Route path='/' element={isUser ? <UserHomePage setIsUser={setIsUser} /> : <LandingPage />} />
 
             {/* User only pages */}
-            <Route path='/profile/:userId/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
+            <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
             <Route path='/logout' element={isUser ? <Logout setIsUser={setIsUser} /> : <Navigate to="/" />} />
 
             {/* Guest only pages */}
