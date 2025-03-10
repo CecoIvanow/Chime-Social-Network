@@ -9,6 +9,9 @@ import userServices from "../services/user-services";
 export default function CatalogPage({
     isUser
 }) {
+    const [userSearchParam, setUserSearchParam] = useState('');
+    const [postSearchParams, setPostSearchParams] = useState('');
+
     const [allPosts, setAllPosts] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
 
@@ -24,19 +27,28 @@ export default function CatalogPage({
         userServices.handleGetAll(abortSignal)
             .then(data => setAllUsers(data))
             .catch(error => console.error(error.message));
-            console.log(allPosts);
 
-        return () =>{
+        return () => {
             abortController.abort();
         }
     }, [])
+
+    useEffect(() => {
+        console.log(userSearchParam);
+    }, [userSearchParam])
+
+    useEffect(() => {
+        console.log(postSearchParams);
+    }, [postSearchParams])
 
     return <>
         <div className="dashboard-container">
             {/* <!-- Posts Catalog --> */}
             <div className="posts-catalog">
                 <h2 className="section-heading">All Posts:</h2>
-                <SearchField />
+                <SearchField
+                    setSearchParams={setPostSearchParams}
+                />
 
                 {/* <!-- Post Items --> */}
                 {allPosts.map(post =>
@@ -55,7 +67,9 @@ export default function CatalogPage({
             {/* <!-- Users Catalog --> */}
             <div className="users-catalog">
                 <h2 className="section-heading">Registered Users:</h2>
-                <SearchField />
+                <SearchField
+                    setSearchParams={setUserSearchParam}
+                />
 
                 {/* <!-- User Items --> */}
                 {allUsers.map(user =>
