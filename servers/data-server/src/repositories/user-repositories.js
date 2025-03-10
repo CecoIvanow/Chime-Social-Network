@@ -69,9 +69,16 @@ async function attachPostToUser(ownerId, postId) {
     await userPosts.save();
 }
 
+async function getAllUsers() {
+    const allUsers = await User.find({}).select('firstName lastName createdPosts createdAt imageUrl').lean();
+
+    return allUsers;
+}
+
 const userRepositories = {
     fetchUserAndPopulatePosts,
     attachPostToUser,
+    getAllUsers,
     register,
     login,
 }
