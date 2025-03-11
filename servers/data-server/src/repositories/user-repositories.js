@@ -98,7 +98,7 @@ async function getAllWithMatchingNames(filter) {
 }
 
 async function getUserFields(userId, params) {
-    let newParams = {}
+    let newParams = params;
 
     if (params.includes('password')) {
         newParams = passwordParamsRemover(params);       
