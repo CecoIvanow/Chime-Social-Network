@@ -1,4 +1,4 @@
-import defaultAvatar from '../assets/images/default-profile-avatar.png'
+import defaultAvatar from '../public/images/default-profile-avatar.png'
 
 import userApi from "../api/user-api.js";
 import { ageCalculator, memberSinceDateConverter, postedOnDateConverter } from "../utils/date-time-utils.js";
