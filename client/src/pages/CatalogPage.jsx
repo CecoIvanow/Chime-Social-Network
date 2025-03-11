@@ -9,29 +9,14 @@ import userServices from "../services/user-services";
 export default function CatalogPage({
     isUser
 }) {
+
+    // TODO: Fix unnecessary double fetching
+
     const [userSearchParam, setUserSearchParam] = useState('');
     const [postSearchParams, setPostSearchParams] = useState('');
 
     const [allPosts, setAllPosts] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
-
-    useEffect(() => {
-        const abortController = new AbortController();
-
-        const abortSignal = abortController.signal;
-
-        postServices.handleGetAllWithOwners(abortSignal)
-            .then(data => setAllPosts(data))
-            .catch(error => console.error(error.message));
-
-        userServices.handleGetAll(abortSignal)
-            .then(data => setAllUsers(data))
-            .catch(error => console.error(error.message));
-
-        return () => {
-            abortController.abort();
-        }
-    }, [])
 
     useEffect(() => {
         const abortController = new AbortController();
