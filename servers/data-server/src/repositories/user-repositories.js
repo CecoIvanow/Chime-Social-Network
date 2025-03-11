@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
+
 import User from "../models/User.js";
 import { userTokenCreation } from '../utils/token-utils.js';
-import { emailMasking } from '../utils/data-sanitization-utils.js';
+import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-utils.js';
 
 async function register(data) {
     const userData = data;
@@ -96,20 +97,15 @@ async function getAllWithMatchingNames(filter) {
     return filteredUsers;
 }
 
-async function getUserFields(userId, fields) {
-    const sanitizedFields = []
+async function getUserFields(userId, params) {
+    let newParams = {}
 
-    for (const key of fields) {
-        if (key === 'password') {
-            continue;
-        }
-
-        sanitizedFields.push(key);
+    if (params.includes('password')) {
+        newParams = passwordParamsRemover(params);       
     }
-    const newFields = sanitizedFields.join(' ');
 
     const userData = await User.findById(userId)
-        .select(newFields)
+        .select(newParams)
         .lean()
 
     if (userData.email) {

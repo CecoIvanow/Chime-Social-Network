@@ -20,3 +20,20 @@ export function emailMasking(email) {
 
     return censoredEmail
 }
+
+export function passwordParamsRemover(params) {
+    const sanitizedParamsStr = [];
+
+    for (const key of params) {
+        if (key === 'password') {
+            continue;
+        }
+
+        sanitizedParamsStr.push(key);
+    }
+
+    const newParams = sanitizedParamsStr.join(' ');
+
+    return newParams;
+
+}
