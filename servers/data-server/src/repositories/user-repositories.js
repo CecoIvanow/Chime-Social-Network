@@ -4,6 +4,9 @@ import User from "../models/User.js";
 import { userTokenCreation } from '../utils/token-utils.js';
 import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-utils.js';
 
+const COMMONLY_NEEDED_PARAMS = 'firstName lastName createdPosts createdAt imageUrl'
+
+
 async function register(data) {
     const userData = data;
     const saltRounds = Number(process.env.SALT_ROUNDS) || 13
@@ -59,7 +62,7 @@ async function login(data) {
 async function fetchUserAndPopulatePosts(userId) {
     const userData = await User
         .findById(userId)
-        .select('-password -updatedAt -email -friends')
+        .select(`${COMMONLY_NEEDED_PARAMS} birthday gender`)
         .populate('createdPosts')
         .lean();
 
@@ -77,7 +80,7 @@ async function attachPostToUser(ownerId, postId) {
 async function getAllUsers() {
     const allUsers = await User
         .find({})
-        .select('firstName lastName createdPosts createdAt imageUrl')
+        .select(COMMONLY_NEEDED_PARAMS)
         .lean();
 
     return allUsers;
@@ -92,7 +95,7 @@ async function getAllWithMatchingNames(filter) {
             { firstName: nameRegex },
             { lastName: nameRegex },
         ])
-        .select('firstName lastName createdPosts createdAt imageUrl')
+        .select(COMMONLY_NEEDED_PARAMS)
         .lean();
 
     return filteredUsers;
