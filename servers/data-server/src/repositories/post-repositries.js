@@ -1,11 +1,13 @@
 import Post from "../models/Post.js";
 
+const COMMONLY_NEEDED_PARAMS = 'firstName lastName imageUrl'
+
 async function fetchAllWithOwners() {
     const allPosts = await Post
         .find({})
         .populate({
             path: 'owner',
-            select: 'firstName lastName imageUrl'
+            select: COMMONLY_NEEDED_PARAMS
         })
         .lean();
 
@@ -26,7 +28,7 @@ async function getAllWithMatchingText(filter) {
         .where({text: textRegex})
         .populate({
             path: 'owner',
-            select: 'firstName lastName imageUrl'
+            select: COMMONLY_NEEDED_PARAMS
         })
         .lean();
 
