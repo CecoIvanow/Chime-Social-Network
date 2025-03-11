@@ -58,9 +58,16 @@ async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
     return matchedUsers;
 }
 
+async function handleGetUserFields(userId, fields, abortSignal) {
+    const userData = userApi.retrieveUserFields(userId, fields, abortSignal);
+
+    return userData
+}
+
 const userServices = {
-    handleUserDataWithPosts,
     handleGetAllWithMatchingNames,
+    handleUserDataWithPosts,
+    handleGetUserFields,
     handleRegister,
     handleLogout,
     handleGetAll,

@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
+
 import User from "../models/User.js";
 import { userTokenCreation } from '../utils/token-utils.js';
+import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-utils.js';
 
 async function register(data) {
     const userData = data;
@@ -59,7 +61,7 @@ async function fetchUserAndPopulatePosts(userId) {
         .select('-password -updatedAt -email -friends')
         .populate('createdPosts')
         .lean();
-        
+
     return userData
 }
 
@@ -86,8 +88,8 @@ async function getAllWithMatchingNames(filter) {
     const filteredUsers = await User
         .find({})
         .or([
-            {firstName: nameRegex},
-            {lastName: nameRegex},
+            { firstName: nameRegex },
+            { lastName: nameRegex },
         ])
         .select('firstName lastName createdPosts createdAt imageUrl')
         .lean();
@@ -95,10 +97,29 @@ async function getAllWithMatchingNames(filter) {
     return filteredUsers;
 }
 
+async function getUserFields(userId, params) {
+    let newParams = params;
+
+    if (params.includes('password')) {
+        newParams = passwordParamsRemover(params);       
+    }
+
+    const userData = await User.findById(userId)
+        .select(newParams)
+        .lean()
+
+    if (userData.email) {
+        userData.email = emailMasking(userData.email);
+    }
+
+   return userData    
+}
+
 const userRepositories = {
     fetchUserAndPopulatePosts,
     getAllWithMatchingNames,
     attachPostToUser,
+    getUserFields,
     getAllUsers,
     register,
     login,

@@ -117,6 +117,10 @@ body {
     flex-grow: 1;
 }
 
+.user-info a {
+    text-decoration: none;
+}
+
 .user-name {
     font-weight: 600;
     color: #2c3e50;

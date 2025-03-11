@@ -1,9 +1,33 @@
-export default function SettingsPage() {
+import { useEffect, useState } from "react"
+
+import userServices from "../services/user-services";
+
+export default function SettingsPage({
+    userId
+}) {
+
+    const [userEmail, setUserEmail] = useState('');
+
+    useEffect(() => {
+        const userFields = 'email';
+
+        const abortController = new AbortController();
+        const abortSignal = abortController.signal;
+
+        userServices.handleGetUserFields(userId, userFields, abortSignal)
+            .then(data => setUserEmail(data.email))
+            .catch(error => console.error(error.message))
+
+        return () => {
+            abortController.abort();
+        }
+    }, [userId]);
+    
     return <>
         <div className="settings-container">
             <form>
                 <div className="settings-card password-section">
-                    <h2 className="settings-heading">Account Email</h2>
+                    <h2 className="settings-heading">Account Email - {userEmail}</h2>
 
                     <div className="form-group">
                         <label className="form-label">Current Password</label>
@@ -26,7 +50,7 @@ export default function SettingsPage() {
 
             <form>
                 <div className="settings-card password-section">
-                    <h2 className="settings-heading">Account Password</h2>
+                    <h2 className="settings-heading">Account Password - ******</h2>
 
                     <div className="form-group">
                         <label className="form-label">Current Password</label>
