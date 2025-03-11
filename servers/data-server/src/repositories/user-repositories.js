@@ -6,6 +6,7 @@ import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-
 
 async function register(data) {
     const userData = data;
+    const saltRounds = Number(process.env.SALT_ROUNDS) || 13
 
     for (const data in userData) {
         if (!userData[data]) {
@@ -23,7 +24,7 @@ async function register(data) {
         throw new Error("A user with this email already exists!");
     }
 
-    userData.password = await bcrypt.hash(userData.password, 13);
+    userData.password = await bcrypt.hash(userData.password, saltRounds);
 
     const newUser = await User.create(userData);
 
