@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import User from "../models/User.js";
 import { userTokenCreation } from '../utils/token-utils.js';
+import { emailMasking } from '../utils/data-sanitization-utils.js';
 
 async function register(data) {
     const userData = data;
@@ -112,15 +113,7 @@ async function getUserFields(userId, fields) {
         .lean()
 
     if (userData.email) {
-        const [localPart, domain] = userData.email.split('@')
-
-        const splicedLocalPart = localPart.split('').splice(0, 2).join('');
-        const splicedDomain = domain.split('.').shift().split("").shift();
-        const splicedTopLevelDomain = domain.split('.').pop();
-
-        const censoredEmail = [...splicedLocalPart, '*****@', ...splicedDomain, '*****.', ...splicedTopLevelDomain].join('');
-
-        userData.email = censoredEmail
+        userData.email = emailMasking(userData.email);
     }
 
    return userData    
