@@ -39,7 +39,7 @@ export default function CatalogPage({
         const abortSignal = abortController.signal;
 
         userServices.handleGetAllWithMatchingNames(userSearchParam, abortSignal)
-            .then(data => setAllUsers(data))
+            .then(data => setAllUsers(data.reverse()))
             .catch(error => console.error(error.message))
 
         return () => {
@@ -53,7 +53,7 @@ export default function CatalogPage({
         const abortSignal = abortController.signal;
 
         postServices.handleGetAllByContentWithOwners(postSearchParams, abortSignal)
-            .then(data => setAllPosts(data))
+            .then(data => setAllPosts(data.reverse()))
             .catch(error => console.error(error.message))
 
         return () => {

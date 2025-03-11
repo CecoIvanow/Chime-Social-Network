@@ -6,7 +6,6 @@ import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName createdPosts createdAt imageUrl'
 
-
 async function register(data) {
     const userData = data;
     const saltRounds = Number(process.env.SALT_ROUNDS) || 13
