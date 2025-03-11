@@ -1,4 +1,4 @@
-import defaultAvatar from '../assets/images/default-profile-avatar.png'
+import defaultAvatar from '../public/images/default-profile-avatar.png'
 
 import postApi from "../api/post-api.js"
 import { postedOnDateConverter } from "../utils/date-time-utils.js";
