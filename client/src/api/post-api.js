@@ -19,7 +19,6 @@ async function getAllWithOwners(abortSignal) {
 
     const resp = await fetch(BASE_URL + '/posts/with-owners', {
         signal: abortSignal,
-        credentials: 'include',
     });
 
     const allPosts = await resp.json();

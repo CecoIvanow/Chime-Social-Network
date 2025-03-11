@@ -34,13 +34,15 @@ async function handleUserDataWithPosts(userId, abortSignal) {
 
 async function handleGetAll(abortSignal) {
     const allUsers = await userApi.getAll(abortSignal);
-    
-    allUsers.map(user => {
-        user.memberSince = memberSinceDateConverter(user.createdAt)
-        user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar;
 
-        return user;
-    });
+    allUsers
+        .reverse()
+        .map(user => {
+            user.memberSince = memberSinceDateConverter(user.createdAt)
+            user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar;
+
+            return user;
+        });
 
     return allUsers;
 }
@@ -48,12 +50,14 @@ async function handleGetAll(abortSignal) {
 async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
     const matchedUsers = await userApi.retrieveUsersByName(searchParam, abortSignal);
 
-    matchedUsers.map(user => {
-        user.memberSince = memberSinceDateConverter(user.createdAt)
-        user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar;
+    matchedUsers
+        .reverse()
+        .map(user => {
+            user.memberSince = memberSinceDateConverter(user.createdAt)
+            user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar;
 
-        return user;
-    });
+            return user;
+        });
 
     return matchedUsers;
 }

@@ -1,7 +1,9 @@
 import express, { urlencoded } from 'express'
 import mongoose from 'mongoose'
-import routes from './routes.js';
+import cookieParser from 'cookie-parser'
 import 'dotenv/config'
+
+import routes from './routes.js';
 
 const port = 4012;
 const app = express();
@@ -28,6 +30,7 @@ app.use((req, res, next) => {
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(routes);
 
 // Express starting
