@@ -80,9 +80,12 @@ userController.get('/users/:userId/fields', async (req, res) => {
     const userId = req.params.userId
     const fields = Object.keys(req.query)
         .at(0)
-        .split(',');
+        .split(',')
 
     try {
+        const userData = await userRepositories.getUserFields(userId, fields);
+
+        res.json(userData);
         res.end();
     } catch (error) {
         console.error(error.message);

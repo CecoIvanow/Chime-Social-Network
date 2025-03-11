@@ -59,7 +59,7 @@ async function fetchUserAndPopulatePosts(userId) {
         .select('-password -updatedAt -email -friends')
         .populate('createdPosts')
         .lean();
-        
+
     return userData
 }
 
@@ -86,8 +86,8 @@ async function getAllWithMatchingNames(filter) {
     const filteredUsers = await User
         .find({})
         .or([
-            {firstName: nameRegex},
-            {lastName: nameRegex},
+            { firstName: nameRegex },
+            { lastName: nameRegex },
         ])
         .select('firstName lastName createdPosts createdAt imageUrl')
         .lean();
@@ -95,10 +95,42 @@ async function getAllWithMatchingNames(filter) {
     return filteredUsers;
 }
 
+async function getUserFields(userId, fields) {
+    const sanitizedFields = []
+
+    for (const key of fields) {
+        if (key === 'password') {
+            continue;
+        }
+
+        sanitizedFields.push(key);
+    }
+    const newFields = sanitizedFields.join(' ');
+
+    const userData = await User.findById(userId)
+        .select(newFields)
+        .lean()
+
+    if (userData.email) {
+        const [localPart, domain] = userData.email.split('@')
+
+        const splicedLocalPart = localPart.split('').splice(0, 2).join('');
+        const splicedDomain = domain.split('.').shift().split("").shift();
+        const splicedTopLevelDomain = domain.split('.').pop();
+
+        const censoredEmail = [...splicedLocalPart, '*****@', ...splicedDomain, '*****.', ...splicedTopLevelDomain].join('');
+
+        userData.email = censoredEmail
+    }
+
+   return userData    
+}
+
 const userRepositories = {
     fetchUserAndPopulatePosts,
     getAllWithMatchingNames,
     attachPostToUser,
+    getUserFields,
     getAllUsers,
     register,
     login,
