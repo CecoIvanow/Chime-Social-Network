@@ -16,7 +16,7 @@ async function register(data) {
 }
 
 async function login(data) {
-        const resp = await fetch(BASE_URL + '/login', {
+    const resp = await fetch(BASE_URL + '/login', {
         method: 'post',
         headers: {
             'Content-type': 'application/json',
@@ -62,9 +62,19 @@ async function retrieveUsersByName(nameSearch, abortSignal) {
     return allUsers;
 }
 
+async function retrieveUserFields(userId, fields, abortSignal) {
+    const resp = await fetch(BASE_URL + `/users/${userId}/fields?${fields}`, {
+        signal: abortSignal,
+    });
+    const userData = await resp.json();
+
+    return userData;
+}
+
 const userApi = {
     retrieveUserWithPosts,
     retrieveUsersByName,
+    retrieveUserFields,
     register,
     getAll,
     logout,
