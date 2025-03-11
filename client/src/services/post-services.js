@@ -6,10 +6,12 @@ import { postedOnDateConverter } from "../utils/date-time-utils.js";
 async function handleGetAllWithOwners(abortSignal) {
     const allPosts = await postApi.getAllWithOwners(abortSignal);
 
-    allPosts.map(post => {
-        post.postedOn = postedOnDateConverter(post.createdAt)
-        post.owner.imageUrl = post.owner.imageUrl ? post.owner.imageUrl : defaultAvatar;
-    })
+    allPosts
+        .reverse()
+        .map(post => {
+            post.postedOn = postedOnDateConverter(post.createdAt)
+            post.owner.imageUrl = post.owner.imageUrl ? post.owner.imageUrl : defaultAvatar;
+        })
 
     return allPosts
 }
@@ -25,10 +27,12 @@ async function handlePostCreate(postData) {
 async function handleGetAllByContentWithOwners(searchParam, abortSignal) {
     const matchedPosts = await postApi.retrieveByContent(searchParam, abortSignal);
 
-    matchedPosts.map(post => {
-        post.postedOn = postedOnDateConverter(post.createdAt)
-        post.owner.imageUrl = post.owner.imageUrl ? post.owner.imageUrl : defaultAvatar;
-    })
+    matchedPosts
+        .reverse()
+        .map(post => {
+            post.postedOn = postedOnDateConverter(post.createdAt)
+            post.owner.imageUrl = post.owner.imageUrl ? post.owner.imageUrl : defaultAvatar;
+        })
 
     return matchedPosts;
 }
