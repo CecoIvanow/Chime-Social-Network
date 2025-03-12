@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:4012"
+const BASE_URL = 'http://localhost:4012';
 
 async function register(data) {
 
