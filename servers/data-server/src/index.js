@@ -2,9 +2,8 @@ import express, { urlencoded } from 'express'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import 'dotenv/config'
-import functions from 'firebase-functions'
 
-import routes from './src/routes.js';
+import routes from './routes.js';
 
 const port = 4012;
 const app = express();
@@ -35,6 +34,4 @@ app.use(cookieParser());
 app.use(routes);
 
 // Express starting
-// app.listen(port, () => console.log(`Server is listening on port http://localhost:4012`));
-
-export const api = functions.https.onRequest(app);
+app.listen(port, () => console.log(`Server is listening on port http://localhost:4012`));
