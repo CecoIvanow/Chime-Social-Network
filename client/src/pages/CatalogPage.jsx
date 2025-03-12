@@ -10,8 +10,6 @@ export default function CatalogPage({
     isUser
 }) {
 
-    // TODO: Fix unnecessary double fetching
-
     const [userSearchParam, setUserSearchParam] = useState('');
     const [postSearchParams, setPostSearchParams] = useState('');
 
