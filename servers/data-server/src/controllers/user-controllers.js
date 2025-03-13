@@ -41,7 +41,7 @@ userController.get('/users/:userId/with-posts', async (req, res) => {
     const userId = req.params.userId;
 
     try {
-        const userData = await userRepositories.fetchUserAndPopulatePosts(userId);
+        const userData = await userRepositories.getUserAndPopulatePosts(userId);
 
         res.json(userData);
         res.end()

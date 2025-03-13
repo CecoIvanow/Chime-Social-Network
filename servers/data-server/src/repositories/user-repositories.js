@@ -58,7 +58,7 @@ async function login(data) {
     return [token, _id];
 }
 
-async function fetchUserAndPopulatePosts(userId) {
+async function getUserAndPopulatePosts(userId) {
     const userData = await User
         .findById(userId)
         .select(`${COMMONLY_NEEDED_PARAMS} birthday gender`)
@@ -110,7 +110,7 @@ async function getUserFields(userId, params) {
 }
 
 const userRepositories = {
-    fetchUserAndPopulatePosts,
+    getUserAndPopulatePosts,
     getAllWithMatchingNames,
     attachPostToUser,
     getUserFields,
