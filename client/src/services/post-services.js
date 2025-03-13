@@ -17,7 +17,7 @@ async function handleGetAllWithOwners(abortSignal) {
 }
 
 async function handlePostCreate(postData) {
-    const newPost = await postApi.createPost(postData);
+    const newPost = await postApi.create(postData);
 
     newPost.postedOn = postedOnDateConverter(newPost.createdAt);
 

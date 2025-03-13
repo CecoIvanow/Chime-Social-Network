@@ -63,7 +63,7 @@ async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
 }
 
 async function handleGetUserFields(userId, fields, abortSignal) {
-    const userData = userApi.retrieveUserFields(userId, fields, abortSignal);
+    const userData = userApi.retrieveUserDataByFields(userId, fields, abortSignal);
 
     return userData
 }

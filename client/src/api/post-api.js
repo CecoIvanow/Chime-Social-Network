@@ -1,14 +1,7 @@
-const BASE_URL = 'http://localhost:4012';
+import request from "../utils/requester.js";
 
-async function createPost(postData) {
-    const resp = await fetch(BASE_URL + '/posts', {
-        method: 'post',
-        headers: {
-            'Content-type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-        credentials: 'include',
-    });
+async function create(postData) {
+    const resp = await request.post('/posts', postData)
 
     const newPost = await resp.json();
 
@@ -16,10 +9,7 @@ async function createPost(postData) {
 }
 
 async function getAllWithOwners(abortSignal) {
-
-    const resp = await fetch(BASE_URL + '/posts/with-owners', {
-        signal: abortSignal,
-    });
+    const resp = await request.get('/posts/with-owners', abortSignal);
 
     const allPosts = await resp.json();
 
@@ -27,18 +17,17 @@ async function getAllWithOwners(abortSignal) {
 }
 
 async function retrieveByContent(contentSearch, abortSignal) {
-    const resp = await fetch(BASE_URL + `/posts/search?content=${contentSearch}`, {
-        signal: abortSignal,
-    });
-    const allUsers = await resp.json();
+    const resp = await request.get(`/posts/search?content=${contentSearch}`, abortSignal);
 
-    return allUsers;
+    const foundPosts = await resp.json();
+    
+    return foundPosts
 }
 
 const postApi = {
     retrieveByContent,
     getAllWithOwners,
-    createPost,
+    create,
 }
 
 export default postApi;
