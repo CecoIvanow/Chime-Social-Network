@@ -1,9 +1,10 @@
 import { useState } from "react";
 
 export default function SearchField({
-    setSearchParams
+    setSearchParams,
+    searchBy
 }) {
-
+    
     const [curTimeOutId, setCurTimeOutId] = useState(null);
 
     async function onValueChangeHandler(e) {
@@ -22,7 +23,7 @@ export default function SearchField({
 
     return <>
         <div className="search-filter">
-            <input type="text" className="search-input" placeholder="Search..." onChange={onValueChangeHandler}/>
+            <input type="text" className="search-input" placeholder={`Search by ${searchBy}...`} onChange={onValueChangeHandler}/>
         </div>
     </>
 }

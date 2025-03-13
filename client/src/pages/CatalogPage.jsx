@@ -51,6 +51,7 @@ export default function CatalogPage({
                 <h2 className="section-heading">All Posts:</h2>
                 <SearchField
                     setSearchParams={setPostSearchParams}
+                    searchBy={'text'}
                 />
 
                 {/* <!-- Post Items --> */}
@@ -72,6 +73,7 @@ export default function CatalogPage({
                 <h2 className="section-heading">Registered Users:</h2>
                 <SearchField
                     setSearchParams={setUserSearchParam}
+                    searchBy={'name'}
                 />
 
                 {/* <!-- User Items --> */}
