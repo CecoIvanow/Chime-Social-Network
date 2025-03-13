@@ -34,4 +34,18 @@ postController.get('/posts/search', async (req, res) => {
     }
 })
 
+postController.delete('/posts/:postId', async (req, res) => {
+    const postId = req.params.postId;
+
+    try {
+        const removedPostId = await postRepositories.remove(postId);
+
+        res.send(removedPostId);
+        res.end();
+    } catch (error) {
+        console.error(error.message);
+    }
+    
+})
+
 export default postController;
