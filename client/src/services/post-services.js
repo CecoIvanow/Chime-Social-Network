@@ -24,9 +24,16 @@ async function handleGetAllByContentWithOwners(searchParam, abortSignal) {
     return matchedPosts;
 }
 
+async function handleDelete(postId) {
+    const removedPostId =  await postApi.remove(postId);
+
+    return removedPostId;
+}
+
 const postServices = {
     handleGetAllByContentWithOwners,
     handlePostCreate,
+    handleDelete,
 }
 
 export default postServices

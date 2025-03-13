@@ -26,9 +26,9 @@ export default function ProfilePage({
             })
             .catch(error => console.error(error.message));
 
-            return () => {
-                abortController.abort();
-            }
+        return () => {
+            abortController.abort();
+        }
     }, [userId])
 
     return <>
@@ -67,6 +67,7 @@ export default function ProfilePage({
 
                 {totalUserPosts.map(post =>
                     <PostItem
+                        postId={post._id}
                         ownerId={post.owner}
                         isUser={isUser}
                         key={post._id}
@@ -74,6 +75,8 @@ export default function ProfilePage({
                         postedOn={post.postedOn}
                         imageUrl={userData.imageUrl}
                         fullName={`${userData.firstName} ${userData.lastName}`}
+                        setTotalPosts={setTotalUserPosts}
+                        totalPosts={totalUserPosts}
                     />
                 )}
 

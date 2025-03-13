@@ -16,9 +16,18 @@ async function retrieveByContent(contentSearch, abortSignal) {
     return foundPosts
 }
 
+async function remove(postId) {
+    const resp = await request.delete(`/posts/${postId}`);
+
+    const removedPostId = await resp.json();
+
+    return removedPostId;
+}
+
 const postApi = {
     retrieveByContent,
     create,
+    remove,
 }
 
 export default postApi;
