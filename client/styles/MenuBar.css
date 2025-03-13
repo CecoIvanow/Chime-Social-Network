@@ -50,6 +50,7 @@ nav .navbar .menu {
 }
 
 .navbar .menu li a {
+    display: flex;
     color: #fff;
     font-size: 17px;
     font-weight: 500;
