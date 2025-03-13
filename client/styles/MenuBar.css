@@ -75,6 +75,7 @@ nav .navbar .auth-menu li:first-of-type{
 }
 
 .navbar .auth-menu li a {
+    display: flex;
     text-decoration: none;
     color: #fff;
     font-size: 17px;
