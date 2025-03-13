@@ -35,9 +35,16 @@ async function getAllWithMatchingText(filter) {
     return filteredPosts;
 }
 
+async function remove(postId) {
+    const removedPost = await Post.findByIdAndDelete(postId);
+
+    return removedPost._id;
+}
+
 const postRepositories = {
     getAllWithMatchingText,
     create,
+    remove,
 }
 
 export default postRepositories;
