@@ -8,14 +8,6 @@ async function create(postData) {
     return newPost;
 }
 
-async function getAllWithOwners(abortSignal) {
-    const resp = await request.get('/posts/with-owners', abortSignal);
-
-    const allPosts = await resp.json();
-
-    return allPosts;
-}
-
 async function retrieveByContent(contentSearch, abortSignal) {
     const resp = await request.get(`/posts/search?content=${contentSearch}`, abortSignal);
 
@@ -26,7 +18,6 @@ async function retrieveByContent(contentSearch, abortSignal) {
 
 const postApi = {
     retrieveByContent,
-    getAllWithOwners,
     create,
 }
 

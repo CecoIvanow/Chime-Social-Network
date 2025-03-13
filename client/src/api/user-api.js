@@ -29,14 +29,6 @@ async function retrieveUserWithPosts(userId, abortSignal) {
     return userData;
 }
 
-async function getAll(abortSignal) {
-    const resp = await request.get(`/users`, abortSignal);
-
-    const allUsers = await resp.json();
-
-    return allUsers;
-}
-
 async function retrieveUsersByName(nameSearch, abortSignal) {
     const resp = await request.get(`/users/search?name=${nameSearch}`, abortSignal);
 
@@ -58,7 +50,6 @@ const userApi = {
     retrieveUsersByName,
     retrieveUserDataByFields,
     register,
-    getAll,
     logout,
     login,
 }

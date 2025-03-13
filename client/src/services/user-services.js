@@ -32,21 +32,6 @@ async function handleUserDataWithPosts(userId, abortSignal) {
     return userData;
 }
 
-async function handleGetAll(abortSignal) {
-    const allUsers = await userApi.getAll(abortSignal);
-
-    allUsers
-        .reverse()
-        .map(user => {
-            user.memberSince = memberSinceDateConverter(user.createdAt)
-            user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar;
-
-            return user;
-        });
-
-    return allUsers;
-}
-
 async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
     const matchedUsers = await userApi.retrieveUsersByName(searchParam, abortSignal);
 
@@ -74,7 +59,6 @@ const userServices = {
     handleGetUserFields,
     handleRegister,
     handleLogout,
-    handleGetAll,
     handleLogin,
 }
 
