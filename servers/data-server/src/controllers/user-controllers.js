@@ -80,4 +80,17 @@ userController.get('/users/:userId/fields', async (req, res) => {
     }
 })
 
+userController.patch('/users/:userId/credentials', async (req, res) => {
+    const userId = req.params.userId;
+    const data = req.body;
+
+    try {
+        await userRepositories.changeAccountCredentials(userId, data);
+        
+        res.end();
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 export default userController;
