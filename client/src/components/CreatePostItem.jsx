@@ -1,8 +1,6 @@
 import { useState } from "react";
 import postServices from "../services/post-services.js";
 
-// TODO: Clear inut field when a post is created
-
 export default function CreatePostItem({
     userId,
     imageUrl,
