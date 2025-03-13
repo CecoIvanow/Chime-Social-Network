@@ -76,15 +76,6 @@ async function attachPostToUser(ownerId, postId) {
     await userPosts.save();
 }
 
-async function getAllUsers() {
-    const allUsers = await User
-        .find({})
-        .select(COMMONLY_NEEDED_PARAMS)
-        .lean();
-
-    return allUsers;
-}
-
 async function getAllWithMatchingNames(filter) {
     const nameRegex = new RegExp(filter, 'i');
 
@@ -123,7 +114,6 @@ const userRepositories = {
     getAllWithMatchingNames,
     attachPostToUser,
     getUserFields,
-    getAllUsers,
     register,
     login,
 }

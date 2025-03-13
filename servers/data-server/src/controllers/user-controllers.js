@@ -51,18 +51,6 @@ userController.get('/users/:userId/with-posts', async (req, res) => {
 
 })
 
-userController.get('/users', async (req, res) => {
-
-    try {
-        const allUsers = await userRepositories.getAllUsers();
-
-        res.json(allUsers);
-        res.end();
-    } catch (error) {
-        console.error(error.message);
-    }
-})
-
 userController.get('/users/search', async (req, res) => {
     const { name } = req.query;
 

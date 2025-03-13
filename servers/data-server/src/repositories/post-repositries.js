@@ -25,7 +25,7 @@ async function getAllWithMatchingText(filter) {
 
     const filteredPosts = await Post
         .find({})
-        .where({text: textRegex})
+        .where({ text: textRegex })
         .populate({
             path: 'owner',
             select: COMMONLY_NEEDED_PARAMS
@@ -37,7 +37,6 @@ async function getAllWithMatchingText(filter) {
 
 const postRepositories = {
     getAllWithMatchingText,
-    fetchAllWithOwners,
     create,
 }
 
