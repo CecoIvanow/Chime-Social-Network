@@ -39,7 +39,7 @@ export default function ProfilePage({
                     <div className="profile-info">
                         <h2>{(userData.firstName)} {(userData.lastName)}</h2>
                         <p><span className="info-label">Bio:</span> {userData.bio ? userData.bio : 'N\\A'}</p>
-                        <p><span className="info-label">Age:</span> {userData.age ? userData.age : 'N\\A'}</p>
+                        <p><span className="info-label">Age:</span> {userData.age || userData.age === 0 ? userData.age : 'N\\A'}</p>
                         <p><span className="info-label">Gender:</span> {userData.gender ? userData.gender : 'N\\A'}</p>
                         <p><span className="info-label">Location:</span> {userData.location ? userData.location : 'N\\A'}</p>
                         <p><span className="info-label">Occupation:</span> {userData.occupation ? userData.occupation : 'N\\A'}</p>
