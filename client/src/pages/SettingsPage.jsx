@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import userServices from "../services/user-services";
+import userServices from "../services/user-services.js";
 
 export default function SettingsPage({
     userId

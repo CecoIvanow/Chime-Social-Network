@@ -47,12 +47,12 @@ export default function RegisterPage({
 
                             <div className="input-box">
                                 <span className="details">Password</span>
-                                <input type="text" placeholder="Enter your password" name="password" />
+                                <input type="password" placeholder="Enter your password" name="password" />
                             </div>
 
                             <div className="input-box">
                                 <span className="details">Confirm Password</span>
-                                <input type="text" placeholder="Confirm your password" name="rePass" />
+                                <input type="password" placeholder="Confirm your password" name="rePass" />
                             </div>
                         </div>
                         <div className="gender-details">
