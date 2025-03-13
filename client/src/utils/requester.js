@@ -24,6 +24,7 @@ async function fetcher(path, method, body, abortSignal) {
 const request = {
     get: async (path, abortsignal) => await fetcher(path, 'GET', undefined, abortsignal),
     post: async (path, body) => await fetcher(path, 'POST', body),
+    delete: async (path) => await fetcher(path, 'DELETE'),
 }
 
 export default request
