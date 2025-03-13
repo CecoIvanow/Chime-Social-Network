@@ -2,18 +2,6 @@ import Post from "../models/Post.js";
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName imageUrl'
 
-async function fetchAllWithOwners() {
-    const allPosts = await Post
-        .find({})
-        .populate({
-            path: 'owner',
-            select: COMMONLY_NEEDED_PARAMS
-        })
-        .lean();
-
-    return allPosts
-}
-
 async function create(postData) {
     const newPost = await Post.create(postData);
 
@@ -25,7 +13,7 @@ async function getAllWithMatchingText(filter) {
 
     const filteredPosts = await Post
         .find({})
-        .where({text: textRegex})
+        .where({ text: textRegex })
         .populate({
             path: 'owner',
             select: COMMONLY_NEEDED_PARAMS
@@ -35,10 +23,16 @@ async function getAllWithMatchingText(filter) {
     return filteredPosts;
 }
 
+async function remove(postId) {
+    const removedPost = await Post.findByIdAndDelete(postId);
+
+    return removedPost._id;
+}
+
 const postRepositories = {
     getAllWithMatchingText,
-    fetchAllWithOwners,
     create,
+    remove,
 }
 
 export default postRepositories;

@@ -31,7 +31,7 @@ export default function LoginPage({
                             {/* <!-- Input for Password --> */}
                             <div className="input-box">
                                 <span className="details">Password</span>
-                                <input type="text" placeholder="Enter your password" name="password" required />
+                                <input type="password" placeholder="Enter your password" name="password" required />
                             </div>
                         </div>
                         {/* <!-- Submit button --> */}

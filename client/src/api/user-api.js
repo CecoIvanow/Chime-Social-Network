@@ -1,71 +1,45 @@
-const BASE_URL = 'http://localhost:4012';
+import request from "../utils/requester.js";
 
 async function register(data) {
 
-    const resp = await fetch(BASE_URL + '/register', {
-        method: 'post',
-        headers: {
-            'Content-type': 'application/json',
-        },
-        body: JSON.stringify(data),
-        credentials: 'include',
-    });
+    const resp = await request.post('/register', data);
+
     const userId = await resp.json();
 
     return userId;
 }
 
 async function login(data) {
-    const resp = await fetch(BASE_URL + '/login', {
-        method: 'post',
-        headers: {
-            'Content-type': 'application/json',
-        },
-        body: JSON.stringify(data),
-        credentials: 'include',
-    });
-    const userId = resp.json();
+    const resp = await request.post('/login', data);
+
+    const userId = await resp.json();
 
     return userId;
 }
 
 async function logout() {
-    await fetch(BASE_URL + '/logout', {
-        credentials: 'include',
-    });
+    await request.get('/logout');
 }
 
 async function retrieveUserWithPosts(userId, abortSignal) {
-    const resp = await fetch(BASE_URL + `/users/${userId}/with-posts`, {
-        signal: abortSignal
-    });
+    const resp = await request.get(`/users/${userId}/with-posts`, abortSignal);
+
     const userData = await resp.json();
 
     return userData;
 }
 
-async function getAll(abortSignal) {
-    const resp = await fetch(BASE_URL + `/users`, {
-        signal: abortSignal,
-    });
-    const allUsers = await resp.json();
-
-    return allUsers;
-}
-
 async function retrieveUsersByName(nameSearch, abortSignal) {
-    const resp = await fetch(BASE_URL + `/users/search?name=${nameSearch}`, {
-        signal: abortSignal,
-    });
-    const allUsers = await resp.json();
+    const resp = await request.get(`/users/search?name=${nameSearch}`, abortSignal);
 
-    return allUsers;
+    const foundUsers = await resp.json();
+
+    return foundUsers;
 }
 
-async function retrieveUserFields(userId, fields, abortSignal) {
-    const resp = await fetch(BASE_URL + `/users/${userId}/fields?${fields}`, {
-        signal: abortSignal,
-    });
+async function retrieveUserDataByFields(userId, fields, abortSignal) {
+    const resp = await request.get(`/users/${userId}/fields?${fields}`, abortSignal);
+
     const userData = await resp.json();
 
     return userData;
@@ -74,9 +48,8 @@ async function retrieveUserFields(userId, fields, abortSignal) {
 const userApi = {
     retrieveUserWithPosts,
     retrieveUsersByName,
-    retrieveUserFields,
+    retrieveUserDataByFields,
     register,
-    getAll,
     logout,
     login,
 }

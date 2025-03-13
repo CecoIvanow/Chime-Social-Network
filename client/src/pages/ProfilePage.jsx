@@ -26,9 +26,9 @@ export default function ProfilePage({
             })
             .catch(error => console.error(error.message));
 
-            return () => {
-                abortController.abort();
-            }
+        return () => {
+            abortController.abort();
+        }
     }, [userId])
 
     return <>
@@ -39,7 +39,7 @@ export default function ProfilePage({
                     <div className="profile-info">
                         <h2>{(userData.firstName)} {(userData.lastName)}</h2>
                         <p><span className="info-label">Bio:</span> {userData.bio ? userData.bio : 'N\\A'}</p>
-                        <p><span className="info-label">Age:</span> {userData.age ? userData.age : 'N\\A'}</p>
+                        <p><span className="info-label">Age:</span> {userData.age || userData.age === 0 ? userData.age : 'N\\A'}</p>
                         <p><span className="info-label">Gender:</span> {userData.gender ? userData.gender : 'N\\A'}</p>
                         <p><span className="info-label">Location:</span> {userData.location ? userData.location : 'N\\A'}</p>
                         <p><span className="info-label">Occupation:</span> {userData.occupation ? userData.occupation : 'N\\A'}</p>
@@ -67,6 +67,7 @@ export default function ProfilePage({
 
                 {totalUserPosts.map(post =>
                     <PostItem
+                        postId={post._id}
                         ownerId={post.owner}
                         isUser={isUser}
                         key={post._id}
@@ -74,6 +75,8 @@ export default function ProfilePage({
                         postedOn={post.postedOn}
                         imageUrl={userData.imageUrl}
                         fullName={`${userData.firstName} ${userData.lastName}`}
+                        setTotalPosts={setTotalUserPosts}
+                        totalPosts={totalUserPosts}
                     />
                 )}
 

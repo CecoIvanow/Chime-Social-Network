@@ -58,7 +58,7 @@ async function login(data) {
     return [token, _id];
 }
 
-async function fetchUserAndPopulatePosts(userId) {
+async function getUserAndPopulatePosts(userId) {
     const userData = await User
         .findById(userId)
         .select(`${COMMONLY_NEEDED_PARAMS} birthday gender`)
@@ -74,15 +74,6 @@ async function attachPostToUser(ownerId, postId) {
     userPosts.createdPosts.push(postId);
 
     await userPosts.save();
-}
-
-async function getAllUsers() {
-    const allUsers = await User
-        .find({})
-        .select(COMMONLY_NEEDED_PARAMS)
-        .lean();
-
-    return allUsers;
 }
 
 async function getAllWithMatchingNames(filter) {
@@ -119,11 +110,10 @@ async function getUserFields(userId, params) {
 }
 
 const userRepositories = {
-    fetchUserAndPopulatePosts,
+    getUserAndPopulatePosts,
     getAllWithMatchingNames,
     attachPostToUser,
     getUserFields,
-    getAllUsers,
     register,
     login,
 }

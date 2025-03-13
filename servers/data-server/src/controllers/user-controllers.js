@@ -41,7 +41,7 @@ userController.get('/users/:userId/with-posts', async (req, res) => {
     const userId = req.params.userId;
 
     try {
-        const userData = await userRepositories.fetchUserAndPopulatePosts(userId);
+        const userData = await userRepositories.getUserAndPopulatePosts(userId);
 
         res.json(userData);
         res.end()
@@ -49,18 +49,6 @@ userController.get('/users/:userId/with-posts', async (req, res) => {
         console.error(error);
     }
 
-})
-
-userController.get('/users', async (req, res) => {
-
-    try {
-        const allUsers = await userRepositories.getAllUsers();
-
-        res.json(allUsers);
-        res.end();
-    } catch (error) {
-        console.error(error.message);
-    }
 })
 
 userController.get('/users/search', async (req, res) => {

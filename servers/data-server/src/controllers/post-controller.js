@@ -5,18 +5,6 @@ import userRepositories from "../repositories/user-repositories.js";
 
 const postController = Router();
 
-postController.get('/posts/with-owners', async (req, res) => {
-
-    try {
-        const allPosts = await postRepositories.fetchAllWithOwners();
-
-        res.json(allPosts);
-        res.end();
-    } catch (error) {
-        console.error(error);
-    }
-})
-
 postController.post('/posts', async (req, res) => {
     const postData = req.body;
     const ownerId = req.body.owner;
@@ -44,6 +32,20 @@ postController.get('/posts/search', async (req, res) => {
     } catch (error) {
         console.error(error.message);
     }
+})
+
+postController.delete('/posts/:postId', async (req, res) => {
+    const postId = req.params.postId;
+
+    try {
+        const removedPostId = await postRepositories.remove(postId);
+
+        res.send(removedPostId);
+        res.end();
+    } catch (error) {
+        console.error(error.message);
+    }
+    
 })
 
 export default postController;

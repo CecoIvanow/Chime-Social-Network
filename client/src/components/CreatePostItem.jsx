@@ -1,3 +1,4 @@
+import { useState } from "react";
 import postServices from "../services/post-services.js";
 
 export default function CreatePostItem({
@@ -6,6 +7,8 @@ export default function CreatePostItem({
     totalUserPosts,
     setTotalUserPosts,
 }) {
+    const [postText, setPostText] = useState();
+
     const onPostSubmitHandler = async (e) => {
         e.preventDefault();
 
@@ -19,7 +22,13 @@ export default function CreatePostItem({
         postData.owner = userId;
 
         const newPost = await postServices.handlePostCreate(postData);
+        
         setTotalUserPosts([newPost, ...totalUserPosts]);
+        setPostText('');
+    }
+
+    const onTextChangeHandler = (e) => {
+        setPostText(e.currentTarget.value);
     }
 
     return <>
@@ -28,7 +37,7 @@ export default function CreatePostItem({
                 <div className='post-header'>
                     <img src={imageUrl} />
                     <label htmlFor="post"></label>
-                    <input type="text" name="text" id="post" placeholder="Share your thoughts..." />
+                    <input type="text" name="text" id="post" value={postText} onChange={onTextChangeHandler} placeholder="Share your thoughts..." />
                 </div>
                 <button className='submit-button' >Post</button>
             </form>

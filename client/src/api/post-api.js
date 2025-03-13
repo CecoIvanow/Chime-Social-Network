@@ -1,44 +1,33 @@
-const BASE_URL = 'http://localhost:4012';
+import request from "../utils/requester.js";
 
-async function createPost(postData) {
-    const resp = await fetch(BASE_URL + '/posts', {
-        method: 'post',
-        headers: {
-            'Content-type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-        credentials: 'include',
-    });
+async function create(postData) {
+    const resp = await request.post('/posts', postData)
 
     const newPost = await resp.json();
 
     return newPost;
 }
 
-async function getAllWithOwners(abortSignal) {
+async function retrieveByContent(contentSearch, abortSignal) {
+    const resp = await request.get(`/posts/search?content=${contentSearch}`, abortSignal);
 
-    const resp = await fetch(BASE_URL + '/posts/with-owners', {
-        signal: abortSignal,
-    });
-
-    const allPosts = await resp.json();
-
-    return allPosts;
+    const foundPosts = await resp.json();
+    
+    return foundPosts
 }
 
-async function retrieveByContent(contentSearch, abortSignal) {
-    const resp = await fetch(BASE_URL + `/posts/search?content=${contentSearch}`, {
-        signal: abortSignal,
-    });
-    const allUsers = await resp.json();
+async function remove(postId) {
+    const resp = await request.delete(`/posts/${postId}`);
 
-    return allUsers;
+    const removedPostId = await resp.json();
+
+    return removedPostId;
 }
 
 const postApi = {
     retrieveByContent,
-    getAllWithOwners,
-    createPost,
+    create,
+    remove,
 }
 
 export default postApi;

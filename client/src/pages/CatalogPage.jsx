@@ -13,8 +13,8 @@ export default function CatalogPage({
     const [userSearchParam, setUserSearchParam] = useState('');
     const [postSearchParams, setPostSearchParams] = useState('');
 
-    const [allPosts, setAllPosts] = useState([]);
-    const [allUsers, setAllUsers] = useState([]);
+    const [totalPosts, setTotalPosts] = useState([]);
+    const [totalUsers, setTotalUsers] = useState([]);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -22,7 +22,7 @@ export default function CatalogPage({
         const abortSignal = abortController.signal;
 
         userServices.handleGetAllWithMatchingNames(userSearchParam, abortSignal)
-            .then(data => setAllUsers(data))
+            .then(data => setTotalUsers(data))
             .catch(error => console.error(error.message))
 
         return () => {
@@ -36,7 +36,7 @@ export default function CatalogPage({
         const abortSignal = abortController.signal;
 
         postServices.handleGetAllByContentWithOwners(postSearchParams, abortSignal)
-            .then(data => setAllPosts(data))
+            .then(data => setTotalPosts(data))
             .catch(error => console.error(error.message))
 
         return () => {
@@ -51,11 +51,13 @@ export default function CatalogPage({
                 <h2 className="section-heading">All Posts:</h2>
                 <SearchField
                     setSearchParams={setPostSearchParams}
+                    searchBy={'text'}
                 />
 
                 {/* <!-- Post Items --> */}
-                {allPosts.map(post =>
+                {totalPosts.map(post =>
                     <PostItem
+                        postId={post._id}
                         key={post._id}
                         ownerId={post.owner._id}
                         isUser={isUser}
@@ -63,6 +65,8 @@ export default function CatalogPage({
                         postedOn={post.postedOn}
                         imageUrl={post.owner.imageUrl}
                         fullName={`${post.owner.firstName} ${post.owner.lastName}`}
+                        setTotalPosts={setTotalPosts}
+                        totalPosts={totalPosts}
                     />
                 )}
             </div>
@@ -72,10 +76,11 @@ export default function CatalogPage({
                 <h2 className="section-heading">Registered Users:</h2>
                 <SearchField
                     setSearchParams={setUserSearchParam}
+                    searchBy={'name'}
                 />
 
                 {/* <!-- User Items --> */}
-                {allUsers.map(user =>
+                {totalUsers.map(user =>
                     <UserItem
                         key={user._id}
                         profileId={user._id}
