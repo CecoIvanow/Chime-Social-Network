@@ -45,10 +45,15 @@ async function retrieveUserDataByFields(userId, fields, abortSignal) {
     return userData;
 }
 
+async function changeUserCredentials(userId, data) {
+    await request.patch(`/users/${userId}/credentials`, data);
+}
+
 const userApi = {
+    retrieveUserDataByFields,
     retrieveUserWithPosts,
     retrieveUsersByName,
-    retrieveUserDataByFields,
+    changeUserCredentials,
     register,
     logout,
     login,

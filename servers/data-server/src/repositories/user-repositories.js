@@ -5,10 +5,10 @@ import { userTokenCreation } from '../utils/token-utils.js';
 import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-utils.js';
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName createdPosts createdAt imageUrl'
+const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 13;
 
 async function register(data) {
     const userData = data;
-    const saltRounds = Number(process.env.SALT_ROUNDS) || 13
 
     for (const data in userData) {
         if (!userData[data]) {
@@ -26,7 +26,7 @@ async function register(data) {
         throw new Error("A user with this email already exists!");
     }
 
-    userData.password = await bcrypt.hash(userData.password, saltRounds);
+    userData.password = await bcrypt.hash(userData.password, SALT_ROUNDS);
 
     const newUser = await User.create(userData);
 
@@ -95,7 +95,7 @@ async function getUserFields(userId, params) {
     let newParams = params;
 
     if (params.includes('password')) {
-        newParams = passwordParamsRemover(params);       
+        newParams = passwordParamsRemover(params);
     }
 
     const userData = await User.findById(userId)
@@ -106,10 +106,50 @@ async function getUserFields(userId, params) {
         userData.email = emailMasking(userData.email);
     }
 
-   return userData    
+    return userData
+}
+
+async function changeAccountCredentials(userId, data) {
+    const hasNewPassword = data.newValues.hasOwnProperty('newPass');
+    const isNewPasswordRepeatValid = (data.newValues.newPass === data.validationData.rePass);
+    const isOldPasswordRepeatValid = (data.validationData.curPass === data.validationData.rePass);
+
+    if (hasNewPassword && !isNewPasswordRepeatValid) {
+        throw new Error('New Passwords do not match!');
+    } else if (!hasNewPassword &&    !isOldPasswordRepeatValid) {
+        throw new Error('Old Passwords do not match!');
+    }
+
+    let foundUser = await User.findOne({ _id: userId, email: data.validationData.curEmail });
+
+    if (!foundUser) {
+        throw new Error('Invalid data!');
+    }
+
+    const isPasswordValid = await bcrypt.compare(data.validationData.curPass, foundUser.password);
+
+    if (!isPasswordValid) {
+        throw new Error('Invalid data!')
+    }
+
+    if (data.newValues.hasOwnProperty('email')) {
+        foundUser.email = data.newValues.email;
+
+    } else if (data.newValues.hasOwnProperty('newPass')) {
+        const newHashedPass = await bcrypt.hash(data.newValues.newPass, SALT_ROUNDS);
+
+        foundUser.password = newHashedPass;
+
+    } else {
+        throw new Error('Invalid credentials to be changed!');
+
+    }
+
+    await foundUser.save();
 }
 
 const userRepositories = {
+    changeAccountCredentials,
     getUserAndPopulatePosts,
     getAllWithMatchingNames,
     attachPostToUser,

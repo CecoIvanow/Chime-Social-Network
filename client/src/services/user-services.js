@@ -3,6 +3,11 @@ import defaultAvatar from '/images/default-profile-avatar.png'
 import userApi from "../api/user-api.js";
 import { ageCalculator, memberSinceDateConverter, postedOnDateConverter } from "../utils/date-time-utils.js";
 
+const userUpdatePayload = {
+    validationData: {},
+    newValues: {},
+}
+
 async function handleRegister(data, setIsUser) {
     const userId = await userApi.register(data);
 
@@ -53,10 +58,38 @@ async function handleGetUserFields(userId, fields, abortSignal) {
     return userData
 }
 
+async function handleEmailChange(userId, submittedData) {
+    const { newEmail, ...rest } = submittedData;
+
+    userUpdatePayload.validationData = {
+        ...rest
+    };
+    userUpdatePayload.newValues = {
+        email: newEmail
+    };
+
+    await userApi.changeUserCredentials(userId, userUpdatePayload);
+}
+
+async function handlePasswordChange(userId, submittedData) {
+    const { newPass, ...rest } = submittedData;
+
+    userUpdatePayload.validationData = {
+        ...rest
+    };
+    userUpdatePayload.newValues = {
+        newPass
+    };
+
+    await userApi.changeUserCredentials(userId, userUpdatePayload);
+}
+
 const userServices = {
     handleGetAllWithMatchingNames,
     handleUserDataWithPosts,
+    handlePasswordChange,
     handleGetUserFields,
+    handleEmailChange,
     handleRegister,
     handleLogout,
     handleLogin,
