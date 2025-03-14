@@ -57,7 +57,6 @@ export default function ProfilePage({
                 <h2 className="posts-heading">{isUser ? 'My' : `${userData.firstName}'s`} Posts:</h2>
                 {isUser && (
                     <CreatePostItem
-                        isUser={isUser}
                         userId={userId}
                         imageUrl={userData.imageUrl}
                         totalUserPosts={totalUserPosts}
@@ -69,7 +68,7 @@ export default function ProfilePage({
                     <PostItem
                         postId={post._id}
                         ownerId={post.owner}
-                        isUser={isUser}
+                        userId={isUser}
                         key={post._id}
                         text={post.text}
                         postedOn={post.postedOn}

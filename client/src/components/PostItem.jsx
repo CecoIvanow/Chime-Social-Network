@@ -4,7 +4,7 @@ import postServices from "../services/post-services";
 export default function PostItem({
     postId,
     ownerId,
-    isUser,
+    userId,
     text,
     postedOn,
     imageUrl,
@@ -42,12 +42,12 @@ export default function PostItem({
             </div>
             <div className='post-buttons-div'>
                 <div>
-                    {(isUser && isUser !== ownerId) && (
+                    {(userId && userId !== ownerId) && (
                         <button className='post-buttons like-btn' type="button">Like</button>
                     )}
                 </div>
                 <div className='owner-buttons'>
-                    {isUser === ownerId && (
+                    {userId === ownerId && (
                         <>
                             <button className='post-buttons edit-btn' type="button">Edit</button>
                             <button className='post-buttons delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
