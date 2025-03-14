@@ -60,13 +60,15 @@ export default function CatalogPage({
                         postId={post._id}
                         key={post._id}
                         ownerId={post.owner._id}
-                        isUser={isUser}
+                        userId={isUser}
                         text={post.text}
                         postedOn={post.postedOn}
                         imageUrl={post.owner.imageUrl}
                         fullName={`${post.owner.firstName} ${post.owner.lastName}`}
                         setTotalPosts={setTotalPosts}
                         totalPosts={totalPosts}
+                        likes={post.likes}
+                        comments={post.comments}
                     />
                 )}
             </div>

@@ -76,6 +76,8 @@ export default function ProfilePage({
                         fullName={`${userData.firstName} ${userData.lastName}`}
                         setTotalPosts={setTotalUserPosts}
                         totalPosts={totalUserPosts}
+                        likes={post.likes}
+                        comments={post.comments}
                     />
                 )}
 

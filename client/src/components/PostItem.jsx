@@ -11,6 +11,8 @@ export default function PostItem({
     fullName,
     setTotalPosts,
     totalPosts,
+    likes,
+    comments
 }) {
 
     const onDeletePostClickHandler = async () => {
@@ -37,8 +39,8 @@ export default function PostItem({
             </div>
             <div className='post-text'>{text}</div>
             <div className="post-interactions">
-                <div className="likes">Likes: 0</div>
-                <div className="comments">Comments: 0</div>
+                <div className="likes">Likes: {likes.length}</div>
+                <div className="comments">Comments: {comments.length}</div>
             </div>
             <div className='post-buttons-div'>
                 <div>
