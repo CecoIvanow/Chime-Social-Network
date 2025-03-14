@@ -55,22 +55,30 @@ export default function CatalogPage({
                 />
 
                 {/* <!-- Post Items --> */}
-                {totalPosts.map(post =>
-                    <PostItem
-                        postId={post._id}
+                {totalPosts.map(post => {
+                    const postMetaData = {
+                        id: post._id,
+                        text: post.text,
+                        postedOn: post.postedOn,
+                        likes: post.likes,
+                        comments: post.comments
+                    }
+
+                    const creatorDetails = {
+                        id: post.owner._id,
+                        imageUrl: post.owner.imageUrl,
+                        fullName: `${post.owner.firstName} ${post.owner.lastName}`,
+                    }
+
+                    return <PostItem
                         key={post._id}
-                        ownerId={post.owner._id}
+                        postMetaData={postMetaData}
+                        creatorDetails={creatorDetails}
                         userId={isUser}
-                        text={post.text}
-                        postedOn={post.postedOn}
-                        imageUrl={post.owner.imageUrl}
-                        fullName={`${post.owner.firstName} ${post.owner.lastName}`}
                         setTotalPosts={setTotalPosts}
                         totalPosts={totalPosts}
-                        likes={post.likes}
-                        comments={post.comments}
                     />
-                )}
+                })}
             </div>
 
             {/* <!-- Users Catalog --> */}

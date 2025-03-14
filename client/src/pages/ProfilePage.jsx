@@ -64,22 +64,30 @@ export default function ProfilePage({
                     />
                 )}
 
-                {totalUserPosts.map(post =>
-                    <PostItem
-                        postId={post._id}
-                        ownerId={post.owner}
-                        userId={isUser}
+                {totalUserPosts.map(post => {
+                    const postMetaData = {
+                        id: post._id,
+                        text: post.text, 
+                        postedOn: post.postedOn,
+                        likes: post.likes,
+                        comments: post.comments    
+                    }
+
+                    const creatorDetails = {
+                        id: post.owner,
+                        imageUrl: userData.imageUrl,
+                        fullName: `${userData.firstName} ${userData.lastName}`
+                    }
+
+                    return <PostItem
                         key={post._id}
-                        text={post.text}
-                        postedOn={post.postedOn}
-                        imageUrl={userData.imageUrl}
-                        fullName={`${userData.firstName} ${userData.lastName}`}
+                        postMetaData={postMetaData}
+                        creatorDetails={creatorDetails}
+                        userId={isUser}
                         setTotalPosts={setTotalUserPosts}
                         totalPosts={totalUserPosts}
-                        likes={post.likes}
-                        comments={post.comments}
                     />
-                )}
+                })}
 
             </div>
         </div>
