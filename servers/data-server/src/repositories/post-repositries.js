@@ -29,8 +29,17 @@ async function remove(postId) {
     return removedPost._id;
 }
 
+async function addLike(postId, userId) {
+    const foundPost = await Post.findById(postId);
+
+    foundPost.likes.push(userId);
+
+    await foundPost.save();
+}
+
 const postRepositories = {
     getAllWithMatchingText,
+    addLike,
     create,
     remove,
 }
