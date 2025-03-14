@@ -5,7 +5,7 @@ import { userTokenCreation } from '../utils/token-utils.js';
 import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-utils.js';
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName createdPosts createdAt imageUrl'
-const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 11;
+const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 13;
 
 async function register(data) {
     const userData = data;
