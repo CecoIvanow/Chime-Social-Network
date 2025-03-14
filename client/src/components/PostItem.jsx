@@ -23,7 +23,7 @@ export default function PostItem({
         const deletedPostId = await postServices.handleDelete(postId);
 
         setTotalPosts(totalPosts => totalPosts.filter(post => post._id !== deletedPostId))
-        
+
     }
 
     return <>
@@ -36,6 +36,10 @@ export default function PostItem({
                 <div className='created-on'>Posted on {postedOn}</div>
             </div>
             <div className='post-text'>{text}</div>
+            <div className="post-interactions">
+                <div className="likes">Likes: 0</div>
+                <div className="comments">Comments: 0</div>
+            </div>
             <div className='post-buttons-div'>
                 <div>
                     {(isUser && isUser !== ownerId) && (
