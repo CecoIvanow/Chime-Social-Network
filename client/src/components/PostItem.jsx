@@ -1,4 +1,6 @@
 import { Link } from "react-router";
+import { useEffect, useState } from "react";
+
 import postServices from "../services/post-services";
 
 export default function PostItem({
@@ -15,6 +17,8 @@ export default function PostItem({
     comments
 }) {
 
+    const [isLiked, setIsLiked] = useState(false);
+
     const onDeletePostClickHandler = async () => {
         const isDeleteCondirmed = confirm('Are you sure you want to delete this post?');
 
@@ -25,8 +29,19 @@ export default function PostItem({
         const deletedPostId = await postServices.handleDelete(postId);
 
         setTotalPosts(totalPosts => totalPosts.filter(post => post._id !== deletedPostId))
-
     }
+
+    const onLikePostClickHandler = async () => {
+        await postServices.handleLike(userId, postId);
+        likes.push(userId);
+        setIsLiked(true);
+    }
+
+    useEffect(() => {
+        if (likes?.includes(userId)) {
+            setIsLiked(true);
+        }
+    }, [likes, userId])
 
     return <>
         <li className='post-item'>
@@ -39,13 +54,13 @@ export default function PostItem({
             </div>
             <div className='post-text'>{text}</div>
             <div className="post-interactions">
-                <div className="likes">Likes: {likes.length}</div>
-                <div className="comments">Comments: {comments.length}</div>
+                <div className="likes">Likes: {likes?.length}</div>
+                <div className="comments">Comments: {comments?.length}</div>
             </div>
             <div className='post-buttons-div'>
                 <div>
-                    {(userId && userId !== ownerId) && (
-                        <button className='post-buttons like-btn' type="button">Like</button>
+                    {((userId && userId !== ownerId) && !isLiked) && (
+                        <button className='post-buttons like-btn' type="button" onClick={onLikePostClickHandler}>Like</button>
                     )}
                 </div>
                 <div className='owner-buttons'>
