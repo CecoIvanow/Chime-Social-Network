@@ -12,7 +12,7 @@ async function retrieveByContent(contentSearch, abortSignal) {
     const resp = await request.get(`/posts/search?content=${contentSearch}`, abortSignal);
 
     const foundPosts = await resp.json();
-    
+
     return foundPosts
 }
 
@@ -24,8 +24,13 @@ async function remove(postId) {
     return removedPostId;
 }
 
+async function addLike(userId, postId) {
+    await request.post(`/posts/${postId}/like`, { userId });
+}
+
 const postApi = {
     retrieveByContent,
+    addLike,
     create,
     remove,
 }
