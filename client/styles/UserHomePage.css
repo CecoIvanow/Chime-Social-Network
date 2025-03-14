@@ -122,7 +122,8 @@
     align-items: center;
 }
 
-.created-on {
+.created-on,
+.post-interactions {
     font-size: small;
     font-weight: 500;
     color:  #777777;
@@ -187,6 +188,17 @@
 .post-buttons-div{
     display: flex;
     justify-content: space-between;
+}
+
+.post-interactions {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.post-interactions div{
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 10px;
 }
 
 .post-buttons{

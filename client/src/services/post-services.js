@@ -30,10 +30,15 @@ async function handleDelete(postId) {
     return removedPostId;
 }
 
+async function handleLike(userId, postId) {
+    await postApi.addLike(userId, postId);
+}
+
 const postServices = {
     handleGetAllByContentWithOwners,
     handlePostCreate,
     handleDelete,
+    handleLike
 }
 
 export default postServices

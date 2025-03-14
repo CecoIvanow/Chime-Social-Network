@@ -3,7 +3,7 @@ import 'dotenv/config';
 
 import userRepositories from "../repositories/user-repositories.js";
 
-const COOKIE_AUTH_NAME = process.env.COOKIE_AUTH_NAME;
+const COOKIE_AUTH_NAME = process.env.COOKIE_AUTH_NAME || "accessToken";
 
 const userController = Router();
 

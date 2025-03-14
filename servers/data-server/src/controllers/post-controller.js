@@ -48,4 +48,16 @@ postController.delete('/posts/:postId', async (req, res) => {
     
 })
 
+postController.post('/posts/:postId/like', async (req, res) => {
+    const postId = req.params.postId;
+    const userId = req.body.userId;
+
+    try {
+        await postRepositories.addLike(postId, userId);
+        res.end();
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 export default postController;
