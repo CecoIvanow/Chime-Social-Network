@@ -40,7 +40,7 @@ async function addLike(postId, userId) {
     await foundPost.save();
 }
 
-async function removeLike(postId, userId) {T
+async function removeLike(postId, userId) {
     const foundPost = await Post.findById(postId);
 
     foundPost.likes = foundPost.likes.filter(likedUserId => likedUserId.toString() !== userId);
