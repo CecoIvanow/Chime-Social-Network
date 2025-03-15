@@ -17,18 +17,18 @@ async function getAllWithMatchingText(filter) {
 
     const textRegex = new RegExp(escapedFilter, 'i');
 
-    const matchedUsers = await Post
+    const matchedPosts = await Post
         .find({})
         .where({ text: textRegex })
         .populate({
             path: 'owner',
             select: COMMONLY_NEEDED_PARAMS
         })
-        .lean();
+        .lean();   
 
-    matchedUsers.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
+    matchedPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
 
-    return matchedUsers;
+    return matchedPosts;
 }
 
 async function remove(postId) {
