@@ -1,4 +1,5 @@
 import Post from "../models/Post.js";
+import { escapeRegex } from "../utils/regex-utils.js";
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName imageUrl'
 
@@ -9,7 +10,9 @@ async function create(postData) {
 }
 
 async function getAllWithMatchingText(filter) {
-    const textRegex = new RegExp(filter, 'i');
+    const escapedFilter = escapeRegex(filter);
+
+    const textRegex = new RegExp(escapedFilter, 'i');
 
     const filteredPosts = await Post
         .find({})
@@ -37,7 +40,7 @@ async function addLike(postId, userId) {
     await foundPost.save();
 }
 
-async function removeLike(postId, userId) {
+async function removeLike(postId, userId) {T
     const foundPost = await Post.findById(postId);
 
     foundPost.likes = foundPost.likes.filter(likedUserId => likedUserId.toString() !== userId);

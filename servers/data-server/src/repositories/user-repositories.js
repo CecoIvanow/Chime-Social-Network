@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import User from "../models/User.js";
 import { userTokenCreation } from '../utils/token-utils.js';
 import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-utils.js';
+import { escapeRegex } from '../utils/regex-utils.js';
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName createdPosts createdAt imageUrl'
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 13;
@@ -77,7 +78,9 @@ async function attachPostToUser(ownerId, postId) {
 }
 
 async function getAllWithMatchingNames(filter) {
-    const nameRegex = new RegExp(filter, 'i');
+    const escapedFilter = escapeRegex(filter);
+
+    const nameRegex = new RegExp(escapedFilter, 'i');
 
     const filteredUsers = await User
         .find({})
