@@ -129,6 +129,13 @@
     color:  #777777;
 }
 
+.likes:hover,
+.comments:hover, 
+.created-on:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .post-owner a {
     text-decoration: none;
     color: #2c3e50;
@@ -197,6 +204,8 @@
 }
 
 .button{
+    position: relative;
+    top: 0px;
     height: 31px;
     width: 75px;
     border-radius: 25px;
