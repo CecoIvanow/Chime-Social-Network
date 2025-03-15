@@ -50,7 +50,7 @@ export default function PostItem({
                     <img className='owner-picture' src={creatorDetails?.imageUrl} alt="" />
                     <p className='post-owner'><Link to={`/profile/${creatorDetails?.id}`}>{creatorDetails?.fullName}</Link></p>
                 </div>
-                <div className='created-on'>Posted on {postMetaData?.postedOn}</div>
+                <div className='created-on'><Link to={`/post/${postMetaData?.id}/details`}>Posted on {postMetaData?.postedOn}</Link></div>
             </div>
             <div className='post-text'>{postMetaData?.text}</div>
             <div className="post-interactions">

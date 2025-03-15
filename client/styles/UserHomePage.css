@@ -122,16 +122,15 @@
     align-items: center;
 }
 
-.created-on,
+.created-on a,
 .post-interactions {
     font-size: small;
     font-weight: 500;
     color:  #777777;
+    text-decoration: none;
 }
-
-.likes:hover,
-.comments:hover, 
-.created-on:hover {
+ 
+.created-on a:hover {
     cursor: pointer;
     text-decoration: underline;
 }
@@ -251,8 +250,8 @@
 }
 
 .post-item img{
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
 }
 
 .delete-btn {
