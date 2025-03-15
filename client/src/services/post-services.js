@@ -34,10 +34,15 @@ async function handleLike(userId, postId) {
     await postApi.addLike(userId, postId);
 }
 
+async function handleUnlike(userId, postId) {
+    await postApi.removeLike(userId, postId);
+}
+
 const postServices = {
     handleGetAllByContentWithOwners,
     handlePostCreate,
     handleDelete,
+    handleUnlike,
     handleLike
 }
 
