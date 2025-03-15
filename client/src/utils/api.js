@@ -21,11 +21,11 @@ async function fetcher(path, method, body, abortSignal) {
     return await fetch(BASE_URL + path, options);
 }
 
-const request = {
+const api = {
     get: async (path, abortsignal) => await fetcher(path, 'GET', undefined, abortsignal),
     post: async (path, body) => await fetcher(path, 'POST', body),
     patch: async (path, body) => await fetcher(path, 'PATCH', body),
     delete: async (path) => await fetcher(path, 'DELETE'),
 }
 
-export default request
+export default api

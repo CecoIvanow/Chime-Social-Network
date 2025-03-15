@@ -1,10 +1,11 @@
 import defaultAvatar from '/images/default-profile-avatar.png'
 
-import postApi from "../api/post-api.js"
+import api from '../utils/api.js';
 import { postedOnDateConverter } from "../utils/date-time-utils.js";
 
 async function handlePostCreate(postData) {
-    const newPost = await postApi.create(postData);
+    const resp = await api.post('/posts', postData)
+    const newPost = await resp.json();
 
     newPost.postedOn = postedOnDateConverter(newPost.createdAt);
 
@@ -12,7 +13,8 @@ async function handlePostCreate(postData) {
 }
 
 async function handleGetAllByContentWithOwners(searchParam, abortSignal) {
-    const matchedPosts = await postApi.retrieveByContent(searchParam, abortSignal);
+    const resp = await api.get(`/posts/search?content=${searchParam}`, abortSignal);
+    const matchedPosts = await resp.json();
 
     matchedPosts
         .reverse()
@@ -25,17 +27,18 @@ async function handleGetAllByContentWithOwners(searchParam, abortSignal) {
 }
 
 async function handleDelete(postId) {
-    const removedPostId =  await postApi.remove(postId);
+    const resp = await api.delete(`/posts/${postId}`);
+    const removedPostId = await resp.json();
 
     return removedPostId;
 }
 
 async function handleLike(userId, postId) {
-    await postApi.addLike(userId, postId);
+    await api.post(`/posts/${postId}/like/${userId}`);
 }
 
 async function handleUnlike(userId, postId) {
-    await postApi.removeLike(userId, postId);
+    await api.delete(`/posts/${postId}/like/${userId}`);
 }
 
 const postServices = {
