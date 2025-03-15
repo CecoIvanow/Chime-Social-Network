@@ -41,8 +41,6 @@ postController.delete('/posts/:postId', async (req, res) => {
         const ownerId = await postRepositories.remove(postId);
 
         await userRepositories.removePost(ownerId, postId);
-
-        console.log(postId);
         
         res.json(postId);
         res.end();

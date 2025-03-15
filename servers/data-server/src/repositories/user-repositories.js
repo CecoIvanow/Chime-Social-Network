@@ -161,7 +161,7 @@ async function changeAccountCredentials(userId, data) {
 async function removePost(userId, postId) {
     const foundUser = await User.findById(userId);
 
-    foundUser.createdPosts = foundUser.createdPosts.filter(post => post.equals(postId));
+    foundUser.createdPosts = foundUser.createdPosts.filter(post => post.toString() !== postId);
 
     await foundUser.save();
 }
