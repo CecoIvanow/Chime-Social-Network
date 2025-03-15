@@ -67,7 +67,7 @@ export default function PostItem({
                                 <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>
                             ))}
 
-                            < button className='button comment-btn' type="button" onClick={onLikePostClickHandler}>Comment</button>
+                            < button className='button comment-btn' type="button"><Link to={`/post/${postMetaData?.id}/details`}>Comment</Link></button>
                         </>
                     )}
                 </div>

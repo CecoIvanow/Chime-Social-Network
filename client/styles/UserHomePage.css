@@ -202,7 +202,8 @@
     justify-content: space-between;
 }
 
-.button{
+.button,
+.button a {
     position: relative;
     top: 0px;
     height: 31px;
@@ -225,11 +226,14 @@
     background-color: #3889be;
 }
 
-.comment-btn {
-    letter-spacing: 0px;
+.comment-btn{
     width: 100px;
 }
+.comment-btn a {
+    letter-spacing: 0px;
+    text-decoration: none;
 
+}
 .unlike-btn {
     background-color: #949494;
 }
