@@ -42,7 +42,9 @@ postController.delete('/posts/:postId', async (req, res) => {
 
         await userRepositories.removePost(ownerId, postId);
 
-        res.send(postId);
+        console.log(postId);
+        
+        res.json(postId);
         res.end();
     } catch (error) {
         console.error(error.message);
