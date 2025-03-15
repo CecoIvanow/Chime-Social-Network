@@ -1,13 +1,10 @@
 import defaultAvatar from '/images/default-profile-avatar.png'
 
 import api from '../utils/api.js';
-import { postedOnDateConverter } from "../utils/date-time-utils.js";
 
 async function handlePostCreate(postData) {
     const resp = await api.post('/posts', postData)
     const newPost = await resp.json();
-
-    newPost.postedOn = postedOnDateConverter(newPost.createdAt);
 
     return newPost;
 }
@@ -18,10 +15,7 @@ async function handleGetAllByContentWithOwners(searchParam, abortSignal) {
 
     matchedPosts
         .reverse()
-        .map(post => {
-            post.postedOn = postedOnDateConverter(post.createdAt)
-            post.owner.imageUrl = post.owner.imageUrl ? post.owner.imageUrl : defaultAvatar;
-        })
+        .map(post => post.owner.imageUrl = post.owner.imageUrl ? post.owner.imageUrl : defaultAvatar);
 
     return matchedPosts;
 }

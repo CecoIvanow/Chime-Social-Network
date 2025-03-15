@@ -1,10 +1,13 @@
 import Post from "../models/Post.js";
+import { postedOnDateConverter } from "../utils/date-time-utils.js";
 import { escapeRegex } from "../utils/regex-utils.js";
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName imageUrl'
 
 async function create(postData) {
     const newPost = await Post.create(postData);
+
+    newPost.postedOn = postedOnDateConverter(newPost.createdAt);
 
     return newPost;
 }
@@ -14,7 +17,7 @@ async function getAllWithMatchingText(filter) {
 
     const textRegex = new RegExp(escapedFilter, 'i');
 
-    const filteredPosts = await Post
+    const matchedUsers = await Post
         .find({})
         .where({ text: textRegex })
         .populate({
@@ -23,7 +26,9 @@ async function getAllWithMatchingText(filter) {
         })
         .lean();
 
-    return filteredPosts;
+    matchedUsers.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
+
+    return matchedUsers;
 }
 
 async function remove(postId) {

@@ -1,7 +1,6 @@
 import defaultAvatar from '/images/default-profile-avatar.png'
 
 import api from '../utils/api.js';
-import { ageCalculator, memberSinceDateConverter, postedOnDateConverter } from "../utils/date-time-utils.js";
 
 const userUpdatePayload = {
     validationData: {},
@@ -33,9 +32,6 @@ async function handleUserDataWithPosts(userId, abortSignal) {
     const userData = await resp.json();
 
     userData.imageUrl = userData.imageUrl ? userData.imageUrl : defaultAvatar;
-    userData.memberSince = memberSinceDateConverter(userData.createdAt);
-    userData.age = ageCalculator(userData.birthday);
-    userData.createdPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
 
     return userData;
 }
@@ -46,12 +42,7 @@ async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
 
     matchedUsers
         .reverse()
-        .map(user => {
-            user.memberSince = memberSinceDateConverter(user.createdAt)
-            user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar;
-
-            return user;
-        });
+        .map(user => user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar);
 
     return matchedUsers;
 }
