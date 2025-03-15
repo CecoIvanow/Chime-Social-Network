@@ -25,7 +25,7 @@ async function remove(postId) {
 }
 
 async function addLike(userId, postId) {
-    await request.post(`/posts/${postId}/like`, { userId });
+    await request.post(`/posts/${postId}/like/${userId}`);
 }
 
 async function removeLike(userId, postId) {

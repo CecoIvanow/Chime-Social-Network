@@ -48,9 +48,9 @@ postController.delete('/posts/:postId', async (req, res) => {
     
 })
 
-postController.post('/posts/:postId/like', async (req, res) => {
+postController.post('/posts/:postId/like/:userId', async (req, res) => {
     const postId = req.params.postId;
-    const userId = req.body.userId;
+    const userId = req.params.userId;
 
     try {
         await postRepositories.addLike(postId, userId);
