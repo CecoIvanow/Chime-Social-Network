@@ -73,7 +73,7 @@ async function handleEmailChange(userId, submittedData) {
         email: newEmail
     };
 
-    await api.patch(`/users/${userId}/credentials`, submittedData);
+    await api.patch(`/users/${userId}/credentials`, userUpdatePayload);
 }
 
 async function handlePasswordChange(userId, submittedData) {
@@ -86,7 +86,7 @@ async function handlePasswordChange(userId, submittedData) {
         newPass
     };
 
-    await api.patch(`/users/${userId}/credentials`, submittedData);
+    await api.patch(`/users/${userId}/credentials`, userUpdatePayload);
 }
 
 const userServices = {
