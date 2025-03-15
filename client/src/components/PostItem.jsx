@@ -60,11 +60,15 @@ export default function PostItem({
             <div className='button-div'>
                 <div>
                     {(userId && userId !== creatorDetails?.id) && (
-                        (!isLiked &&
-                            <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>)
-                        ||
-                        (isLiked &&
-                            <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>)
+                        <>
+                            {(isLiked ? (
+                                <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>
+                            ) : (
+                                <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>
+                            ))}
+
+                            < button className='button comment-btn' type="button" onClick={onLikePostClickHandler}>Comment</button>
+                        </>
                     )}
                 </div>
                 <div className='owner-buttons'>
