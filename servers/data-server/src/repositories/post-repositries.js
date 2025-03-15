@@ -34,7 +34,7 @@ async function getAllWithMatchingText(filter) {
 async function remove(postId) {
     const removedPost = await Post.findByIdAndDelete(postId);
 
-    return removedPost._id;
+    return removedPost.owner;
 }
 
 async function addLike(postId, userId) {

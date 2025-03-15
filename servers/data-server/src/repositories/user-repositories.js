@@ -67,9 +67,9 @@ async function getUserAndPopulatePosts(userId) {
         .populate('createdPosts')
         .lean();
 
-        userData.memberSince = memberSinceDateConverter(userData.createdAt);
-        userData.age = ageCalculator(userData.birthday);
-        userData.createdPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
+    userData.memberSince = memberSinceDateConverter(userData.createdAt);
+    userData.age = ageCalculator(userData.birthday);
+    userData.createdPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
 
     return userData
 }
@@ -126,7 +126,7 @@ async function changeAccountCredentials(userId, data) {
 
     if (hasNewPassword && !isNewPasswordRepeatValid) {
         throw new Error('New Passwords do not match!');
-    } else if (!hasNewPassword &&    !isOldPasswordRepeatValid) {
+    } else if (!hasNewPassword && !isOldPasswordRepeatValid) {
         throw new Error('Old Passwords do not match!');
     }
 
@@ -158,12 +158,21 @@ async function changeAccountCredentials(userId, data) {
     await foundUser.save();
 }
 
+async function removePost(userId, postId) {
+    const foundUser = await User.findById(userId);
+
+    foundUser.createdPosts = foundUser.createdPosts.filter(post => post.equals(postId));
+
+    await foundUser.save();
+}
+
 const userRepositories = {
     changeAccountCredentials,
     getUserAndPopulatePosts,
     getAllWithMatchingNames,
     attachPostToUser,
     getUserFields,
+    removePost,
     register,
     login,
 }
