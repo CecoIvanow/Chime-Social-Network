@@ -35,7 +35,7 @@ export default function LoginPage({
                             </div>
                         </div>
                         {/* <!-- Submit button --> */}
-                        <div className="button">
+                        <div className="button-auth">
                             <input type="submit" value="Login" />
                         </div>
                         <div className='to-register'>

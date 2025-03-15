@@ -122,14 +122,15 @@
     align-items: center;
 }
 
-.created-on,
+.created-on a,
 .post-interactions {
     font-size: small;
     font-weight: 500;
     color:  #777777;
+    text-decoration: none;
 }
-
-.owner-picture {
+ 
+.created-on a:hover {
     cursor: pointer;
     text-decoration: underline;
 }
@@ -185,11 +186,6 @@
     transition: ease-in, 0.25s;
 }
 
-.button-div{
-    display: flex;
-    justify-content: space-between;
-}
-
 .post-interactions {
     display: flex;
     justify-content: flex-start;
@@ -201,7 +197,13 @@
         margin-top: 10px;
 }
 
-.button{
+.button-div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.button,
+.button a {
     position: relative;
     top: 0px;
     height: 31px;
@@ -213,6 +215,8 @@
     font-size: medium;
     font-weight: 500;
     margin: 10px;
+    text-align: center;
+    letter-spacing: 1px;
 }
 
 .button:hover {
@@ -222,6 +226,14 @@
     background-color: #3889be;
 }
 
+.comment-btn{
+    width: 100px;
+}
+.comment-btn a {
+    letter-spacing: 0px;
+    text-decoration: none;
+
+}
 .unlike-btn {
     background-color: #949494;
 }
@@ -242,8 +254,8 @@
 }
 
 .post-item img{
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
 }
 
 .delete-btn {

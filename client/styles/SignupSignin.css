@@ -104,8 +104,7 @@ form .input-box span.details {
     transition: all 0.3s ease;
 }
 
-.user-details .input-box input:focus,
-.user-details .input-box input:valid {
+.user-details .input-box input:focus {
     border-color: #2980b9;
 }
 
@@ -147,12 +146,12 @@ form input[type="radio"] {
     display: none;
 }
 
-form .button {
+form .button-auth {
     height: 45px;
     margin: 35px 35px 15px 35px;
 }
 
-form .button input {
+form .button-auth input {
     height: 100%;
     width: 100%;
     border-radius: 5px;
@@ -166,7 +165,7 @@ form .button input {
     background-color: #2980b9;
 }
 
-form .button input:hover {
+form .button-auth input:hover {
     transform: scale(1.05);
     transition: ease-in, 0.25s;
 }

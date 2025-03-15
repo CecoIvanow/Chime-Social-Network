@@ -50,7 +50,7 @@ export default function PostItem({
                     <img className='owner-picture' src={creatorDetails?.imageUrl} alt="" />
                     <p className='post-owner'><Link to={`/profile/${creatorDetails?.id}`}>{creatorDetails?.fullName}</Link></p>
                 </div>
-                <div className='created-on'>Posted on {postMetaData?.postedOn}</div>
+                <div className='created-on'><Link to={`/post/${postMetaData?.id}/details`}>Posted on {postMetaData?.postedOn}</Link></div>
             </div>
             <div className='post-text'>{postMetaData?.text}</div>
             <div className="post-interactions">
@@ -60,11 +60,15 @@ export default function PostItem({
             <div className='button-div'>
                 <div>
                     {(userId && userId !== creatorDetails?.id) && (
-                        (!isLiked &&
-                            <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>)
-                        ||
-                        (isLiked &&
-                            <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>)
+                        <>
+                            {(isLiked ? (
+                                <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>
+                            ) : (
+                                <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>
+                            ))}
+
+                            < button className='button comment-btn' type="button"><Link to={`/post/${postMetaData?.id}/details`}>Comment</Link></button>
+                        </>
                     )}
                 </div>
                 <div className='owner-buttons'>

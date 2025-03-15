@@ -1,7 +1,6 @@
 import defaultAvatar from '/images/default-profile-avatar.png'
 
-import userApi from "../api/user-api.js";
-import { ageCalculator, memberSinceDateConverter, postedOnDateConverter } from "../utils/date-time-utils.js";
+import api from '../utils/api.js';
 
 const userUpdatePayload = {
     validationData: {},
@@ -9,51 +8,48 @@ const userUpdatePayload = {
 }
 
 async function handleRegister(data, setIsUser) {
-    const userId = await userApi.register(data);
+    const resp = await api.post('/register', data);
+    const userId = await resp.json();
 
     setIsUser(userId);
 }
 
 async function handleLogin(data, setIsUser) {
-    const userId = await userApi.login(data);
+    const resp = await api.post('/login', data);
+    const userId = await resp.json();
 
     setIsUser(userId);
 }
 
 async function handleLogout(setIsUser) {
-    await userApi.logout();
+    await api.get('/logout');
 
     setIsUser(false);
 }
 
 async function handleUserDataWithPosts(userId, abortSignal) {
-    const userData = await userApi.retrieveUserWithPosts(userId, abortSignal);
+    const resp = await api.get(`/users/${userId}/with-posts`, abortSignal);
+    const userData = await resp.json();
 
     userData.imageUrl = userData.imageUrl ? userData.imageUrl : defaultAvatar;
-    userData.memberSince = memberSinceDateConverter(userData.createdAt);
-    userData.age = ageCalculator(userData.birthday);
-    userData.createdPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
 
     return userData;
 }
 
 async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
-    const matchedUsers = await userApi.retrieveUsersByName(searchParam, abortSignal);
+    const resp = await api.get(`/users/search?name=${searchParam}`, abortSignal);
+    const matchedUsers = await resp.json();
 
     matchedUsers
         .reverse()
-        .map(user => {
-            user.memberSince = memberSinceDateConverter(user.createdAt)
-            user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar;
-
-            return user;
-        });
+        .map(user => user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar);
 
     return matchedUsers;
 }
 
 async function handleGetUserFields(userId, fields, abortSignal) {
-    const userData = userApi.retrieveUserDataByFields(userId, fields, abortSignal);
+    const resp = await api.get(`/users/${userId}/fields?${fields}`, abortSignal);
+    const userData = await resp.json();
 
     return userData
 }
@@ -68,7 +64,7 @@ async function handleEmailChange(userId, submittedData) {
         email: newEmail
     };
 
-    await userApi.changeUserCredentials(userId, userUpdatePayload);
+    await api.patch(`/users/${userId}/credentials`, userUpdatePayload);
 }
 
 async function handlePasswordChange(userId, submittedData) {
@@ -81,7 +77,7 @@ async function handlePasswordChange(userId, submittedData) {
         newPass
     };
 
-    await userApi.changeUserCredentials(userId, userUpdatePayload);
+    await api.patch(`/users/${userId}/credentials`, userUpdatePayload);
 }
 
 const userServices = {

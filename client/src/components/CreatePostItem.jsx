@@ -39,7 +39,7 @@ export default function CreatePostItem({
                     <label htmlFor="post"></label>
                     <input type="text" name="text" id="post" value={postText} onChange={onTextChangeHandler} placeholder="Share your thoughts..." />
                 </div>
-                <button className='submit-button' >Post</button>
+                <button className='button' >Post</button>
             </form>
         </div>
     </>

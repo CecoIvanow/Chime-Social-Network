@@ -71,7 +71,7 @@ export default function RegisterPage({
                             </div>
                         </div>
                         {/* <!-- Submit button --> */}
-                        <div className="button">
+                        <div className="button-auth">
                             <input type="submit" value="Register" />
                         </div>
                         <div className='to-login'>

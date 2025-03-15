@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import { userTokenCreation } from '../utils/token-utils.js';
 import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-utils.js';
 import { escapeRegex } from '../utils/regex-utils.js';
+import { ageCalculator, memberSinceDateConverter, postedOnDateConverter } from '../utils/date-time-utils.js';
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName createdPosts createdAt imageUrl'
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 13;
@@ -66,6 +67,10 @@ async function getUserAndPopulatePosts(userId) {
         .populate('createdPosts')
         .lean();
 
+    userData.memberSince = memberSinceDateConverter(userData.createdAt);
+    userData.age = ageCalculator(userData.birthday);
+    userData.createdPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
+
     return userData
 }
 
@@ -82,7 +87,7 @@ async function getAllWithMatchingNames(filter) {
 
     const nameRegex = new RegExp(escapedFilter, 'i');
 
-    const filteredUsers = await User
+    const matchedUsers = await User
         .find({})
         .or([
             { firstName: nameRegex },
@@ -91,7 +96,9 @@ async function getAllWithMatchingNames(filter) {
         .select(COMMONLY_NEEDED_PARAMS)
         .lean();
 
-    return filteredUsers;
+    matchedUsers.map(user => user.memberSince = memberSinceDateConverter(user.createdAt))
+
+    return matchedUsers;
 }
 
 async function getUserFields(userId, params) {
@@ -119,7 +126,7 @@ async function changeAccountCredentials(userId, data) {
 
     if (hasNewPassword && !isNewPasswordRepeatValid) {
         throw new Error('New Passwords do not match!');
-    } else if (!hasNewPassword &&    !isOldPasswordRepeatValid) {
+    } else if (!hasNewPassword && !isOldPasswordRepeatValid) {
         throw new Error('Old Passwords do not match!');
     }
 
@@ -151,12 +158,21 @@ async function changeAccountCredentials(userId, data) {
     await foundUser.save();
 }
 
+async function removePost(userId, postId) {
+    const foundUser = await User.findById(userId);
+
+    foundUser.createdPosts = foundUser.createdPosts.filter(post => post.toString() !== postId);
+
+    await foundUser.save();
+}
+
 const userRepositories = {
     changeAccountCredentials,
     getUserAndPopulatePosts,
     getAllWithMatchingNames,
     attachPostToUser,
     getUserFields,
+    removePost,
     register,
     login,
 }

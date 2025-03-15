@@ -1,0 +1,135 @@
+html {
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.post-page-body {
+    max-width: 80%;
+    margin: 100px auto;
+    border-radius: 15px;
+    padding: 5px;
+    background-color: white;
+    list-style-type: none;
+    border-color: #f0f0f0;
+    border-style: solid;
+    border-width: 2px;
+}
+
+.post-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 15px 10px 0px;
+}
+
+.post-page-header div {
+    display: flex;
+    align-items: center;
+}
+
+.post-owner a {
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.post-owner:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.post-page-header .owner-picture {
+    width: 50px;
+    height: 50px;
+    margin: 10px;
+    border-radius: 50%;
+    border-color: #2980b9;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.post-page-text {
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+}
+
+.comments-section {
+    margin-top: 20px;
+}
+
+.comment-create {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.comment-create img {
+    width: 50px;
+    height: 50px;
+    margin: 10px;
+    border-radius: 50%;
+    border-color: #2980b9;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.comment-create input {
+    height: 55px;
+    width: 80%;
+    padding: 12px;
+    border-radius: 25px;
+    border-style: solid;
+    border-color: #e0e0e0;
+    margin-left: 2%;
+}
+
+.post-comments {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.post-comments > p {
+    width: 95%;
+    font-size: x-large;
+    font-weight: 700;
+    color: #2c3e50;
+    text-decoration: none;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #2980b9;
+}
+
+.comment-item {
+    width: 500px;
+    border-radius: 15px;
+    padding: 5px;
+    background-color: #f8f9fa;
+    list-style-type: none;
+    margin: 20px;
+    border-color: #dad9d9;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.comment-item img {
+    width: 30px;
+    height: 30px;
+}
+
+.created-on,
+.commented-on {
+    font-size: smaller;
+    font-weight: 500;
+    color: #777777;
+    text-decoration: none;
+}
+
+.post-page-created-on {
+    font-size: small;
+    font-weight: 500;
+    color: #777777;
+    text-decoration: none;
+}
