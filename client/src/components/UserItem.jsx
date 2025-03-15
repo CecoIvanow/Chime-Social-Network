@@ -20,7 +20,7 @@ export default function UserItem({
                 </div>
             </div>
             {(isUser && isUser !== profileId) && (
-                <button className="action-button">Add</button>
+                <button className="button">Add</button>
             )}
         </div>
     </>

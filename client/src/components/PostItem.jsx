@@ -31,6 +31,12 @@ export default function PostItem({
         setIsLiked(true);
     }
 
+    const onUnlikePostClockHandler = async () => {
+        await postServices.handleUnlike(userId, postMetaData.id);
+        postMetaData.likes = postMetaData.likes.filter(userLike => userLike !== userId);
+        setIsLiked(false);
+    }
+
     useEffect(() => {
         if (postMetaData?.likes.includes(userId)) {
             setIsLiked(true);
@@ -51,21 +57,25 @@ export default function PostItem({
                 <div className="likes">Likes: {postMetaData?.likes.length}</div>
                 <div className="comments">Comments: {postMetaData?.comments.length}</div>
             </div>
-            <div className='post-buttons-div'>
+            <div className='button-div'>
                 <div>
-                    {((userId && userId !== creatorDetails?.id) && !isLiked) && (
-                        <button className='post-buttons like-btn' type="button" onClick={onLikePostClickHandler}>Like</button>
+                    {(userId && userId !== creatorDetails?.id) && (
+                        (!isLiked &&
+                            <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>)
+                        ||
+                        (isLiked &&
+                            <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>)
                     )}
                 </div>
                 <div className='owner-buttons'>
                     {userId === creatorDetails?.id && (
                         <>
-                            <button className='post-buttons edit-btn' type="button">Edit</button>
-                            <button className='post-buttons delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
+                            <button className='button' type="button">Edit</button>
+                            <button className='button delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
                         </>
                     )}
                 </div>
             </div>
-        </li>
+        </li >
     </>
 }

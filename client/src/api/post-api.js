@@ -25,11 +25,16 @@ async function remove(postId) {
 }
 
 async function addLike(userId, postId) {
-    await request.post(`/posts/${postId}/like`, { userId });
+    await request.post(`/posts/${postId}/like/${userId}`);
+}
+
+async function removeLike(userId, postId) {
+    await request.delete(`/posts/${postId}/like/${userId}`);
 }
 
 const postApi = {
     retrieveByContent,
+    removeLike,
     addLike,
     create,
     remove,

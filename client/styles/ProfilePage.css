@@ -134,27 +134,6 @@ body {
     font-weight: 500;
 }
 
-.edit-btn {
-    background-color: #2980b9;
-    color: white;
-}
-
-.edit-btn:hover {
-    transform: translateY(-2px);
-    background-color: #3889be;
-    color: white;
-}
-
-.delete-btn {
-    background-color: #dd3240;
-    color: white;
-}
-
-.delete-btn:hover {
-    transform: translateY(-2px);
-    background-color: #e93947;
-}
-
 @media (max-width: 768px) {
     .profile-container {
         flex-direction: column;

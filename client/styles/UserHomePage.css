@@ -185,7 +185,7 @@
     transition: ease-in, 0.25s;
 }
 
-.post-buttons-div{
+.button-div{
     display: flex;
     justify-content: space-between;
 }
@@ -201,7 +201,7 @@
         margin-top: 10px;
 }
 
-.post-buttons{
+.button{
     position: relative;
     top: 0px;
     height: 31px;
@@ -213,6 +213,21 @@
     font-size: medium;
     font-weight: 500;
     margin: 10px;
+}
+
+.button:hover {
+    cursor: pointer;
+    top: -2px;
+    transition: ease-in, 0.25s;
+    background-color: #3889be;
+}
+
+.unlike-btn {
+    background-color: #949494;
+}
+
+.unlike-btn:hover {
+    background-color: #a1a1a1;
 }
 
 .post-item {
@@ -229,13 +244,6 @@
 .post-item img{
     width: 30px;
     height: 30px;
-}
-
-.post-buttons:hover {
-    cursor: pointer;
-    top: -2px;
-    transition: ease-in, 0.25s;
-    background-color: #3889be;
 }
 
 .delete-btn {

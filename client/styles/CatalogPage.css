@@ -162,27 +162,3 @@ body {
     gap: 10px;
     margin-top: 15px;
 }
-
-.action-button {
-    height: 31px;
-    width: 75px;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background-color: #2980b9;
-    color: white;
-    font-size: medium;
-    font-weight: 500;
-}
-
-.delete-btn {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.action-button:hover {
-    cursor: pointer;
-    transform: translateY(-2px);
-    background-color: #3889be;
-}
