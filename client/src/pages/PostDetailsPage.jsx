@@ -1,20 +1,43 @@
-import { Link } from "react-router"
+import { Link, useLocation } from "react-router"
 import CommentItem from "../components/CommentItem"
+import { useEffect, useState } from "react";
+import postServices from "../services/post-services";
 
 export default function PostDetails() {
+
+    const location = useLocation();
+
+    const [postData, setPostData] = useState([]);
+// 
+    useEffect(() => {
+        const postId = location.pathname.split('/').at(2);
+
+        const abortController = new AbortController();
+        const abortSignal = abortController.signal;
+
+        postServices.handleGetPostData(postId, abortSignal)
+            .then(data => setPostData(data))
+            .catch(error => console.error(error.message));
+
+        return () => {
+            abortController.abort();
+        }
+
+    }, [location.pathname])
+
     return <>
         <li className='post-page-body'>
             <div className='post-page-header'>
                 <div>
-                    <img className='owner-picture' src="" alt="" />
-                    <p className='post-owner'><Link>Lacho Lachkov</Link></p>
+                    <img className='owner-picture' src={postData.owner?.imageUrl} alt="" />
+                    <p className='post-owner'><Link>{postData.owner?.firstName} {postData.owner?.lastName}</Link></p>
                 </div>
-                <div className='created-on'>Posted on 2025-03-15 in 15:39</div>
+                <div className='created-on'>{postData?.postedOn}</div>
             </div>
-            <div className='post-page-text'>Filler Text</div>
+            <div className='post-page-text'>{postData?.text}</div>
             <div className="post-interactions">
-                <div className="likes">Likes: 1</div>
-                <div className="comments">Comments: 2</div>
+                <div className="likes">Likes: {postData.likes?.length}</div>
+                <div className="comments">Comments: {postData.comments?.length}</div>
             </div>
             <div className='button-div'>
                 <div>
@@ -29,7 +52,7 @@ export default function PostDetails() {
             <div className="comments-section">
                 <form>
                     <div className='comment-create'>
-                        <img src="" />
+                        <img src={undefined} />
                         <label htmlFor="comment"></label>
                         <input type="text" name="text" id="comment" placeholder="Add your comment..." />
                     </div>
@@ -38,10 +61,10 @@ export default function PostDetails() {
                 <div className="post-comments">
                     <p>All Comments:</p>
                     <ul>
-                        <CommentItem/>
-                        <CommentItem/>
-                        <CommentItem/>
-                        <CommentItem/>
+                        <CommentItem />
+                        <CommentItem />
+                        <CommentItem />
+                        <CommentItem />
                     </ul>
                 </div>
             </div>
