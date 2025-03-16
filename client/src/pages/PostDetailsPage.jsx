@@ -10,7 +10,7 @@ export default function PostDetailsPage({
     const location = useLocation();
     const navigateTo = useNavigate();
 
-    const [postData, setPostData] = useState([]);
+    const [postData, setPostData] = useState({});
     const [isLiked, setIsLiked] = useState(false);
 
     const onDeletePostClickHandler = async () => {
@@ -42,7 +42,8 @@ export default function PostDetailsPage({
         commentData.owner = isUser;
 
         const newComment = await commentServices.create(commentData);
-        setPostData(postData => postData.comments.push(newComment));
+        postData.comments.unshift(newComment);
+        setPostData({...postData});
     }
 
     useEffect(() => {
