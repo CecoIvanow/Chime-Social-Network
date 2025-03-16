@@ -4,7 +4,7 @@ import { escapeRegex } from "../utils/regex-utils.js";
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName imageUrl'
 
-async function getSpecific(postId) {
+async function getSpecificWithComments(postId) {
     const postData = await Post
     .findById(postId)
     .populate({
@@ -84,9 +84,9 @@ async function attachCommentToPost(postId, commentId) {
 }
 
 const postRepositories = {
+    getSpecificWithComments,
     getAllWithMatchingText,
     attachCommentToPost,
-    getSpecific,
     removeLike,
     addLike,
     create,

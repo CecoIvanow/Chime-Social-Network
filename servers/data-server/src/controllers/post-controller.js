@@ -18,11 +18,11 @@ postController.get('/posts/search', async (req, res) => {
     }
 })
 
-postController.get('/posts/:postId', async (req, res) => {
+postController.get('/posts/:postId/with-comments', async (req, res) => {
     const postId = req.params.postId;
 
     try {
-        const postData = await postRepositories.getSpecific(postId);
+        const postData = await postRepositories.getSpecificWithComments(postId);
 
         res.json(postData);
         res.end();        
