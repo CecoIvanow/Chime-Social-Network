@@ -11,7 +11,14 @@ async function getSpecific(postId) {
         path: 'owner', 
         select: COMMONLY_NEEDED_PARAMS
     })
-    .populate('comments')
+    .populate({
+        path: 'comments',
+        select: 'text',
+        populate: {
+            path: 'owner',
+            select: COMMONLY_NEEDED_PARAMS,
+        },
+    })
     .lean();
 
     postData.postedOn = postedOnDateConverter(postData.createdAt);
