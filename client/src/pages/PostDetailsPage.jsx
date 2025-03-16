@@ -34,7 +34,7 @@ export default function PostDetailsPage({
             abortController.abort();
         }
 
-    }, [location.pathname]);
+    }, [location.pathname, postData]);
 
     return <>
         <li className='post-page-body'>

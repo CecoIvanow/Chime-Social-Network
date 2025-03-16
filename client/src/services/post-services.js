@@ -40,7 +40,9 @@ async function handleGetPostDataWithComments(postId, abortSignal) {
     const postData = await resp.json();
 
     postData.owner.imageUrl = postData.owner.imageUrl ? postData.owner.imageUrl : defaultAvatar;
-    postData.comments.map(comment => comment.owner.imageUrl = comment.owner.imageUrl ? comment.owner.imageUrl : defaultAvatar);
+    postData.comments
+        .reverse()
+        .map(comment => comment.owner.imageUrl = comment.owner.imageUrl ? comment.owner.imageUrl : defaultAvatar);
 
     return postData;
 }
