@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router"
+import { Link, useLocation, useNavigate } from "react-router"
 import CommentItem from "../components/CommentItem"
 import { useEffect, useState } from "react";
 import postServices from "../services/post-services";
@@ -8,21 +8,21 @@ export default function PostDetailsPage({
     isUser
 }) {
     const location = useLocation();
+    const navigateTo = useNavigate();
 
     const [postData, setPostData] = useState([]);
     const [isLiked, setIsLiked] = useState(false);
 
-    // const onDeletePostClickHandler = async () => {
-    //     const isDeleteCondirmed = confirm('Are you sure you want to delete this post?');
+    const onDeletePostClickHandler = async () => {
+        const isDeleteConfirmed = confirm('Are you sure you want to delete this post?');
 
-    //     if (!isDeleteCondirmed) {
-    //         return totalPosts; // Returns totalPosts unnecessarily because eslint marks it as not used!
-    //     }
+        if (!isDeleteConfirmed) {
+            return;
+        }
 
-    //     const deletedPostId = await postServices.handleDelete(postMetaData.id);
-
-    //     setTotalPosts(totalPosts => totalPosts.filter(post => post._id !== deletedPostId))
-    // }
+        await postServices.handleDelete(postData._id);
+        navigateTo('/catalog');
+    }
 
     const onLikePostClickHandler = async () => {
         await postServices.handleLike(isUser, postData._id);
@@ -97,7 +97,7 @@ export default function PostDetailsPage({
                     {isUser === postData.owner?._id && (
                         <>
                             <button className='button' type="button">Edit</button>
-                            <button className='button delete-btn' type="button">Delete</button>
+                            <button className='button delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
                         </>
                     )}
                 </div>
