@@ -5,6 +5,8 @@ export default function CommentItem({
     isUser,
     metaData,
     creatorData,
+    postData,
+    setPostData,
 }) {
 
     const onDeleteCommentClickHandler = async () => {
@@ -16,8 +18,9 @@ export default function CommentItem({
 
         const removedCommentId = await commentServices.handleDelete(metaData.id);
 
-        console.log(removedCommentId);
-    }
+        postData.comments = postData.comments.filter(comment => comment._id !== removedCommentId);
+        setPostData({...postData});
+        }
 
     return <>
         <li className='comment-item'>

@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router"
-import CommentItem from "../components/CommentItem"
 import { useEffect, useState } from "react";
+
+import CommentItem from "../components/CommentItem"
 import postServices from "../services/post-services";
 import commentServices from "../services/comment-services";
 
@@ -136,6 +137,8 @@ export default function PostDetailsPage({
                                 isUser={isUser}
                                 metaData={metaData}
                                 creatorData={creatorData}
+                                postData={postData}
+                                setPostData={setPostData};
                             />
                         })}
                     </ul>
