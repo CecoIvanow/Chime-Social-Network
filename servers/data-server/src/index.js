@@ -22,8 +22,8 @@ try {
 //CORS enable
 app.use((req, res, next) => {
     const whitelistedOrigins = [
-        'http://localhost:5173',
-        'http://localhost:4173'
+        'http://localhost:4569',
+        'http://localhost:3567'
     ]
 
     const originIndex = whitelistedOrigins.indexOf(req.headers.origin);
