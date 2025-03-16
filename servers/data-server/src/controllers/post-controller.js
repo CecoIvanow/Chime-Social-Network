@@ -5,6 +5,32 @@ import userRepositories from "../repositories/user-repositories.js";
 
 const postController = Router();
 
+postController.get('/posts/search', async (req, res) => {
+    const { content } = req.query;
+
+    try {
+        const filteredPosts = await postRepositories.getAllWithMatchingText(content);
+
+        res.json(filteredPosts);
+        res.end();
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
+postController.get('/posts/:postId', async (req, res) => {
+    const postId = req.params.postId;
+
+    try {
+        const postData = await postRepositories.getSpecific(postId);
+
+        res.json(postData);
+        res.end();        
+    } catch (error) {
+        console.error(error.message)
+    }
+})
+
 postController.post('/posts', async (req, res) => {
     const postData = req.body;
     const ownerId = req.body.owner;
@@ -18,19 +44,6 @@ postController.post('/posts', async (req, res) => {
         res.end();
     } catch (error) {
         console.error(error);
-    }
-})
-
-postController.get('/posts/search', async (req, res) => {
-    const { content } = req.query;
-
-    try {
-        const filteredPosts = await postRepositories.getAllWithMatchingText(content);
-
-        res.json(filteredPosts);
-        res.end();
-    } catch (error) {
-        console.error(error.message);
     }
 })
 
