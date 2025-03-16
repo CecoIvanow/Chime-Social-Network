@@ -10,6 +10,31 @@ export default function PostDetailsPage({
     const location = useLocation();
 
     const [postData, setPostData] = useState([]);
+    const [isLiked, setIsLiked] = useState(false);
+
+    // const onDeletePostClickHandler = async () => {
+    //     const isDeleteCondirmed = confirm('Are you sure you want to delete this post?');
+
+    //     if (!isDeleteCondirmed) {
+    //         return totalPosts; // Returns totalPosts unnecessarily because eslint marks it as not used!
+    //     }
+
+    //     const deletedPostId = await postServices.handleDelete(postMetaData.id);
+
+    //     setTotalPosts(totalPosts => totalPosts.filter(post => post._id !== deletedPostId))
+    // }
+
+    const onLikePostClickHandler = async () => {
+        await postServices.handleLike(isUser, postData._id);
+        postData.likes.push(isUser);
+        setIsLiked(true);
+    }
+
+    const onUnlikePostClockHandler = async () => {
+        await postServices.handleUnlike(isUser, postData._id);
+        postData.likes = postData.likes.filter(userLike => userLike !== isUser);
+        setIsLiked(false);
+    }
 
     const onAddCommentSubmitHandler = async (formData) => {
         const commentData = Object.fromEntries(formData);
@@ -27,14 +52,20 @@ export default function PostDetailsPage({
         const abortSignal = abortController.signal;
 
         postServices.handleGetPostDataWithComments(postId, abortSignal)
-            .then(data => setPostData(data))
+            .then(postData => {
+                setPostData(postData);
+
+                if (postData.likes.includes(isUser)) {
+                    setIsLiked(true);
+                }
+            })
             .catch(error => console.error(error.message));
 
         return () => {
             abortController.abort();
         }
 
-    }, [location.pathname]);
+    }, [location.pathname, isUser]);
 
     return <>
         <li className='post-page-body'>
@@ -52,23 +83,36 @@ export default function PostDetailsPage({
             </div>
             <div className='button-div'>
                 <div>
-                    <button className='button unlike-btn' type="button">Unlike</button>
-                    <button className='button' type="button">Like</button>
+                    {isUser && (
+                        <>
+                            {(isLiked ? (
+                                <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>
+                            ) : (
+                                <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>
+                            ))}
+                        </>
+                    )}
                 </div>
                 <div className='owner-buttons'>
-                    <button className='button' type="button">Edit</button>
-                    <button className='button delete-btn' type="button">Delete</button>
+                    {isUser === postData.owner?._id && (
+                        <>
+                            <button className='button' type="button">Edit</button>
+                            <button className='button delete-btn' type="button">Delete</button>
+                        </>
+                    )}
                 </div>
             </div>
             <div className="comments-section">
-                <form action={onAddCommentSubmitHandler}>
-                    <div className='comment-create'>
-                        <img src={undefined} />
-                        <label htmlFor="comment"></label>
-                        <input type="text" name="text" id="comment" placeholder="Add your comment..." />
-                    </div>
-                    <button className='button comment-btn'>Comment</button>
-                </form>
+                {isUser && (
+                    <form action={onAddCommentSubmitHandler}>
+                        <div className='comment-create'>
+                            <img src={undefined} />
+                            <label htmlFor="comment"></label>
+                            <input type="text" name="text" id="comment" placeholder="Add your comment..." />
+                        </div>
+                        <button className='button comment-btn'>Comment</button>
+                    </form>
+                )}
                 <div className="post-comments">
                     <p>All Comments:</p>
                     <ul>
