@@ -9,7 +9,6 @@ async function fetcher(path, method, body, abortSignal) {
         credentials: 'include'
     }
 
-
     if (abortSignal) {
         options.signal = abortSignal;
     }
@@ -22,7 +21,7 @@ async function fetcher(path, method, body, abortSignal) {
 }
 
 const api = {
-    get: async (path, abortsignal) => await fetcher(path, 'GET', undefined, abortsignal),
+    get: async (path, abortSignal) => await fetcher(path, 'GET', undefined, abortSignal),
     post: async (path, body) => await fetcher(path, 'POST', body),
     patch: async (path, body) => await fetcher(path, 'PATCH', body),
     delete: async (path) => await fetcher(path, 'DELETE'),
