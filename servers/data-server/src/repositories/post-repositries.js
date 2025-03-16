@@ -13,7 +13,7 @@ async function getSpecificWithComments(postId) {
     })
     .populate({
         path: 'comments',
-        select: 'text',
+        select: 'text createdAt',
         populate: {
             path: 'owner',
             select: COMMONLY_NEEDED_PARAMS,
@@ -22,6 +22,11 @@ async function getSpecificWithComments(postId) {
     .lean();
 
     postData.postedOn = postedOnDateConverter(postData.createdAt);
+    console.log(postData.comments.at(0));
+    postData.comments.map(comment => comment.postedOn = postedOnDateConverter(comment.createdAt));
+
+    console.log(postData.comments.at(0));
+    
 
     return postData;
 }
