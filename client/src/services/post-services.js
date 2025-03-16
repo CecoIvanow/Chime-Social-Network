@@ -35,8 +35,8 @@ async function handleUnlike(userId, postId) {
     await api.delete(`/posts/${postId}/like/${userId}`);
 }
 
-async function handleGetPostData(postId, abortSignal) {
-    const resp = await api.get(`/posts/${postId}`, abortSignal);
+async function handleGetPostDataWithComments(postId, abortSignal) {
+    const resp = await api.get(`/posts/${postId}/with-comments`, abortSignal);
     const postData = await resp.json();
     
     return postData;
@@ -44,7 +44,7 @@ async function handleGetPostData(postId, abortSignal) {
 
 const postServices = {
     handleGetAllByContentWithOwners,
-    handleGetPostData,
+    handleGetPostDataWithComments,
     handlePostCreate,
     handleDelete,
     handleUnlike,

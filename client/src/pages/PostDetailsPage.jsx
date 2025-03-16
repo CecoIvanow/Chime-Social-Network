@@ -26,7 +26,7 @@ export default function PostDetailsPage({
         const abortController = new AbortController();
         const abortSignal = abortController.signal;
 
-        postServices.handleGetPostData(postId, abortSignal)
+        postServices.handleGetPostDataWithComments(postId, abortSignal)
             .then(data => setPostData(data))
             .catch(error => console.error(error.message));
 
