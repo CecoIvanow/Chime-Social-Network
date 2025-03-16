@@ -67,8 +67,17 @@ async function removeLike(postId, userId) {
     await foundPost.save();
 }
 
+async function attachCommentToPost(postId, commentId) {
+    const foundPost = await Post.findById(postId);
+
+    foundPost.comments.push(commentId);
+
+    await foundPost.save();
+}
+
 const postRepositories = {
     getAllWithMatchingText,
+    attachCommentToPost,
     getSpecific,
     removeLike,
     addLike,
