@@ -19,4 +19,19 @@ commentController.post('/comments', async (req, res) => {
     }
 })
 
+commentController.delete('/comments/:commentId', async (req, res) => {
+    const commentId = req.params.commentId;
+    
+    try {
+        const postId = await commentRepositories.remove(commentId);
+
+        await postRepositories.removeComment(postId, commentId);
+
+        res.json(commentId);
+        res.end();
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 export default commentController;
