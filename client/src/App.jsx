@@ -13,7 +13,7 @@ import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
 import Logout from './pages/Logout';
 import MenuBar from './components/MenuBar';
-import PostDetails from './pages/PostDetailsPage';
+import PostDetailsPage from './pages/PostDetailsPage';
 
 export default function App() {
     const [isUser, setIsUser] = useState(false);
@@ -38,7 +38,7 @@ export default function App() {
             <Route path='/register' element={!isUser ? <RegisterPage setIsUser={setIsUser} /> : <Navigate to="/" />} />
 
             {/* Public pages */}
-            <Route path='/post/:postId/details' element={<PostDetails />} />
+            <Route path='/post/:postId/details' element={<PostDetailsPage isUser={isUser}/>} />
             <Route path='/profile/:userId' element={<ProfilePage isUser={isUser} />} />
             <Route path='/catalog' element={<CatalogPage isUser={isUser} />} />
             <Route path='/*' element={<NotFoundPage />} />

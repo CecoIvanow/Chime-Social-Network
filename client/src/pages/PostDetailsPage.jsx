@@ -2,13 +2,24 @@ import { Link, useLocation } from "react-router"
 import CommentItem from "../components/CommentItem"
 import { useEffect, useState } from "react";
 import postServices from "../services/post-services";
+import commentServices from "../services/comment-services";
 
-export default function PostDetails() {
-
+export default function PostDetailsPage({
+    isUser
+}) {
     const location = useLocation();
 
     const [postData, setPostData] = useState([]);
-// 
+
+    const onAddCommentSubmitHandler = async (formData) => {
+       const commentData = Object.fromEntries(formData);
+       commentData.onPost = location.pathname.split('/').at(2);
+       commentData.owner = isUser;
+
+       const newComment = await commentServices.create(commentData);       
+       setPostData(postData => postData.comments.push(newComment));
+    }
+
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
 
@@ -23,7 +34,7 @@ export default function PostDetails() {
             abortController.abort();
         }
 
-    }, [location.pathname])
+    }, [location.pathname, postData]);
 
     return <>
         <li className='post-page-body'>
@@ -50,21 +61,23 @@ export default function PostDetails() {
                 </div>
             </div>
             <div className="comments-section">
-                <form>
+                <form action={onAddCommentSubmitHandler}>
                     <div className='comment-create'>
                         <img src={undefined} />
                         <label htmlFor="comment"></label>
                         <input type="text" name="text" id="comment" placeholder="Add your comment..." />
                     </div>
-                    <button className='button comment-btn' type="button">Comment</button>
+                    <button className='button comment-btn'>Comment</button>
                 </form>
                 <div className="post-comments">
                     <p>All Comments:</p>
                     <ul>
-                        <CommentItem />
-                        <CommentItem />
-                        <CommentItem />
-                        <CommentItem />
+                        {postData.comments?.map(comment => {
+
+                            return <CommentItem 
+                                key={comment._id}
+                            />
+                        })}
                     </ul>
                 </div>
             </div>
