@@ -12,12 +12,12 @@ export default function PostDetailsPage({
     const [postData, setPostData] = useState([]);
 
     const onAddCommentSubmitHandler = async (formData) => {
-       const commentData = Object.fromEntries(formData);
-       commentData.onPost = location.pathname.split('/').at(2);
-       commentData.owner = isUser;
+        const commentData = Object.fromEntries(formData);
+        commentData.onPost = location.pathname.split('/').at(2);
+        commentData.owner = isUser;
 
-       const newComment = await commentServices.create(commentData);       
-       setPostData(postData => postData.comments.push(newComment));
+        const newComment = await commentServices.create(commentData);
+        setPostData(postData => postData.comments.push(newComment));
     }
 
     useEffect(() => {
@@ -34,7 +34,7 @@ export default function PostDetailsPage({
             abortController.abort();
         }
 
-    }, [location.pathname, postData]);
+    }, [location.pathname]);
 
     return <>
         <li className='post-page-body'>
@@ -73,9 +73,13 @@ export default function PostDetailsPage({
                     <p>All Comments:</p>
                     <ul>
                         {postData.comments?.map(comment => {
-
-                            return <CommentItem 
+                            const metaData = {
+                                text: comment.text
+                            }
+                            
+                            return <CommentItem
                                 key={comment._id}
+                                metaData={metaData}
                             />
                         })}
                     </ul>

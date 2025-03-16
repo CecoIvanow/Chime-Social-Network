@@ -1,6 +1,8 @@
 import { Link } from "react-router"
 
-export default function CommentItem() {
+export default function CommentItem({
+    metaData
+}) {
     return <>
         <li className='comment-item'>
             <div className='post-header'>
@@ -10,7 +12,7 @@ export default function CommentItem() {
                 </div>
                 <div className='commented-on'>Posted on today</div>
             </div>
-            <div className='post-text'>I agree!</div>
+            <div className='post-text'>{metaData.text}</div>
             <div className='button-div'>
                 <div>
                 </div>
