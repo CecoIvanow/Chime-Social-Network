@@ -43,7 +43,7 @@ export default function PostDetailsPage({
                     <img className='owner-picture' src={postData.owner?.imageUrl} alt="" />
                     <p className='post-owner'><Link>{postData.owner?.firstName} {postData.owner?.lastName}</Link></p>
                 </div>
-                <div className='created-on'>{postData?.postedOn}</div>
+                <div className='created-on'>Posted on {postData?.postedOn}</div>
             </div>
             <div className='post-page-text'>{postData?.text}</div>
             <div className="post-interactions">
@@ -74,12 +74,21 @@ export default function PostDetailsPage({
                     <ul>
                         {postData.comments?.map(comment => {
                             const metaData = {
-                                text: comment.text
+                                text: comment.text,
+                                postedOn: comment.postedOn
                             }
-                            
+
+                            const creatorData = {
+                                id: comment.owner._id,
+                                firstName: comment.owner.firstName,
+                                lastName: comment.owner.lastName,
+                                imageUrl: comment.owner.imageUrl,
+                            }
+
                             return <CommentItem
                                 key={comment._id}
                                 metaData={metaData}
+                                creatorData={creatorData}
                             />
                         })}
                     </ul>
