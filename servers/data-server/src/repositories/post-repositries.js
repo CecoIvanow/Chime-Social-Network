@@ -4,6 +4,20 @@ import { escapeRegex } from "../utils/regex-utils.js";
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName imageUrl'
 
+async function getSpecific(postId) {
+    const postData = await Post
+    .findById(postId)
+    .populate({
+        path: 'owner', 
+        select: COMMONLY_NEEDED_PARAMS
+    })
+    .lean();
+
+    postData.postedOn = postedOnDateConverter(postData.createdAt);
+
+    return postData;
+}
+
 async function create(postData) {
     const newPost = await Post.create(postData);
 
@@ -55,6 +69,7 @@ async function removeLike(postId, userId) {
 
 const postRepositories = {
     getAllWithMatchingText,
+    getSpecific,
     removeLike,
     addLike,
     create,
