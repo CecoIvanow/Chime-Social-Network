@@ -38,7 +38,10 @@ async function handleUnlike(userId, postId) {
 async function handleGetPostDataWithComments(postId, abortSignal) {
     const resp = await api.get(`/posts/${postId}/with-comments`, abortSignal);
     const postData = await resp.json();
-    
+
+    postData.owner.imageUrl = postData.owner.imageUrl ? postData.owner.imageUrl : defaultAvatar;
+    postData.comments.map(comment => comment.owner.imageUrl = comment.owner.imageUrl ? comment.owner.imageUrl : defaultAvatar);
+
     return postData;
 }
 
