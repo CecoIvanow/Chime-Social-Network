@@ -1,10 +1,24 @@
 import { Link } from "react-router"
+import commentServices from "../services/comment-services"
 
 export default function CommentItem({
+    isUser,
     metaData,
     creatorData,
-    isUser
 }) {
+
+    const onDeleteCommentClickHandler = async () => {
+        const isConfirmed = confirm('Are you sure you want to delete this comment?');
+
+        if (!isConfirmed) {
+            return;
+        }
+
+        const removedCommentId = await commentServices.handleDelete(metaData.id);
+
+        console.log(removedCommentId);
+    }
+
     return <>
         <li className='comment-item'>
             <div className='post-header'>
@@ -22,7 +36,7 @@ export default function CommentItem({
                     {isUser === creatorData.id && (
                         <>
                             <button className='button' type="button">Edit</button>
-                            <button className='button delete-btn' type="button">Delete</button>
+                            <button className='button delete-btn' type="button" onClick={onDeleteCommentClickHandler}>Delete</button>
                         </>
                     )}
                 </div>

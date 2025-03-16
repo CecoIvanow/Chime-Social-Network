@@ -119,6 +119,7 @@ export default function PostDetailsPage({
                     <ul>
                         {postData.comments?.map(comment => {
                             const metaData = {
+                                id: comment._id,
                                 text: comment.text,
                                 postedOn: comment.postedOn
                             }

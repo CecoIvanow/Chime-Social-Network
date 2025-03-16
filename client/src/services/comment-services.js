@@ -11,8 +11,16 @@ async function create(payLoad) {
     return newComment;
 }
 
+async function handleDelete(commentId) {
+    const resp = await api.delete(`/comments/${commentId}`);
+    const removedId = await resp.json();
+
+    return removedId;
+}
+
 const commentServices = {
-    create
+    handleDelete,
+    create,
 }
 
 export default commentServices;
