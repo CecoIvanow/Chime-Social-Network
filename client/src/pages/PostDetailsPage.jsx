@@ -131,6 +131,7 @@ export default function PostDetailsPage({
 
                             return <CommentItem
                                 key={comment._id}
+                                isUser={isUser}
                                 metaData={metaData}
                                 creatorData={creatorData}
                             />
