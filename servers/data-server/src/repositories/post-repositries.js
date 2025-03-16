@@ -84,10 +84,19 @@ async function attachCommentToPost(postId, commentId) {
     await foundPost.save();
 }
 
+async function removeComment(postId, commentId) {
+    const foundPost = await Post.findById(postId);
+
+    foundPost.comments = foundPost.comments.filter(comment => comment.toString() !== commentId);
+
+    await foundPost.save();
+}
+
 const postRepositories = {
     getSpecificWithComments,
     getAllWithMatchingText,
     attachCommentToPost,
+    removeComment,
     removeLike,
     addLike,
     create,

@@ -13,8 +13,15 @@ async function create(data) {
     return newComment;
 }
 
+async function remove(commentId) {
+    const removedComment = await Comment.findByIdAndDelete(commentId);
+
+    return removedComment.onPost;
+}
+
 const commentRepositories = {
-    create
+    create,
+    remove,
 }
 
 export default commentRepositories;
