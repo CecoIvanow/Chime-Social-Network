@@ -18,6 +18,19 @@ postController.get('/posts/search', async (req, res) => {
     }
 })
 
+postController.get('/posts/:postId', async (req, res) => {
+    const postId = req.params.postId;
+
+    try {
+        const postData = await postRepositories.getSpecific(postId);
+
+        res.json(postData);
+        res.end();        
+    } catch (error) {
+        console.error(error.message)
+    }
+})
+
 postController.get('/posts/:postId/with-comments', async (req, res) => {
     const postId = req.params.postId;
 
