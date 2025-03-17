@@ -36,7 +36,6 @@ export default function CreatePostItem({
         <div className='post-create'>
             <form onSubmit={onPostSubmitHandler}>
                 <div className='post-header'>
-                    <img src={imageUrl} />
                     <label htmlFor="post"></label>
                     <input type="text" name="text" id="post" value={postText} onChange={onTextChangeHandler} placeholder="Share your thoughts..." />
                 </div>

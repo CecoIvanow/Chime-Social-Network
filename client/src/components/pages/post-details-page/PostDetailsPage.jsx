@@ -108,7 +108,6 @@ export default function PostDetailsPage({
                 {isUser && (
                     <form action={onAddCommentSubmitHandler}>
                         <div className='comment-create'>
-                            <img src={undefined} />
                             <label htmlFor="comment"></label>
                             <input type="text" name="text" id="comment" placeholder="Add your comment..." />
                         </div>

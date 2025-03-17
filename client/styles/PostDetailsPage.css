@@ -63,24 +63,15 @@ html {
     margin-bottom: 15px;
 }
 
-.comment-create img {
-    width: 50px;
-    height: 50px;
-    margin: 10px;
-    border-radius: 50%;
-    border-color: #2980b9;
-    border-style: solid;
-    border-width: 1px;
-}
-
-.comment-create input {
+.comment-create input,
+.post-create input {
     height: 55px;
-    width: 80%;
+    width: 100%;
     padding: 12px;
     border-radius: 25px;
     border-style: solid;
     border-color: #e0e0e0;
-    margin-left: 2%;
+    margin: 0px 10px 0px 10px;
 }
 
 .post-comments {
