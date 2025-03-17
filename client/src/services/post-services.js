@@ -56,11 +56,16 @@ async function handleGetPostData(postId, abortSignal) {
     return postData;
 }
 
+async function handlePostUpdate(postId, newText) {    
+    await api.patch(`/posts/${postId}`, {text: newText});
+}
+
 const postServices = {
     handleGetAllByContentWithOwners,
     handleGetPostDataWithComments,
     handleGetPostData,
     handlePostCreate,
+    handlePostUpdate,
     handleDelete,
     handleUnlike,
     handleLike,
