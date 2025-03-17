@@ -27,6 +27,20 @@ async function getSpecificWithComments(postId) {
     return postData;
 }
 
+async function getSpecific(postId) {
+    const postData = await Post
+        .findById(postId)
+        .select('-likes -comments -createdAt')
+        .populate({
+            path: 'owner',
+            select: COMMONLY_NEEDED_PARAMS
+        })
+        .lean();
+
+    return postData;
+}
+
+
 async function create(postData) {
     // The line below offsets the time with 2+ hours as new Date() is 2 hours behind;
     const creationTime = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
@@ -101,6 +115,7 @@ const postRepositories = {
     getAllWithMatchingText,
     attachCommentToPost,
     removeComment,
+    getSpecific,
     removeLike,
     addLike,
     create,
