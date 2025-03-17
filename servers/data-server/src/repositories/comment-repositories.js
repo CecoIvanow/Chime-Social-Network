@@ -20,15 +20,15 @@ async function create(commentData) {
     return newComment;
 }
 
-async function remove(commentId) {
+async function removeSpecific(commentId) {
     const removedComment = await Comment.findByIdAndDelete(commentId);
 
     return removedComment.onPost;
 }
 
 const commentRepositories = {
+    removeSpecific,
     create,
-    remove,
 }
 
 export default commentRepositories;

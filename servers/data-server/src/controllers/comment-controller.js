@@ -21,9 +21,9 @@ commentController.post('/comments', async (req, res) => {
 
 commentController.delete('/comments/:commentId', async (req, res) => {
     const commentId = req.params.commentId;
-    
+
     try {
-        const postId = await commentRepositories.remove(commentId);
+        const postId = await commentRepositories.removeSpecific(commentId);
 
         await postRepositories.removeComment(postId, commentId);
 
