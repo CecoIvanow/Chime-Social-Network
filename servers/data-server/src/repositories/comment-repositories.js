@@ -1,9 +1,16 @@
 import Comment from "../models/Comment.js";
+import { postedOnDateConverter } from "../utils/date-time-utils.js";
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName imageUrl'
 
-async function create(data) {
-    const newComment = await Comment.create(data);
+async function create(commentData) {
+    // The line below offsets the time with 2+ hours as new Date() is 2 hours behind;
+    const creationTime = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
+
+    commentData.createdAt = creationTime;
+    commentData.postedOn = postedOnDateConverter(creationTime);
+
+    const newComment = await Comment.create(commentData);
 
     await newComment.populate({
         path: 'owner',

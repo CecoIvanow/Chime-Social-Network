@@ -30,6 +30,10 @@ async function register(data) {
 
     userData.password = await bcrypt.hash(userData.password, SALT_ROUNDS);
 
+    // The line below offsets the time with 2+ hours as new Date() is 2 hours behind;
+    const creationTime = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
+    userData.createdAt = creationTime;
+
     const newUser = await User.create(userData);
 
     const token = userTokenCreation(newUser);

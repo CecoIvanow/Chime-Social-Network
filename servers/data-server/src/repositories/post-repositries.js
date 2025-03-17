@@ -28,9 +28,13 @@ async function getSpecificWithComments(postId) {
 }
 
 async function create(postData) {
-    const newPost = await Post.create(postData);
+    // The line below offsets the time with 2+ hours as new Date() is 2 hours behind;
+    const creationTime = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
 
-    newPost.postedOn = postedOnDateConverter(newPost.createdAt);
+    postData.createdAt = creationTime;
+    postData.postedOn = postedOnDateConverter(creationTime);
+
+    const newPost = await Post.create(postData);
 
     return newPost;
 }

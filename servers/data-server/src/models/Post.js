@@ -10,7 +10,9 @@ const postSchema = new Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now
+    },
+    postedOn: {
+        type: String,
     },
     comments: [{
         type: Types.ObjectId,
