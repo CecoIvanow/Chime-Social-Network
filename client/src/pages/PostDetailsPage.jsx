@@ -138,7 +138,7 @@ export default function PostDetailsPage({
                                 metaData={metaData}
                                 creatorData={creatorData}
                                 postData={postData}
-                                setPostData={setPostData};
+                                setPostData={setPostData}
                             />
                         })}
                     </ul>
