@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import CommentItem from "./comment-item/CommentItem"
 import postServices from "../../../services/post-services";
-import CreateCommentItem from "./create-comment-item/CreateCommeneItem";
+import CreateCommentField from "./create-comment-field/CreateCommentField";
 
 export default function PostDetailsPage({
     isUser
@@ -36,8 +36,6 @@ export default function PostDetailsPage({
         postData.likes = postData.likes.filter(userLike => userLike !== isUser);
         setIsLiked(false);
     }
-
-
 
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
@@ -98,8 +96,8 @@ export default function PostDetailsPage({
             </div>
             <div className="comments-section">
                 {isUser && (
-                    <CreateCommentItem
-                        isUser={isUser}
+                    <CreateCommentField
+                        userId={isUser}
                         postData={postData}
                         setPostData={setPostData}
                     />

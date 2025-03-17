@@ -56,24 +56,6 @@ html {
     margin-top: 20px;
 }
 
-.post-create,
-.comment-create {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.comment-create input,
-.post-create input {
-    height: 55px;
-    width: 100%;
-    padding: 12px;
-    border-radius: 25px;
-    border-style: solid;
-    border-color: #e0e0e0;
-    margin: 0px 10px 0px 10px;
-}
-
 .post-comments {
     display: flex;
     flex-direction: column;

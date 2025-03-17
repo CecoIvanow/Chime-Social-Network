@@ -93,16 +93,28 @@
     border-width: 1px;
 }
 
-.post-create {
+.entry-create {
     display: flex;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
-.post-create form {
-        width: 100%;
-        padding: 12px;
+.entry-create input {
+    height: 55px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 25px;
+    border-style: solid;
+    border-color: #e0e0e0;
+    margin: 0px 10px 0px 10px;
 }
 
-.post-header{
+.entry-create form {
+    width: 100%;
+    padding: 12px;
+}
+
+.entry-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -110,7 +122,7 @@
     width: 100%;
 }
 
-.post-header div {
+.entry-header div {
     display: flex;
     align-items: center;
 }
@@ -222,7 +234,7 @@
 }
 
 .comment-btn{
-    width: 100px;
+    width: 105px;
 }
 .comment-btn a {
     letter-spacing: 0px;
