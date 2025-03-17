@@ -71,10 +71,10 @@ export default function PostItem({
                         </>
                     )}
                 </div>
-                <div className='owner-buttons'>
+                <div>
                     {userId === creatorDetails?.id && (
                         <>
-                            <button className='button' type="button">Edit</button>
+                            <button className='button' type="button"><Link to={`/post/${postMetaData?.id}/edit`}>Edit</Link></button>
                             <button className='button delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
                         </>
                     )}
