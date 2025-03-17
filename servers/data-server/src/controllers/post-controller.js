@@ -31,6 +31,19 @@ postController.get('/posts/:postId', async (req, res) => {
     }
 })
 
+postController.patch('/posts/:postId', async (req, res) => {
+    const postId = req.params.postId;
+    const payload = req.body;
+    
+    try {
+        await postRepositories.update(postId, payload);
+
+        res.end();
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 postController.get('/posts/:postId/with-comments', async (req, res) => {
     const postId = req.params.postId;
 
