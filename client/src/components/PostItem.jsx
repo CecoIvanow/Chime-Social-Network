@@ -59,14 +59,13 @@ export default function PostItem({
             </div>
             <div className='button-div'>
                 <div>
-                    {(userId && userId !== creatorDetails?.id) && (
+                    {userId && (
                         <>
-                            {(isLiked ? (
+                            {(userId !== creatorDetails?.id && (isLiked ? (
                                 <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>
                             ) : (
                                 <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>
-                            ))}
-
+                            )))}
                             < button className='button comment-btn' type="button"><Link to={`/post/${postMetaData?.id}/details`}>Comment</Link></button>
                         </>
                     )}
