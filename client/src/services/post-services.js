@@ -47,9 +47,19 @@ async function handleGetPostDataWithComments(postId, abortSignal) {
     return postData;
 }
 
+async function handleGetPostData(postId, abortSignal) {
+    const resp = await api.get(`/posts/${postId}/with-comments`, abortSignal);
+    const postData = await resp.json();
+
+    postData.owner.imageUrl = postData.owner.imageUrl ? postData.owner.imageUrl : defaultAvatar;
+
+    return postData;
+}
+
 const postServices = {
     handleGetAllByContentWithOwners,
     handleGetPostDataWithComments,
+    handleGetPostData,
     handlePostCreate,
     handleDelete,
     handleUnlike,
