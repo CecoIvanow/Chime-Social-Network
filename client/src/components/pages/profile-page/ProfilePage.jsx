@@ -58,7 +58,6 @@ export default function ProfilePage({
                 {(isUser && isUser === userData._id) && (
                     <CreatePostItem
                         userId={userId}
-                        imageUrl={userData.imageUrl}
                         totalUserPosts={totalUserPosts}
                         setTotalUserPosts={setTotalUserPosts}
                     />

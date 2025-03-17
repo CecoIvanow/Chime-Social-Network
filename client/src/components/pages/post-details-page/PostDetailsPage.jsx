@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import CommentItem from "./comment-item/CommentItem"
 import postServices from "../../../services/post-services";
-import commentServices from "../../../services/comment-services";
+import CreateCommentItem from "./create-comment-item/CreateCommeneItem";
 
 export default function PostDetailsPage({
     isUser
@@ -37,15 +37,7 @@ export default function PostDetailsPage({
         setIsLiked(false);
     }
 
-    const onAddCommentSubmitHandler = async (formData) => {
-        const commentData = Object.fromEntries(formData);
-        commentData.onPost = location.pathname.split('/').at(2);
-        commentData.owner = isUser;
 
-        const newComment = await commentServices.create(commentData);
-        postData.comments.unshift(newComment);
-        setPostData({ ...postData });
-    }
 
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
@@ -106,13 +98,11 @@ export default function PostDetailsPage({
             </div>
             <div className="comments-section">
                 {isUser && (
-                    <form action={onAddCommentSubmitHandler}>
-                        <div className='comment-create'>
-                            <label htmlFor="comment"></label>
-                            <input type="text" name="text" id="comment" placeholder="Add your comment..." />
-                        </div>
-                        <button className='button comment-btn'>Comment</button>
-                    </form>
+                    <CreateCommentItem
+                        isUser={isUser}
+                        postData={postData}
+                        setPostData={setPostData}
+                    />
                 )}
                 <div className="post-comments">
                     <p>All Comments:</p>

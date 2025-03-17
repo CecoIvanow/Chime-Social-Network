@@ -4,7 +4,6 @@ import postServices from "../../../services/post-services";
 
 export default function CreatePostItem({
     userId,
-    imageUrl,
     totalUserPosts,
     setTotalUserPosts,
 }) {
