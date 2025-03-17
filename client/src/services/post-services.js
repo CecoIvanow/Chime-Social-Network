@@ -35,12 +35,40 @@ async function handleUnlike(userId, postId) {
     await api.delete(`/posts/${postId}/like/${userId}`);
 }
 
+async function handleGetPostDataWithComments(postId, abortSignal) {
+    const resp = await api.get(`/posts/${postId}/with-comments`, abortSignal);
+    const postData = await resp.json();
+
+    postData.owner.imageUrl = postData.owner.imageUrl ? postData.owner.imageUrl : defaultAvatar;
+    postData.comments
+        .reverse()
+        .map(comment => comment.owner.imageUrl = comment.owner.imageUrl ? comment.owner.imageUrl : defaultAvatar);
+
+    return postData;
+}
+
+async function handleGetPostData(postId, abortSignal) {
+    const resp = await api.get(`/posts/${postId}/with-comments`, abortSignal);
+    const postData = await resp.json();
+
+    postData.owner.imageUrl = postData.owner.imageUrl ? postData.owner.imageUrl : defaultAvatar;
+
+    return postData;
+}
+
+async function handlePostUpdate(postId, newText) {    
+    await api.patch(`/posts/${postId}`, {text: newText});
+}
+
 const postServices = {
     handleGetAllByContentWithOwners,
+    handleGetPostDataWithComments,
+    handleGetPostData,
     handlePostCreate,
+    handlePostUpdate,
     handleDelete,
     handleUnlike,
-    handleLike
+    handleLike,
 }
 
 export default postServices

@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
 
-import postServices from "../services/post-services";
+import postServices from "../../../services/post-services";
 
 export default function PostItem({
     postMetaData,
@@ -59,22 +59,21 @@ export default function PostItem({
             </div>
             <div className='button-div'>
                 <div>
-                    {(userId && userId !== creatorDetails?.id) && (
+                    {userId && (
                         <>
-                            {(isLiked ? (
+                            {(userId !== creatorDetails?.id && (isLiked ? (
                                 <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>
                             ) : (
                                 <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>
-                            ))}
-
+                            )))}
                             < button className='button comment-btn' type="button"><Link to={`/post/${postMetaData?.id}/details`}>Comment</Link></button>
                         </>
                     )}
                 </div>
-                <div className='owner-buttons'>
+                <div>
                     {userId === creatorDetails?.id && (
                         <>
-                            <button className='button' type="button">Edit</button>
+                            <button className='button' type="button"><Link to={`/post/${postMetaData?.id}/edit`}>Edit</Link></button>
                             <button className='button delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
                         </>
                     )}

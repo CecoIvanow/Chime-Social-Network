@@ -8,16 +8,21 @@ const postSchema = new Schema({
         type: Types.ObjectId,
         ref: 'User'
     },
-    comments: [{
+    createdAt: {
+        type: Date,
+    },
+    postedOn: {
         type: String,
+    },
+    comments: [{
+        type: Types.ObjectId,
+        ref: 'Comment'
     }],
     likes: [{
         type: Types.ObjectId,
         ref: 'User'
     }],
-},
-    { timestamps: true }
-)
+})
 
 const Post = model('Post', postSchema);
 

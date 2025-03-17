@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from 'react-router'
 
 
-import userServices from "../services/user-services";
+import userServices from "../../../services/user-services";
 
 export default function SettingsPage({
     userId

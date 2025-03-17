@@ -21,7 +21,14 @@ try {
 
 //CORS enable
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+    const whitelistedOrigins = [
+        'http://localhost:4569',
+        'http://localhost:3567'
+    ]
+
+    const originIndex = whitelistedOrigins.indexOf(req.headers.origin);
+
+    res.header('Access-Control-Allow-Origin', whitelistedOrigins[originIndex]);
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');

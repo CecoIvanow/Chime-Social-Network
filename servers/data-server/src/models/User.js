@@ -43,6 +43,9 @@ const userSchema = new Schema({
     status: {
         type: String,
     },
+    createdAt: {
+        type: Date,
+    },
     friends: [{
         type: Types.ObjectId,
         ref: 'User',
@@ -51,9 +54,7 @@ const userSchema = new Schema({
         type: Types.ObjectId,
         ref: 'Post',
     }]
-},
-    { timestamps: true }
-)
+})
 
 const User = model('User', userSchema);
 
