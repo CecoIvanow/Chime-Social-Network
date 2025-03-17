@@ -8,6 +8,10 @@ const postSchema = new Schema({
         type: Types.ObjectId,
         ref: 'User'
     },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
     comments: [{
         type: Types.ObjectId,
         ref: 'Comment'
@@ -16,9 +20,7 @@ const postSchema = new Schema({
         type: Types.ObjectId,
         ref: 'User'
     }],
-},
-    { timestamps: true }
-)
+})
 
 const Post = model('Post', postSchema);
 

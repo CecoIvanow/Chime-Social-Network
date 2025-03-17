@@ -11,10 +11,12 @@ const commentSchema = new Schema({
     owner: {
         type: Types.ObjectId,
         ref: 'User'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
-},
-    { timestamps: true }
-)
+})
 
 const Comment = model('Comment', commentSchema);
 
