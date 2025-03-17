@@ -98,7 +98,6 @@ export default function PostDetailsPage({
                 <div className='owner-buttons'>
                     {isUser === postData.owner?._id && (
                         <>
-                        {console.log(postData)}
                             <button className='button' type="button"><Link to={`/post/${postData?._id}/edit`}>Edit</Link></button>
                             <button className='button delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
                         </>
