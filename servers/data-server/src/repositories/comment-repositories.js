@@ -26,7 +26,13 @@ async function removeSpecific(commentId) {
     return removedComment.onPost;
 }
 
+async function removeAllSharingPost(postId) {
+    //Pretty scary stuff over here, deleting so many documents
+    await Comment.deleteMany({ onPost: postId });
+}
+
 const commentRepositories = {
+    removeAllSharingPost,
     removeSpecific,
     create,
 }
