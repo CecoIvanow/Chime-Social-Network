@@ -54,10 +54,10 @@ export default function PostDetailsPage({
         const abortSignal = abortController.signal;
 
         postServices.handleGetPostDataWithComments(postId, abortSignal)
-            .then(postData => {
-                setPostData(postData);
+            .then(data => {
+                setPostData(data);
 
-                if (postData.likes.includes(isUser)) {
+                if (data.likes.includes(isUser)) {
                     setIsLiked(true);
                 }
             })
@@ -85,7 +85,7 @@ export default function PostDetailsPage({
             </div>
             <div className='button-div'>
                 <div>
-                    {isUser && (
+                    {(isUser && isUser !== postData.owner?._id) && (
                         <>
                             {(isLiked ? (
                                 <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>
