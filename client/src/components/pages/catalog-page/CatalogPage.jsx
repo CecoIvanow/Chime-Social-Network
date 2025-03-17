@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-import PostItem from "../components/PostItem";
-import SearchField from "../components/SearchField";
-import UserItem from "../components/UserItem";
-import postServices from "../services/post-services";
-import userServices from "../services/user-services";
+import PostItem from "../../shared/post-item/PostItem";
+import SearchField from "../../shared/search-field/SearchField";
+import UserItem from "./user-item/UserItem";
+import postServices from "../../../services/post-services";
+import userServices from "../../../services/user-services";
 
 export default function CatalogPage({
     isUser

@@ -1,7 +1,7 @@
-import CreatePostItem from "../components/CreatePostItem";
-import FriendItem from "../components/FriendItem";
-import PostItem from "../components/PostItem";
-import SearchField from "../components/SearchField";
+import CreatePostItem from "../../shared/create-post-item/CreatePostItem";
+import FriendItem from "./friend-item/FriendItem";
+import PostItem from "../../shared/post-item/PostItem";
+import SearchField from "../../shared/search-field/SearchField";
 
 export default function UserHomePage({
     isUser: userId

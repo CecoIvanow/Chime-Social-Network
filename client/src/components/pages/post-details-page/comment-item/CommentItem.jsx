@@ -1,5 +1,5 @@
 import { Link } from "react-router"
-import commentServices from "../services/comment-services"
+import commentServices from "../../../../services/comment-services"
 
 export default function CommentItem({
     isUser,
@@ -19,8 +19,8 @@ export default function CommentItem({
         const removedCommentId = await commentServices.handleDelete(metaData.id);
 
         postData.comments = postData.comments.filter(comment => comment._id !== removedCommentId);
-        setPostData({...postData});
-        }
+        setPostData({ ...postData });
+    }
 
     return <>
         <li className='comment-item'>

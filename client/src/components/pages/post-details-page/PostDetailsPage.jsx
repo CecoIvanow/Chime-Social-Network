@@ -1,9 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router"
 import { useEffect, useState } from "react";
 
-import CommentItem from "../components/CommentItem"
-import postServices from "../services/post-services";
-import commentServices from "../services/comment-services";
+import CommentItem from "./comment-item/CommentItem"
+import postServices from "../../../services/post-services";
+import commentServices from "../../../services/comment-services";
 
 export default function PostDetailsPage({
     isUser
@@ -44,7 +44,7 @@ export default function PostDetailsPage({
 
         const newComment = await commentServices.create(commentData);
         postData.comments.unshift(newComment);
-        setPostData({...postData});
+        setPostData({ ...postData });
     }
 
     useEffect(() => {

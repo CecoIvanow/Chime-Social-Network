@@ -3,18 +3,18 @@ import '../styles/styles.css'
 import { useState } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router';
 
-import LandingPage from './pages/LandingPage';
-import UserHomePage from './pages/UserHomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import NotFoundPage from './pages/NotFoundPage';
-import CatalogPage from './pages/CatalogPage';
-import SettingsPage from './pages/SettingsPage';
-import ProfilePage from './pages/ProfilePage';
-import Logout from './pages/Logout';
-import MenuBar from './components/MenuBar';
-import PostDetailsPage from './pages/PostDetailsPage';
-import PostEditPage from './pages/PostEditPage';
+import MenuBar from './components/layout/menu-bar/MenuBar.jsx';
+import LandingPage from './components/pages/landing-page/LandingPage.jsx';
+import UserHomePage from './components/pages/user-home-page/UserHomePage.jsx';
+import LoginPage from './components/pages/login-page/LoginPage.jsx';
+import RegisterPage from './components/pages/register-page/RegisterPage.jsx';
+import NotFoundPage from './components/pages/not-found-page/NotFoundPage.jsx';
+import CatalogPage from './components/pages/catalog-page/CatalogPage.jsx';
+import SettingsPage from './components/pages/settings-page/SettingsPage.jsx';
+import ProfilePage from './components/pages/profile-page/ProfilePage.jsx';
+import Logout from './components/pages/logout/Logout.jsx';
+import PostDetailsPage from './components/pages/post-details-page/PostDetailsPage.jsx';
+import PostEditPage from './components/pages/post-edit-page/PostEditPage.jsx';
 
 export default function App() {
     const [isUser, setIsUser] = useState(false);
@@ -40,7 +40,7 @@ export default function App() {
             <Route path='/login' element={!isUser ? <LoginPage setIsUser={setIsUser} /> : <Navigate to="/" />} />
 
             {/* Public pages */}
-            <Route path='/post/:postId/details' element={<PostDetailsPage isUser={isUser}/>} />
+            <Route path='/post/:postId/details' element={<PostDetailsPage isUser={isUser} />} />
             <Route path='/profile/:userId' element={<ProfilePage isUser={isUser} />} />
             <Route path='/catalog' element={<CatalogPage isUser={isUser} />} />
             <Route path='/*' element={<NotFoundPage />} />

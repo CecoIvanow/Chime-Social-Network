@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router"
 
 
-import postServices from "../services/post-services";
+import postServices from "../../../services/post-services";
 
 export default function PostEditPage() {
 
@@ -21,7 +21,7 @@ export default function PostEditPage() {
     }
 
     const onSaveClickHandler = async () => {
-        await postServices.handlePostUpdate(postData._id, postText);        
+        await postServices.handlePostUpdate(postData._id, postText);
         navigateTo(`/post/${postData._id}/details`);
     }
 

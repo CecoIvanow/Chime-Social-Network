@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router"
 
-import userServices from "../services/user-services";
+import userServices from "../../../services/user-services";
 
-import PostItem from "../components/PostItem";
-import CreatePostItem from "../components/CreatePostItem";
+import PostItem from "../../shared/post-item/PostItem";
+import CreatePostItem from "../../shared/create-post-item/CreatePostItem";
 
 export default function ProfilePage({
     isUser
@@ -55,7 +55,7 @@ export default function ProfilePage({
 
             <div className="posts-section">
                 <h2 className="posts-heading">{isUser === userData._id ? 'My' : `${userData.firstName}'s`} Posts:</h2>
-                {(isUser && isUser === userData._id) &&(
+                {(isUser && isUser === userData._id) && (
                     <CreatePostItem
                         userId={userId}
                         imageUrl={userData.imageUrl}
@@ -67,10 +67,10 @@ export default function ProfilePage({
                 {totalUserPosts.map(post => {
                     const postMetaData = {
                         id: post._id,
-                        text: post.text, 
+                        text: post.text,
                         postedOn: post.postedOn,
                         likes: post.likes,
-                        comments: post.comments    
+                        comments: post.comments
                     }
 
                     const creatorDetails = {

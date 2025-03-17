@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
 
-import postServices from "../services/post-services";
+import postServices from "../../../services/post-services";
 
 export default function PostItem({
     postMetaData,
