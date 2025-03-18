@@ -1,9 +1,32 @@
+import Button from "../../ui/button/Button";
+import LinkButton from "../../ui/link-button/LinkButton";
+
 export default function EditControls({
+    urlLink,
     onSaveClickHandler,
-    onCancelClickHandler
+    onCancelClickHandler,
 }) {
     return <>
-        <button className='button' type="button" onClick={onSaveClickHandler}>Save</button>
-        <button className='button delete-btn' type="button" onClick={onCancelClickHandler}>Cancel</button>
+        {urlLink ? (
+            <>
+                <LinkButton
+                    buttonName="Edit"
+                    urlLink={urlLink}
+                />
+            </>
+        ) : (
+            <>
+                <Button
+                    buttonName="Edit"
+                    onClickHandler={onSaveClickHandler}
+                />
+            </>
+        )}
+
+        <Button
+            buttonName='Close'
+            btnStyle='delete-btn'
+            onClickHandler={onCancelClickHandler}
+        />
     </>
 }
