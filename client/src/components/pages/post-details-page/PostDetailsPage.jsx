@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import CommentItem from "./comment-item/CommentItem"
 import postServices from "../../../services/post-services";
 import CreateCommentField from "./create-comment-field/CreateCommentField";
+import OwnerControls from "../../shared/owner-controls/OwnerControls";
+import EditControls from "../../shared/edit-controls/EditControls";
 
 export default function PostDetailsPage({
     isUser,
@@ -118,15 +120,15 @@ export default function PostDetailsPage({
                     {(isUser && isUser === postData.owner?._id) && (
                         <>
                             {isEditClicked ? (
-                                <>
-                                    <button className='button' type="button" onClick={onEditPostClickHandler}>Edit</button>
-                                    <button className='button delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
-                                </>
+                                <EditControls
+                                    onSaveClickHandler={onSaveEditClickHandler}
+                                    onCancelClickHandler={onCancelEditClickHandler}
+                                />
                             ) : (
-                                <>
-                                    <button className='button' type="button" onClick={onSaveEditClickHandler}>Save</button>
-                                    <button className='button delete-btn' type="button" onClick={onCancelEditClickHandler}>Cancel</button>
-                                </>
+                                <OwnerControls
+                                    onEditClickHandler={onEditPostClickHandler}
+                                    onDeleteClickHandler={onDeletePostClickHandler}
+                                />
                             )}
                         </>
                     )}
