@@ -122,6 +122,7 @@
     width: 100%;
 }
 
+.post-header div,
 .entry-header div {
     display: flex;
     align-items: center;
