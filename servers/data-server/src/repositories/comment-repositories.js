@@ -31,9 +31,14 @@ async function removeAllSharingPost(postId) {
     await Comment.deleteMany({ onPost: postId });
 }
 
+async function update(commentId, payload) {
+    await Comment.findByIdAndUpdate(commentId, payload);
+}
+
 const commentRepositories = {
     removeAllSharingPost,
     removeSpecific,
+    update,
     create,
 }
 
