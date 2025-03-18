@@ -1,9 +1,32 @@
+import Button from "../../ui/button/Button";
+import LinkButton from "../../ui/link-button/LinkButton";
+
 export default function OwnerControls({
+    urlLink,
     onEditClickHandler,
     onDeleteClickHandler
 }) {
     return <>
-        <button className='button' type="button" onClick={onEditClickHandler}>Edit</button>
-        <button className='button delete-btn' type="button" onClick={onDeleteClickHandler}>Delete</button>
+        {urlLink ? (
+            <>
+                <LinkButton
+                    buttonName="Edit"
+                    urlLink={urlLink}
+                />
+            </>
+        ) : (
+            <>
+                <Button
+                    buttonName="Edit"
+                    onClickHandler={onEditClickHandler}
+                />
+            </>
+        )}
+
+        <Button
+            buttonName="Delete"
+            btnStyle="delete-btn"
+            onClickHandler={onDeleteClickHandler}
+        />
     </>
 }
