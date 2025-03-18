@@ -36,7 +36,15 @@ html {
     text-decoration: underline;
 }
 
-.post-page-header .owner-picture {
+.comment-header,
+.comment-header div,
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.owner-picture {
     width: 50px;
     height: 50px;
     margin: 10px;

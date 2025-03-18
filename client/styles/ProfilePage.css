@@ -91,13 +91,6 @@ body {
     border: 1px solid #e0e0e0;
 }
 
-.post-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
 .post-author-img {
     width: 45px;
     height: 45px;

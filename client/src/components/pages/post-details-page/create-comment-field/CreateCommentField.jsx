@@ -16,7 +16,7 @@ export default function CreateCommentField({
         commentData.onPost = location.pathname.split('/').at(2);
         commentData.owner = userId;
 
-        const newComment = await commentServices.create(commentData);
+        const newComment = await commentServices.handleCreate(commentData);
         postData.comments.unshift(newComment);
         setPostData({ ...postData });
         setCommentText('');
