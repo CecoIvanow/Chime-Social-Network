@@ -6,14 +6,15 @@ import postServices from "../../../services/post-services";
 import CreateCommentField from "./create-comment-field/CreateCommentField";
 
 export default function PostDetailsPage({
-    isUser
+    isUser,
+    shouldEdit
 }) {
     const location = useLocation();
     const navigateTo = useNavigate();
 
     const [postData, setPostData] = useState({});
     const [isLiked, setIsLiked] = useState(false);
-    const [isEditClicked, setIsEditClicked] = useState(false);
+    const [isEditClicked, setIsEditClicked] = useState(shouldEdit);
     const [postText, setPostText] = useState('');
 
     const textChangeHandler = (e) => {

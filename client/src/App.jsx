@@ -14,7 +14,6 @@ import SettingsPage from './components/pages/settings-page/SettingsPage.jsx';
 import ProfilePage from './components/pages/profile-page/ProfilePage.jsx';
 import Logout from './components/pages/logout/Logout.jsx';
 import PostDetailsPage from './components/pages/post-details-page/PostDetailsPage.jsx';
-import PostEditPage from './components/pages/post-edit-page/PostEditPage.jsx';
 
 export default function App() {
     const [isUser, setIsUser] = useState(false);
@@ -31,7 +30,7 @@ export default function App() {
             <Route path='/' element={isUser ? <UserHomePage setIsUser={setIsUser} /> : <LandingPage />} />
 
             {/* User only pages */}
-            <Route path='/post/:postId/edit' element={isUser ? <PostEditPage userId={isUser} /> : <Navigate to="/login" />} />
+            <Route path='/post/:postId/edit' element={isUser ? <PostDetailsPage isUser={isUser} shouldEdit={true}/> : <Navigate to="/login" />} />
             <Route path='/settings' element={isUser ? <SettingsPage userId={isUser} /> : <Navigate to="/login" />} />
             <Route path='/logout' element={isUser ? <Logout setIsUser={setIsUser} /> : <Navigate to="/" />} />
 
