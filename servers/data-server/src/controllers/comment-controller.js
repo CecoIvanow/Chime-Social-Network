@@ -34,4 +34,17 @@ commentController.delete('/comments/:commentId', async (req, res) => {
     }
 })
 
+commentController.patch('/comments/:commentId', async (req, res) => {
+    const commentId = req.params.commentId;
+    const payload = req.body;
+
+    try {
+        await commentRepositories.update(commentId, payload);
+
+        res.end();
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 export default commentController;
