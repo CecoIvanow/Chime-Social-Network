@@ -115,15 +115,19 @@ export default function PostDetailsPage({
                     )}
                 </div>
                 <div className='owner-buttons'>
-                    {isUser === postData.owner?._id && isEditClicked ? (
+                    {(isUser && isUser === postData.owner?._id) && (
                         <>
-                            <button className='button' type="button" onClick={onSaveEditClickHandler}>Save</button>
-                            <button className='button delete-btn' type="button" onClick={onCancelEditClickHandler}>Cancel</button>
-                        </>
-                    ) : (
-                        <>
-                            <button className='button' type="button" onClick={onEditPostClickHandler}>Edit</button>
-                            <button className='button delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
+                            {isEditClicked ? (
+                                <>
+                                    <button className='button' type="button" onClick={onEditPostClickHandler}>Edit</button>
+                                    <button className='button delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
+                                </>
+                            ) : (
+                                <>
+                                    <button className='button' type="button" onClick={onSaveEditClickHandler}>Save</button>
+                                    <button className='button delete-btn' type="button" onClick={onCancelEditClickHandler}>Cancel</button>
+                                </>
+                            )}
                         </>
                     )}
                 </div>
