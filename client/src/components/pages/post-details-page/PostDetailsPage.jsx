@@ -6,6 +6,7 @@ import postServices from "../../../services/post-services";
 import CreateCommentField from "./create-comment-field/CreateCommentField";
 import OwnerControls from "../../shared/owner-controls/OwnerControls";
 import EditControls from "../../shared/edit-controls/EditControls";
+import Button from "../../ui/button/Button";
 
 export default function PostDetailsPage({
     isUser,
@@ -109,9 +110,16 @@ export default function PostDetailsPage({
                     {(isUser && isUser !== postData.owner?._id) && (
                         <>
                             {(isLiked ? (
-                                <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>
+                                <Button
+                                    onClickHandler={onUnlikePostClockHandler}
+                                    btnStyle="unlike-btn"
+                                    buttonName="Unlike"
+                                />
                             ) : (
-                                <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>
+                                <Button
+                                    onClickHandler={onLikePostClickHandler}
+                                    buttonName="Like"
+                                />
                             ))}
                         </>
                     )}

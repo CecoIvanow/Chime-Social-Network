@@ -2,6 +2,9 @@ import { Link } from "react-router";
 import { useEffect, useState } from "react";
 
 import postServices from "../../../services/post-services";
+import OwnerControls from "../owner-controls/OwnerControls";
+import Button from "../../ui/button/Button";
+import LinkButton from "../../ui/link-button/LinkButton";
 
 export default function PostItem({
     postMetaData,
@@ -62,20 +65,32 @@ export default function PostItem({
                     {userId && (
                         <>
                             {(userId !== creatorDetails?.id && (isLiked ? (
-                                <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>
+                                <Button
+                                    btnStyle="unlike-btn"
+                                    buttonName="Unlike"
+                                    onClickHandler={onUnlikePostClockHandler}
+                                />
                             ) : (
-                                <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>
+                                <Button
+                                    buttonName="Like"
+                                    onClickHandler={onLikePostClickHandler}
+                                />
                             )))}
-                            < button className='button comment-btn' type="button"><Link to={`/post/${postMetaData?.id}/details`}>Comment</Link></button>
+
+                            <LinkButton
+                                urlLink={`/post/${postMetaData?.id}/details`}
+                                btnStyle="comment-btn"
+                                buttonName="Comment"
+                            />
                         </>
                     )}
                 </div>
                 <div>
                     {userId === creatorDetails?.id && (
-                        <>
-                            <button className='button' type="button"><Link to={`/post/${postMetaData?.id}/edit`}>Edit</Link></button>
-                            <button className='button delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
-                        </>
+                        <OwnerControls
+                            urlLink={`/post/${postMetaData?.id}/edit`}
+                            onDeleteClickHandler={onDeletePostClickHandler}
+                        />
                     )}
                 </div>
             </div>
