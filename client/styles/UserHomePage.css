@@ -242,11 +242,13 @@
     text-decoration: none;
 
 }
-.unlike-btn {
+.unlike-btn,
+.unlike-btn a {
     background-color: #949494;
 }
 
-.unlike-btn:hover {
+.unlike-btn:hover,
+.unlike-btn a:hover {
     background-color: #a1a1a1;
 }
 
@@ -266,11 +268,13 @@
     height: 35px;
 }
 
-.delete-btn {
+.delete-btn,
+.delete-btn a {
     background-color: #dd3240;
 }
 
-.delete-btn:hover {
+.delete-btn:hover,
+.delete-btn a:hover {
     background-color: #e93947;
 }
 
