@@ -1,4 +1,4 @@
-import CreatePostItem from "../../shared/create-post-item/CreatePostItem";
+import CreatePostItem from "../../shared/create-post-field/CreatePostField";
 import FriendItem from "./friend-item/FriendItem";
 import PostItem from "../../shared/post-item/PostItem";
 import SearchField from "../../shared/search-field/SearchField";

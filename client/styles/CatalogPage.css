@@ -57,6 +57,7 @@ body {
     border: 1px solid #e0e0e0;
 }
 
+.comment-header,
 .post-header {
     display: flex;
     justify-content: start;

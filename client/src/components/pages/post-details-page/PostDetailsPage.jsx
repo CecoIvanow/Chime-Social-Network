@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import CommentItem from "./comment-item/CommentItem"
 import postServices from "../../../services/post-services";
-import commentServices from "../../../services/comment-services";
+import CreateCommentField from "./create-comment-field/CreateCommentField";
 
 export default function PostDetailsPage({
     isUser
@@ -35,16 +35,6 @@ export default function PostDetailsPage({
         await postServices.handleUnlike(isUser, postData._id);
         postData.likes = postData.likes.filter(userLike => userLike !== isUser);
         setIsLiked(false);
-    }
-
-    const onAddCommentSubmitHandler = async (formData) => {
-        const commentData = Object.fromEntries(formData);
-        commentData.onPost = location.pathname.split('/').at(2);
-        commentData.owner = isUser;
-
-        const newComment = await commentServices.create(commentData);
-        postData.comments.unshift(newComment);
-        setPostData({ ...postData });
     }
 
     useEffect(() => {
@@ -106,14 +96,11 @@ export default function PostDetailsPage({
             </div>
             <div className="comments-section">
                 {isUser && (
-                    <form action={onAddCommentSubmitHandler}>
-                        <div className='comment-create'>
-                            <img src={undefined} />
-                            <label htmlFor="comment"></label>
-                            <input type="text" name="text" id="comment" placeholder="Add your comment..." />
-                        </div>
-                        <button className='button comment-btn'>Comment</button>
-                    </form>
+                    <CreateCommentField
+                        userId={isUser}
+                        postData={postData}
+                        setPostData={setPostData}
+                    />
                 )}
                 <div className="post-comments">
                     <p>All Comments:</p>

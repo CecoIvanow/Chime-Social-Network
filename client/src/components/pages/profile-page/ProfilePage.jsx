@@ -4,7 +4,7 @@ import { useParams } from "react-router"
 import userServices from "../../../services/user-services";
 
 import PostItem from "../../shared/post-item/PostItem";
-import CreatePostItem from "../../shared/create-post-item/CreatePostItem";
+import CreatePostItem from "../../shared/create-post-field/CreatePostField";
 
 export default function ProfilePage({
     isUser
@@ -58,7 +58,6 @@ export default function ProfilePage({
                 {(isUser && isUser === userData._id) && (
                     <CreatePostItem
                         userId={userId}
-                        imageUrl={userData.imageUrl}
                         totalUserPosts={totalUserPosts}
                         setTotalUserPosts={setTotalUserPosts}
                     />

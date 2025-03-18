@@ -21,13 +21,26 @@ commentController.post('/comments', async (req, res) => {
 
 commentController.delete('/comments/:commentId', async (req, res) => {
     const commentId = req.params.commentId;
-    
+
     try {
-        const postId = await commentRepositories.remove(commentId);
+        const postId = await commentRepositories.removeSpecific(commentId);
 
         await postRepositories.removeComment(postId, commentId);
 
         res.json(commentId);
+        res.end();
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
+commentController.patch('/comments/:commentId', async (req, res) => {
+    const commentId = req.params.commentId;
+    const payload = req.body;
+
+    try {
+        await commentRepositories.update(commentId, payload);
+
         res.end();
     } catch (error) {
         console.error(error.message);

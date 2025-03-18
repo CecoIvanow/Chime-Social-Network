@@ -20,15 +20,26 @@ async function create(commentData) {
     return newComment;
 }
 
-async function remove(commentId) {
+async function removeSpecific(commentId) {
     const removedComment = await Comment.findByIdAndDelete(commentId);
 
     return removedComment.onPost;
 }
 
+async function removeAllSharingPost(postId) {
+    //Pretty scary stuff over here, deleting so many documents
+    await Comment.deleteMany({ onPost: postId });
+}
+
+async function update(commentId, payload) {
+    await Comment.findByIdAndUpdate(commentId, payload);
+}
+
 const commentRepositories = {
+    removeAllSharingPost,
+    removeSpecific,
+    update,
     create,
-    remove,
 }
 
 export default commentRepositories;
