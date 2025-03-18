@@ -15,7 +15,7 @@ export default function CommentItem({
     const [isEditClicked, setIsEditClicked] = useState(false);
     const [commentText, setCommentText] = useState('');
 
-    const onDeleteClickHandler = async () => {
+    const onCommentDeleteClickHandler = async () => {
         const isConfirmed = confirm('Are you sure you want to delete this comment?');
 
         if (!isConfirmed) {
@@ -28,7 +28,7 @@ export default function CommentItem({
         setPostData({ ...postData });
     }
 
-    const onEditClickHandler = async () => {
+    const onCommentEditClickHandler = async () => {
         setIsEditClicked(true);
     }
 
@@ -76,8 +76,8 @@ export default function CommentItem({
                         <div className='owner-buttons'>
                             {isUser === creatorData.id && (
                                 <>
-                                    <button className='button' type="button" onClick={onEditClickHandler}>Edit</button>
-                                    <button className='button delete-btn' type="button" onClick={onDeleteClickHandler}>Delete</button>
+                                    <button className='button' type="button" onClick={onCommentEditClickHandler}>Edit</button>
+                                    <button className='button delete-btn' type="button" onClick={onCommentDeleteClickHandler}>Delete</button>
                                 </>
                             )}
                         </div>

@@ -13,6 +13,21 @@ export default function PostDetailsPage({
 
     const [postData, setPostData] = useState({});
     const [isLiked, setIsLiked] = useState(false);
+    const [isEditClicked, setIsEditClicked] = useState(false);
+    const [postText, setPostText] = useState('');
+
+    const textChangeHandler = (e) => {
+        setPostText(e.currentTarget.value);
+    }
+
+    const onCancelEditClickHandler = () => {
+        setIsEditClicked(false);
+    }
+
+    const onSaveEditClickHandler = async () => {
+        await postServices.handlePostUpdate(postData._id, postText);
+        setIsEditClicked(false);
+    }
 
     const onDeletePostClickHandler = async () => {
         const isDeleteConfirmed = confirm('Are you sure you want to delete this post?');
@@ -37,6 +52,10 @@ export default function PostDetailsPage({
         setIsLiked(false);
     }
 
+    const onEditPostClickHandler = async () => {
+        setIsEditClicked(true);
+    }
+
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
 
@@ -46,6 +65,7 @@ export default function PostDetailsPage({
         postServices.handleGetPostDataWithComments(postId, abortSignal)
             .then(data => {
                 setPostData(data);
+                setPostText(data.text);
 
                 if (data.likes.includes(isUser)) {
                     setIsLiked(true);
@@ -68,7 +88,15 @@ export default function PostDetailsPage({
                 </div>
                 <div className='created-on'>Posted on {postData?.postedOn}</div>
             </div>
-            <div className='post-page-text'>{postData?.text}</div>
+
+            {isEditClicked ? (
+                <div className="edit-content">
+                    <textarea className="edit-textarea" value={postText} onChange={textChangeHandler} placeholder="Edit your post content..."></textarea>
+                </div>
+            ) : (
+                <div className='post-page-text'>{postText}</div>
+            )}
+
             <div className="post-interactions">
                 <div className="likes">Likes: {postData.likes?.length}</div>
                 <div className="comments">Comments: {postData.comments?.length}</div>
@@ -86,9 +114,14 @@ export default function PostDetailsPage({
                     )}
                 </div>
                 <div className='owner-buttons'>
-                    {isUser === postData.owner?._id && (
+                    {isUser === postData.owner?._id && isEditClicked ? (
                         <>
-                            <button className='button' type="button"><Link to={`/post/${postData?._id}/edit`}>Edit</Link></button>
+                            <button className='button' type="button" onClick={onSaveEditClickHandler}>Save</button>
+                            <button className='button delete-btn' type="button" onClick={onCancelEditClickHandler}>Cancel</button>
+                        </>
+                    ) : (
+                        <>
+                            <button className='button' type="button" onClick={onEditPostClickHandler}>Edit</button>
                             <button className='button delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
                         </>
                     )}
