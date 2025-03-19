@@ -3,6 +3,7 @@ import userServices from "../../../services/user-services";
 import AuthButton from "../../shared/auth-button/AuthButton";
 import AuthForm from "../../shared/auth-form/AuthForm";
 import AuthNavLink from "../../shared/auth-nav-link/AuthNavLink";
+import GenderDetails from "./gender-details/GenderDetails";
 
 export default function RegisterPage({
     setIsUser
@@ -47,21 +48,8 @@ export default function RegisterPage({
                             )}
 
                         </div>
-                        <div className="gender-details">
-                            <input type="radio" value="Male" name="gender" id="dot-1" />
-                            <input type="radio" value="Female" name="gender" id="dot-2" />
-                            <span className="gender-title">Gender</span>
-                            <div className="category">
-                                <label htmlFor="dot-1">
-                                    <span className="dot one"></span>
-                                    <span className="gender">Male</span>
-                                </label>
-                                <label htmlFor="dot-2">
-                                    <span className="dot two"></span>
-                                    <span className="gender">Female</span>
-                                </label>
-                            </div>
-                        </div>
+
+                        <GenderDetails />
 
                         <AuthButton
                             buttonText="Register"
