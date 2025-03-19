@@ -1,11 +1,21 @@
 import userServices from "../../../services/user-services";
 
 import AuthButton from "../../shared/auth-button/AuthButton";
+import AuthForm from "../../shared/auth-form/AuthForm";
 import AuthNavLink from "../../shared/auth-nav-link/AuthNavLink";
 
 export default function RegisterPage({
     setIsUser
 }) {
+
+    const registerFields = [
+        { fieldName: 'First name', inputType: 'text', placeholderText: 'first name', inputName: 'firstName' },
+        { fieldName: 'Last name', inputType: 'text', placeholderText: 'last name', inputName: 'lastName' },
+        { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
+        { fieldName: 'Birthday', inputType: 'date', placeholderText: 'birthday', inputName: 'birthday' },
+        { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' },
+        { fieldName: 'Confirm Password', inputType: 'password', placeholderText: 'password', inputName: 'rePass' },
+    ]
 
     const submitFormClickHandler = async (e) => {
         e.preventDefault();
@@ -26,35 +36,16 @@ export default function RegisterPage({
                     <form onSubmit={submitFormClickHandler}>
                         <div className="user-details">
 
-                            <div className="input-box">
-                                <span className="details">First name</span>
-                                <input type="text" placeholder="Enter your first name" name="firstName" />
-                            </div>
-                            <div className="input-box">
+                            {registerFields.map(field =>
+                                <AuthForm
+                                    key={field.fieldName}
+                                    fieldName={field.fieldName}
+                                    inputName={field.inputName}
+                                    inputType={field.inputType}
+                                    placeholderText={field.placeholderText}
+                                />
+                            )}
 
-                                <span className="details">Last name</span>
-                                <input type="text" placeholder="Enter your last name" name="lastName" />
-                            </div>
-
-                            <div className="input-box">
-                                <span className="details">Email</span>
-                                <input type="text" placeholder="Enter your email" name="email" />
-                            </div>
-
-                            <div className="input-box">
-                                <span className="details">Birthday</span>
-                                <input type="date" placeholder="Enter your birthday" name="birthday" />
-                            </div>
-
-                            <div className="input-box">
-                                <span className="details">Password</span>
-                                <input type="password" placeholder="Enter your password" name="password" />
-                            </div>
-
-                            <div className="input-box">
-                                <span className="details">Confirm Password</span>
-                                <input type="password" placeholder="Confirm your password" name="rePass" />
-                            </div>
                         </div>
                         <div className="gender-details">
                             <input type="radio" value="Male" name="gender" id="dot-1" />
