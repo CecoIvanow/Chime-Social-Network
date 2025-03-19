@@ -1,13 +1,12 @@
 export default function Button({
+    onClickHandler,
     btnStyle = '',
     buttonName = '',
-    onClickHandler,
 }) {
     return <>
         <button
-            type="button"
             onClick={onClickHandler}
-            className={`button ${btnStyle}`}
+            className={btnStyle}
         >
             {buttonName}
         </button>

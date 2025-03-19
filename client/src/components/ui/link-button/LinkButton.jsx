@@ -6,15 +6,14 @@ export default function LinkButton({
     buttonName = '',
 }) {
     return <>
-        <button
-            type="button"
-            className={`button ${btnStyle}`}
+        <Link
+            to={urlLink}
         >
-            <Link
-                to={urlLink}
+            <button
+                className={btnStyle}
             >
                 {buttonName}
-            </Link>
-        </button>
+            </button>
+        </Link >
     </>
 }
