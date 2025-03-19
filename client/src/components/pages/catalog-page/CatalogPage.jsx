@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-import PostItem from "../../shared/post-item/PostItem";
-import SearchField from "../../shared/search-field/SearchField";
-import UserItem from "./user-item/UserItem";
+import PostsCatalog from "./posts-catalog/PostsCatalog";
+import UsersCatalog from "./users-catalog/UsersCatalog";
+
 import postServices from "../../../services/post-services";
 import userServices from "../../../services/user-services";
 
@@ -46,65 +46,19 @@ export default function CatalogPage({
 
     return <>
         <div className="dashboard-container">
-            {/* <!-- Posts Catalog --> */}
-            <div className="posts-catalog">
-                <h2 className="section-heading">All Posts:</h2>
-                <SearchField
-                    setSearchParams={setPostSearchParams}
-                    searchBy={'text'}
-                />
 
-                {/* <!-- Post Items --> */}
-                {totalPosts.map(post => {
-                    const postMetaData = {
-                        id: post._id,
-                        text: post.text,
-                        postedOn: post.postedOn,
-                        likes: post.likes,
-                        comments: post.comments
-                    }
+            <PostsCatalog
+                isUser={isUser}
+                totalPosts={totalPosts}
+                setTotalPosts={setTotalPosts}
+                setPostSearchParams={setPostSearchParams}
+            />
 
-                    const creatorDetails = {
-                        id: post.owner._id,
-                        imageUrl: post.owner.imageUrl,
-                        fullName: `${post.owner.firstName} ${post.owner.lastName}`,
-                    }
-
-                    return <PostItem
-                        key={post._id}
-                        postMetaData={postMetaData}
-                        creatorDetails={creatorDetails}
-                        userId={isUser}
-                        setTotalPosts={setTotalPosts}
-                        totalPosts={totalPosts}
-                    />
-                })}
-            </div>
-
-            {/* <!-- Users Catalog --> */}
-            <div className="users-catalog">
-                <h2 className="section-heading">Registered Users:</h2>
-
-                <SearchField
-                    setSearchParams={setUserSearchParam}
-                    searchBy={'name'}
-                />
-
-                {/* <!-- User Items --> */}
-                {totalUsers.map(user =>
-                    <UserItem
-                        key={user._id}
-                        profileId={user._id}
-                        isUser={isUser}
-                        imageUrl={user.imageUrl}
-                        postsAmount={user.createdPosts.length}
-                        memberSince={user.memberSince}
-                        firstName={user.firstName}
-                        lastName={user.lastName}
-                    />
-                )}
-
-            </div>
+            <UsersCatalog
+                isUser={isUser}
+                totalUsers={totalUsers}
+                setUserSearchParam={setUserSearchParam}
+            />
         </div>
     </>
 }
