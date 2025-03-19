@@ -6,7 +6,8 @@ import postServices from "../../../services/post-services";
 import CreateCommentField from "./create-comment-field/CreateCommentField";
 import OwnerControls from "../../shared/owner-controls/OwnerControls";
 import EditControls from "../../shared/edit-controls/EditControls";
-import PostInteractionButtons from "../../shared/post-interaction-buttons/PostInteractionButtons";
+import PostInteractionButtons from "../../shared/post-item/post-interaction-buttons/PostInteractionButtons";
+import PostInteractions from "../../shared/post-item/post-interactions/PostInteractions";
 
 export default function PostDetailsPage({
     isUser,
@@ -101,10 +102,11 @@ export default function PostDetailsPage({
                 <div className='post-page-text'>{postText}</div>
             )}
 
-            <div className="post-interactions">
-                <div className="likes">Likes: {postData.likes?.length}</div>
-                <div className="comments">Comments: {postData.comments?.length}</div>
-            </div>
+            <PostInteractions
+                comments={postData.comments}
+                likes={postData.likes}
+            />
+
             <div className='button-div'>
                 <div>
                     {(isUser && isUser !== postData.owner?._id) && (

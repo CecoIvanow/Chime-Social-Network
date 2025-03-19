@@ -1,4 +1,4 @@
-import Button from "../../ui/button/Button"
+import Button from "../../../ui/button/Button"
 
 export default function PostInteractionButtons({
     isLiked,
@@ -14,7 +14,7 @@ export default function PostInteractionButtons({
             />
         ) : (
             <Button
-                    onClickHandler={onLikeClickHandler}
+                onClickHandler={onLikeClickHandler}
                 btnStyle="button "
                 buttonName="Like"
             />

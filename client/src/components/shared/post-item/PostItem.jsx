@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import postServices from "../../../services/post-services";
 import OwnerControls from "../owner-controls/OwnerControls";
 import LinkButton from "../../ui/link-button/LinkButton";
-import PostInteractionButtons from "../post-interaction-buttons/PostInteractionButtons";
+import PostInteractionButtons from "./post-interaction-buttons/PostInteractionButtons";
+import PostInteractions from "./post-interactions/PostInteractions";
 
 export default function PostItem({
     postMetaData,
@@ -56,10 +57,12 @@ export default function PostItem({
                 <div className='created-on'><Link to={`/post/${postMetaData?.id}/details`}>Posted on {postMetaData?.postedOn}</Link></div>
             </div>
             <div className='post-text'>{postMetaData?.text}</div>
-            <div className="post-interactions">
-                <div className="likes">Likes: {postMetaData?.likes.length}</div>
-                <div className="comments">Comments: {postMetaData?.comments.length}</div>
-            </div>
+
+            <PostInteractions
+                comments={postMetaData?.comments}
+                likes={postMetaData?.likes}
+            />
+
             <div className='button-div'>
                 <div>
                     {userId && (
