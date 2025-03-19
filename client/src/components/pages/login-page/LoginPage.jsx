@@ -1,11 +1,17 @@
 import userServices from "../../../services/user-services";
 
 import AuthButton from "../../shared/auth-button/AuthButton";
+import AuthForm from "../../shared/auth-form/AuthForm";
 import AuthNavLink from "../../shared/auth-nav-link/AuthNavLink";
 
 export default function LoginPage({
     setIsUser
 }) {
+
+    const loginFields = [
+        { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
+        { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' }
+    ]
 
     const submitFormHandler = async (e) => {
         e.preventDefault();
@@ -26,15 +32,16 @@ export default function LoginPage({
                     <form onSubmit={submitFormHandler}>
                         <div className="user-details">
 
-                            <div className="input-box">
-                                <span className="details">Email</span>
-                                <input type="text" placeholder="Enter your email" name="email" required />
-                            </div>
+                            {loginFields.map(field =>
+                                <AuthForm
+                                    key={field.fieldName}
+                                    fieldName={field.fieldName}
+                                    inputName={field.inputName}
+                                    inputType={field.inputType}
+                                    placeholderText={field.placeholderText}
+                                />
+                            )}
 
-                            <div className="input-box">
-                                <span className="details">Password</span>
-                                <input type="password" placeholder="Enter your password" name="password" required />
-                            </div>
                         </div>
 
                         <AuthButton
