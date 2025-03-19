@@ -1,11 +1,12 @@
-import { Link } from "react-router";
 import { useEffect, useState } from "react";
 
 import postServices from "../../../services/post-services";
+
 import OwnerControls from "../owner-controls/OwnerControls";
 import LinkButton from "../../ui/link-button/LinkButton";
 import PostInteractionButtons from "./post-interaction-buttons/PostInteractionButtons";
 import PostInteractions from "./post-interactions/PostInteractions";
+import PostHeader from "../post-header/PostHeader";
 
 export default function PostItem({
     postMetaData,
@@ -49,18 +50,20 @@ export default function PostItem({
 
     return <>
         <li className='post-item'>
-            <div className='post-header'>
-                <div>
-                    <img className='owner-picture' src={creatorDetails?.imageUrl} alt="" />
-                    <p className='post-owner'><Link to={`/profile/${creatorDetails?.id}`}>{creatorDetails?.fullName}</Link></p>
-                </div>
-                <div className='created-on'><Link to={`/post/${postMetaData?.id}/details`}>Posted on {postMetaData?.postedOn}</Link></div>
-            </div>
+
+            <PostHeader
+                postId={postMetaData.id}
+                postedOn={postMetaData.postedOn}
+                imageUrl={creatorDetails.imageUrl}
+                ownerId={creatorDetails.id}
+                ownerFullName={creatorDetails.fullName}
+            />
+
             <div className='post-text'>{postMetaData?.text}</div>
 
             <PostInteractions
-                comments={postMetaData?.comments}
-                likes={postMetaData?.likes}
+                comments={postMetaData.comments}
+                likes={postMetaData.likes}
             />
 
             <div className='button-div'>

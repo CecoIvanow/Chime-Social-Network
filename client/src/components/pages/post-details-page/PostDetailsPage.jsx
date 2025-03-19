@@ -1,13 +1,15 @@
-import { Link, useLocation, useNavigate } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 import { useEffect, useState } from "react";
 
-import CommentItem from "./comment-item/CommentItem"
 import postServices from "../../../services/post-services";
+
+import CommentItem from "./comment-item/CommentItem"
 import CreateCommentField from "./create-comment-field/CreateCommentField";
 import OwnerControls from "../../shared/owner-controls/OwnerControls";
 import EditControls from "../../shared/edit-controls/EditControls";
 import PostInteractionButtons from "../../shared/post-item/post-interaction-buttons/PostInteractionButtons";
 import PostInteractions from "../../shared/post-item/post-interactions/PostInteractions";
+import PostHeader from "../../shared/post-header/PostHeader";
 
 export default function PostDetailsPage({
     isUser,
@@ -86,20 +88,20 @@ export default function PostDetailsPage({
 
     return <>
         <li className='post-page-body'>
-            <div className='post-page-header'>
-                <div>
-                    <img className='owner-picture' src={postData.owner?.imageUrl} alt="" />
-                    <p className='post-owner'><Link to={`/profile/${postData.owner?._id}`}>{postData.owner?.firstName} {postData.owner?.lastName}</Link></p>
-                </div>
-                <div className='created-on'>Posted on {postData?.postedOn}</div>
-            </div>
+
+            <PostHeader
+                postedOn={postData?.postedOn}
+                imageUrl={postData.owner?.imageUrl}
+                ownerId={postData.owner?._id}
+                ownerFullName={`${postData.owner?.firstName} ${postData.owner?.lastName}`}
+            />
 
             {isEditClicked ? (
                 <div className="edit-content">
                     <textarea className="edit-textarea" value={postText} onChange={textChangeHandler} placeholder="Edit your post content..."></textarea>
                 </div>
             ) : (
-                <div className='post-page-text'>{postText}</div>
+                <div className='post-text'>{postText}</div>
             )}
 
             <PostInteractions
