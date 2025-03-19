@@ -1,9 +1,10 @@
 import { Link } from "react-router"
+import { useEffect, useState } from "react";
 
 import commentServices from "../../../../services/comment-services"
-import { useEffect, useState } from "react";
+
 import CreateEntry from "../../../shared/create-entry/CreateEntry";
-import OwnerControls from "../../../shared/owner-controls/OwnerControls";
+import OwnerControls from "../../../shared/controls/owner-controls/OwnerControls";
 
 export default function CommentItem({
     isUser,

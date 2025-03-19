@@ -3,8 +3,8 @@ import { useParams } from "react-router"
 
 import userServices from "../../../services/user-services";
 
-import PostItem from "../../shared/post-item/PostItem";
-import CreatePostItem from "../../shared/create-post-field/CreatePostField";
+import PostItem from "../../shared/post/post-item/PostItem";
+import PostCreateForm from "../../shared/post/post-create-form/PostCreateForm";
 import LinkButton from "../../ui/buttons/link-button/LinkButton";
 
 export default function ProfilePage({
@@ -61,7 +61,7 @@ export default function ProfilePage({
             <div className="posts-section">
                 <h2 className="posts-heading">{isUser === userData._id ? 'My' : `${userData.firstName}'s`} Posts:</h2>
                 {(isUser && isUser === userData._id) && (
-                    <CreatePostItem
+                    <PostCreateForm
                         userId={userId}
                         totalUserPosts={totalUserPosts}
                         setTotalUserPosts={setTotalUserPosts}

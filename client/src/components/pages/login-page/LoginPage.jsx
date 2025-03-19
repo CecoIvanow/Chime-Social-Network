@@ -1,14 +1,19 @@
-import { Link } from "react-router";
 import userServices from "../../../services/user-services";
+
+import AuthButton from "../../shared/auth/auth-button/AuthButton";
+import AuthForm from "../../shared/auth/auth-form/AuthForm";
+import AuthNavLink from "../../shared/auth/auth-nav-link/AuthNavLink";
 
 export default function LoginPage({
     setIsUser
 }) {
 
-    const submitFormHandler = async (e) => {
-        e.preventDefault();
+    const loginFields = [
+        { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
+        { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' }
+    ]
 
-        const formData = new FormData(e.currentTarget);
+    const submitFormHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
         await userServices.handleLogin(data, setIsUser);
@@ -17,30 +22,32 @@ export default function LoginPage({
     return <>
         <div className="login-page">
             <div className="container">
-                {/* <!-- Title section --> */}
+
                 <div className="title">Login</div>
                 <div className="content">
-                    {/* <!-- Registration form --> */}
-                    <form onSubmit={submitFormHandler}>
+
+                    <form action={submitFormHandler}>
                         <div className="user-details">
-                            {/* <!-- Input for Email --> */}
-                            <div className="input-box">
-                                <span className="details">Email</span>
-                                <input type="text" placeholder="Enter your email" name="email" required />
-                            </div>
-                            {/* <!-- Input for Password --> */}
-                            <div className="input-box">
-                                <span className="details">Password</span>
-                                <input type="password" placeholder="Enter your password" name="password" required />
-                            </div>
+
+                            {loginFields.map(field =>
+                                <AuthForm
+                                    key={field.fieldName}
+                                    fieldName={field.fieldName}
+                                    inputName={field.inputName}
+                                    inputType={field.inputType}
+                                    placeholderText={field.placeholderText}
+                                />
+                            )}
+
                         </div>
-                        {/* <!-- Submit button --> */}
-                        <div className="button-auth">
-                            <input type="submit" value="Login" />
-                        </div>
-                        <div className='to-register'>
-                            <Link to="/register">Don`t have an account?</Link>
-                        </div>
+
+                        <AuthButton
+                            buttonText="Login"
+                        />
+                        <AuthNavLink
+                            path="/register"
+                            buttonText="Don`t have an account?"
+                        />
                     </form>
                 </div>
             </div>

@@ -5,7 +5,7 @@ export default function PasswordChangeForm({
     onSubmitHandler
 }) {
     return <>
-        <form onSubmit={onSubmitHandler}>
+        <form action={onSubmitHandler}>
             <div className="settings-card password-section">
                 <h2 className="settings-heading">Account Password - ******</h2>
 

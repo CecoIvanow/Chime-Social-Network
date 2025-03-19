@@ -1,15 +1,24 @@
-import { Link } from "react-router";
-
 import userServices from "../../../services/user-services";
+
+import AuthButton from "../../shared/auth/auth-button/AuthButton";
+import AuthForm from "../../shared/auth/auth-form/AuthForm";
+import AuthNavLink from "../../shared/auth/auth-nav-link/AuthNavLink";
+import GenderDetails from "./gender-details/GenderDetails";
 
 export default function RegisterPage({
     setIsUser
 }) {
 
-    const submitFormClickHandler = async (e) => {
-        e.preventDefault();
+    const registerFields = [
+        { fieldName: 'First name', inputType: 'text', placeholderText: 'first name', inputName: 'firstName' },
+        { fieldName: 'Last name', inputType: 'text', placeholderText: 'last name', inputName: 'lastName' },
+        { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
+        { fieldName: 'Birthday', inputType: 'date', placeholderText: 'birthday', inputName: 'birthday' },
+        { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' },
+        { fieldName: 'Confirm Password', inputType: 'password', placeholderText: 'password', inputName: 'rePass' },
+    ]
 
-        const formData = new FormData(e.currentTarget);
+    const submitFormClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
         await userServices.handleRegister(data, setIsUser);
@@ -22,61 +31,30 @@ export default function RegisterPage({
                 <div className="title">Registration</div>
                 <div className="content">
 
-                    <form onSubmit={submitFormClickHandler}>
+                    <form action={submitFormClickHandler}>
                         <div className="user-details">
 
-                            <div className="input-box">
-                                <span className="details">First name</span>
-                                <input type="text" placeholder="Enter your first name" name="firstName" />
-                            </div>
-                            <div className="input-box">
+                            {registerFields.map(field =>
+                                <AuthForm
+                                    key={field.fieldName}
+                                    fieldName={field.fieldName}
+                                    inputName={field.inputName}
+                                    inputType={field.inputType}
+                                    placeholderText={field.placeholderText}
+                                />
+                            )}
 
-                                <span className="details">Last name</span>
-                                <input type="text" placeholder="Enter your last name" name="lastName" />
-                            </div>
-
-                            <div className="input-box">
-                                <span className="details">Email</span>
-                                <input type="text" placeholder="Enter your email" name="email" />
-                            </div>
-
-                            <div className="input-box">
-                                <span className="details">Birthday</span>
-                                <input type="date" placeholder="Enter your birthday" name="birthday" />
-                            </div>
-
-                            <div className="input-box">
-                                <span className="details">Password</span>
-                                <input type="password" placeholder="Enter your password" name="password" />
-                            </div>
-
-                            <div className="input-box">
-                                <span className="details">Confirm Password</span>
-                                <input type="password" placeholder="Confirm your password" name="rePass" />
-                            </div>
                         </div>
-                        <div className="gender-details">
-                            <input type="radio" value="Male" name="gender" id="dot-1" />
-                            <input type="radio" value="Female" name="gender" id="dot-2" />
-                            <span className="gender-title">Gender</span>
-                            <div className="category">
-                                <label htmlFor="dot-1">
-                                    <span className="dot one"></span>
-                                    <span className="gender">Male</span>
-                                </label>
-                                <label htmlFor="dot-2">
-                                    <span className="dot two"></span>
-                                    <span className="gender">Female</span>
-                                </label>
-                            </div>
-                        </div>
-                        {/* <!-- Submit button --> */}
-                        <div className="button-auth">
-                            <input type="submit" value="Register" />
-                        </div>
-                        <div className='to-login'>
-                            <Link to="/login">Already have an account?</Link>
-                        </div>
+
+                        <GenderDetails />
+
+                        <AuthButton
+                            buttonText="Register"
+                        />
+                        <AuthNavLink
+                            path="/login"
+                            buttonText="Already have an account?"
+                        />
                     </form>
                 </div>
             </div>
