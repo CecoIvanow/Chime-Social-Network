@@ -170,14 +170,12 @@ form .button-auth input:hover {
     transition: ease-in, 0.25s;
 }
 
-div .to-login,
-div .to-register {
+div .to-auth {
     display: flex;
     justify-content: center;
 }
 
-div .to-login a,
-div .to-register a {
+div .to-auth a {
     font-weight: 500;
     text-decoration: none;
     color: #2980b9;

@@ -1,6 +1,7 @@
-import { Link } from "react-router";
-
 import userServices from "../../../services/user-services";
+
+import AuthButton from "../../shared/auth-button/AuthButton";
+import AuthNavLink from "../../shared/auth-nav-link/AuthNavLink";
 
 export default function RegisterPage({
     setIsUser
@@ -70,13 +71,14 @@ export default function RegisterPage({
                                 </label>
                             </div>
                         </div>
-                        {/* <!-- Submit button --> */}
-                        <div className="button-auth">
-                            <input type="submit" value="Register" />
-                        </div>
-                        <div className='to-login'>
-                            <Link to="/login">Already have an account?</Link>
-                        </div>
+
+                        <AuthButton
+                            buttonText="Register"
+                        />
+                        <AuthNavLink
+                            path="/login"
+                            buttonText="Already have an account?"
+                        />
                     </form>
                 </div>
             </div>
