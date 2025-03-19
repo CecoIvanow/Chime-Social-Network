@@ -1,5 +1,5 @@
 import SearchField from "../../../shared/search-field/SearchField"
-import UserItem from "../user-item/UserItem"
+import UserItem from "./user-item/UserItem"
 
 export default function UsersCatalog({
     isUser,
