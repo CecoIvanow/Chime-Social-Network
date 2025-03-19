@@ -1,5 +1,5 @@
-import Button from "../../ui/button/Button";
-import LinkButton from "../../ui/link-button/LinkButton";
+import Button from "../../ui/buttons/button/Button";
+import LinkButton from "../../ui/buttons/link-button/LinkButton";
 
 export default function OwnerControls({
     urlLink,

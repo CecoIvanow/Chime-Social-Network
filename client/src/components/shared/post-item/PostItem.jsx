@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import postServices from "../../../services/post-services";
 
 import OwnerControls from "../owner-controls/OwnerControls";
-import LinkButton from "../../ui/link-button/LinkButton";
+import LinkButton from "../../ui/buttons/link-button/LinkButton";
 import PostInteractionButtons from "./post-interaction-buttons/PostInteractionButtons";
 import PostInteractions from "./post-interactions/PostInteractions";
 import PostHeader from "../post-header/PostHeader";

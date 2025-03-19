@@ -1,4 +1,4 @@
-import Button from "../../ui/button/Button";
+import Button from "../../ui/buttons/button/Button";
 
 export default function CreateEntry({
     onTextChangeHandler,
