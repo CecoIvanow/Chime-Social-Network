@@ -1,4 +1,4 @@
-import LinkButton from "../../ui/link-button/LinkButton";
+import LinkButton from "../../ui/buttons/link-button/LinkButton";
 
 export default function NotFoundPage() {
     return <>
@@ -8,11 +8,13 @@ export default function NotFoundPage() {
                     <h1>4<span>0</span>4</h1>
                 </div>
                 <h2>the page you requested could not be found</h2>
+
                 <LinkButton
                     btnStyle="button"
                     urlLink={'/'}
                     buttonName="Home"
                 />
+
             </div>
         </div>
     </>

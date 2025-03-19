@@ -5,7 +5,7 @@ import userServices from "../../../services/user-services";
 
 import PostItem from "../../shared/post-item/PostItem";
 import CreatePostItem from "../../shared/create-post-field/CreatePostField";
-import LinkButton from "../../ui/link-button/LinkButton";
+import LinkButton from "../../ui/buttons/link-button/LinkButton";
 
 export default function ProfilePage({
     isUser

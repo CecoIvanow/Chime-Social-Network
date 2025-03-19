@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import Button from '../../../ui/button/Button'
+import Button from '../../../ui/buttons/button/Button'
 
 export default function UserItem({
     profileId,

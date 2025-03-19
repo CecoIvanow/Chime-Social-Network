@@ -52,18 +52,18 @@ export default function PostItem({
         <li className='post-item'>
 
             <PostHeader
-                postId={postMetaData.id}
-                postedOn={postMetaData.postedOn}
-                imageUrl={creatorDetails.imageUrl}
-                ownerId={creatorDetails.id}
-                ownerFullName={creatorDetails.fullName}
+                postId={postMetaData?.id}
+                postedOn={postMetaData?.postedOn}
+                imageUrl={creatorDetails?.imageUrl}
+                ownerId={creatorDetails?.id}
+                ownerFullName={creatorDetails?.fullName}
             />
 
             <div className='post-text'>{postMetaData?.text}</div>
 
             <PostInteractions
-                comments={postMetaData.comments}
-                likes={postMetaData.likes}
+                comments={postMetaData?.comments}
+                likes={postMetaData?.likes}
             />
 
             <div className='button-div'>

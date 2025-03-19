@@ -7,7 +7,7 @@ import CommentItem from "./comment-item/CommentItem"
 import CreateCommentField from "./create-comment-field/CreateCommentField";
 import OwnerControls from "../../shared/owner-controls/OwnerControls";
 import EditControls from "../../shared/edit-controls/EditControls";
-import PostInteractionButtons from "../../shared/post-item/post-interaction-buttons/PostInteractionButtons";
+import PostInteractionButtons from "../../shared/post-interaction-buttons/PostInteractionButtons";
 import PostInteractions from "../../shared/post-item/post-interactions/PostInteractions";
 import PostHeader from "../../shared/post-header/PostHeader";
 
