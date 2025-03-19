@@ -112,12 +112,13 @@ export default function PostDetailsPage({
                             {(isLiked ? (
                                 <Button
                                     onClickHandler={onUnlikePostClockHandler}
-                                    btnStyle="unlike-btn"
+                                    btnStyle="button unlike-btn"
                                     buttonName="Unlike"
                                 />
                             ) : (
                                 <Button
                                     onClickHandler={onLikePostClickHandler}
+                                    btnStyle="button "
                                     buttonName="Like"
                                 />
                             ))}
