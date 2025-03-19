@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router'
 
 
 import userServices from "../../../services/user-services";
+import Button from "../../ui/button/Button";
 
 export default function SettingsPage({
     userId
@@ -48,7 +49,7 @@ export default function SettingsPage({
             abortController.abort();
         }
     }, [userId]);
-    
+
     return <>
         <div className="settings-container">
             <form onSubmit={onEmailChangeSubmitHandler}>
@@ -75,7 +76,10 @@ export default function SettingsPage({
                         <input type="password" className="form-input" name="rePass" />
                     </div>
 
-                    <button className="save-button">Update Email</button>
+                    <Button
+                        btnStyle="save-button"
+                        buttonName="Change Email"
+                    />
                 </div>
             </form>
 
@@ -103,7 +107,10 @@ export default function SettingsPage({
                         <input type="password" className="form-input" name="rePass" />
                     </div>
 
-                    <button className="save-button">Update Password</button>
+                    <Button
+                        btnStyle="save-button"
+                        buttonName="Change Password"
+                    />
                 </div>
             </form>
         </div>

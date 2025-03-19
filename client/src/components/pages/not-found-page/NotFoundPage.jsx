@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import LinkButton from "../../ui/link-button/LinkButton";
 
 export default function NotFoundPage() {
     return <>
@@ -8,7 +8,11 @@ export default function NotFoundPage() {
                     <h1>4<span>0</span>4</h1>
                 </div>
                 <h2>the page you requested could not be found</h2>
-                <button className="notfound-button"><Link to="/" className="notfound-link">Go home</Link></button>
+                <LinkButton
+                    btnStyle="button"
+                    urlLink={'/'}
+                    buttonName="Home"
+                />
             </div>
         </div>
     </>

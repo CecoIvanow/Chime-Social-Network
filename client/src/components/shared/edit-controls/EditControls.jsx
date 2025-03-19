@@ -11,6 +11,7 @@ export default function EditControls({
             <>
                 <LinkButton
                     buttonName="Edit"
+                    btnStyle="button"
                     urlLink={urlLink}
                 />
             </>
@@ -18,6 +19,7 @@ export default function EditControls({
             <>
                 <Button
                     buttonName="Edit"
+                    btnStyle="button"
                     onClickHandler={onSaveClickHandler}
                 />
             </>
@@ -25,7 +27,7 @@ export default function EditControls({
 
         <Button
             buttonName='Close'
-            btnStyle='delete-btn'
+            btnStyle='button delete-btn'
             onClickHandler={onCancelClickHandler}
         />
     </>

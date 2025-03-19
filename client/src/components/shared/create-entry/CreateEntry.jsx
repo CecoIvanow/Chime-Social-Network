@@ -22,7 +22,8 @@ export default function CreateEntry({
                     />
                 </div>
                 <Button
-                buttonName={buttonText}
+                    btnStyle="button"
+                    buttonName={buttonText}
                 />
             </form>
         </div>

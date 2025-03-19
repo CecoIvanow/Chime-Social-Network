@@ -66,12 +66,13 @@ export default function PostItem({
                         <>
                             {(userId !== creatorDetails?.id && (isLiked ? (
                                 <Button
-                                    btnStyle="unlike-btn"
+                                    btnStyle="button unlike-btn"
                                     buttonName="Unlike"
                                     onClickHandler={onUnlikePostClockHandler}
                                 />
                             ) : (
                                 <Button
+                                    btnStyle="button"
                                     buttonName="Like"
                                     onClickHandler={onLikePostClickHandler}
                                 />
@@ -79,7 +80,7 @@ export default function PostItem({
 
                             <LinkButton
                                 urlLink={`/post/${postMetaData?.id}/details`}
-                                btnStyle="comment-btn"
+                                btnStyle="button comment-btn"
                                 buttonName="Comment"
                             />
                         </>

@@ -11,6 +11,7 @@ export default function OwnerControls({
             <>
                 <LinkButton
                     buttonName="Edit"
+                    btnStyle="button"
                     urlLink={urlLink}
                 />
             </>
@@ -18,6 +19,7 @@ export default function OwnerControls({
             <>
                 <Button
                     buttonName="Edit"
+                    btnStyle="button"
                     onClickHandler={onEditClickHandler}
                 />
             </>
@@ -25,7 +27,7 @@ export default function OwnerControls({
 
         <Button
             buttonName="Delete"
-            btnStyle="delete-btn"
+            btnStyle="button delete-btn"
             onClickHandler={onDeleteClickHandler}
         />
     </>
