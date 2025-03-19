@@ -4,14 +4,14 @@ import UserItem from "../user-item/UserItem"
 export default function UsersCatalog({
     isUser,
     totalUsers,
-    setUserSearchParam,
+    setUserSearchParams,
 }) {
     return <>
         <div className="users-catalog">
             <h2 className="section-heading">Registered Users:</h2>
 
             <SearchField
-                setSearchParams={setUserSearchParam}
+                setSearchParams={setUserSearchParams}
                 searchBy={'name'}
             />
 

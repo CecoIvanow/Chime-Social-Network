@@ -10,7 +10,7 @@ export default function CatalogPage({
     isUser
 }) {
 
-    const [userSearchParam, setUserSearchParam] = useState('');
+    const [userSearchParams, setUserSearchParams] = useState('');
     const [postSearchParams, setPostSearchParams] = useState('');
 
     const [totalPosts, setTotalPosts] = useState([]);
@@ -21,14 +21,14 @@ export default function CatalogPage({
 
         const abortSignal = abortController.signal;
 
-        userServices.handleGetAllWithMatchingNames(userSearchParam, abortSignal)
+        userServices.handleGetAllWithMatchingNames(userSearchParams, abortSignal)
             .then(data => setTotalUsers(data))
             .catch(error => console.error(error.message))
 
         return () => {
             abortController.abort();
         }
-    }, [userSearchParam])
+    }, [userSearchParams])
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -57,7 +57,7 @@ export default function CatalogPage({
             <UsersCatalog
                 isUser={isUser}
                 totalUsers={totalUsers}
-                setUserSearchParam={setUserSearchParam}
+                setUserSearchParams={setUserSearchParams}
             />
         </div>
     </>
