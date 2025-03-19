@@ -1,10 +1,10 @@
-import Button from "../../ui/buttons/button/Button";
-import LinkButton from "../../ui/buttons/link-button/LinkButton";
+import Button from "../../../ui/buttons/button/Button";
+import LinkButton from "../../../ui/buttons/link-button/LinkButton";
 
-export default function OwnerControls({
+export default function EditControls({
     urlLink,
-    onEditClickHandler,
-    onDeleteClickHandler
+    onSaveClickHandler,
+    onCancelClickHandler,
 }) {
     return <>
         {urlLink ? (
@@ -20,15 +20,15 @@ export default function OwnerControls({
                 <Button
                     buttonName="Edit"
                     btnStyle="button"
-                    onClickHandler={onEditClickHandler}
+                    onClickHandler={onSaveClickHandler}
                 />
             </>
         )}
 
         <Button
-            buttonName="Delete"
-            btnStyle="button delete-btn"
-            onClickHandler={onDeleteClickHandler}
+            buttonName='Close'
+            btnStyle='button delete-btn'
+            onClickHandler={onCancelClickHandler}
         />
     </>
 }

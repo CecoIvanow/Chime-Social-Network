@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-import CreateEntry from "../../../shared/create-entry/CreateEntry";
+import CreateContent from "../../../shared/create-content/CreateContent";
 
 import commentServices from "../../../../services/comment-services";
 
-export default function CreateCommentField({
+export default function CreateCommentForm({
     userId,
     postData,
     setPostData
@@ -26,7 +26,7 @@ export default function CreateCommentField({
         setCommentText(e.currentTarget.value);
     }
 
-    return <CreateEntry
+    return <CreateContent
         onTextChangeHandler={onTextChangeHandler}
         onSubmitHandler={onAddCommentSubmitHandler}
         buttonText={'Reply'}

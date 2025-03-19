@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-import CreateEntry from "../create-entry/CreateEntry";
+import CreateContent from "../../create-content/CreateContent";
 
-import postServices from "../../../services/post-services";
+import postServices from "../../../../services/post-services";
 
-export default function CreatePostField({
+export default function PostCreateForm({
     userId,
     totalUserPosts,
     setTotalUserPosts,
@@ -30,7 +30,7 @@ export default function CreatePostField({
         setPostText(e.currentTarget.value);
     }
 
-    return <CreateEntry
+    return <CreateContent
         onTextChangeHandler={onTextChangeHandler}
         onSubmitHandler={onPostSubmitHandler}
         buttonText={'Post'}

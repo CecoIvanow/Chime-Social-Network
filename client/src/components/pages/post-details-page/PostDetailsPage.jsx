@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import postServices from "../../../services/post-services";
 
 import CommentItem from "./comment-item/CommentItem"
-import CreateCommentField from "./create-comment-field/CreateCommentField";
-import OwnerControls from "../../shared/owner-controls/OwnerControls";
-import EditControls from "../../shared/edit-controls/EditControls";
-import PostInteractionButtons from "../../shared/post-interaction-buttons/PostInteractionButtons";
-import PostInteractions from "../../shared/post-item/post-interactions/PostInteractions";
-import PostHeader from "../../shared/post-header/PostHeader";
+import CommentCreateForm from "./comment-create-form/CommentCreateForm";
+import OwnerControls from "../../shared/controls/owner-controls/OwnerControls";
+import EditControls from "../../shared/controls/edit-controls/EditControls";
+import PostInteractionButtons from "../../shared/post/post-interaction-buttons/PostInteractionButtons";
+import PostInteractions from "../../shared/post/post-item/post-interactions/PostInteractions";
+import PostHeader from "../../shared/post/post-header/PostHeader";
 
 export default function PostDetailsPage({
     isUser,
@@ -139,7 +139,7 @@ export default function PostDetailsPage({
             </div>
             <div className="comments-section">
                 {isUser && (
-                    <CreateCommentField
+                    <CommentCreateForm
                         userId={isUser}
                         postData={postData}
                         setPostData={setPostData}

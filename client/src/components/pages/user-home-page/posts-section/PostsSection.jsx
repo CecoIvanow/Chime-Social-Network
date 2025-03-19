@@ -1,13 +1,12 @@
-import CreatePostField from "../../../shared/create-post-field/CreatePostField";
-import PostItem from "../../../shared/post-item/PostItem";
-
+import PostCreateForm from "../../../shared/post/post-create-form/PostCreateForm";
+import PostItem from "../../../shared/post/post-item/PostItem";
 
 export default function PostsSection({
     userId
 }) {
     return <>
         <div className="posts-section">
-            <CreatePostField
+            <PostCreateForm
                 userId={userId}
             />
             <div className='posts-list'>

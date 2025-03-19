@@ -1,4 +1,4 @@
-import PostItem from "../../../shared/post-item/PostItem"
+import PostItem from "../../../shared/post/post-item/PostItem"
 import SearchField from "../../../shared/search-field/SearchField"
 
 export default function PostsCatalog({

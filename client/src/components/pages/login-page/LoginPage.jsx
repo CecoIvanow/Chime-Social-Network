@@ -1,8 +1,8 @@
 import userServices from "../../../services/user-services";
 
-import AuthButton from "../../shared/auth-button/AuthButton";
-import AuthForm from "../../shared/auth-form/AuthForm";
-import AuthNavLink from "../../shared/auth-nav-link/AuthNavLink";
+import AuthButton from "../../shared/auth/auth-button/AuthButton";
+import AuthForm from "../../shared/auth/auth-form/AuthForm";
+import AuthNavLink from "../../shared/auth/auth-nav-link/AuthNavLink";
 
 export default function LoginPage({
     setIsUser

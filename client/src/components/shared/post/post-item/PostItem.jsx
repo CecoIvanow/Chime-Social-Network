@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-import postServices from "../../../services/post-services";
+import postServices from "../../../../services/post-services";
 
-import OwnerControls from "../owner-controls/OwnerControls";
-import LinkButton from "../../ui/buttons/link-button/LinkButton";
-import PostInteractionButtons from "./post-interaction-buttons/PostInteractionButtons";
+import OwnerControls from "../../controls/owner-controls/OwnerControls";
+import LinkButton from "../../../ui/buttons/link-button/LinkButton";
+import PostInteractionButtons from "../post-interaction-buttons/PostInteractionButtons";
 import PostInteractions from "./post-interactions/PostInteractions";
 import PostHeader from "../post-header/PostHeader";
 
