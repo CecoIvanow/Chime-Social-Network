@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 import postServices from "../../../services/post-services";
 import OwnerControls from "../owner-controls/OwnerControls";
-import Button from "../../ui/button/Button";
 import LinkButton from "../../ui/link-button/LinkButton";
+import PostInteractionButtons from "../post-interaction-buttons/PostInteractionButtons";
 
 export default function PostItem({
     postMetaData,
@@ -64,19 +64,13 @@ export default function PostItem({
                 <div>
                     {userId && (
                         <>
-                            {(userId !== creatorDetails?.id && (isLiked ? (
-                                <Button
-                                    btnStyle="button unlike-btn"
-                                    buttonName="Unlike"
-                                    onClickHandler={onUnlikePostClockHandler}
+                            {(userId !== creatorDetails?.id &&
+                                <PostInteractionButtons
+                                    isLiked={isLiked}
+                                    onLikeClickHandler={onLikePostClickHandler}
+                                    onUnlikeClickHandler={onUnlikePostClockHandler}
                                 />
-                            ) : (
-                                <Button
-                                    btnStyle="button"
-                                    buttonName="Like"
-                                    onClickHandler={onLikePostClickHandler}
-                                />
-                            )))}
+                            )}
 
                             <LinkButton
                                 urlLink={`/post/${postMetaData?.id}/details`}
