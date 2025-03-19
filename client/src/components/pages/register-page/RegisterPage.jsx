@@ -18,10 +18,7 @@ export default function RegisterPage({
         { fieldName: 'Confirm Password', inputType: 'password', placeholderText: 'password', inputName: 'rePass' },
     ]
 
-    const submitFormClickHandler = async (e) => {
-        e.preventDefault();
-
-        const formData = new FormData(e.currentTarget);
+    const submitFormClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
         await userServices.handleRegister(data, setIsUser);
@@ -34,7 +31,7 @@ export default function RegisterPage({
                 <div className="title">Registration</div>
                 <div className="content">
 
-                    <form onSubmit={submitFormClickHandler}>
+                    <form action={submitFormClickHandler}>
                         <div className="user-details">
 
                             {registerFields.map(field =>

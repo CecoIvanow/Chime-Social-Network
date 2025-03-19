@@ -13,10 +13,7 @@ export default function LoginPage({
         { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' }
     ]
 
-    const submitFormHandler = async (e) => {
-        e.preventDefault();
-
-        const formData = new FormData(e.currentTarget);
+    const submitFormHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
         await userServices.handleLogin(data, setIsUser);
@@ -29,7 +26,7 @@ export default function LoginPage({
                 <div className="title">Login</div>
                 <div className="content">
 
-                    <form onSubmit={submitFormHandler}>
+                    <form action={submitFormHandler}>
                         <div className="user-details">
 
                             {loginFields.map(field =>

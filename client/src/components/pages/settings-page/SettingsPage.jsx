@@ -15,10 +15,7 @@ export default function SettingsPage({
 
     const navigateTo = useNavigate();
 
-    const onEmailChangeSubmitHandler = async (e) => {
-        e.preventDefault()
-
-        const formData = new FormData(e.currentTarget);
+    const onEmailChangeSubmitHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
         await userServices.handleEmailChange(userId, data);
@@ -26,10 +23,7 @@ export default function SettingsPage({
         navigateTo(`/profile/${userId}`);
     }
 
-    const onPasswordChangeSubmitHandler = async (e) => {
-        e.preventDefault();
-
-        const formData = new FormData(e.currentTarget);
+    const onPasswordChangeSubmitHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
         await userServices.handlePasswordChange(userId, data);

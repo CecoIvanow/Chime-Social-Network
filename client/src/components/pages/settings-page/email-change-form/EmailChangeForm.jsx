@@ -1,11 +1,11 @@
 import Button from "../../../ui/buttons/button/Button";
 
-export default function EmailChangeForm(
+export default function EmailChangeForm({
     userEmail,
     onSubmitHandler
-) {
+}) {
     return <>
-        <form onSubmit={onSubmitHandler}>
+        <form action={onSubmitHandler}>
             <div className="settings-card password-section">
                 <h2 className="settings-heading">Account Email - {userEmail}</h2>
 
