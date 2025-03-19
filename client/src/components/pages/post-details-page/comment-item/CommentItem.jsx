@@ -3,6 +3,7 @@ import { Link } from "react-router"
 import commentServices from "../../../../services/comment-services"
 import { useEffect, useState } from "react";
 import CreateEntry from "../../../shared/create-entry/CreateEntry";
+import OwnerControls from "../../../shared/owner-controls/OwnerControls";
 
 export default function CommentItem({
     isUser,
@@ -75,10 +76,10 @@ export default function CommentItem({
                         </div>
                         <div className='owner-buttons'>
                             {isUser === creatorData.id && (
-                                <>
-                                    <button className='button' type="button" onClick={onCommentEditClickHandler}>Edit</button>
-                                    <button className='button delete-btn' type="button" onClick={onCommentDeleteClickHandler}>Delete</button>
-                                </>
+                                <OwnerControls
+                                    onDeleteClickHandler={onCommentDeleteClickHandler}
+                                    onEditClickHandler={onCommentEditClickHandler}
+                                />
                             )}
                         </div>
                     </div>

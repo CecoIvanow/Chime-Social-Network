@@ -1,19 +1,26 @@
-import { Link, useLocation, useNavigate } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 import { useEffect, useState } from "react";
 
-import CommentItem from "./comment-item/CommentItem"
 import postServices from "../../../services/post-services";
+
+import CommentItem from "./comment-item/CommentItem"
 import CreateCommentField from "./create-comment-field/CreateCommentField";
+import OwnerControls from "../../shared/owner-controls/OwnerControls";
+import EditControls from "../../shared/edit-controls/EditControls";
+import PostInteractionButtons from "../../shared/post-interaction-buttons/PostInteractionButtons";
+import PostInteractions from "../../shared/post-item/post-interactions/PostInteractions";
+import PostHeader from "../../shared/post-header/PostHeader";
 
 export default function PostDetailsPage({
-    isUser
+    isUser,
+    shouldEdit
 }) {
     const location = useLocation();
     const navigateTo = useNavigate();
 
     const [postData, setPostData] = useState({});
     const [isLiked, setIsLiked] = useState(false);
-    const [isEditClicked, setIsEditClicked] = useState(false);
+    const [isEditClicked, setIsEditClicked] = useState(shouldEdit);
     const [postText, setPostText] = useState('');
 
     const textChangeHandler = (e) => {
@@ -81,48 +88,51 @@ export default function PostDetailsPage({
 
     return <>
         <li className='post-page-body'>
-            <div className='post-page-header'>
-                <div>
-                    <img className='owner-picture' src={postData.owner?.imageUrl} alt="" />
-                    <p className='post-owner'><Link to={`/profile/${postData.owner?._id}`}>{postData.owner?.firstName} {postData.owner?.lastName}</Link></p>
-                </div>
-                <div className='created-on'>Posted on {postData?.postedOn}</div>
-            </div>
+
+            <PostHeader
+                postedOn={postData?.postedOn}
+                imageUrl={postData.owner?.imageUrl}
+                ownerId={postData.owner?._id}
+                ownerFullName={`${postData.owner?.firstName} ${postData.owner?.lastName}`}
+            />
 
             {isEditClicked ? (
                 <div className="edit-content">
                     <textarea className="edit-textarea" value={postText} onChange={textChangeHandler} placeholder="Edit your post content..."></textarea>
                 </div>
             ) : (
-                <div className='post-page-text'>{postText}</div>
+                <div className='post-text'>{postText}</div>
             )}
 
-            <div className="post-interactions">
-                <div className="likes">Likes: {postData.likes?.length}</div>
-                <div className="comments">Comments: {postData.comments?.length}</div>
-            </div>
+            <PostInteractions
+                comments={postData.comments}
+                likes={postData.likes}
+            />
+
             <div className='button-div'>
                 <div>
                     {(isUser && isUser !== postData.owner?._id) && (
-                        <>
-                            {(isLiked ? (
-                                <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>
-                            ) : (
-                                <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>
-                            ))}
-                        </>
+                        <PostInteractionButtons
+                            isLiked={isLiked}
+                            onLikeClickHandler={onLikePostClickHandler}
+                            onUnlikeClickHandler={onUnlikePostClockHandler}
+                        />
                     )}
                 </div>
                 <div className='owner-buttons'>
-                    {isUser === postData.owner?._id && isEditClicked ? (
+                    {(isUser && isUser === postData.owner?._id) && (
                         <>
-                            <button className='button' type="button" onClick={onSaveEditClickHandler}>Save</button>
-                            <button className='button delete-btn' type="button" onClick={onCancelEditClickHandler}>Cancel</button>
-                        </>
-                    ) : (
-                        <>
-                            <button className='button' type="button" onClick={onEditPostClickHandler}>Edit</button>
-                            <button className='button delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
+                            {isEditClicked ? (
+                                <EditControls
+                                    onSaveClickHandler={onSaveEditClickHandler}
+                                    onCancelClickHandler={onCancelEditClickHandler}
+                                />
+                            ) : (
+                                <OwnerControls
+                                    onEditClickHandler={onEditPostClickHandler}
+                                    onDeleteClickHandler={onDeletePostClickHandler}
+                                />
+                            )}
                         </>
                     )}
                 </div>

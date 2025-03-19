@@ -1,7 +1,12 @@
-import { Link } from "react-router";
 import { useEffect, useState } from "react";
 
 import postServices from "../../../services/post-services";
+
+import OwnerControls from "../owner-controls/OwnerControls";
+import LinkButton from "../../ui/buttons/link-button/LinkButton";
+import PostInteractionButtons from "./post-interaction-buttons/PostInteractionButtons";
+import PostInteractions from "./post-interactions/PostInteractions";
+import PostHeader from "../post-header/PostHeader";
 
 export default function PostItem({
     postMetaData,
@@ -45,37 +50,48 @@ export default function PostItem({
 
     return <>
         <li className='post-item'>
-            <div className='post-header'>
-                <div>
-                    <img className='owner-picture' src={creatorDetails?.imageUrl} alt="" />
-                    <p className='post-owner'><Link to={`/profile/${creatorDetails?.id}`}>{creatorDetails?.fullName}</Link></p>
-                </div>
-                <div className='created-on'><Link to={`/post/${postMetaData?.id}/details`}>Posted on {postMetaData?.postedOn}</Link></div>
-            </div>
+
+            <PostHeader
+                postId={postMetaData?.id}
+                postedOn={postMetaData?.postedOn}
+                imageUrl={creatorDetails?.imageUrl}
+                ownerId={creatorDetails?.id}
+                ownerFullName={creatorDetails?.fullName}
+            />
+
             <div className='post-text'>{postMetaData?.text}</div>
-            <div className="post-interactions">
-                <div className="likes">Likes: {postMetaData?.likes.length}</div>
-                <div className="comments">Comments: {postMetaData?.comments.length}</div>
-            </div>
+
+            <PostInteractions
+                comments={postMetaData?.comments}
+                likes={postMetaData?.likes}
+            />
+
             <div className='button-div'>
                 <div>
                     {userId && (
                         <>
-                            {(userId !== creatorDetails?.id && (isLiked ? (
-                                <button className='button unlike-btn' type="button" onClick={onUnlikePostClockHandler}>Unlike</button>
-                            ) : (
-                                <button className='button' type="button" onClick={onLikePostClickHandler}>Like</button>
-                            )))}
-                            < button className='button comment-btn' type="button"><Link to={`/post/${postMetaData?.id}/details`}>Comment</Link></button>
+                            {(userId !== creatorDetails?.id &&
+                                <PostInteractionButtons
+                                    isLiked={isLiked}
+                                    onLikeClickHandler={onLikePostClickHandler}
+                                    onUnlikeClickHandler={onUnlikePostClockHandler}
+                                />
+                            )}
+
+                            <LinkButton
+                                urlLink={`/post/${postMetaData?.id}/details`}
+                                btnStyle="button comment-btn"
+                                buttonName="Comment"
+                            />
                         </>
                     )}
                 </div>
                 <div>
                     {userId === creatorDetails?.id && (
-                        <>
-                            <button className='button' type="button"><Link to={`/post/${postMetaData?.id}/edit`}>Edit</Link></button>
-                            <button className='button delete-btn' type="button" onClick={onDeletePostClickHandler}>Delete</button>
-                        </>
+                        <OwnerControls
+                            urlLink={`/post/${postMetaData?.id}/edit`}
+                            onDeleteClickHandler={onDeletePostClickHandler}
+                        />
                     )}
                 </div>
             </div>

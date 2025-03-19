@@ -5,6 +5,7 @@ import userServices from "../../../services/user-services";
 
 import PostItem from "../../shared/post-item/PostItem";
 import CreatePostItem from "../../shared/create-post-field/CreatePostField";
+import LinkButton from "../../ui/buttons/link-button/LinkButton";
 
 export default function ProfilePage({
     isUser
@@ -47,7 +48,11 @@ export default function ProfilePage({
                         <p><span className="info-label">Status:</span> {userData.status ? userData.status : 'N\\A'}</p>
                         <p><span className="info-label">Member Since:</span> {userData.memberSince ? userData.memberSince : 'N\\A'}</p>
                         {isUser && (
-                            <a href="/edit"><button className="edit-profile-btn">Edit Profile</button></a>
+                            <LinkButton
+                                urlLink={'/edit'}
+                                btnStyle="edit-profile-btn"
+                                buttonName="Edit Profile"
+                            />
                         )}
                     </div>
                 </div>

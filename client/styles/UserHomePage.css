@@ -209,8 +209,7 @@
     justify-content: space-between;
 }
 
-.button,
-.button a {
+.button {
     position: relative;
     top: 0px;
     height: 31px;

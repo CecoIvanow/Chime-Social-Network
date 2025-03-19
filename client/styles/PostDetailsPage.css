@@ -13,18 +13,6 @@ html {
     list-style: none;
 }
 
-.post-page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 15px 15px 10px 0px;
-}
-
-.post-page-header div {
-    display: flex;
-    align-items: center;
-}
-
 .post-owner a {
     text-decoration: none;
     color: #2c3e50;

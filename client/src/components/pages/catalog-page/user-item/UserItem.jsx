@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import Button from '../../../ui/buttons/button/Button'
 
 export default function UserItem({
     profileId,
@@ -20,7 +21,10 @@ export default function UserItem({
                 </div>
             </div>
             {(isUser && isUser !== profileId) && (
-                <button className="button">Add</button>
+                <Button
+                    buttonName='Add'
+                    btnStyle='button'
+                />
             )}
         </div>
     </>

@@ -1,3 +1,5 @@
+import Button from "../../ui/buttons/button/Button";
+
 export default function CreateEntry({
     onTextChangeHandler,
     onSubmitHandler,
@@ -19,7 +21,10 @@ export default function CreateEntry({
                         placeholder={placeholderText || "Share your thoughts..."}
                     />
                 </div>
-                <button className='button'>{buttonText}</button>
+                <Button
+                    btnStyle="button"
+                    buttonName={buttonText}
+                />
             </form>
         </div>
     </>

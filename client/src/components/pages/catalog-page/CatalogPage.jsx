@@ -84,6 +84,7 @@ export default function CatalogPage({
             {/* <!-- Users Catalog --> */}
             <div className="users-catalog">
                 <h2 className="section-heading">Registered Users:</h2>
+
                 <SearchField
                     setSearchParams={setUserSearchParam}
                     searchBy={'name'}
