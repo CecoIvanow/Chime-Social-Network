@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import commentServices from "../../../../services/comment-services"
 
-import CreateEntry from "../../../shared/create-entry/CreateEntry";
+import CreateContent from "../../../shared/create-content/CreateContent";
 import OwnerControls from "../../../shared/controls/owner-controls/OwnerControls";
 
 export default function CommentItem({
@@ -62,7 +62,7 @@ export default function CommentItem({
             </div>
 
             {isEditClicked ? (
-                <CreateEntry
+                <CreateContent
                     onTextChangeHandler={onCommentEditTextChangeHandler}
                     onSubmitHandler={onSaveCommentTextHandler}
                     placeholderText={'Edit your comment...'}

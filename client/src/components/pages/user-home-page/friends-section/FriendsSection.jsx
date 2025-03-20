@@ -1,5 +1,5 @@
 import FriendItem from "./friend-item/FriendItem";
-import SearchField from "../../../shared/search-field/SearchField";
+import SearchField from "../../../ui/search-field/SearchField";
 
 export default function FriendsSection() {
     return <>

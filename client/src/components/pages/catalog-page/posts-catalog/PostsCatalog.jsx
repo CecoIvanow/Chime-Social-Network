@@ -1,5 +1,5 @@
 import PostItem from "../../../shared/post/post-item/PostItem"
-import SearchField from "../../../shared/search-field/SearchField"
+import SearchField from "../../../ui/search-field/SearchField"
 
 export default function PostsCatalog({
     isUser,
