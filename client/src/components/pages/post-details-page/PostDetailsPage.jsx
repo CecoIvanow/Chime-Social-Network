@@ -28,6 +28,7 @@ export default function PostDetailsPage({
     }
 
     const onCancelEditClickHandler = () => {
+        setPostText(postData.text);
         setIsEditClicked(false);
     }
 
