@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 import commentServices from "../../../../services/comment-services"
 
-import CreateContent from "../../../shared/create-content/CreateContent";
 import OwnerControls from "../../../shared/controls/owner-controls/OwnerControls";
+import EditControls from "../../../shared/controls/edit-controls/EditControls";
 
 export default function CommentItem({
     isUser,
@@ -17,7 +17,7 @@ export default function CommentItem({
     const [isEditClicked, setIsEditClicked] = useState(false);
     const [commentText, setCommentText] = useState('');
 
-    const onCommentDeleteClickHandler = async () => {
+    const onDeleteCommentClickHandler = async () => {
         const isConfirmed = confirm('Are you sure you want to delete this comment?');
 
         if (!isConfirmed) {
@@ -30,20 +30,25 @@ export default function CommentItem({
         setPostData({ ...postData });
     }
 
-    const onCommentEditClickHandler = async () => {
+    const onEditCommentClickHandler = async () => {
         setIsEditClicked(true);
     }
 
-    const onCommentEditTextChangeHandler = (e) => {
+    const onTextChangeHandler = (e) => {
         setCommentText(e.currentTarget.value);
     }
 
-    const onSaveCommentTextHandler = async (formData) => {
+    const onSaveEditHandler = async (formData) => {
         const payLoad = Object.fromEntries(formData);
 
         await commentServices.handleUpdate(metaData.id, payLoad);
 
 
+        setIsEditClicked(false);
+    }
+
+    const onCancelEditHandler = () => {
+        setCommentText(metaData.text)
         setIsEditClicked(false);
     }
 
@@ -62,31 +67,34 @@ export default function CommentItem({
             </div>
 
             {isEditClicked ? (
-                <CreateContent
-                    onTextChangeHandler={onCommentEditTextChangeHandler}
-                    onSubmitHandler={onSaveCommentTextHandler}
-                    placeholderText={'Edit your comment...'}
-                    buttonText={'Save'}
-                    text={commentText}
-                />
+                <div className="edit-content">
+                    <textarea className="edit-textarea" value={commentText} onChange={onTextChangeHandler} placeholder="Edit your post content..."></textarea>
+                </div>
             ) : (
                 <div className="comment-body">
                     <div className='post-text'>{commentText}</div>
-                    <div className='button-div'>
-                        <div>
-                        </div>
-                        <div className='owner-buttons'>
-                            {isUser === creatorData.id && (
-                                <OwnerControls
-                                    onDeleteClickHandler={onCommentDeleteClickHandler}
-                                    onEditClickHandler={onCommentEditClickHandler}
-                                />
-                            )}
-                        </div>
-                    </div>
                 </div>
             )}
-
+            <div className='button-div'>
+                <div></div>
+                <div className='owner-buttons'>
+                    {(isUser && isUser === creatorData.id) && (
+                        <>
+                            {isEditClicked ? (
+                                <EditControls
+                                    onSaveClickHandler={onSaveEditHandler}
+                                    onCancelClickHandler={onCancelEditHandler}
+                                />
+                            ) : (
+                                <OwnerControls
+                                    onEditClickHandler={onEditCommentClickHandler}
+                                    onDeleteClickHandler={onDeleteCommentClickHandler}
+                                />
+                            )}
+                        </>
+                    )}
+                </div>
+            </div>
         </li >
     </>
 }
