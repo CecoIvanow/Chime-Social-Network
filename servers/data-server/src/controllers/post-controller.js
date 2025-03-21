@@ -15,7 +15,7 @@ postController.get('/posts/search', async (req, res) => {
         res.json(filteredPosts);
         res.end();
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 })
 
@@ -28,7 +28,7 @@ postController.get('/posts/:postId', async (req, res) => {
         res.json(postData);
         res.end();
     } catch (error) {
-        console.error(error.message)
+        console.error(error)
     }
 })
 
@@ -41,7 +41,7 @@ postController.patch('/posts/:postId', async (req, res) => {
 
         res.end();
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 })
 
@@ -54,7 +54,7 @@ postController.get('/posts/:postId/with-comments', async (req, res) => {
         res.json(postData);
         res.end();
     } catch (error) {
-        console.error(error.message)
+        console.error(error)
     }
 })
 
@@ -88,7 +88,7 @@ postController.delete('/posts/:postId', async (req, res) => {
         res.json(postId);
         res.end();
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 
 })
@@ -101,7 +101,7 @@ postController.post('/posts/:postId/like/:userId', async (req, res) => {
         await postRepositories.addLike(postId, userId);
         res.end();
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 })
 
@@ -113,7 +113,7 @@ postController.delete('/posts/:postId/like/:userId', async (req, res) => {
         await postRepositories.removeLike(postId, userId);
         res.end();
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 })
 

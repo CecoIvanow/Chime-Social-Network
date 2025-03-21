@@ -15,7 +15,7 @@ commentController.post('/comments', async (req, res) => {
         res.json(newComment);
         res.end();
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 })
 
@@ -30,7 +30,7 @@ commentController.delete('/comments/:commentId', async (req, res) => {
         res.json(commentId);
         res.end();
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 })
 
@@ -43,7 +43,7 @@ commentController.patch('/comments/:commentId', async (req, res) => {
 
         res.end();
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 })
 

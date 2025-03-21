@@ -16,7 +16,7 @@ userController.post('/register', async (req, res) => {
         res.cookie(COOKIE_AUTH_NAME, token, { httpOnly: false });
         res.json(userId);
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 })
 
@@ -28,7 +28,7 @@ userController.post('/login', async (req, res) => {
         res.cookie(COOKIE_AUTH_NAME, token, { httpOnly: false });
         res.json(userId);
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 })
 
@@ -60,7 +60,7 @@ userController.get('/users/search', async (req, res) => {
         res.json(filteredUsers);
         res.end();
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 })
 
@@ -76,7 +76,7 @@ userController.get('/users/:userId/fields', async (req, res) => {
         res.json(userData);
         res.end();
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 })
 
@@ -89,7 +89,7 @@ userController.patch('/users/:userId/credentials', async (req, res) => {
         
         res.end();
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
     }
 })
 
