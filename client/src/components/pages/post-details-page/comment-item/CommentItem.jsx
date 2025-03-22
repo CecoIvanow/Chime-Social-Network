@@ -8,8 +8,7 @@ import EditControls from "../../../shared/controls/edit-controls/EditControls";
 
 export default function CommentItem({
     isUser,
-    metaData,
-    creatorData,
+    comment,
     postData,
     setPostData,
 }) {
@@ -24,7 +23,7 @@ export default function CommentItem({
             return;
         }
 
-        const removedCommentId = await commentServices.handleDelete(metaData.id);
+        const removedCommentId = await commentServices.handleDelete(comment._id);
 
         postData.comments = postData.comments.filter(comment => comment._id !== removedCommentId);
         setPostData({ ...postData });
@@ -41,29 +40,29 @@ export default function CommentItem({
     const onSaveEditHandler = async (formData) => {
         const payLoad = Object.fromEntries(formData);
 
-        await commentServices.handleUpdate(metaData.id, payLoad);
+        await commentServices.handleUpdate(comment._id, payLoad);
 
 
         setIsEditClicked(false);
     }
 
     const onCancelEditHandler = () => {
-        setCommentText(metaData.text)
+        setCommentText(comment.text)
         setIsEditClicked(false);
     }
 
     useEffect(() => {
-        setCommentText(metaData.text);
-    }, [metaData.text])
+        setCommentText(comment.text);
+    }, [comment.text])
 
     return <>
         <li className='comment-item'>
             <div className='comment-header'>
                 <div>
-                    <img className='owner-picture' src={creatorData.imageUrl} />
-                    <p className='post-owner'><Link to={`/profile/${creatorData.id}`}>{creatorData.firstName} {creatorData.lastName}</Link></p>
+                    <img className='owner-picture' src={comment.owner.imageUrl} />
+                    <p className='post-owner'><Link to={`/profile/${comment.owner._id}`}>{comment.owner.firstName} {comment.owner.lastName}</Link></p>
                 </div>
-                <div className='commented-on'>Posted on {metaData.postedOn}</div>
+                <div className='commented-on'>Posted on {comment.postedOn}</div>
             </div>
 
             {isEditClicked ? (
@@ -78,7 +77,7 @@ export default function CommentItem({
             <div className='button-div'>
                 <div></div>
                 <div className='owner-buttons'>
-                    {(isUser && isUser === creatorData.id) && (
+                    {(isUser && isUser === comment.owner._id) && (
                         <>
                             {isEditClicked ? (
                                 <EditControls

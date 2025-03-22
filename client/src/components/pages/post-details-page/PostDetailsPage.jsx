@@ -150,29 +150,15 @@ export default function PostDetailsPage({
                 <div className="post-comments">
                     <p>All Comments:</p>
                     <ul>
-                        {postData.comments.map(comment => {
-                            const metaData = {
-                                id: comment._id,
-                                text: comment.text,
-                                postedOn: comment.postedOn
-                            }
-
-                            const creatorData = {
-                                id: comment.owner._id,
-                                firstName: comment.owner.firstName,
-                                lastName: comment.owner.lastName,
-                                imageUrl: comment.owner.imageUrl,
-                            }
-
-                            return <CommentItem
+                        {postData.comments.map(comment =>
+                            <CommentItem
                                 key={comment._id}
                                 isUser={isUser}
-                                metaData={metaData}
-                                creatorData={creatorData}
+                                comment={comment}
                                 postData={postData}
                                 setPostData={setPostData}
                             />
-                        })}
+                        )}
                     </ul>
                 </div>
             </div>
