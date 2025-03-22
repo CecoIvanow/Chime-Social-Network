@@ -4,8 +4,8 @@ export default function PostInteractions({
 }) {
     return <>
         <div className="post-interactions">
-            <div className="likes">Likes: {likes?.length}</div>
-            <div className="comments">Comments: {comments?.length}</div>
+            <div className="likes">Likes: {likes.length}</div>
+            <div className="comments">Comments: {comments.length}</div>
         </div>
     </>
 }

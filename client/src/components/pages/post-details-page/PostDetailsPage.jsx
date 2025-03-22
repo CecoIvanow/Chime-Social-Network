@@ -23,6 +23,33 @@ export default function PostDetailsPage({
     const [isEditClicked, setIsEditClicked] = useState(shouldEdit);
     const [postText, setPostText] = useState('');
 
+    useEffect(() => {
+        const postId = location.pathname.split('/').at(2);
+
+        const abortController = new AbortController();
+        const abortSignal = abortController.signal;
+
+        postServices.handleGetPostDataWithComments(postId, abortSignal)
+            .then(data => {
+                setPostData(data);
+                setPostText(data.text);
+
+                if (data.likes.includes(isUser)) {
+                    setIsLiked(true);
+                }
+            })
+            .catch(error => console.error(error.message));
+
+        return () => {
+            abortController.abort();
+        }
+
+    }, [location.pathname, isUser]);
+
+    if (!postData?._id) {
+        return null;
+    }
+
     const textChangeHandler = (e) => {
         setPostText(e.currentTarget.value);
     }
@@ -64,37 +91,11 @@ export default function PostDetailsPage({
         setIsEditClicked(true);
     }
 
-    useEffect(() => {
-        const postId = location.pathname.split('/').at(2);
-
-        const abortController = new AbortController();
-        const abortSignal = abortController.signal;
-
-        postServices.handleGetPostDataWithComments(postId, abortSignal)
-            .then(data => {
-                setPostData(data);
-                setPostText(data.text);
-
-                if (data.likes.includes(isUser)) {
-                    setIsLiked(true);
-                }
-            })
-            .catch(error => console.error(error.message));
-
-        return () => {
-            abortController.abort();
-        }
-
-    }, [location.pathname, isUser]);
-
     return <>
         <li className='post-page-body'>
 
             <PostHeader
-                postedOn={postData?.postedOn}
-                imageUrl={postData.owner?.imageUrl}
-                ownerId={postData.owner?._id}
-                ownerFullName={`${postData.owner?.firstName} ${postData.owner?.lastName}`}
+                post={postData}
             />
 
             {isEditClicked ? (
@@ -112,7 +113,7 @@ export default function PostDetailsPage({
 
             <div className='button-div'>
                 <div>
-                    {(isUser && isUser !== postData.owner?._id) && (
+                    {(isUser && isUser !== postData.owner._id) && (
                         <PostInteractionButtons
                             isLiked={isLiked}
                             onLikeClickHandler={onLikePostClickHandler}
@@ -121,7 +122,7 @@ export default function PostDetailsPage({
                     )}
                 </div>
                 <div className='owner-buttons'>
-                    {(isUser && isUser === postData.owner?._id) && (
+                    {(isUser && isUser === postData.owner._id) && (
                         <>
                             {isEditClicked ? (
                                 <EditControls
@@ -149,7 +150,7 @@ export default function PostDetailsPage({
                 <div className="post-comments">
                     <p>All Comments:</p>
                     <ul>
-                        {postData.comments?.map(comment => {
+                        {postData.comments.map(comment => {
                             const metaData = {
                                 id: comment._id,
                                 text: comment.text,

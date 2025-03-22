@@ -19,17 +19,11 @@ export default function UsersCatalog({
                 searchBy={'name'}
             />
 
-            {/* <!-- User Items --> */}
             {totalUsers.map(user =>
                 <UserItem
                     key={user._id}
-                    profileId={user._id}
                     isUser={isUser}
-                    imageUrl={user.imageUrl}
-                    postsAmount={user.createdPosts.length}
-                    memberSince={user.memberSince}
-                    firstName={user.firstName}
-                    lastName={user.lastName}
+                    user={user}
                 />
             )}
 

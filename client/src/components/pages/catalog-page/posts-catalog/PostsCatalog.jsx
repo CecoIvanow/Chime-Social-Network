@@ -20,31 +20,15 @@ export default function PostsCatalog({
                 searchBy={'text'}
             />
 
-
-            {totalPosts.map(post => {
-                const postMetaData = {
-                    id: post._id,
-                    text: post.text,
-                    postedOn: post.postedOn,
-                    likes: post.likes,
-                    comments: post.comments
-                }
-
-                const creatorDetails = {
-                    id: post.owner._id,
-                    imageUrl: post.owner.imageUrl,
-                    fullName: `${post.owner.firstName} ${post.owner.lastName}`,
-                }
-
-                return <PostItem
+            {totalPosts.map(post => 
+                 <PostItem
                     key={post._id}
-                    postMetaData={postMetaData}
-                    creatorDetails={creatorDetails}
+                    post={post}
                     userId={isUser}
-                    setTotalPosts={setTotalPosts}
                     totalPosts={totalPosts}
+                    setTotalPosts={setTotalPosts}
                 />
-            })}
+            )}
         </div>
     </>
 }

@@ -31,9 +31,9 @@ export default function PostCreateForm({
     }
 
     return <CreateContent
+        text={postText}
+        buttonText={'Post'}
         onTextChangeHandler={onTextChangeHandler}
         onSubmitHandler={onPostSubmitHandler}
-        buttonText={'Post'}
-        text={postText}
     />
 }

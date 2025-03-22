@@ -9,68 +9,67 @@ import PostInteractions from "./post-interactions/PostInteractions";
 import PostHeader from "../post-header/PostHeader";
 
 export default function PostItem({
-    postMetaData,
-    creatorDetails,
+    post,
     userId,
-    setTotalPosts,
     totalPosts,
+    setTotalPosts,
 }) {
 
     const [isLiked, setIsLiked] = useState(false);
 
+    useEffect(() => {
+        if (post?.likes.includes(userId)) {
+            setIsLiked(true);
+        }
+    }, [post?.likes, userId]);
+
+    if (!post?._id) {
+        return null;
+    }
+
     const onDeletePostClickHandler = async () => {
-        const isDeleteCondirmed = confirm('Are you sure you want to delete this post?');
+        const isDeleteCondirmed = confirm('Are you sure you want to delete this post');
 
         if (!isDeleteCondirmed) {
             return totalPosts; // Returns totalPosts unnecessarily because eslint marks it as not used!
         }
 
-        const deletedPostId = await postServices.handleDelete(postMetaData.id);
+        const deletedPostId = await postServices.handleDelete(post._id);
 
         setTotalPosts(totalPosts => totalPosts.filter(post => post._id !== deletedPostId))
     }
 
     const onLikePostClickHandler = async () => {
-        await postServices.handleLike(userId, postMetaData.id);
-        postMetaData.likes.push(userId);
+        await postServices.handleLike(userId, post._id);
+        post.likes.push(userId);
         setIsLiked(true);
     }
 
     const onUnlikePostClockHandler = async () => {
-        await postServices.handleUnlike(userId, postMetaData.id);
-        postMetaData.likes = postMetaData.likes.filter(userLike => userLike !== userId);
+        await postServices.handleUnlike(userId, post._id);
+        post.likes = post.likes.filter(userLike => userLike !== userId);
         setIsLiked(false);
     }
-
-    useEffect(() => {
-        if (postMetaData?.likes.includes(userId)) {
-            setIsLiked(true);
-        }
-    }, [postMetaData?.likes, userId])
 
     return <>
         <li className='post-item'>
 
             <PostHeader
-                postId={postMetaData?.id}
-                postedOn={postMetaData?.postedOn}
-                imageUrl={creatorDetails?.imageUrl}
-                ownerId={creatorDetails?.id}
-                ownerFullName={creatorDetails?.fullName}
+                post={post}
             />
 
-            <div className='post-text'>{postMetaData?.text}</div>
+            <div className='post-text'>{post.text}</div>
 
             <PostInteractions
-                comments={postMetaData?.comments}
-                likes={postMetaData?.likes}
+                comments={post.comments}
+                likes={post.likes}
             />
 
             <div className='button-div'>
                 <div>
                     {userId && (
                         <>
-                            {(userId !== creatorDetails?.id &&
+                            {(userId !== post.owner._id &&
                                 <PostInteractionButtons
                                     isLiked={isLiked}
                                     onLikeClickHandler={onLikePostClickHandler}
@@ -79,7 +78,7 @@ export default function PostItem({
                             )}
 
                             <LinkButton
-                                urlLink={`/post/${postMetaData?.id}/details`}
+                                urlLink={`/post/${post._id}/details`}
                                 btnStyle="button comment-btn"
                                 buttonName="Comment"
                             />
@@ -87,9 +86,9 @@ export default function PostItem({
                     )}
                 </div>
                 <div>
-                    {userId === creatorDetails?.id && (
+                    {userId === post.owner._id && (
                         <OwnerControls
-                            urlLink={`/post/${postMetaData?.id}/edit`}
+                            urlLink={`/post/${post._id}/edit`}
                             onDeleteClickHandler={onDeletePostClickHandler}
                         />
                     )}
