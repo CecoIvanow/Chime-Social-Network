@@ -37,11 +37,9 @@ export default function CommentItem({
         setCommentText(e.currentTarget.value);
     }
 
-    const onSaveEditHandler = async (formData) => {
-        const payLoad = Object.fromEntries(formData);
+    const onSaveEditHandler = async () => {
 
-        await commentServices.handleUpdate(comment._id, payLoad);
-
+        await commentServices.handleUpdate(comment._id, commentText);
 
         setIsEditClicked(false);
     }
