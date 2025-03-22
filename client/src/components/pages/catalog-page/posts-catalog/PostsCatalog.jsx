@@ -1,4 +1,5 @@
 import PostItem from "../../../shared/post/post-item/PostItem"
+import SectionHeading from "../../../ui/headings/SectionHeading"
 import SearchField from "../../../ui/search-field/SearchField"
 
 export default function PostsCatalog({
@@ -9,14 +10,17 @@ export default function PostsCatalog({
 }) {
     return <>
         <div className="posts-catalog">
-            <h2 className="section-heading">All Posts:</h2>
+
+            <SectionHeading
+                sectionName='All Posts:'
+            />
 
             <SearchField
                 setSearchParams={setPostSearchParams}
                 searchBy={'text'}
             />
 
-            
+
             {totalPosts.map(post => {
                 const postMetaData = {
                     id: post._id,

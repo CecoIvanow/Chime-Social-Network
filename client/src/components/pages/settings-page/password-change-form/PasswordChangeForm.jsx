@@ -1,5 +1,6 @@
 import SettingsInputFormGroup from "../../../shared/settings/SettingsInputFormGroup";
 import Button from "../../../ui/buttons/button/Button";
+import SectionHeading from "../../../ui/headings/SectionHeading";
 
 
 export default function PasswordChangeForm({
@@ -16,7 +17,10 @@ export default function PasswordChangeForm({
     return <>
         <form action={onSubmitHandler}>
             <div className="settings-card password-section">
-                <h2 className="settings-heading">Account Password - ******</h2>
+                
+                <SectionHeading
+                    sectionName='Account Password - ******'
+                />
 
                 {passwordChangeSettingsFields.map(field =>
                     <SettingsInputFormGroup

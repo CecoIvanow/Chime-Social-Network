@@ -1,3 +1,4 @@
+import SectionHeading from "../../../ui/headings/SectionHeading"
 import SearchField from "../../../ui/search-field/SearchField"
 import UserItem from "./user-item/UserItem"
 
@@ -8,7 +9,10 @@ export default function UsersCatalog({
 }) {
     return <>
         <div className="users-catalog">
-            <h2 className="section-heading">Registered Users:</h2>
+            
+            <SectionHeading
+                sectionName='Registered Users:'
+            />
 
             <SearchField
                 setSearchParams={setUserSearchParams}

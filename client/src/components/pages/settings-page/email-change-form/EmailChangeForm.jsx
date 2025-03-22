@@ -1,5 +1,6 @@
 import Button from "../../../ui/buttons/button/Button";
 import SettingsInputFormGroup from "../../../shared/settings/SettingsInputFormGroup";
+import SectionHeading from "../../../ui/headings/SectionHeading";
 
 export default function EmailChangeForm({
     userEmail,
@@ -16,7 +17,10 @@ export default function EmailChangeForm({
     return <>
         <form action={onSubmitHandler}>
             <div className="settings-card password-section">
-                <h2 className="settings-heading">Account Email - {userEmail}</h2>
+                
+                <SectionHeading
+                    sectionName={`Account Email - ${userEmail}`}
+                />
 
                 {emailChabgeSettingsFields.map(field =>
                     <SettingsInputFormGroup
