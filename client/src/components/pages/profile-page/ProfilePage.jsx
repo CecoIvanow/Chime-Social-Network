@@ -5,9 +5,8 @@ import userServices from "../../../services/user-services";
 
 import PostItem from "../../shared/post/post-item/PostItem";
 import PostCreateForm from "../../shared/post/post-create-form/PostCreateForm";
-import LinkButton from "../../ui/buttons/link-button/LinkButton";
 import SectionHeading from "../../ui/headings/SectionHeading";
-import ProfileDataSection from "../../shared/profile/ProfileDataSection";
+import ProfileInfoSection from "../../shared/profile/ProfileInfoSection";
 
 export default function ProfilePage({
     isUser
@@ -36,7 +35,7 @@ export default function ProfilePage({
 
     return <>
         <div className="profile-container">
-            <ProfileDataSection
+            <ProfileInfoSection
                 isUser={isUser}
                 userData={userData}
             />
@@ -46,7 +45,7 @@ export default function ProfilePage({
                     sectionName={isUser === userData._id ? 'My Posts:' : `${userData.firstName}'s Posts:`}
                 />
 
-                {(  isUser === userData._id) && (
+                {(isUser && isUser === userData._id) && (
                     <PostCreateForm
                         userId={userId}
                         totalUserPosts={totalUserPosts}
