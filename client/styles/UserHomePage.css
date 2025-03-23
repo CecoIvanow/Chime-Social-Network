@@ -109,6 +109,11 @@
     margin: 0px 10px 0px 10px;
 }
 
+.entry-create input:focus {
+    outline: none;
+    border-color: #2980b9;
+}
+
 .entry-create form {
     width: 100%;
     padding: 12px;

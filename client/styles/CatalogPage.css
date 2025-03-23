@@ -158,6 +158,11 @@ body {
     font-size: 1em;
 }
 
+.search-input:focus {
+    outline: none;
+    border-color: #2980b9;
+}
+
 .post-actions {
     display: flex;
     gap: 10px;
