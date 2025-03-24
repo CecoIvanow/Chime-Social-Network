@@ -8,6 +8,7 @@ import PostCreateForm from "../../shared/post/post-create-form/PostCreateForm";
 import SectionHeading from "../../ui/headings/SectionHeading";
 import ProfileInfoSection from "../../shared/profile/ProfileInfoSection";
 import { UserContext } from "../../../contexts/user-context";
+import { TotalPostsContext } from "../../../contexts/total-posts-context";
 
 export default function ProfilePage() {
     const { userId } = useParams();
@@ -34,42 +35,40 @@ export default function ProfilePage() {
         }
     }, [userId])
 
-    return <>
-        <div className="profile-container">
-            <ProfileInfoSection
-                userData={userData}
-            />
-
-            <div className="posts-section">
-                <SectionHeading
-                    sectionName={isUser === userData._id ? 'My Posts:' : `${userData.firstName}'s Posts:`}
+    return (
+        <TotalPostsContext.Provider value={{ totalUserPosts, setTotalUserPosts }}>
+            <div className="profile-container">
+                <ProfileInfoSection
+                    userData={userData}
                 />
 
-                {(isUser && isUser === userData._id) && (
-                    <PostCreateForm
-                        userId={userId}
-                        totalUserPosts={totalUserPosts}
-                        setTotalUserPosts={setTotalUserPosts}
+                <div className="posts-section">
+                    <SectionHeading
+                        sectionName={isUser === userData._id ? 'My Posts:' : `${userData.firstName}'s Posts:`}
                     />
-                )}
 
-                {totalUserPosts.map(post => {
-                    post.owner = {
-                        _id: userData._id,
-                        imageUrl: userData.imageUrl,
-                        lastName: userData.lastName,
-                        firstName: userData.firstName,
-                    };
+                    {(isUser && isUser === userData._id) && (
+                        <PostCreateForm
+                            userId={userId}
+                        />
+                    )}
 
-                    return <PostItem
-                        key={post._id}
-                        post={post}
-                        totalPosts={totalUserPosts}
-                        setTotalPosts={setTotalUserPosts}
-                    />
-                })}
+                    {totalUserPosts.map(post => {
+                        post.owner = {
+                            _id: userData._id,
+                            imageUrl: userData.imageUrl,
+                            lastName: userData.lastName,
+                            firstName: userData.firstName,
+                        };
 
+                        return <PostItem
+                            key={post._id}
+                            post={post}
+                        />
+                    })}
+
+                </div>
             </div>
-        </div>
-    </>
+        </TotalPostsContext.Provider>
+    )
 }

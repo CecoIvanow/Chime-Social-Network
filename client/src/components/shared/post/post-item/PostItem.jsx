@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 
 import postServices from "../../../../services/post-services";
 
+import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 import { PostContext } from "../../../../contexts/post-context";
 import { UserContext } from "../../../../contexts/user-context";
 
@@ -13,12 +14,11 @@ import PostHeader from "../post-header/PostHeader";
 
 export default function PostItem({
     post,
-    totalPosts,
-    setTotalPosts,
 }) {
     const [isLiked, setIsLiked] = useState(false);
 
-    const { isUser } = useContext(UserContext)
+    const { totalPosts, setTotalPosts } = useContext(TotalPostsContext);
+    const { isUser } = useContext(UserContext);
 
     useEffect(() => {
         if (post?.likes.includes(isUser)) {

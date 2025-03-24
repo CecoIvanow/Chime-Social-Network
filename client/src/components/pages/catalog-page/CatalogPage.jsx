@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 
+import postServices from "../../../services/post-services";
+import userServices from "../../../services/user-services";
+
+import { TotalPostsContext } from "../../../contexts/total-posts-context";
+
 import PostsCatalog from "./posts-catalog/PostsCatalog";
 import UsersCatalog from "./users-catalog/UsersCatalog";
 
-import postServices from "../../../services/post-services";
-import userServices from "../../../services/user-services";
 
 export default function CatalogPage() {
 
@@ -42,19 +45,19 @@ export default function CatalogPage() {
         }
     }, [postSearchParams])
 
-    return <>
-        <div className="dashboard-container">
+    return (
+        <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
+            <div className="dashboard-container">
 
-            <PostsCatalog
-                totalPosts={totalPosts}
-                setTotalPosts={setTotalPosts}
-                setPostSearchParams={setPostSearchParams}
-            />
+                <PostsCatalog
+                    setPostSearchParams={setPostSearchParams}
+                />
 
-            <UsersCatalog
-                totalUsers={totalUsers}
-                setUserSearchParams={setUserSearchParams}
-            />
-        </div>
-    </>
+                <UsersCatalog
+                    totalUsers={totalUsers}
+                    setUserSearchParams={setUserSearchParams}
+                />
+            </div>
+        </TotalPostsContext.Provider>
+    )
 }

@@ -1,12 +1,16 @@
+import { useContext } from "react"
+
+import { TotalPostsContext } from "../../../../contexts/total-posts-context";
+
 import PostItem from "../../../shared/post/post-item/PostItem"
 import SectionHeading from "../../../ui/headings/SectionHeading"
 import SearchField from "../../../ui/search-field/SearchField"
 
 export default function PostsCatalog({
-    totalPosts,
-    setTotalPosts,
     setPostSearchParams,
 }) {
+    const { totalPosts } = useContext(TotalPostsContext);
+
     return <>
         <div className="posts-catalog">
 
@@ -19,12 +23,10 @@ export default function PostsCatalog({
                 searchBy={'text'}
             />
 
-            {totalPosts.map(post => 
-                 <PostItem
+            {totalPosts?.map(post =>
+                <PostItem
                     key={post._id}
                     post={post}
-                    totalPosts={totalPosts}
-                    setTotalPosts={setTotalPosts}
                 />
             )}
         </div>
