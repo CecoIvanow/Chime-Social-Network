@@ -1,9 +1,10 @@
 import { useLocation, useNavigate } from "react-router"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import postServices from "../../../services/post-services";
 
 import { PostContext } from "../../../contexts/post-context";
+import { UserContext } from "../../../contexts/user-context";
 
 import CommentItem from "./comment-item/CommentItem"
 import CommentCreateForm from "./comment-create-form/CommentCreateForm";
@@ -14,7 +15,6 @@ import PostInteractions from "../../shared/post/post-item/post-interactions/Post
 import PostHeader from "../../shared/post/post-header/PostHeader";
 
 export default function PostDetailsPage({
-    isUser,
     shouldEdit
 }) {
     const location = useLocation();
@@ -24,6 +24,8 @@ export default function PostDetailsPage({
     const [isLiked, setIsLiked] = useState(false);
     const [isEditClicked, setIsEditClicked] = useState(shouldEdit);
     const [postText, setPostText] = useState('');
+
+    const { isUser } = useContext(UserContext)
 
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
@@ -97,7 +99,7 @@ export default function PostDetailsPage({
         <PostContext.Provider value={{ post, setPost }}>
             <li className='post-page-body'>
 
-                <PostHeader/>
+                <PostHeader />
 
                 {isEditClicked ? (
                     <div className="edit-content">
@@ -107,7 +109,7 @@ export default function PostDetailsPage({
                     <div className='post-text'>{postText}</div>
                 )}
 
-                <PostInteractions/>
+                <PostInteractions />
 
                 <div className='button-div'>
                     <div>
@@ -139,9 +141,7 @@ export default function PostDetailsPage({
                 </div>
                 <div className="comments-section">
                     {isUser && (
-                        <CommentCreateForm
-                            userId={isUser}
-                        />
+                        <CommentCreateForm/>
                     )}
                     <div className="post-comments">
                         <p>All Comments:</p>
@@ -149,7 +149,6 @@ export default function PostDetailsPage({
                             {post.comments.map(comment =>
                                 <CommentItem
                                     key={comment._id}
-                                    isUser={isUser}
                                     comment={comment}
                                 />
                             )}

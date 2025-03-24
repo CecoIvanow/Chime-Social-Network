@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router"
 
 import userServices from "../../../services/user-services";
@@ -7,11 +7,12 @@ import PostItem from "../../shared/post/post-item/PostItem";
 import PostCreateForm from "../../shared/post/post-create-form/PostCreateForm";
 import SectionHeading from "../../ui/headings/SectionHeading";
 import ProfileInfoSection from "../../shared/profile/ProfileInfoSection";
+import { UserContext } from "../../../contexts/user-context";
 
-export default function ProfilePage({
-    isUser
-}) {
+export default function ProfilePage() {
     const { userId } = useParams();
+
+    const { isUser } = useContext(UserContext)
 
     const [userData, setUserData] = useState({});
     const [totalUserPosts, setTotalUserPosts] = useState([]);
@@ -36,7 +37,6 @@ export default function ProfilePage({
     return <>
         <div className="profile-container">
             <ProfileInfoSection
-                isUser={isUser}
                 userData={userData}
             />
 
@@ -64,7 +64,6 @@ export default function ProfilePage({
                     return <PostItem
                         key={post._id}
                         post={post}
-                        userId={isUser}
                         totalPosts={totalUserPosts}
                         setTotalPosts={setTotalUserPosts}
                     />

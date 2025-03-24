@@ -1,14 +1,15 @@
+import { useContext } from "react";
+
 import userServices from "../../../services/user-services";
+
+import { UserContext } from "../../../contexts/user-context";
 
 import AuthButton from "../../shared/auth/auth-button/AuthButton";
 import AuthForm from "../../shared/auth/auth-form/AuthForm";
 import AuthNavLink from "../../shared/auth/auth-nav-link/AuthNavLink";
 import GenderDetails from "./gender-details/GenderDetails";
 
-export default function RegisterPage({
-    setIsUser
-}) {
-
+export default function RegisterPage() {
     const registerFields = [
         { fieldName: 'First name', inputType: 'text', placeholderText: 'first name', inputName: 'firstName' },
         { fieldName: 'Last name', inputType: 'text', placeholderText: 'last name', inputName: 'lastName' },
@@ -17,6 +18,8 @@ export default function RegisterPage({
         { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' },
         { fieldName: 'Confirm Password', inputType: 'password', placeholderText: 'password', inputName: 'rePass' },
     ]
+
+    const { setIsUser } = useContext(UserContext);
 
     const submitFormClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);

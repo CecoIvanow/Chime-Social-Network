@@ -3,7 +3,6 @@ import SectionHeading from "../../../ui/headings/SectionHeading"
 import SearchField from "../../../ui/search-field/SearchField"
 
 export default function PostsCatalog({
-    isUser,
     totalPosts,
     setTotalPosts,
     setPostSearchParams,
@@ -24,7 +23,6 @@ export default function PostsCatalog({
                  <PostItem
                     key={post._id}
                     post={post}
-                    userId={isUser}
                     totalPosts={totalPosts}
                     setTotalPosts={setTotalPosts}
                 />

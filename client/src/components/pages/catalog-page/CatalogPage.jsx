@@ -6,9 +6,7 @@ import UsersCatalog from "./users-catalog/UsersCatalog";
 import postServices from "../../../services/post-services";
 import userServices from "../../../services/user-services";
 
-export default function CatalogPage({
-    isUser
-}) {
+export default function CatalogPage() {
 
     const [userSearchParams, setUserSearchParams] = useState('');
     const [postSearchParams, setPostSearchParams] = useState('');
@@ -48,14 +46,12 @@ export default function CatalogPage({
         <div className="dashboard-container">
 
             <PostsCatalog
-                isUser={isUser}
                 totalPosts={totalPosts}
                 setTotalPosts={setTotalPosts}
                 setPostSearchParams={setPostSearchParams}
             />
 
             <UsersCatalog
-                isUser={isUser}
                 totalUsers={totalUsers}
                 setUserSearchParams={setUserSearchParams}
             />

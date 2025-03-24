@@ -1,10 +1,15 @@
+import { useContext } from 'react'
+
+import { UserContext } from '../../../../../contexts/user-context'
+
 import Button from '../../../../ui/buttons/button/Button'
 import UserItemDetails from './user-item-details/UserItemDetails'
 
 export default function UserItem({
     user,
-    isUser,
 }) {
+    const { isUser } = useContext(UserContext);
+
     return <>
         <div className="user-item">
             <UserItemDetails

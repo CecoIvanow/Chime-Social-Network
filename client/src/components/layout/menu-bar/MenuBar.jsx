@@ -1,8 +1,11 @@
+import { useContext } from "react";
 import { Link } from "react-router";
 
-export default function MenuBar({
-    isUser
-}) {
+import { UserContext } from "../../../contexts/user-context";
+
+export default function MenuBar() {
+    const { isUser } = useContext(UserContext);
+
     return <>
         <nav>
             <div className="navbar">

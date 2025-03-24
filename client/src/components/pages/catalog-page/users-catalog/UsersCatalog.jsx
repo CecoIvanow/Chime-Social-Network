@@ -3,7 +3,6 @@ import SearchField from "../../../ui/search-field/SearchField"
 import UserItem from "./user-item/UserItem"
 
 export default function UsersCatalog({
-    isUser,
     totalUsers,
     setUserSearchParams,
 }) {
@@ -22,7 +21,6 @@ export default function UsersCatalog({
             {totalUsers.map(user =>
                 <UserItem
                     key={user._id}
-                    isUser={isUser}
                     user={user}
                 />
             )}

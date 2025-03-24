@@ -7,15 +7,16 @@ import OwnerControls from "../../../shared/controls/owner-controls/OwnerControls
 import EditControls from "../../../shared/controls/edit-controls/EditControls";
 
 import { PostContext } from "../../../../contexts/post-context";
+import { UserContext } from "../../../../contexts/user-context";
 
 export default function CommentItem({
-    isUser,
     comment,
 }) {
     const [isEditClicked, setIsEditClicked] = useState(false);
     const [commentText, setCommentText] = useState('');
 
-    const {post, setPost} = useContext(PostContext);
+    const { post, setPost } = useContext(PostContext);
+    const { isUser } = useContext(UserContext);
 
     const onDeleteCommentClickHandler = async () => {
         const isConfirmed = confirm('Are you sure you want to delete this comment?');

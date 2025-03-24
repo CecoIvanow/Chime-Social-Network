@@ -1,7 +1,14 @@
 import '../styles/styles.css'
 
+import {
+    Routes,
+    Route,
+    useLocation,
+    Navigate
+} from 'react-router';
 import { useState } from 'react';
-import { Routes, Route, useLocation, Navigate } from 'react-router';
+
+import { UserContext } from './contexts/user-context.js';
 
 import MenuBar from './components/layout/menu-bar/MenuBar.jsx';
 import LandingPage from './components/pages/landing-page/LandingPage.jsx';
@@ -20,29 +27,32 @@ export default function App() {
 
     const location = useLocation();
 
-    return <>
-        {(isUser || (!isUser && location.pathname !== '/')) && (
-            <MenuBar isUser={isUser} />
-        )}
+    return (
+        <UserContext.Provider value={{ isUser, setIsUser }}>
 
-        <Routes>
-            {/* State dependent pages */}
-            <Route path='/' element={isUser ? <UserHomePage setIsUser={setIsUser} /> : <LandingPage />} />
+            {(isUser || (!isUser && location.pathname !== '/')) && (
+                <MenuBar />
+            )}
 
-            {/* User only pages */}
-            <Route path='/post/:postId/edit' element={isUser ? <PostDetailsPage isUser={isUser} shouldEdit={true}/> : <Navigate to="/login" />} />
-            <Route path='/settings' element={isUser ? <SettingsPage userId={isUser} /> : <Navigate to="/login" />} />
-            <Route path='/logout' element={isUser ? <Logout setIsUser={setIsUser} /> : <Navigate to="/" />} />
+            <Routes>
+                {/* State dependent pages */}
+                <Route path='/' element={isUser ? <UserHomePage /> : <LandingPage />} />
 
-            {/* Guest only pages */}
-            <Route path='/register' element={!isUser ? <RegisterPage setIsUser={setIsUser} /> : <Navigate to="/" />} />
-            <Route path='/login' element={!isUser ? <LoginPage setIsUser={setIsUser} /> : <Navigate to="/" />} />
+                {/* User only pages */}
+                <Route path='/post/:postId/edit' element={isUser ? <PostDetailsPage shouldEdit={true} /> : <Navigate to="/login" />} />
+                <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
+                <Route path='/logout' element={isUser ? <Logout /> : <Navigate to="/" />} />
 
-            {/* Public pages */}
-            <Route path='/post/:postId/details' element={<PostDetailsPage isUser={isUser} />} />
-            <Route path='/profile/:userId' element={<ProfilePage isUser={isUser} />} />
-            <Route path='/catalog' element={<CatalogPage isUser={isUser} />} />
-            <Route path='/*' element={<NotFoundPage />} />
-        </Routes>
-    </>
+                {/* Guest only pages */}
+                <Route path='/register' element={!isUser ? <RegisterPage /> : <Navigate to="/" />} />
+                <Route path='/login' element={!isUser ? <LoginPage /> : <Navigate to="/" />} />
+
+                {/* Public pages */}
+                <Route path='/post/:postId/details' element={<PostDetailsPage />} />
+                <Route path='/profile/:userId' element={<ProfilePage />} />
+                <Route path='/catalog' element={<CatalogPage />} />
+                <Route path='/*' element={<NotFoundPage />} />
+            </Routes>
+        </UserContext.Provider>
+    )
 }

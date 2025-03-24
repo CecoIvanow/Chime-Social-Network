@@ -1,28 +1,30 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import postServices from "../../../../services/post-services";
+
+import { PostContext } from "../../../../contexts/post-context";
+import { UserContext } from "../../../../contexts/user-context";
 
 import OwnerControls from "../../controls/owner-controls/OwnerControls";
 import LinkButton from "../../../ui/buttons/link-button/LinkButton";
 import PostInteractionButtons from "../post-interaction-buttons/PostInteractionButtons";
 import PostInteractions from "./post-interactions/PostInteractions";
 import PostHeader from "../post-header/PostHeader";
-import { PostContext } from "../../../../contexts/post-context";
 
 export default function PostItem({
     post,
-    userId,
     totalPosts,
     setTotalPosts,
 }) {
-
     const [isLiked, setIsLiked] = useState(false);
 
+    const { isUser } = useContext(UserContext)
+
     useEffect(() => {
-        if (post?.likes.includes(userId)) {
+        if (post?.likes.includes(isUser)) {
             setIsLiked(true);
         }
-    }, [post?.likes, userId]);
+    }, [post?.likes, isUser]);
 
     if (!post?._id) {
         return null;
@@ -41,14 +43,14 @@ export default function PostItem({
     }
 
     const onLikePostClickHandler = async () => {
-        await postServices.handleLike(userId, post._id);
-        post.likes.push(userId);
+        await postServices.handleLike(isUser, post._id);
+        post.likes.push(isUser);
         setIsLiked(true);
     }
 
     const onUnlikePostClockHandler = async () => {
-        await postServices.handleUnlike(userId, post._id);
-        post.likes = post.likes.filter(userLike => userLike !== userId);
+        await postServices.handleUnlike(isUser, post._id);
+        post.likes = post.likes.filter(userLike => userLike !== isUser);
         setIsLiked(false);
     }
 
@@ -64,9 +66,9 @@ export default function PostItem({
 
                 <div className='button-div'>
                     <div>
-                        {userId && (
+                        {isUser && (
                             <>
-                                {(userId !== post.owner._id &&
+                                {(isUser !== post.owner._id &&
                                     <PostInteractionButtons
                                         isLiked={isLiked}
                                         onLikeClickHandler={onLikePostClickHandler}
@@ -83,7 +85,7 @@ export default function PostItem({
                         )}
                     </div>
                     <div>
-                        {userId === post.owner._id && (
+                        {isUser === post.owner._id && (
                             <OwnerControls
                                 urlLink={`/post/${post._id}/edit`}
                                 onDeleteClickHandler={onDeletePostClickHandler}
