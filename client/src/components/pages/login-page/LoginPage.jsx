@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useActionState, useContext } from "react";
 
 import userServices from "../../../services/user-services";
 
@@ -13,14 +13,16 @@ export default function LoginPage() {
         { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
         { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' }
     ]
-
+    
     const { setIsUser } = useContext(UserContext);
-
-    const submitFormHandler = async (formData) => {
+    
+    const submitFormHandler = async (_, formData) => {
         const data = Object.fromEntries(formData);
-
+        
         await userServices.handleLogin(data, setIsUser);
     }
+    
+    const [, action, isPending] = useActionState(submitFormHandler);
 
     return <>
         <div className="login-page">
@@ -29,7 +31,7 @@ export default function LoginPage() {
                 <div className="title">Login</div>
                 <div className="content">
 
-                    <form action={submitFormHandler}>
+                    <form action={action}>
                         <div className="user-details">
 
                             {loginFields.map(field =>
@@ -46,6 +48,7 @@ export default function LoginPage() {
 
                         <AuthButton
                             buttonText="Login"
+                            isPending={isPending}
                         />
                         <AuthNavLink
                             path="/register"

@@ -160,12 +160,19 @@ form .button-auth input {
     font-size: 18px;
     font-weight: 500;
     letter-spacing: 1px;
-    cursor: pointer;
     transition: all 0.3s ease;
     background-color: #2980b9;
 }
 
-form .button-auth input:hover {
+form .button-auth input:not(:disabled) {
+    cursor: pointer;
+}
+
+.button-auth input:disabled{
+    background-color: #888888;
+}
+
+form .button-auth input:hover:not(:disabled) {
     transform: scale(1.05);
     transition: ease-in, 0.25s;
 }
