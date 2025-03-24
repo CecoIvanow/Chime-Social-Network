@@ -1,10 +1,15 @@
 import FriendItem from "./friend-item/FriendItem";
-import SearchField from "../../../shared/search-field/SearchField";
+import SearchField from "../../../ui/search-field/SearchField";
+import SectionHeading from "../../../ui/headings/SectionHeading";
 
 export default function FriendsSection() {
     return <>
         <div className="friends-section">
-            <h2 className='friends-counter'>Friends (248)</h2>
+
+            <SectionHeading
+                sectionName='Friends (248):'
+            />
+
             <SearchField />
             <div className='friends-list'>
                 <FriendItem />

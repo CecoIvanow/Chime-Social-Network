@@ -12,7 +12,7 @@ async function handleCreate(payLoad) {
 }
 
 async function handleUpdate(commentId, payLoad) {
-    await api.patch(`/comments/${commentId}`, payLoad);
+    await api.patch(`/comments/${commentId}`, { text: payLoad });
 }
 
 async function handleDelete(commentId) {

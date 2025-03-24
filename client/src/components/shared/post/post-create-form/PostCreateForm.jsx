@@ -1,15 +1,17 @@
-import { useState } from "react";
-
-import CreateContent from "../../create-content/CreateContent";
+import { useContext, useState } from "react";
 
 import postServices from "../../../../services/post-services";
 
-export default function PostCreateForm({
-    userId,
-    totalUserPosts,
-    setTotalUserPosts,
-}) {
+import { UserContext } from "../../../../contexts/user-context";
+import { TotalPostsContext } from "../../../../contexts/total-posts-context";
+
+import CreateContent from "../../create-content/CreateContent";
+
+export default function PostCreateForm() {
     const [postText, setPostText] = useState('');
+
+    const { totalUserPosts, setTotalUserPosts } = useContext(TotalPostsContext);
+    const { isUser } = useContext(UserContext);
 
     const onPostSubmitHandler = async (formData) => {
         const postData = Object.fromEntries(formData);
@@ -18,7 +20,7 @@ export default function PostCreateForm({
             return;
         }
 
-        postData.owner = userId;
+        postData.owner = isUser;
 
         const newPost = await postServices.handlePostCreate(postData);
 
@@ -31,9 +33,9 @@ export default function PostCreateForm({
     }
 
     return <CreateContent
+        text={postText}
+        buttonText={'Post'}
         onTextChangeHandler={onTextChangeHandler}
         onSubmitHandler={onPostSubmitHandler}
-        buttonText={'Post'}
-        text={postText}
     />
 }

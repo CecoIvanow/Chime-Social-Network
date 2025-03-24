@@ -1,46 +1,34 @@
+import { useContext } from "react"
+
+import { TotalPostsContext } from "../../../../contexts/total-posts-context";
+
 import PostItem from "../../../shared/post/post-item/PostItem"
-import SearchField from "../../../shared/search-field/SearchField"
+import SectionHeading from "../../../ui/headings/SectionHeading"
+import SearchField from "../../../ui/search-field/SearchField"
 
 export default function PostsCatalog({
-    isUser,
-    totalPosts,
-    setTotalPosts,
     setPostSearchParams,
 }) {
+    const { totalPosts } = useContext(TotalPostsContext);
+
     return <>
         <div className="posts-catalog">
-            <h2 className="section-heading">All Posts:</h2>
+
+            <SectionHeading
+                sectionName='All Posts:'
+            />
 
             <SearchField
                 setSearchParams={setPostSearchParams}
                 searchBy={'text'}
             />
 
-            
-            {totalPosts.map(post => {
-                const postMetaData = {
-                    id: post._id,
-                    text: post.text,
-                    postedOn: post.postedOn,
-                    likes: post.likes,
-                    comments: post.comments
-                }
-
-                const creatorDetails = {
-                    id: post.owner._id,
-                    imageUrl: post.owner.imageUrl,
-                    fullName: `${post.owner.firstName} ${post.owner.lastName}`,
-                }
-
-                return <PostItem
+            {totalPosts?.map(post =>
+                <PostItem
                     key={post._id}
-                    postMetaData={postMetaData}
-                    creatorDetails={creatorDetails}
-                    userId={isUser}
-                    setTotalPosts={setTotalPosts}
-                    totalPosts={totalPosts}
+                    post={post}
                 />
-            })}
+            )}
         </div>
     </>
 }

@@ -1,6 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import postServices from "../../../../services/post-services";
+
+import { TotalPostsContext } from "../../../../contexts/total-posts-context";
+import { PostContext } from "../../../../contexts/post-context";
+import { UserContext } from "../../../../contexts/user-context";
 
 import OwnerControls from "../../controls/owner-controls/OwnerControls";
 import LinkButton from "../../../ui/buttons/link-button/LinkButton";
@@ -9,92 +13,87 @@ import PostInteractions from "./post-interactions/PostInteractions";
 import PostHeader from "../post-header/PostHeader";
 
 export default function PostItem({
-    postMetaData,
-    creatorDetails,
-    userId,
-    setTotalPosts,
-    totalPosts,
+    post,
 }) {
-
     const [isLiked, setIsLiked] = useState(false);
 
+    const { totalPosts, setTotalPosts } = useContext(TotalPostsContext);
+    const { isUser } = useContext(UserContext);
+
+    useEffect(() => {
+        if (post?.likes.includes(isUser)) {
+            setIsLiked(true);
+        }
+    }, [post?.likes, isUser]);
+
+    if (!post?._id) {
+        return null;
+    }
+
     const onDeletePostClickHandler = async () => {
-        const isDeleteCondirmed = confirm('Are you sure you want to delete this post?');
+        const isDeleteCondirmed = confirm('Are you sure you want to delete this post');
 
         if (!isDeleteCondirmed) {
-            return totalPosts; // Returns totalPosts unnecessarily because eslint marks it as not used!
+            return totalPosts; // Returns totalPosts unnecessarily because otherwise eslint marks it as not used!
         }
 
-        const deletedPostId = await postServices.handleDelete(postMetaData.id);
+        const deletedPostId = await postServices.handleDelete(post._id);
 
         setTotalPosts(totalPosts => totalPosts.filter(post => post._id !== deletedPostId))
     }
 
     const onLikePostClickHandler = async () => {
-        await postServices.handleLike(userId, postMetaData.id);
-        postMetaData.likes.push(userId);
+        await postServices.handleLike(isUser, post._id);
+        post.likes.push(isUser);
         setIsLiked(true);
     }
 
     const onUnlikePostClockHandler = async () => {
-        await postServices.handleUnlike(userId, postMetaData.id);
-        postMetaData.likes = postMetaData.likes.filter(userLike => userLike !== userId);
+        await postServices.handleUnlike(isUser, post._id);
+        post.likes = post.likes.filter(userLike => userLike !== isUser);
         setIsLiked(false);
     }
 
-    useEffect(() => {
-        if (postMetaData?.likes.includes(userId)) {
-            setIsLiked(true);
-        }
-    }, [postMetaData?.likes, userId])
+    return (
+        <PostContext.Provider value={{ post }}>
+            <li className='post-item'>
 
-    return <>
-        <li className='post-item'>
+                <PostHeader />
 
-            <PostHeader
-                postId={postMetaData?.id}
-                postedOn={postMetaData?.postedOn}
-                imageUrl={creatorDetails?.imageUrl}
-                ownerId={creatorDetails?.id}
-                ownerFullName={creatorDetails?.fullName}
-            />
+                <div className='post-text'>{post.text}</div>
 
-            <div className='post-text'>{postMetaData?.text}</div>
+                <PostInteractions />
 
-            <PostInteractions
-                comments={postMetaData?.comments}
-                likes={postMetaData?.likes}
-            />
+                <div className='button-div'>
+                    <div>
+                        {isUser && (
+                            <>
+                                {(isUser !== post.owner._id &&
+                                    <PostInteractionButtons
+                                        isLiked={isLiked}
+                                        onLikeClickHandler={onLikePostClickHandler}
+                                        onUnlikeClickHandler={onUnlikePostClockHandler}
+                                    />
+                                )}
 
-            <div className='button-div'>
-                <div>
-                    {userId && (
-                        <>
-                            {(userId !== creatorDetails?.id &&
-                                <PostInteractionButtons
-                                    isLiked={isLiked}
-                                    onLikeClickHandler={onLikePostClickHandler}
-                                    onUnlikeClickHandler={onUnlikePostClockHandler}
+                                <LinkButton
+                                    urlLink={`/post/${post._id}/details`}
+                                    btnStyle="button comment-btn"
+                                    buttonName="Comment"
                                 />
-                            )}
-
-                            <LinkButton
-                                urlLink={`/post/${postMetaData?.id}/details`}
-                                btnStyle="button comment-btn"
-                                buttonName="Comment"
+                            </>
+                        )}
+                    </div>
+                    <div>
+                        {isUser === post.owner._id && (
+                            <OwnerControls
+                                urlLink={`/post/${post._id}/edit`}
+                                onDeleteClickHandler={onDeletePostClickHandler}
                             />
-                        </>
-                    )}
+                        )}
+                    </div>
                 </div>
-                <div>
-                    {userId === creatorDetails?.id && (
-                        <OwnerControls
-                            urlLink={`/post/${postMetaData?.id}/edit`}
-                            onDeleteClickHandler={onDeletePostClickHandler}
-                        />
-                    )}
-                </div>
-            </div>
-        </li >
-    </>
+            </li >
+        </PostContext.Provider>
+    )
 }

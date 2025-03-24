@@ -1,92 +1,99 @@
 import { Link } from "react-router"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import commentServices from "../../../../services/comment-services"
 
-import CreateEntry from "../../../shared/create-entry/CreateEntry";
 import OwnerControls from "../../../shared/controls/owner-controls/OwnerControls";
+import EditControls from "../../../shared/controls/edit-controls/EditControls";
+
+import { PostContext } from "../../../../contexts/post-context";
+import { UserContext } from "../../../../contexts/user-context";
 
 export default function CommentItem({
-    isUser,
-    metaData,
-    creatorData,
-    postData,
-    setPostData,
+    comment,
 }) {
-
     const [isEditClicked, setIsEditClicked] = useState(false);
     const [commentText, setCommentText] = useState('');
 
-    const onCommentDeleteClickHandler = async () => {
+    const { post, setPost } = useContext(PostContext);
+    const { isUser } = useContext(UserContext);
+
+    const onDeleteCommentClickHandler = async () => {
         const isConfirmed = confirm('Are you sure you want to delete this comment?');
 
         if (!isConfirmed) {
             return;
         }
 
-        const removedCommentId = await commentServices.handleDelete(metaData.id);
+        const removedCommentId = await commentServices.handleDelete(comment._id);
 
-        postData.comments = postData.comments.filter(comment => comment._id !== removedCommentId);
-        setPostData({ ...postData });
+        post.comments = post.comments.filter(comment => comment._id !== removedCommentId);
+        setPost({ ...post });
     }
 
-    const onCommentEditClickHandler = async () => {
+    const onEditCommentClickHandler = async () => {
         setIsEditClicked(true);
     }
 
-    const onCommentEditTextChangeHandler = (e) => {
+    const onTextChangeHandler = (e) => {
         setCommentText(e.currentTarget.value);
     }
 
-    const onSaveCommentTextHandler = async (formData) => {
-        const payLoad = Object.fromEntries(formData);
+    const onSaveEditHandler = async () => {
 
-        await commentServices.handleUpdate(metaData.id, payLoad);
-
+        await commentServices.handleUpdate(comment._id, commentText);
 
         setIsEditClicked(false);
     }
 
+    const onCancelEditHandler = () => {
+        setCommentText(comment.text)
+        setIsEditClicked(false);
+    }
+
     useEffect(() => {
-        setCommentText(metaData.text);
-    }, [metaData.text])
+        setCommentText(comment.text);
+    }, [comment.text])
 
     return <>
         <li className='comment-item'>
             <div className='comment-header'>
                 <div>
-                    <img className='owner-picture' src={creatorData.imageUrl} />
-                    <p className='post-owner'><Link to={`/profile/${creatorData.id}`}>{creatorData.firstName} {creatorData.lastName}</Link></p>
+                    <img className='owner-picture' src={comment.owner.imageUrl} />
+                    <p className='post-owner'><Link to={`/profile/${comment.owner._id}`}>{comment.owner.firstName} {comment.owner.lastName}</Link></p>
                 </div>
-                <div className='commented-on'>Posted on {metaData.postedOn}</div>
+                <div className='commented-on'>Posted on {comment.postedOn}</div>
             </div>
 
             {isEditClicked ? (
-                <CreateEntry
-                    onTextChangeHandler={onCommentEditTextChangeHandler}
-                    onSubmitHandler={onSaveCommentTextHandler}
-                    placeholderText={'Edit your comment...'}
-                    buttonText={'Save'}
-                    text={commentText}
-                />
+                <div className="edit-content">
+                    <textarea className="edit-textarea" value={commentText} onChange={onTextChangeHandler} placeholder="Edit your post content..."></textarea>
+                </div>
             ) : (
                 <div className="comment-body">
                     <div className='post-text'>{commentText}</div>
-                    <div className='button-div'>
-                        <div>
-                        </div>
-                        <div className='owner-buttons'>
-                            {isUser === creatorData.id && (
-                                <OwnerControls
-                                    onDeleteClickHandler={onCommentDeleteClickHandler}
-                                    onEditClickHandler={onCommentEditClickHandler}
-                                />
-                            )}
-                        </div>
-                    </div>
                 </div>
             )}
-
+            <div className='button-div'>
+                <div></div>
+                <div className='owner-buttons'>
+                    {(isUser && isUser === comment.owner._id) && (
+                        <>
+                            {isEditClicked ? (
+                                <EditControls
+                                    onSaveClickHandler={onSaveEditHandler}
+                                    onCancelClickHandler={onCancelEditHandler}
+                                />
+                            ) : (
+                                <OwnerControls
+                                    onEditClickHandler={onEditCommentClickHandler}
+                                    onDeleteClickHandler={onDeleteCommentClickHandler}
+                                />
+                            )}
+                        </>
+                    )}
+                </div>
+            </div>
         </li >
     </>
 }

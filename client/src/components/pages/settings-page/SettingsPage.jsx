@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useNavigate } from 'react-router'
 
 
@@ -6,29 +6,29 @@ import userServices from "../../../services/user-services";
 .0
 import PasswordChangeForm from "./password-change-form/PasswordChangeForm";
 import EmailChangeForm from "./email-change-form/EmailChangeForm";
+import { UserContext } from "../../../contexts/user-context";
 
-export default function SettingsPage({
-    userId
-}) {
+export default function SettingsPage() {
+    const navigateTo = useNavigate();
 
     const [userEmail, setUserEmail] = useState('');
 
-    const navigateTo = useNavigate();
+    const { isUser } = useContext(UserContext);
 
     const onEmailChangeSubmitHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
-        await userServices.handleEmailChange(userId, data);
+        await userServices.handleEmailChange(isUser, data);
 
-        navigateTo(`/profile/${userId}`);
+        navigateTo(`/profile/${isUser}`);
     }
 
     const onPasswordChangeSubmitHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
-        await userServices.handlePasswordChange(userId, data);
+        await userServices.handlePasswordChange(isUser, data);
 
-        navigateTo(`/profile/${userId}`);
+        navigateTo(`/profile/${isUser}`);
     }
 
     useEffect(() => {
@@ -37,14 +37,14 @@ export default function SettingsPage({
         const abortController = new AbortController();
         const abortSignal = abortController.signal;
 
-        userServices.handleGetUserFields(userId, userFields, abortSignal)
+        userServices.handleGetUserFields(isUser, userFields, abortSignal)
             .then(data => setUserEmail(data.email))
             .catch(error => console.error(error.message))
 
         return () => {
             abortController.abort();
         }
-    }, [userId]);
+    }, [isUser]);
 
     return <>
         <div className="settings-container">

@@ -1,17 +1,20 @@
+import { useContext } from "react";
+
 import userServices from "../../../services/user-services";
+
+import { UserContext } from "../../../contexts/user-context";
 
 import AuthButton from "../../shared/auth/auth-button/AuthButton";
 import AuthForm from "../../shared/auth/auth-form/AuthForm";
 import AuthNavLink from "../../shared/auth/auth-nav-link/AuthNavLink";
 
-export default function LoginPage({
-    setIsUser
-}) {
-
+export default function LoginPage() {
     const loginFields = [
         { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
         { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' }
     ]
+
+    const { setIsUser } = useContext(UserContext);
 
     const submitFormHandler = async (formData) => {
         const data = Object.fromEntries(formData);

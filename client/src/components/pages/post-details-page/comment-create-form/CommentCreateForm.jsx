@@ -1,24 +1,26 @@
-import { useState } from "react";
-
-import CreateContent from "../../../shared/create-content/CreateContent";
+import { useContext, useState } from "react";
 
 import commentServices from "../../../../services/comment-services";
 
-export default function CreateCommentForm({
-    userId,
-    postData,
-    setPostData
-}) {
+import { PostContext } from "../../../../contexts/post-context";
+import { UserContext } from "../../../../contexts/user-context";
+
+import CreateContent from "../../../shared/create-content/CreateContent";
+
+export default function CreateCommentForm() {
     const [commentText, setCommentText] = useState('');
+
+    const { post, setPost } = useContext(PostContext)
+    const { isUser } = useContext(UserContext);
 
     const onAddCommentSubmitHandler = async (formData) => {
         const commentData = Object.fromEntries(formData);
         commentData.onPost = location.pathname.split('/').at(2);
-        commentData.owner = userId;
+        commentData.owner = isUser;
 
         const newComment = await commentServices.handleCreate(commentData);
-        postData.comments.unshift(newComment);
-        setPostData({ ...postData });
+        post.comments.unshift(newComment);
+        setPost({ ...post });
         setCommentText('');
     }
 

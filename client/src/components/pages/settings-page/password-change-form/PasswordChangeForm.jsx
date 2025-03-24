@@ -1,33 +1,35 @@
+import SettingsInputFormGroup from "../../../shared/settings/SettingsInputFormGroup";
 import Button from "../../../ui/buttons/button/Button";
+import SectionHeading from "../../../ui/headings/SectionHeading";
 
 
 export default function PasswordChangeForm({
     onSubmitHandler
 }) {
+
+    const passwordChangeSettingsFields = [
+        { fieldName: `Current Email`, inputType: 'text', inputName: 'curEmail' },
+        { fieldName: 'Current Password', inputType: 'password', inputName: 'curPass' },
+        { fieldName: 'New Password', inputType: 'password', inputName: 'newPass' },
+        { fieldName: 'Repeat New Password', inputType: 'password', inputName: 'rePass' },
+    ]
+
     return <>
         <form action={onSubmitHandler}>
             <div className="settings-card password-section">
-                <h2 className="settings-heading">Account Password - ******</h2>
+                
+                <SectionHeading
+                    sectionName='Account Password - ******'
+                />
 
-                <div className="form-group">
-                    <label className="form-label">Current Email</label>
-                    <input type="text" className="form-input" name="curEmail" />
-                </div>
-
-                <div className="form-group">
-                    <label className="form-label">Current Password</label>
-                    <input type="password" className="form-input" name="curPass" />
-                </div>
-
-                <div className="form-group">
-                    <label className="form-label">New Password</label>
-                    <input type="password" className="form-input" name="newPass" />
-                </div>
-
-                <div className="form-group">
-                    <label className="form-label">Repeat New Password</label>
-                    <input type="password" className="form-input" name="rePass" />
-                </div>
+                {passwordChangeSettingsFields.map(field =>
+                    <SettingsInputFormGroup
+                        key={field.fieldName}
+                        fieldName={field.fieldName}
+                        inputName={field.inputName}
+                        inputType={field.inputType}
+                    />
+                )}
 
                 <Button
                     btnStyle="save-button"
