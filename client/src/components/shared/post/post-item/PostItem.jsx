@@ -7,6 +7,7 @@ import LinkButton from "../../../ui/buttons/link-button/LinkButton";
 import PostInteractionButtons from "../post-interaction-buttons/PostInteractionButtons";
 import PostInteractions from "./post-interactions/PostInteractions";
 import PostHeader from "../post-header/PostHeader";
+import { PostContext } from "../../../../contexts/post-context";
 
 export default function PostItem({
     post,
@@ -31,7 +32,7 @@ export default function PostItem({
         const isDeleteCondirmed = confirm('Are you sure you want to delete this post');
 
         if (!isDeleteCondirmed) {
-            return totalPosts; // Returns totalPosts unnecessarily because eslint marks it as not used!
+            return totalPosts; // Returns totalPosts unnecessarily because otherwise eslint marks it as not used!
         }
 
         const deletedPostId = await postServices.handleDelete(post._id);
@@ -51,49 +52,46 @@ export default function PostItem({
         setIsLiked(false);
     }
 
-    return <>
-        <li className='post-item'>
+    return (
+        <PostContext.Provider value={{ post }}>
+            <li className='post-item'>
 
-            <PostHeader
-                post={post}
-            />
+                <PostHeader />
 
-            <div className='post-text'>{post.text}</div>
+                <div className='post-text'>{post.text}</div>
 
-            <PostInteractions
-                comments={post.comments}
-                likes={post.likes}
-            />
+                <PostInteractions />
 
-            <div className='button-div'>
-                <div>
-                    {userId && (
-                        <>
-                            {(userId !== post.owner._id &&
-                                <PostInteractionButtons
-                                    isLiked={isLiked}
-                                    onLikeClickHandler={onLikePostClickHandler}
-                                    onUnlikeClickHandler={onUnlikePostClockHandler}
+                <div className='button-div'>
+                    <div>
+                        {userId && (
+                            <>
+                                {(userId !== post.owner._id &&
+                                    <PostInteractionButtons
+                                        isLiked={isLiked}
+                                        onLikeClickHandler={onLikePostClickHandler}
+                                        onUnlikeClickHandler={onUnlikePostClockHandler}
+                                    />
+                                )}
+
+                                <LinkButton
+                                    urlLink={`/post/${post._id}/details`}
+                                    btnStyle="button comment-btn"
+                                    buttonName="Comment"
                                 />
-                            )}
-
-                            <LinkButton
-                                urlLink={`/post/${post._id}/details`}
-                                btnStyle="button comment-btn"
-                                buttonName="Comment"
+                            </>
+                        )}
+                    </div>
+                    <div>
+                        {userId === post.owner._id && (
+                            <OwnerControls
+                                urlLink={`/post/${post._id}/edit`}
+                                onDeleteClickHandler={onDeletePostClickHandler}
                             />
-                        </>
-                    )}
+                        )}
+                    </div>
                 </div>
-                <div>
-                    {userId === post.owner._id && (
-                        <OwnerControls
-                            urlLink={`/post/${post._id}/edit`}
-                            onDeleteClickHandler={onDeletePostClickHandler}
-                        />
-                    )}
-                </div>
-            </div>
-        </li >
-    </>
+            </li >
+        </PostContext.Provider>
+    )
 }

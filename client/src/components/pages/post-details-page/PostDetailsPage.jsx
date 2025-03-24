@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 
 import postServices from "../../../services/post-services";
 
+import { PostContext } from "../../../contexts/post-context";
+
 import CommentItem from "./comment-item/CommentItem"
 import CommentCreateForm from "./comment-create-form/CommentCreateForm";
 import OwnerControls from "../../shared/controls/owner-controls/OwnerControls";
@@ -18,7 +20,7 @@ export default function PostDetailsPage({
     const location = useLocation();
     const navigateTo = useNavigate();
 
-    const [postData, setPostData] = useState({});
+    const [post, setPost] = useState({});
     const [isLiked, setIsLiked] = useState(false);
     const [isEditClicked, setIsEditClicked] = useState(shouldEdit);
     const [postText, setPostText] = useState('');
@@ -31,7 +33,7 @@ export default function PostDetailsPage({
 
         postServices.handleGetPostDataWithComments(postId, abortSignal)
             .then(data => {
-                setPostData(data);
+                setPost(data);
                 setPostText(data.text);
 
                 if (data.likes.includes(isUser)) {
@@ -46,7 +48,7 @@ export default function PostDetailsPage({
 
     }, [location.pathname, isUser]);
 
-    if (!postData?._id) {
+    if (!post?._id) {
         return null;
     }
 
@@ -55,12 +57,12 @@ export default function PostDetailsPage({
     }
 
     const onCancelEditClickHandler = () => {
-        setPostText(postData.text);
+        setPostText(post.text);
         setIsEditClicked(false);
     }
 
     const onSaveEditClickHandler = async () => {
-        await postServices.handlePostUpdate(postData._id, postText);
+        await postServices.handlePostUpdate(post._id, postText);
         setIsEditClicked(false);
     }
 
@@ -71,19 +73,19 @@ export default function PostDetailsPage({
             return;
         }
 
-        await postServices.handleDelete(postData._id);
+        await postServices.handleDelete(post._id);
         navigateTo('/catalog');
     }
 
     const onLikePostClickHandler = async () => {
-        await postServices.handleLike(isUser, postData._id);
-        postData.likes.push(isUser);
+        await postServices.handleLike(isUser, post._id);
+        post.likes.push(isUser);
         setIsLiked(true);
     }
 
     const onUnlikePostClockHandler = async () => {
-        await postServices.handleUnlike(isUser, postData._id);
-        postData.likes = postData.likes.filter(userLike => userLike !== isUser);
+        await postServices.handleUnlike(isUser, post._id);
+        post.likes = post.likes.filter(userLike => userLike !== isUser);
         setIsLiked(false);
     }
 
@@ -91,77 +93,70 @@ export default function PostDetailsPage({
         setIsEditClicked(true);
     }
 
-    return <>
-        <li className='post-page-body'>
+    return (
+        <PostContext.Provider value={{ post, setPost }}>
+            <li className='post-page-body'>
 
-            <PostHeader
-                post={postData}
-            />
+                <PostHeader/>
 
-            {isEditClicked ? (
-                <div className="edit-content">
-                    <textarea className="edit-textarea" value={postText} onChange={textChangeHandler} placeholder="Edit your post content..."></textarea>
-                </div>
-            ) : (
-                <div className='post-text'>{postText}</div>
-            )}
-
-            <PostInteractions
-                comments={postData.comments}
-                likes={postData.likes}
-            />
-
-            <div className='button-div'>
-                <div>
-                    {(isUser && isUser !== postData.owner._id) && (
-                        <PostInteractionButtons
-                            isLiked={isLiked}
-                            onLikeClickHandler={onLikePostClickHandler}
-                            onUnlikeClickHandler={onUnlikePostClockHandler}
-                        />
-                    )}
-                </div>
-                <div className='owner-buttons'>
-                    {(isUser && isUser === postData.owner._id) && (
-                        <>
-                            {isEditClicked ? (
-                                <EditControls
-                                    onSaveClickHandler={onSaveEditClickHandler}
-                                    onCancelClickHandler={onCancelEditClickHandler}
-                                />
-                            ) : (
-                                <OwnerControls
-                                    onEditClickHandler={onEditPostClickHandler}
-                                    onDeleteClickHandler={onDeletePostClickHandler}
-                                />
-                            )}
-                        </>
-                    )}
-                </div>
-            </div>
-            <div className="comments-section">
-                {isUser && (
-                    <CommentCreateForm
-                        userId={isUser}
-                        postData={postData}
-                        setPostData={setPostData}
-                    />
+                {isEditClicked ? (
+                    <div className="edit-content">
+                        <textarea className="edit-textarea" value={postText} onChange={textChangeHandler} placeholder="Edit your post content..."></textarea>
+                    </div>
+                ) : (
+                    <div className='post-text'>{postText}</div>
                 )}
-                <div className="post-comments">
-                    <p>All Comments:</p>
-                    <ul>
-                        {postData.comments.map(comment =>
-                            <CommentItem
-                                key={comment._id}
-                                isUser={isUser}
-                                comment={comment}
-                                postData={postData}
-                                setPostData={setPostData}
+
+                <PostInteractions/>
+
+                <div className='button-div'>
+                    <div>
+                        {(isUser && isUser !== post.owner._id) && (
+                            <PostInteractionButtons
+                                isLiked={isLiked}
+                                onLikeClickHandler={onLikePostClickHandler}
+                                onUnlikeClickHandler={onUnlikePostClockHandler}
                             />
                         )}
-                    </ul>
+                    </div>
+                    <div className='owner-buttons'>
+                        {(isUser && isUser === post.owner._id) && (
+                            <>
+                                {isEditClicked ? (
+                                    <EditControls
+                                        onSaveClickHandler={onSaveEditClickHandler}
+                                        onCancelClickHandler={onCancelEditClickHandler}
+                                    />
+                                ) : (
+                                    <OwnerControls
+                                        onEditClickHandler={onEditPostClickHandler}
+                                        onDeleteClickHandler={onDeletePostClickHandler}
+                                    />
+                                )}
+                            </>
+                        )}
+                    </div>
                 </div>
-            </div>
-        </li >
-    </>
+                <div className="comments-section">
+                    {isUser && (
+                        <CommentCreateForm
+                            userId={isUser}
+                        />
+                    )}
+                    <div className="post-comments">
+                        <p>All Comments:</p>
+                        <ul>
+                            {post.comments.map(comment =>
+                                <CommentItem
+                                    key={comment._id}
+                                    isUser={isUser}
+                                    comment={comment}
+                                />
+                            )}
+                        </ul>
+                    </div>
+                </div>
+            </li >
+        </PostContext.Provider>
+    )
 }

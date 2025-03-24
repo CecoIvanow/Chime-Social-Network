@@ -1,20 +1,21 @@
 import { Link } from "react-router"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import commentServices from "../../../../services/comment-services"
 
 import OwnerControls from "../../../shared/controls/owner-controls/OwnerControls";
 import EditControls from "../../../shared/controls/edit-controls/EditControls";
 
+import { PostContext } from "../../../../contexts/post-context";
+
 export default function CommentItem({
     isUser,
     comment,
-    postData,
-    setPostData,
 }) {
-
     const [isEditClicked, setIsEditClicked] = useState(false);
     const [commentText, setCommentText] = useState('');
+
+    const {post, setPost} = useContext(PostContext);
 
     const onDeleteCommentClickHandler = async () => {
         const isConfirmed = confirm('Are you sure you want to delete this comment?');
@@ -25,8 +26,8 @@ export default function CommentItem({
 
         const removedCommentId = await commentServices.handleDelete(comment._id);
 
-        postData.comments = postData.comments.filter(comment => comment._id !== removedCommentId);
-        setPostData({ ...postData });
+        post.comments = post.comments.filter(comment => comment._id !== removedCommentId);
+        setPost({ ...post });
     }
 
     const onEditCommentClickHandler = async () => {

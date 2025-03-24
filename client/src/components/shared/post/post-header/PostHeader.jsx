@@ -1,8 +1,12 @@
+import { useContext } from "react"
 import { Link } from "react-router"
 
-export default function PostHeader({
-    post,
-}) {
+import { PostContext } from "../../../../contexts/post-context"
+
+export default function PostHeader() {
+
+    const { post } = useContext(PostContext);
+
     return <>
         <div className='post-header'>
             <div>
