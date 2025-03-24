@@ -1,8 +1,11 @@
+import { useContext } from "react";
+
 import LinkButton from "../../ui/buttons/link-button/LinkButton";
 import ProfileInfoLabel from "./ProfileInfoLabel.jsx/ProfileInfoLabel";
 
+import { UserContext } from "../../../contexts/user-context";
+
 export default function ProfileDataSection({
-    isUser,
     userData,
 }) {
     const profileLabels = [
@@ -15,6 +18,8 @@ export default function ProfileDataSection({
         { labelText: 'Status:', labelKey: 'status'},
         { labelText: 'Member Since:', labelKey: 'memberSince'},
     ]
+
+    const {isUser} = useContext(UserContext);
 
     return <>
         <div className="profile-info-section">
