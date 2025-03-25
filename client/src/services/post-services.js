@@ -9,7 +9,7 @@ async function handlePostCreate(postData) {
 }
 
 async function handleGetAllByContentWithOwners(searchParam, abortSignal) {
-    const matchedPosts = await api.get(`/posts/search?content=${searchParam}`, abortSignal);
+    const matchedPosts = await api.get(`/posts/search?content=${searchParam}`, { signal: abortSignal });
 
     matchedPosts
         .reverse()
@@ -33,7 +33,7 @@ async function handleUnlike(userId, postId) {
 }
 
 async function handleGetPostDataWithComments(postId, abortSignal) {
-    const postData = await api.get(`/posts/${postId}/with-comments`, abortSignal);
+    const postData = await api.get(`/posts/${postId}/with-comments`, { signal: abortSignal });
 
     postData.owner.imageUrl = postData.owner.imageUrl ? postData.owner.imageUrl : defaultAvatar;
     postData.comments
@@ -44,7 +44,7 @@ async function handleGetPostDataWithComments(postId, abortSignal) {
 }
 
 async function handleGetPostData(postId, abortSignal) {
-    const postData = await api.get(`/posts/${postId}/with-comments`, abortSignal);
+    const postData = await api.get(`/posts/${postId}/with-comments`, { signal: abortSignal });
 
     postData.owner.imageUrl = postData.owner.imageUrl ? postData.owner.imageUrl : defaultAvatar;
 

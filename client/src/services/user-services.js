@@ -26,7 +26,7 @@ async function handleLogout(setIsUser) {
 }
 
 async function handleUserDataWithPosts(userId, abortSignal) {
-    const userData = await api.get(`/users/${userId}/with-posts`, abortSignal);
+    const userData = await api.get(`/users/${userId}/with-posts`, {signal: abortSignal});
 
     userData.imageUrl = userData.imageUrl ? userData.imageUrl : defaultAvatar;
 
@@ -34,7 +34,7 @@ async function handleUserDataWithPosts(userId, abortSignal) {
 }
 
 async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
-    const matchedUsers = await api.get(`/users/search?name=${searchParam}`, abortSignal);
+    const matchedUsers = await api.get(`/users/search?name=${searchParam}`, {signal: abortSignal});
 
     matchedUsers
         .reverse()
@@ -44,7 +44,7 @@ async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
 }
 
 async function handleGetUserFields(userId, fields, abortSignal) {
-    const userData = await api.get(`/users/${userId}/fields?${fields}`, abortSignal);
+    const userData = await api.get(`/users/${userId}/fields?${fields}`, { signal: abortSignal });
 
     return userData
 }
