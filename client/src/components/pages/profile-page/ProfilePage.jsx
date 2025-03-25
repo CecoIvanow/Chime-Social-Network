@@ -35,8 +35,6 @@ export default function ProfilePage() {
         }
     }, [userId])
 
-    console.log(totalPosts);
-
     return (
         <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
             <div className="profile-container">
@@ -62,8 +60,6 @@ export default function ProfilePage() {
                             lastName: userData.lastName,
                             firstName: userData.firstName,
                         };
-
-                        console.log(totalPosts);
 
                         return <PostItem
                             key={post._id}
