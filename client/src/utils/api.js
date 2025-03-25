@@ -17,7 +17,14 @@ async function fetcher(path, method, body, abortSignal) {
         options.body = JSON.stringify(body);
     }
 
-    return await fetch(BASE_URL + path, options);
+    const resp = await fetch(BASE_URL + path, options);
+    const contentHeaders = resp.headers.get('Content-type');
+
+    if (contentHeaders?.includes('application/json')) {
+        return await resp.json();
+    } else {
+        return;
+    }
 }
 
 const api = {
