@@ -34,7 +34,7 @@ const userSchema = new Schema({
     location: {
         type: String,
     },
-    occpation: {
+    occupation: {
         type: String,
     },
     education: {
