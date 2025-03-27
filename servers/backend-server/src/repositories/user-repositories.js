@@ -67,7 +67,7 @@ async function login(data) {
 async function getUserAndPopulatePosts(userId) {
     const userData = await User
         .findById(userId)
-        .select(`${COMMONLY_NEEDED_PARAMS} birthday gender`)
+        .select('-password -email')
         .populate('createdPosts')
         .lean();
 
