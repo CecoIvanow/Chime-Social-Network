@@ -78,6 +78,15 @@ async function getUserAndPopulatePosts(userId) {
     return userData
 }
 
+async function getUserData(userId) {
+    const userData = await User
+    .findById(userId)
+    .select('-createdPosts -email -password -createdAt -friends')
+    .lean();
+
+    return userData;
+}
+
 async function attachPostToUser(ownerId, postId) {
     const userPosts = await User.findById(ownerId);
 
@@ -176,6 +185,7 @@ const userRepositories = {
     getAllWithMatchingNames,
     attachPostToUser,
     getUserFields,
+    getUserData,
     removePost,
     register,
     login,
