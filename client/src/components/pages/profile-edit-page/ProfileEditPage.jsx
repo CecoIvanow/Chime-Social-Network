@@ -3,8 +3,8 @@ import { useNavigate, useParams } from "react-router"
 
 import userServices from "../../../services/user-services"
 
-import SettingsInputFormGroup from "../../shared/settings/SettingsInputFormGroup"
-import TextAreaInput from "../../ui/input-forms/text-area-input/TextAreaInput"
+import InputField from "../../ui/inputs/input-field/InputField"
+import TextAreaInput from "../../ui/inputs/textarea-input-field/TextAreaInput"
 import GenderDetails from "../register-page/gender-details/GenderDetails"
 import EditControls from "../../shared/controls/edit-controls/EditControls"
 
@@ -61,7 +61,7 @@ export default function ProfileEditPage() {
                 />
 
                 {formProfileInputs.map(field =>
-                    <SettingsInputFormGroup
+                    <InputField
                         key={field.inputName}
                         fieldName={field.fieldName}
                         inputName={field.inputName}

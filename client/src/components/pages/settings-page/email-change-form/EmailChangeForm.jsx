@@ -1,5 +1,5 @@
 import Button from "../../../ui/buttons/button/Button";
-import SettingsInputFormGroup from "../../../shared/settings/SettingsInputFormGroup";
+import InputField from "../../../ui/inputs/input-field/InputField";
 import SectionHeading from "../../../ui/headings/SectionHeading";
 
 export default function EmailChangeForm({
@@ -23,7 +23,7 @@ export default function EmailChangeForm({
                 />
 
                 {emailChabgeSettingsFields.map(field =>
-                    <SettingsInputFormGroup
+                    <InputField
                         key={field.fieldName}   
                         fieldName={field.fieldName}
                         inputType={field.inputType}

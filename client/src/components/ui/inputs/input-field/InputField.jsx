@@ -1,4 +1,4 @@
-export default function SettingsInputFormGroup({
+export default function InputField({
     initialValue,
     fieldName,
     inputName,
