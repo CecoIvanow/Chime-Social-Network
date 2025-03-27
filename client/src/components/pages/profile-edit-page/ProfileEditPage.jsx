@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 
 import userServices from "../../../services/user-services"
 
@@ -12,14 +12,15 @@ export default function ProfileEditPage() {
     const [userData, setUserData] = useState({});
 
     const { userId } = useParams();
+    const navigateTo = useNavigate();
 
     const formProfileInputs = [
         { fieldName: 'First name', inputType: 'text', inputName: 'firstName', value: userData.firstName },
         { fieldName: 'Last name', inputType: 'text', inputName: 'lastName', value: userData.lastName },
-        { fieldName: 'Location:', inputType: 'text', inputName: 'location', value: userData.location },
-        { fieldName: 'Occupation:', inputType: 'text', inputName: 'occupation', value: userData.occupation },
-        { fieldName: 'Education:', inputType: 'text', inputName: 'education', value: userData.education },
-        { fieldName: 'Status:', inputType: 'text', inputName: 'status', value: userData.status },
+        { fieldName: 'Location', inputType: 'text', inputName: 'location', value: userData.location },
+        { fieldName: 'Occupation', inputType: 'text', inputName: 'occupation', value: userData.occupation },
+        { fieldName: 'Education', inputType: 'text', inputName: 'education', value: userData.education },
+        { fieldName: 'Status', inputType: 'text', inputName: 'status', value: userData.status },
     ]
 
     useEffect(() => {
@@ -35,7 +36,10 @@ export default function ProfileEditPage() {
 
     const onEditSubmitClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);
-        console.log(data);
+        
+        await userServices.handleUpdateUserData(userId, data);
+
+        navigateTo(`/profile/${userId}`);
     }
 
     return <>
@@ -62,12 +66,13 @@ export default function ProfileEditPage() {
                         fieldName={field.fieldName}
                         inputName={field.inputName}
                         inputType={field.inputType}
-                        value={field.value}
+                        initialValue={field.value}
                     />
                 )}
-                
+
                 <TextAreaInput
                     fieldName='Bio'
+                    inputName='bio'
                 />
 
                 <div className='button-div'>

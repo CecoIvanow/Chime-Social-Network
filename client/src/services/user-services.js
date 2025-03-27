@@ -43,6 +43,10 @@ async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
     return matchedUsers;
 }
 
+async function handleUpdateUserData(userId, payload) {
+    await api.put(`/users/${userId}`, payload);
+}
+
 async function handleGetUserFields(userId, fields, abortSignal) {
     const userData = await api.get(`/users/${userId}/fields?${fields}`, { signal: abortSignal });
 
@@ -86,6 +90,7 @@ const userServices = {
     handleGetAllWithMatchingNames,
     handleUserDataWithPosts,
     handlePasswordChange,
+    handleUpdateUserData,
     handleGetUserFields,
     handleGetUserData,
     handleEmailChange,
