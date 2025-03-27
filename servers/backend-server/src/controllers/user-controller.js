@@ -51,6 +51,19 @@ userController.get('/users/:userId/with-posts', async (req, res) => {
 
 })
 
+userController.get('/users/:userId', async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+        const userData = await userRepositories.getUserData(userId);
+
+        res.json(userData);
+        res.end()
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 userController.get('/users/search', async (req, res) => {
     const { name } = req.query;
 
