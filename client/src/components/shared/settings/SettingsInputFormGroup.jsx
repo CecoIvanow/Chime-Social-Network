@@ -1,13 +1,14 @@
 export default function SettingsInputFormGroup({
-    value,
+    initialValue,
     fieldName,
     inputName,
     inputType,
 }) {
+
     return <>
         <div className="form-group">
             <label className="form-label">{fieldName}</label>
-            <input type={inputType} className="form-input" name={inputName} value={value}/>
+            <input type={inputType} className="form-input" name={inputName} defaultValue={initialValue} />
         </div>
     </>
 }
