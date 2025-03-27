@@ -73,6 +73,7 @@ export default function ProfileEditPage() {
                 <TextAreaInput
                     fieldName='Bio'
                     inputName='bio'
+                    initialValue={userData.bio}
                 />
 
                 <div className='button-div'>
