@@ -7,6 +7,7 @@ import InputField from "../../ui/inputs/input-field/InputField"
 import TextAreaInput from "../../ui/inputs/textarea-input-field/TextAreaInput"
 import GenderDetails from "../register-page/gender-details/GenderDetails"
 import EditControls from "../../shared/controls/edit-controls/EditControls"
+import SectionHeading from "../../ui/headings/SectionHeading"
 
 export default function ProfileEditPage() {
     const [userData, setUserData] = useState({});
@@ -50,6 +51,10 @@ export default function ProfileEditPage() {
 
     return <>
         <div className="edit-profile-container">
+            <SectionHeading
+                sectionName='Edit Profile:'
+            />
+
             <div className="profile-header">
                 <div className="avatar-section">
                     <img src={userData.imageUrl} className="profile-avatar" alt="Profile picture" />
@@ -58,7 +63,6 @@ export default function ProfileEditPage() {
                         <input type="file" accept="image/*" />
                     </label>
                 </div>
-                <h1>Edit Profile</h1>
             </div>
 
             <form action={onEditSubmitClickHandler}>
