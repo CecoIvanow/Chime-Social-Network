@@ -39,7 +39,7 @@ export default function ProfileDataSection({
 
                     {isUser && (
                         <LinkButton
-                            urlLink={'/edit'}
+                            urlLink={`/profile/${isUser}/edit`}
                             btnStyle="edit-profile-btn"
                             buttonName="Edit Profile"
                         />
