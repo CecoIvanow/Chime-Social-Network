@@ -36,8 +36,14 @@ export default function ProfileEditPage() {
 
     const onEditSubmitClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);
-        
+
         await userServices.handleUpdateUserData(userId, data);
+
+        navigateTo(`/profile/${userId}`);
+    }
+
+    const onCancelEditClickHandler = async (e) => {
+        e.preventDefault();
 
         navigateTo(`/profile/${userId}`);
     }
@@ -78,8 +84,10 @@ export default function ProfileEditPage() {
 
                 <div className='button-div'>
                     <div></div>
-                    <div className='owner-buttons'>
-                        <EditControls />
+                    <div className="owner-buttons">
+                        <EditControls
+                            onCancelClickHandler={onCancelEditClickHandler}
+                        />
                     </div>
                 </div>
             </form>
