@@ -26,6 +26,7 @@ async function fetcher(path, method, body, options = {}) {
 
 const api = {
     get: async (path, options) => await fetcher(path, 'GET', null, options),
+    put: async (path, body, options) => await fetcher(path, 'PUT', body, options),
     post: async (path, body, options) => await fetcher(path, 'POST', body, options),
     patch: async (path, body, options) => await fetcher(path, 'PATCH', body, options),
     delete: async (path, options) => await fetcher(path, 'DELETE', null, options),
