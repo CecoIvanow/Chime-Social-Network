@@ -64,6 +64,19 @@ userController.get('/users/:userId', async (req, res) => {
     }
 })
 
+userController.put('/users/:userId', async (req, res) => {
+    const userId = req.params.userId;
+    const bodyData = req.body;
+
+    try {        
+        await userRepositories.updateUserData(userId, bodyData);
+
+        res.end()
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 userController.get('/users/search', async (req, res) => {
     const { name } = req.query;
 
