@@ -179,11 +179,16 @@ async function removePost(userId, postId) {
     await foundUser.save();
 }
 
+async function updateUserData(userId, data) {
+    await User.findByIdAndUpdate(userId, data);
+}
+
 const userRepositories = {
     changeAccountCredentials,
     getUserAndPopulatePosts,
     getAllWithMatchingNames,
     attachPostToUser,
+    updateUserData,
     getUserFields,
     getUserData,
     removePost,
