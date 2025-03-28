@@ -1,4 +1,6 @@
-export default function GenderDetails() {
+export default function GenderDetails({
+    chosenGender,
+}) {
     return <>
         <div className="gender-details">
             <input type="radio" value="Male" name="gender" id="dot-1" />

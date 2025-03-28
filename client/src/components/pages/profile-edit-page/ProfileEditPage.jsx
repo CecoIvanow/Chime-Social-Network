@@ -5,7 +5,7 @@ import userServices from "../../../services/user-services"
 
 import InputField from "../../ui/inputs/input-field/InputField"
 import TextAreaInput from "../../ui/inputs/textarea-input-field/TextAreaInput"
-import GenderDetails from "../register-page/gender-details/GenderDetails"
+import GenderDetails from "../../ui/inputs/gender-details/GenderDetails"
 import EditControls from "../../shared/controls/edit-controls/EditControls"
 import SectionHeading from "../../ui/headings/SectionHeading"
 import ImageUpload from "./image-upload/ImageUpload"
@@ -44,7 +44,7 @@ export default function ProfileEditPage() {
         const data = Object.fromEntries(formData);
         console.log(data);
 
-        if(imageUpload) {
+        if (imageUpload) {
             data.imageUrl = await imageUploadToStorage();
         }
 
