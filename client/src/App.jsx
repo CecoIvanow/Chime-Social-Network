@@ -21,8 +21,8 @@ import ProfilePage from './components/pages/profile-page/ProfilePage.jsx';
 import Logout from './components/pages/logout/Logout.jsx';
 import PostDetailsPage from './components/pages/post-details-page/PostDetailsPage.jsx';
 import ProfileEditPage from './components/pages/profile-edit-page/ProfileEditPage.jsx';
-
 import usePersistedState from './hooks/usePersistedState.js';
+import PostEditRedirect from './components/pages/post-edit-redirect/PostEditRedirect.jsx';
 
 export default function App() {
     const [isUser, setIsUser] = usePersistedState(false);
@@ -42,6 +42,7 @@ export default function App() {
 
                 {/* User only pages */}
                 <Route path='/profile/:userId/edit' element={isUser ? <ProfileEditPage /> : <Navigate to="/login" />} />
+                <Route path='/post/:postId/edit' element={isUser ? <PostEditRedirect /> : <Navigate to="/login" />} />
                 <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
                 <Route path='/logout' element={isUser ? <Logout /> : <Navigate to="/" />} />
 
@@ -50,7 +51,7 @@ export default function App() {
                 <Route path='/login' element={!isUser ? <LoginPage /> : <Navigate to="/" />} />
 
                 {/* Public pages */}
-                <Route path='/post/:postId/details' element={isUser ? <PostDetailsPage shouldEdit={true} /> : <PostDetailsPage />} />
+                <Route path='/post/:postId/details' element={<PostDetailsPage />} />
                 <Route path='/profile/:userId' element={<ProfilePage />} />
                 <Route path='/catalog' element={<CatalogPage />} />
                 <Route path='/*' element={<NotFoundPage />} />

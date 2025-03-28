@@ -16,11 +16,11 @@ import PostHeader from "../../shared/post/post-header/PostHeader";
 import PostText from "./post-text/PostText";
 import PostEditContent from "./post-text/post-edit-content/PostEditContent";
 
-export default function PostDetailsPage({
-    shouldEdit
-}) {
+export default function PostDetailsPage() {
     const location = useLocation();
     const navigateTo = useNavigate();
+
+    const shouldEdit = location.state?.shouldEdit || false;
 
     const [post, setPost] = useState({});
     const [isLiked, setIsLiked] = useState(false);
