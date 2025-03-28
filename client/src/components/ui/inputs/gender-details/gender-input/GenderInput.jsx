@@ -1,4 +1,4 @@
-export default function GenderInputs({
+export default function GenderInput({
     inputData,
     chosenGender,
     onChangeHandler,

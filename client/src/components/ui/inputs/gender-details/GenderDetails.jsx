@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react"
-import GenderInputs from "./gender-inputs/GenderInputs"
+import GenderInput from "./gender-input/GenderInput"
+import GenderLabel from "./gender-label/GenderLabel";
 
 export default function GenderDetails({
     userGender,
 }) {
-    
+
     const [chosenGender, setChosenGender] = useState('');
 
-    const genderInputsData = [
+    const genderInputs = [
         { value: "Male", id: "dot-1" },
         { value: "Female", id: "dot-2" },
+    ]
+
+    const genderLabels = [
+        { id: "dot-1", value: "Male", genderClassName: "one" },
+        { id: "dot-2", value: "Female", genderClassName: "two" },
     ]
 
     useEffect(() => {
@@ -17,14 +23,13 @@ export default function GenderDetails({
     }, [userGender])
 
     const onGenderChangeHandler = (e) => {
-        console.log(e.currentTarget.value);
         setChosenGender(e.currentTarget.value);
     }
 
     return <>
         <div className="gender-details">
-            {genderInputsData.map(input =>
-                <GenderInputs
+            {genderInputs.map(input =>
+                <GenderInput
                     key={input.id}
                     inputData={input}
                     chosenGender={chosenGender}
@@ -33,14 +38,12 @@ export default function GenderDetails({
             )}
             <span className="gender-title">Gender</span>
             <div className="category">
-                <label htmlFor="dot-1">
-                    <span className="dot one"></span>
-                    <span className="gender">Male</span>
-                </label>
-                <label htmlFor="dot-2">
-                    <span className="dot two"></span>
-                    <span className="gender">Female</span>
-                </label>
+                {genderLabels.map(label =>
+                    <GenderLabel 
+                        key={label.id}
+                        label={label}                        
+                    />
+                )}
             </div>
         </div>
     </>

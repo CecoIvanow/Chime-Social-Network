@@ -42,7 +42,6 @@ export default function ProfileEditPage() {
 
     const onEditSubmitClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);
-        console.log(data);
 
         if (imageUpload) {
             data.imageUrl = await imageUploadToStorage();
