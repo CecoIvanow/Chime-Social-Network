@@ -48,9 +48,7 @@ export default function ProfilePage() {
                     />
 
                     {(isUser && isUser === userData._id) && (
-                        <PostCreateForm
-                            userId={userId}
-                        />
+                        <PostCreateForm/>
                     )}
 
                     {totalPosts.map(post => {
