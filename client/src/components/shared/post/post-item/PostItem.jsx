@@ -87,7 +87,7 @@ export default function PostItem({
                     <div>
                         {isUser === post.owner._id && (
                             <OwnerControls
-                                urlLink={`/post/${post._id}/edit`}
+                                urlLink={`/post/${post._id}/details`}
                                 onDeleteClickHandler={onDeletePostClickHandler}
                             />
                         )}

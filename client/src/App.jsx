@@ -41,7 +41,7 @@ export default function App() {
 
                 {/* User only pages */}
                 <Route path='/profile/:userId/edit' element={isUser ? <ProfileEditPage/> : <Navigate to="/login"/>} />
-                <Route path='/post/:postId/edit' element={isUser ? <PostDetailsPage shouldEdit={true} /> : <Navigate to="/login" />} />
+                <Route path='/post/:postId/details' element={isUser ? <PostDetailsPage shouldEdit={true} /> : <PostDetailsPage />} />
                 <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
                 <Route path='/logout' element={isUser ? <Logout /> : <Navigate to="/" />} />
 
