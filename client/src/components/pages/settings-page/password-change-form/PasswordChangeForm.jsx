@@ -1,7 +1,6 @@
-import SettingsInputFormGroup from "../../../shared/settings/SettingsInputFormGroup";
+import InputField from "../../../ui/inputs/input-field/InputField";
 import Button from "../../../ui/buttons/button/Button";
 import SectionHeading from "../../../ui/headings/SectionHeading";
-
 
 export default function PasswordChangeForm({
     onSubmitHandler
@@ -23,7 +22,7 @@ export default function PasswordChangeForm({
                 />
 
                 {passwordChangeSettingsFields.map(field =>
-                    <SettingsInputFormGroup
+                    <InputField
                         key={field.fieldName}
                         fieldName={field.fieldName}
                         inputName={field.inputName}

@@ -13,6 +13,8 @@ import EditControls from "../../shared/controls/edit-controls/EditControls";
 import PostInteractionButtons from "../../shared/post/post-interaction-buttons/PostInteractionButtons";
 import PostInteractions from "../../shared/post/post-item/post-interactions/PostInteractions";
 import PostHeader from "../../shared/post/post-header/PostHeader";
+import PostText from "./post-text/PostText";
+import PostEditContent from "./post-text/post-edit-content/PostEditContent";
 
 export default function PostDetailsPage({
     shouldEdit
@@ -102,11 +104,14 @@ export default function PostDetailsPage({
                 <PostHeader />
 
                 {isEditClicked ? (
-                    <div className="edit-content">
-                        <textarea className="edit-textarea" value={postText} onChange={textChangeHandler} placeholder="Edit your post content..."></textarea>
-                    </div>
+                    <PostEditContent
+                        postText={postText}
+                        textChangeHandler={textChangeHandler}
+                    />
                 ) : (
-                    <div className='post-text'>{postText}</div>
+                    <PostText
+                        postText={postText}
+                    />
                 )}
 
                 <PostInteractions />
@@ -141,7 +146,7 @@ export default function PostDetailsPage({
                 </div>
                 <div className="comments-section">
                     {isUser && (
-                        <CommentCreateForm/>
+                        <CommentCreateForm />
                     )}
                     <div className="post-comments">
                         <p>All Comments:</p>

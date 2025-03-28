@@ -3,8 +3,7 @@ import defaultAvatar from '/images/default-profile-avatar.png'
 import api from '../utils/api.js';
 
 async function handleCreate(payLoad) {
-    const resp = await api.post('/comments', payLoad);
-    const newComment = await resp.json();
+    const newComment = await api.post('/comments', payLoad);
 
     newComment.owner.imageUrl = newComment.owner.imageUrl ? newComment.owner.imageUrl : defaultAvatar;
 
@@ -16,8 +15,7 @@ async function handleUpdate(commentId, payLoad) {
 }
 
 async function handleDelete(commentId) {
-    const resp = await api.delete(`/comments/${commentId}`);
-    const removedId = await resp.json();
+    const removedId = await api.delete(`/comments/${commentId}`);
 
     return removedId;
 }

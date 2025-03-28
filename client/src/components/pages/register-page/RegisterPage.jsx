@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useActionState, useContext } from "react";
 
 import userServices from "../../../services/user-services";
 
@@ -21,11 +21,13 @@ export default function RegisterPage() {
 
     const { setIsUser } = useContext(UserContext);
 
-    const submitFormClickHandler = async (formData) => {
+    const submitFormClickHandler = async (_,formData) => {
         const data = Object.fromEntries(formData);
 
         await userServices.handleRegister(data, setIsUser);
     }
+
+    const [, action, isPending] = useActionState(submitFormClickHandler);
 
     return <>
         <div className='register-page'>
@@ -34,7 +36,7 @@ export default function RegisterPage() {
                 <div className="title">Registration</div>
                 <div className="content">
 
-                    <form action={submitFormClickHandler}>
+                    <form action={action}>
                         <div className="user-details">
 
                             {registerFields.map(field =>
@@ -53,6 +55,7 @@ export default function RegisterPage() {
 
                         <AuthButton
                             buttonText="Register"
+                            isPending={isPending}
                         />
                         <AuthNavLink
                             path="/login"

@@ -8,15 +8,13 @@ const userUpdatePayload = {
 }
 
 async function handleRegister(data, setIsUser) {
-    const resp = await api.post('/register', data);
-    const userId = await resp.json();
+    const userId = await api.post('/register', data);
 
     setIsUser(userId);
 }
 
 async function handleLogin(data, setIsUser) {
-    const resp = await api.post('/login', data);
-    const userId = await resp.json();
+    const userId = await api.post('/login', data);
 
     setIsUser(userId);
 }
@@ -28,8 +26,7 @@ async function handleLogout(setIsUser) {
 }
 
 async function handleUserDataWithPosts(userId, abortSignal) {
-    const resp = await api.get(`/users/${userId}/with-posts`, abortSignal);
-    const userData = await resp.json();
+    const userData = await api.get(`/users/${userId}/with-posts`, { signal: abortSignal });
 
     userData.imageUrl = userData.imageUrl ? userData.imageUrl : defaultAvatar;
 
@@ -37,8 +34,7 @@ async function handleUserDataWithPosts(userId, abortSignal) {
 }
 
 async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
-    const resp = await api.get(`/users/search?name=${searchParam}`, abortSignal);
-    const matchedUsers = await resp.json();
+    const matchedUsers = await api.get(`/users/search?name=${searchParam}`, { signal: abortSignal });
 
     matchedUsers
         .reverse()
@@ -47,9 +43,12 @@ async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
     return matchedUsers;
 }
 
+async function handleUpdateUserData(userId, payload) {
+    await api.put(`/users/${userId}`, payload);
+}
+
 async function handleGetUserFields(userId, fields, abortSignal) {
-    const resp = await api.get(`/users/${userId}/fields?${fields}`, abortSignal);
-    const userData = await resp.json();
+    const userData = await api.get(`/users/${userId}/fields?${fields}`, { signal: abortSignal });
 
     return userData
 }
@@ -80,11 +79,20 @@ async function handlePasswordChange(userId, submittedData) {
     await api.patch(`/users/${userId}/credentials`, userUpdatePayload);
 }
 
+async function handleGetUserData(userId, abortSignal) {
+    const user = await api.get(`/users/${userId}`, { signal: abortSignal });
+    user.imageUrl = user.imageUrl || defaultAvatar;
+
+    return user;
+}
+
 const userServices = {
     handleGetAllWithMatchingNames,
     handleUserDataWithPosts,
     handlePasswordChange,
+    handleUpdateUserData,
     handleGetUserFields,
+    handleGetUserData,
     handleEmailChange,
     handleRegister,
     handleLogout,

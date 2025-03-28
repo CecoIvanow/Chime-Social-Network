@@ -67,7 +67,7 @@ async function login(data) {
 async function getUserAndPopulatePosts(userId) {
     const userData = await User
         .findById(userId)
-        .select(`${COMMONLY_NEEDED_PARAMS} birthday gender`)
+        .select('-password -email')
         .populate('createdPosts')
         .lean();
 
@@ -76,6 +76,15 @@ async function getUserAndPopulatePosts(userId) {
     userData.createdPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
 
     return userData
+}
+
+async function getUserData(userId) {
+    const userData = await User
+    .findById(userId)
+    .select('-createdPosts -email -password -createdAt -friends')
+    .lean();
+
+    return userData;
 }
 
 async function attachPostToUser(ownerId, postId) {
@@ -170,12 +179,18 @@ async function removePost(userId, postId) {
     await foundUser.save();
 }
 
+async function updateUserData(userId, data) {
+    await User.findByIdAndUpdate(userId, data);
+}
+
 const userRepositories = {
     changeAccountCredentials,
     getUserAndPopulatePosts,
     getAllWithMatchingNames,
     attachPostToUser,
+    updateUserData,
     getUserFields,
+    getUserData,
     removePost,
     register,
     login,

@@ -6,7 +6,7 @@ import userServices from "../../../services/user-services";
 import PostItem from "../../shared/post/post-item/PostItem";
 import PostCreateForm from "../../shared/post/post-create-form/PostCreateForm";
 import SectionHeading from "../../ui/headings/SectionHeading";
-import ProfileInfoSection from "../../shared/profile/ProfileInfoSection";
+import ProfileInfoSection from "../../shared/profile/profile-info-section/ProfileInfoSection";
 import { UserContext } from "../../../contexts/user-context";
 import { TotalPostsContext } from "../../../contexts/total-posts-context";
 
@@ -16,7 +16,7 @@ export default function ProfilePage() {
     const { isUser } = useContext(UserContext)
 
     const [userData, setUserData] = useState({});
-    const [totalUserPosts, setTotalUserPosts] = useState([]);
+    const [totalPosts, setTotalPosts] = useState([]);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -26,7 +26,7 @@ export default function ProfilePage() {
         userServices.handleUserDataWithPosts(userId, abortSignal)
             .then(data => {
                 setUserData(data);
-                setTotalUserPosts(data.createdPosts.reverse());
+                setTotalPosts(data.createdPosts.reverse());
             })
             .catch(error => console.error(error.message));
 
@@ -36,7 +36,7 @@ export default function ProfilePage() {
     }, [userId])
 
     return (
-        <TotalPostsContext.Provider value={{ totalUserPosts, setTotalUserPosts }}>
+        <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
             <div className="profile-container">
                 <ProfileInfoSection
                     userData={userData}
@@ -53,7 +53,7 @@ export default function ProfilePage() {
                         />
                     )}
 
-                    {totalUserPosts.map(post => {
+                    {totalPosts.map(post => {
                         post.owner = {
                             _id: userData._id,
                             imageUrl: userData.imageUrl,
