@@ -14,9 +14,12 @@ export default function usePersistedState(initialState) {
     })
 
     const setPersistedState = (data) => {
-        const persistedData = JSON.stringify(data);
-
-        localStorage.setItem('user', persistedData);
+        if (!data) {
+            localStorage.removeItem('user');
+        } else {
+            const persistedData = JSON.stringify(data);
+            localStorage.setItem('user', persistedData);
+        }
 
         setState(data);
     }
