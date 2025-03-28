@@ -23,6 +23,7 @@ export default function ProfileEditPage() {
     const formProfileInputs = [
         { fieldName: 'First name', inputType: 'text', inputName: 'firstName', value: userData.firstName },
         { fieldName: 'Last name', inputType: 'text', inputName: 'lastName', value: userData.lastName },
+        { fieldName: 'Birthday', inputType: 'date', inputName: 'birthday', value: userData.birthday },
         { fieldName: 'Location', inputType: 'text', inputName: 'location', value: userData.location },
         { fieldName: 'Occupation', inputType: 'text', inputName: 'occupation', value: userData.occupation },
         { fieldName: 'Education', inputType: 'text', inputName: 'education', value: userData.education },
