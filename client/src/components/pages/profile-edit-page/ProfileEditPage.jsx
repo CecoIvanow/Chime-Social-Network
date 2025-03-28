@@ -56,7 +56,7 @@ export default function ProfileEditPage() {
     const imageUploadToStorage = async () => {
         const imageRef = ref(storage, `/images/${userId}/avatar`);
         const resp = await uploadBytes(imageRef, imageUpload);
-        const imageUrl = getDownloadURL(resp.ref);
+        const imageUrl = await getDownloadURL(resp.ref);
 
         return imageUrl;
     }
