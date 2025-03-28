@@ -6,7 +6,7 @@ import userServices from "../../../services/user-services";
 import PostItem from "../../shared/post/post-item/PostItem";
 import PostCreateForm from "../../shared/post/post-create-form/PostCreateForm";
 import SectionHeading from "../../ui/headings/SectionHeading";
-import ProfileInfoSection from "../../shared/profile/ProfileInfoSection";
+import ProfileInfoSection from "../../shared/profile/profile-info-section/ProfileInfoSection";
 import { UserContext } from "../../../contexts/user-context";
 import { TotalPostsContext } from "../../../contexts/total-posts-context";
 
