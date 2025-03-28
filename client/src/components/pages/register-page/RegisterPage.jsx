@@ -21,7 +21,7 @@ export default function RegisterPage() {
 
     const { setIsUser } = useContext(UserContext);
 
-    const submitFormClickHandler = async (formData) => {
+    const submitFormClickHandler = async (_,formData) => {
         const data = Object.fromEntries(formData);
 
         await userServices.handleRegister(data, setIsUser);
