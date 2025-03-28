@@ -6,7 +6,6 @@ import {
     useLocation,
     Navigate
 } from 'react-router';
-import { useState } from 'react';
 
 import { UserContext } from './contexts/user-context.js';
 
@@ -23,8 +22,10 @@ import Logout from './components/pages/logout/Logout.jsx';
 import PostDetailsPage from './components/pages/post-details-page/PostDetailsPage.jsx';
 import ProfileEditPage from './components/pages/profile-edit-page/ProfileEditPage.jsx';
 
+import usePersistedState from './hooks/usePersistedState.js';
+
 export default function App() {
-    const [isUser, setIsUser] = useState(false);
+    const [isUser, setIsUser] = usePersistedState(false);
 
     const location = useLocation();
 
