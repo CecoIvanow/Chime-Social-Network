@@ -80,7 +80,7 @@ export default function ProfileEditPage() {
 
             <form action={onEditSubmitClickHandler}>
                 <GenderDetails
-                    chosenGender={userData.gender}
+                    userGender={userData.gender}
                 />
 
                 {formProfileInputs.map(field =>
