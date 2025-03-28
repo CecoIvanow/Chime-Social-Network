@@ -41,7 +41,6 @@ export default function App() {
 
                 {/* User only pages */}
                 <Route path='/profile/:userId/edit' element={isUser ? <ProfileEditPage/> : <Navigate to="/login"/>} />
-                <Route path='/post/:postId/details' element={isUser ? <PostDetailsPage shouldEdit={true} /> : <PostDetailsPage />} />
                 <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
                 <Route path='/logout' element={isUser ? <Logout /> : <Navigate to="/" />} />
 
@@ -50,7 +49,7 @@ export default function App() {
                 <Route path='/login' element={!isUser ? <LoginPage /> : <Navigate to="/" />} />
 
                 {/* Public pages */}
-                <Route path='/post/:postId/details' element={<PostDetailsPage />} />
+                <Route path='/post/:postId/details' element={isUser ? <PostDetailsPage shouldEdit={true} /> : <PostDetailsPage />} />
                 <Route path='/profile/:userId' element={<ProfilePage />} />
                 <Route path='/catalog' element={<CatalogPage />} />
                 <Route path='/*' element={<NotFoundPage />} />
