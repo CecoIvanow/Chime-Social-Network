@@ -8,9 +8,14 @@ import TextAreaInput from "../../ui/inputs/textarea-input-field/TextAreaInput"
 import GenderDetails from "../register-page/gender-details/GenderDetails"
 import EditControls from "../../shared/controls/edit-controls/EditControls"
 import SectionHeading from "../../ui/headings/SectionHeading"
+import ImageUpload from "./image-upload/ImageUpload"
+
+import { storage } from "../../../firebase/firebase-storage/config"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 
 export default function ProfileEditPage() {
     const [userData, setUserData] = useState({});
+    const [imageUpload, setImageUpload] = useState(null);
 
     const { userId } = useParams();
     const navigateTo = useNavigate();
@@ -37,10 +42,23 @@ export default function ProfileEditPage() {
 
     const onEditSubmitClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);
+        console.log(data);
+
+        if(imageUpload) {
+            data.imageUrl = await imageUploadToStorage();
+        }
 
         await userServices.handleUpdateUserData(userId, data);
 
         navigateTo(`/profile/${userId}`);
+    }
+
+    const imageUploadToStorage = async () => {
+        const imageRef = ref(storage, `/images/${userId}/avatar`);
+        const resp = await uploadBytes(imageRef, imageUpload);
+        const imageUrl = getDownloadURL(resp.ref);
+
+        return imageUrl;
     }
 
     const onCancelEditClickHandler = async (e) => {
@@ -55,15 +73,10 @@ export default function ProfileEditPage() {
                 sectionName='Edit Profile:'
             />
 
-            <div className="profile-header">
-                <div className="avatar-section">
-                    <img src={userData.imageUrl} className="profile-avatar" alt="Profile picture" />
-                    <label className="avatar-upload">
-                        📷
-                        <input type="file" accept="image/*" />
-                    </label>
-                </div>
-            </div>
+            <ImageUpload
+                imageUrl={userData.imageUrl}
+                setImageUpload={setImageUpload}
+            />
 
             <form action={onEditSubmitClickHandler}>
                 <GenderDetails
