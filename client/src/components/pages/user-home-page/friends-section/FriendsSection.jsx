@@ -14,7 +14,9 @@ export default function FriendsSection({
                 sectionName={`Friends (${friendsAmount}):`}
             />
 
-            <SearchField />
+            <SearchField
+            />
+
             <div className='friends-list'>
                 {userFriends.map(friend =>
                     <FriendItem

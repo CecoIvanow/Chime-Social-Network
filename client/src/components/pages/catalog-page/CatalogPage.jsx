@@ -16,20 +16,26 @@ export default function CatalogPage() {
 
     const [totalPosts, setTotalPosts] = useState([]);
     const [totalUsers, setTotalUsers] = useState([]);
+    const [matchingUsers, setMetchingUsers] = useState([]);
+    const [matchingPosts, setMetchingPosts] = useState([]);
 
     useEffect(() => {
         const abortController = new AbortController();
 
         const abortSignal = abortController.signal;
 
-        userServices.handleGetAllWithMatchingNames(userSearchParams, abortSignal)
+        userServices.handleGetAll(abortSignal)
             .then(data => setTotalUsers(data))
             .catch(error => console.error(error.message))
 
         return () => {
             abortController.abort();
         }
-    }, [userSearchParams])
+    }, [])
+
+    useEffect(() => {
+        console.log(totalUsers);
+    }, [userSearchParams, totalUsers])
 
     useEffect(() => {
         const abortController = new AbortController();
