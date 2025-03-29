@@ -1,10 +1,13 @@
+import { useContext, useEffect, useState } from "react";
+
+import userServices from "../../../services/user-services";
+
+import { TotalPostsContext } from "../../../contexts/total-posts-context";
+import { UserContext } from "../../../contexts/user-context";
+
 import FriendsSection from "./friends-section/FriendsSection";
 import PostsSection from "./posts-section/PostsSection";
 import ProfileSection from "../../shared/profile/profile-section/ProfileSection";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../../contexts/user-context";
-import userServices from "../../../services/user-services";
-import { TotalPostsContext } from "../../../contexts/total-posts-context";
 
 export default function UserHomePage() {
     const { isUser } = useContext(UserContext)
@@ -22,7 +25,7 @@ export default function UserHomePage() {
         userServices.handleGetUserWithFriendsAndPosts(isUser, abortSignal)
             .then(data => {
                 setUserData(data);
-                console.log(data.friends);
+                setUserFriends(data.friends);
             })
             .catch(error => console.error(error.message));
 
@@ -44,7 +47,9 @@ export default function UserHomePage() {
                 />
             </TotalPostsContext.Provider>
 
-            <FriendsSection />
+            <FriendsSection
+                userFriends={userFriends}
+            />
         </div >
     </>
 }

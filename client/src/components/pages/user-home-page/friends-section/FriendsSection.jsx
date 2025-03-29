@@ -1,13 +1,11 @@
-import { useContext } from "react";
-
 import FriendItem from "./friend-item/FriendItem";
 import SearchField from "../../../ui/search-field/SearchField";
 import SectionHeading from "../../../ui/headings/SectionHeading";
 
-import { FriendsContext } from "../../../../contexts/friends-context";
 
-export default function FriendsSection() {
-    const { userFriends } = useContext(FriendsContext);
+export default function FriendsSection({
+    userFriends
+}) {
     const friendsAmount = userFriends.length;
 
     return <>
@@ -19,14 +17,9 @@ export default function FriendsSection() {
 
             <SearchField />
             <div className='friends-list'>
-                <FriendItem />
-                <FriendItem />
-                <FriendItem />
-                <FriendItem />
-                <FriendItem />
-                <FriendItem />
-                <FriendItem />
-                <FriendItem />
+                {userFriends.map(friend =>
+                    <FriendItem />
+                )}
             </div>
         </div >
     </>
