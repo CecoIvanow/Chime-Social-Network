@@ -209,11 +209,30 @@ async function removeFriend(userId, friendId) {
     await user.save();
 }
 
+async function getFullProfileWithFriendsPosts(userId) {
+    const user = await User
+        .findById(userId)
+        .select('-email -password')
+        .populate({
+            path: 'friends',
+            select: 'firstName lastName imageUrl createdPosts',
+            populate: {
+                path: 'createdPosts',
+                populate: {
+                    path: 'owner',
+                    select: 'firstName lastName imageUrl',
+                }
+            }
+        })
+
+    return user;
+}
+
 const userRepositories = {
+    getFullProfileWithFriendsPosts,
     changeAccountCredentials,
     getUserAndPopulatePosts,
     getAllWithMatchingNames,
-    getFriendsWithPosts,
     attachPostToUser,
     updateUserData,
     getUserFields,
