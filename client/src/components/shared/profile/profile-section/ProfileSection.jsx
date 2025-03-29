@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { useParams } from "react-router";
 
 import LinkButton from "../../../ui/buttons/link-button/LinkButton";
 import ProfileInfoLabel from "../profile-info-header/ProfileInfoLabel";
@@ -20,6 +21,7 @@ export default function ProfileSection({
     ]
 
     const { isUser } = useContext(UserContext);
+    const { userId } = useParams();
 
     return <>
         <div className="profile-info-section">
@@ -37,7 +39,7 @@ export default function ProfileSection({
                         />
                     )}
 
-                    {isUser && (
+                    {((isUser && (isUser === userId)) || !userId) && (
                         <LinkButton
                             urlLink={`/profile/${isUser}/edit`}
                             btnStyle="edit-profile-btn"
