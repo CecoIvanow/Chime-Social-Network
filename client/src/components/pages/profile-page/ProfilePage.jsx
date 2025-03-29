@@ -10,6 +10,7 @@ import ProfileSection from "../../shared/profile/profile-section/ProfileSection"
 
 import { UserContext } from "../../../contexts/user-context";
 import { TotalPostsContext } from "../../../contexts/total-posts-context";
+import PostsSection from "../../shared/post/posts-section/PostsSection";
 
 export default function ProfilePage() {
     const { userId } = useParams();
@@ -43,23 +44,10 @@ export default function ProfilePage() {
                     userData={userData}
                 />
 
-                <div className="posts-section">
-                    <SectionHeading
-                        sectionName={isUser === userData._id ? 'My Posts:' : `${userData.firstName}'s Posts:`}
-                    />
-
-                    {(isUser && isUser === userData._id) && (
-                        <PostCreateForm />
-                    )}
-
-                    {totalPosts.map(post => 
-                        <PostItem
-                            key={post._id}
-                            post={post}
-                        />
-                    )}
-
-                </div>
+                <PostsSection
+                    sectionHeadingName={isUser === userData._id ? 'My Posts:' : `${userData.firstName}'s Posts:`}
+                    userData={userData}
+                />
             </div>
         </TotalPostsContext.Provider>
     )
