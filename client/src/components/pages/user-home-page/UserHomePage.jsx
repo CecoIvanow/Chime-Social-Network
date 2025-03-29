@@ -32,9 +32,6 @@ export default function UserHomePage() {
                     userData.friends.forEach(friend => friend.createdPosts.forEach(post => posts.push(post)));
                     userData.createdPosts.forEach(post => posts.push(post));
                     posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-                    console.log(userData.createdPosts.at(0));
-                    
                     
                     return posts
                 })
