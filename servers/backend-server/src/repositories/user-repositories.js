@@ -195,6 +195,14 @@ async function addFriend(userId, newFriendId) {
     await user.save();
 }
 
+async function removeFriend(userId, friendId) {
+    const user = await User.findById(userId);
+
+    user.friends = user.friends.filter(friend => friend.toString() !== friendId);
+
+    await user.save();
+}
+
 const userRepositories = {
     changeAccountCredentials,
     getUserAndPopulatePosts,
@@ -202,6 +210,7 @@ const userRepositories = {
     attachPostToUser,
     updateUserData,
     getUserFields,
+    removeFriend,
     getUserData,
     removePost,
     addFriend,
