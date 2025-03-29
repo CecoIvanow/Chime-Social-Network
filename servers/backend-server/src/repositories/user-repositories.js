@@ -214,6 +214,13 @@ async function getFullProfileWithFriendsPosts(userId) {
         .findById(userId)
         .select('-email -password')
         .populate({
+            path: 'createdPosts',
+            populate: {
+                path: 'owner',
+                select: 'firstName lastName imageUrl'
+            }
+        })
+        .populate({
             path: 'friends',
             select: 'firstName lastName imageUrl createdPosts',
             populate: {
