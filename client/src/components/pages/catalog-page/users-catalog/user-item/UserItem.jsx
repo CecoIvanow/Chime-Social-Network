@@ -10,6 +10,10 @@ export default function UserItem({
 }) {
     const { isUser } = useContext(UserContext);
 
+    const onAddFriendClickHandler = () => {
+        alert('Hello');
+    }
+
     return <>
         <div className="user-item">
             <UserItemDetails
@@ -18,6 +22,7 @@ export default function UserItem({
 
             {(isUser && isUser !== user._id) && (
                 <Button
+                    onClickHandler={onAddFriendClickHandler}
                     buttonName='Add'
                     btnStyle='button'
                 />
