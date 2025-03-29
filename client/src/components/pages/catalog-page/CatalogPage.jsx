@@ -17,7 +17,7 @@ export default function CatalogPage() {
     const [totalPosts, setTotalPosts] = useState([]);
     const [totalUsers, setTotalUsers] = useState([]);
     const [matchingUsers, setMatchingUsers] = useState([]);
-    const [matchingPosts, setMetchingPosts] = useState([]);
+    const [matchingPosts, setMatchingPosts] = useState([]);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -28,23 +28,31 @@ export default function CatalogPage() {
             .then(data => setTotalUsers(data))
             .catch(error => console.error(error.message))
 
+        postServices.handleGetAll(abortSignal)
+            .then(data => setTotalPosts(data))
+            .catch(error => console.error(error.message))
+
         return () => {
             abortController.abort();
         }
     }, [])
 
     useEffect(() => {
-
         if (userSearchParams === '') {
             setMatchingUsers(totalUsers);
         } else {
             setMatchingUsers(
                 totalUsers.filter(user => {
-                    const matchByFirstName = user.firstName.toLowerCase().includes(userSearchParams.toLowerCase());
-                    const matchByLastName = user.lastName.toLowerCase().includes(userSearchParams.toLowerCase());
-                    
+                    const matchByFirstName = user.firstName
+                        .toLowerCase()
+                        .includes(userSearchParams.toLowerCase());
+
+                    const matchByLastName = user.lastName
+                        .toLowerCase()
+                        .includes(userSearchParams.toLowerCase());
+
                     if (matchByFirstName || matchByLastName) {
-                        return user;
+                        return true;
                     }
                 })
             )
@@ -52,32 +60,36 @@ export default function CatalogPage() {
     }, [userSearchParams, totalUsers])
 
     useEffect(() => {
-        const abortController = new AbortController();
+        if (postSearchParams === '') {
+            setMatchingPosts(totalPosts);
+        } else {
+            setMatchingPosts(
+                totalPosts.filter(post => {
+                    const matchByContent = post.text
+                        .toLowerCase()
+                        .includes(postSearchParams.toLocaleLowerCase());
 
-        const abortSignal = abortController.signal;
-
-        postServices.handleGetAllByContentWithOwners(postSearchParams, abortSignal)
-            .then(data => setTotalPosts(data))
-            .catch(error => console.error(error.message))
-
-        return () => {
-            abortController.abort();
+                    if (matchByContent) {
+                        return true;
+                    }
+                })
+            )
         }
-    }, [postSearchParams])
+    }, [postSearchParams, totalPosts])
 
     return (
-        <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
-            <div className="dashboard-container">
+        <div className="dashboard-container">
 
+            <TotalPostsContext.Provider value={{ matchingPosts, setMatchingPosts }}>
                 <PostsCatalog
                     setPostSearchParams={setPostSearchParams}
                 />
+            </TotalPostsContext.Provider>
 
-                <UsersCatalog
-                    matchingUsers={matchingUsers}
-                    setUserSearchParams={setUserSearchParams}
-                />
-            </div>
-        </TotalPostsContext.Provider>
+            <UsersCatalog
+                matchingUsers={matchingUsers}
+                setUserSearchParams={setUserSearchParams}
+            />
+        </div>
     )
 }
