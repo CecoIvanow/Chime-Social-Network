@@ -14,6 +14,9 @@ export default function PostsSection({
     const { isUser } = useContext(UserContext)
     const { totalPosts } = useContext(TotalPostsContext);
 
+    console.log(totalPosts);
+    
+
     return (
 
         <div className="posts-section">
@@ -22,7 +25,9 @@ export default function PostsSection({
             />
 
             {(isUser && isUser === userData._id) && (
-                <PostCreateForm />
+                <PostCreateForm
+                    userData={userData}
+                />
             )}
 
             {totalPosts.map(post =>
