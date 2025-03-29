@@ -64,7 +64,7 @@ userController.put('/users/:userId', async (req, res) => {
     }
 })
 
-userController.patch('/users/:userId/add-friend', async (req, res) => {
+userController.patch('/users/:userId/friends', async (req, res) => {
     const userId = req.params.userId;
     const { newFriendId } = req.body;
 
