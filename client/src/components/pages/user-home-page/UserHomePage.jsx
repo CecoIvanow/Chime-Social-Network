@@ -50,6 +50,7 @@ export default function UserHomePage() {
             <FriendsSection
                 userFriends={userFriends}
             />
+            
         </div >
     </>
 }

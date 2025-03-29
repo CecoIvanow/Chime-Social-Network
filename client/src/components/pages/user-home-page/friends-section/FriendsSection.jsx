@@ -2,7 +2,6 @@ import FriendItem from "./friend-item/FriendItem";
 import SearchField from "../../../ui/search-field/SearchField";
 import SectionHeading from "../../../ui/headings/SectionHeading";
 
-
 export default function FriendsSection({
     userFriends
 }) {
@@ -18,7 +17,10 @@ export default function FriendsSection({
             <SearchField />
             <div className='friends-list'>
                 {userFriends.map(friend =>
-                    <FriendItem />
+                    <FriendItem
+                        key={friend._id}
+                        friend={friend}
+                    />
                 )}
             </div>
         </div >
