@@ -6,7 +6,7 @@ import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-
 import { escapeRegex } from '../utils/regex-utils.js';
 import { ageCalculator, memberSinceDateConverter, postedOnDateConverter } from '../utils/date-time-utils.js';
 
-const COMMONLY_NEEDED_PARAMS = 'firstName lastName createdPosts createdAt imageUrl'
+const COMMONLY_NEEDED_PARAMS = 'firstName lastName createdPosts createdAt imageUrl friends'
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 13;
 
 async function register(data) {
@@ -80,9 +80,9 @@ async function getUserAndPopulatePosts(userId) {
 
 async function getUserData(userId) {
     const userData = await User
-    .findById(userId)
-    .select('-createdPosts -email -password -createdAt -friends')
-    .lean();
+        .findById(userId)
+        .select('-createdPosts -email -password -createdAt -friends')
+        .lean();
 
     return userData;
 }
@@ -183,6 +183,18 @@ async function updateUserData(userId, data) {
     await User.findByIdAndUpdate(userId, data);
 }
 
+async function addFriend(userId, newFriendId) {
+    const user = await User.findById(userId);
+
+    if (user.friends.includes(newFriendId)) {
+        throw new Error("Already added as friends!");
+    }
+
+    user.friends.push(newFriendId);
+
+    await user.save();
+}
+
 const userRepositories = {
     changeAccountCredentials,
     getUserAndPopulatePosts,
@@ -192,6 +204,7 @@ const userRepositories = {
     getUserFields,
     getUserData,
     removePost,
+    addFriend,
     register,
     login,
 }
