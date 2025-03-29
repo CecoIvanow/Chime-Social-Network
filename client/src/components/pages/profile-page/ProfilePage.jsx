@@ -52,19 +52,12 @@ export default function ProfilePage() {
                         <PostCreateForm />
                     )}
 
-                    {totalPosts.map(post => {
-                        post.owner = {
-                            _id: userData._id,
-                            imageUrl: userData.imageUrl,
-                            lastName: userData.lastName,
-                            firstName: userData.firstName,
-                        };
-
-                        return <PostItem
+                    {totalPosts.map(post => 
+                        <PostItem
                             key={post._id}
                             post={post}
                         />
-                    })}
+                    )}
 
                 </div>
             </div>
