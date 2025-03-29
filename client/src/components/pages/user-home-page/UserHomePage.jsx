@@ -23,9 +23,21 @@ export default function UserHomePage() {
         const abortSignal = abortController.signal;
 
         userServices.handleGetUserWithFriendsAndPosts(isUser, abortSignal)
-            .then(data => {
-                setUserData(data);
-                setUserFriends(data.friends);
+            .then(userData => {
+                setUserData(userData);
+                setUserFriends(userData.friends);
+                setTotalPosts(() => {
+                    const posts = [];
+
+                    userData.friends.forEach(friend => friend.createdPosts.forEach(post => posts.push(post)));
+                    userData.createdPosts.forEach(post => posts.push(post));
+                    posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                    console.log(userData.createdPosts.at(0));
+                    
+                    
+                    return posts
+                })
             })
             .catch(error => console.error(error.message));
 
@@ -50,7 +62,7 @@ export default function UserHomePage() {
             <FriendsSection
                 userFriends={userFriends}
             />
-            
+
         </div >
     </>
 }
