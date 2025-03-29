@@ -12,16 +12,17 @@ export default function UserHomePage() {
 
     const [userData, setUserData] = useState({});
     const [totalPosts, setTotalPosts] = useState([]);
+    const [userFriends, setUserFriends] = useState([]);
 
     useEffect(() => {
         const abortController = new AbortController();
 
         const abortSignal = abortController.signal;
 
-        userServices.handleUserDataWithPosts(isUser, abortSignal)
+        userServices.handleGetUserWithFriendsAndPosts(isUser, abortSignal)
             .then(data => {
                 setUserData(data);
-                setTotalPosts(data.createdPosts.reverse());
+                console.log(data.friends);
             })
             .catch(error => console.error(error.message));
 

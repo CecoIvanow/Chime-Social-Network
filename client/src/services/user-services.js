@@ -95,7 +95,14 @@ async function handleUnfriend(userId, friendId) {
     await api.delete(`/users/${userId}/friends/${friendId}`);
 }
 
+async function handleGetUserWithFriendsAndPosts(userId, abortSignal) {
+    const data = await api.get(`/users/${userId}/full-profile`, { signal: abortSignal });
+
+    return data;
+}
+
 const userServices = {
+    handleGetUserWithFriendsAndPosts,
     handleGetAllWithMatchingNames,
     handleUserDataWithPosts,
     handleUpdateUserData,
