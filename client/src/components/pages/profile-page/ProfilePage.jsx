@@ -3,9 +3,6 @@ import { useParams } from "react-router"
 
 import userServices from "../../../services/user-services";
 
-import PostItem from "../../shared/post/post-item/PostItem";
-import PostCreateForm from "../../shared/post/post-create-form/PostCreateForm";
-import SectionHeading from "../../ui/headings/SectionHeading";
 import ProfileSection from "../../shared/profile/profile-section/ProfileSection";
 
 import { UserContext } from "../../../contexts/user-context";

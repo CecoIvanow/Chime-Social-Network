@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
-import PostCreateForm from "../../../shared/post/post-create-form/PostCreateForm";
-import PostItem from "../../../shared/post/post-item/PostItem";
+import PostCreateForm from "../post-create-form/PostCreateForm";
+import PostItem from "../post-item/PostItem";
 import SectionHeading from '../../../ui/headings/SectionHeading'
 
 import { UserContext } from "../../../../contexts/user-context";
@@ -25,7 +25,8 @@ export default function PostsSection({
                 <PostCreateForm />
             )}
 
-            {totalPosts.map(post => <PostItem
+            {totalPosts.map(post =>
+                <PostItem
                     key={post._id}
                     post={post}
                 />

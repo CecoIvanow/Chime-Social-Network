@@ -6,7 +6,7 @@ import { TotalPostsContext } from "../../../contexts/total-posts-context";
 import { UserContext } from "../../../contexts/user-context";
 
 import FriendsSection from "./friends-section/FriendsSection";
-import PostsSection from "./posts-section/PostsSection";
+import PostsSection from "../../shared/post/posts-section/PostsSection";
 import ProfileSection from "../../shared/profile/profile-section/ProfileSection";
 
 export default function UserHomePage() {
@@ -32,7 +32,7 @@ export default function UserHomePage() {
                     userData.friends.forEach(friend => friend.createdPosts.forEach(post => posts.push(post)));
                     userData.createdPosts.forEach(post => posts.push(post));
                     posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                    
+
                     return posts
                 })
             })
