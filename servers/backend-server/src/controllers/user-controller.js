@@ -37,12 +37,13 @@ userController.get('/logout', (req, res) => {
     res.end();
 })
 
+
 userController.get('/users/:userId/with-posts', async (req, res) => {
     const userId = req.params.userId;
-
+    
     try {
         const userData = await userRepositories.getUserAndPopulatePosts(userId);
-
+        
         res.json(userData);
         res.end()
     } catch (error) {
@@ -61,6 +62,19 @@ userController.put('/users/:userId', async (req, res) => {
         res.end()
     } catch (error) {
         console.error(error)
+    }
+})
+
+userController.get('/users/:userId/full-profile', async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+        const data = await userRepositories.getFullProfileWithFriendsPosts(userId);
+
+        res.json(data)
+        res.end();
+    } catch (error) {
+        console.error(error);
     }
 })
 
