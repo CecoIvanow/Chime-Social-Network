@@ -5,42 +5,9 @@
     font-family: 'Poppins', sans-serif;
 }
 
-.user-home-page {
-    background-color: #f0f0f0;
-    height: 100vh;
-    display: flex;
-    justify-content: space-around;
-    align-items: end;
-    gap: 30px;
-}
-
 .profile-section {
     display: flex;
     flex-direction: column;
-    background-color: white;
-    border-color: #f0f0f0;
-    height: 86.9vh;
-    width: 55vh;
-    padding: 20px;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    overflow-y: scroll;
-    scrollbar-width: none;
-}
-
-.posts-section {
-    background-color: white;
-    border-color: #f0f0f0;
-    height: 86.9vh;
-    width: 40%;
-    padding: 20px;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    overflow-y: scroll;
-    scrollbar-width: none;
-}
-
-.friends-section {
     background-color: white;
     border-color: #f0f0f0;
     height: 86.9vh;
@@ -238,6 +205,16 @@
     background-color: #3889be;
 }
 
+.unfriend-btn {
+    background-color: #949494;
+    width: 95px;
+}
+
+.unfriend-btn:hover {
+    background-color: #949494;
+    width: 95px;
+}
+
 .comment-btn{
     width: 105px;
 }
@@ -246,6 +223,7 @@
     text-decoration: none;
 
 }
+
 .unlike-btn {
     background-color: #949494;
 }

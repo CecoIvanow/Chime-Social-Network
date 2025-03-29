@@ -6,7 +6,7 @@ import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-
 import { escapeRegex } from '../utils/regex-utils.js';
 import { ageCalculator, memberSinceDateConverter, postedOnDateConverter } from '../utils/date-time-utils.js';
 
-const COMMONLY_NEEDED_PARAMS = 'firstName lastName createdPosts createdAt imageUrl'
+const COMMONLY_NEEDED_PARAMS = 'firstName lastName createdPosts createdAt imageUrl friends'
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 13;
 
 async function register(data) {
@@ -46,53 +46,59 @@ async function register(data) {
 async function login(data) {
     const loginData = data;
 
-    const foundUser = await User.findOne({ email: loginData.email }).select('email password _id').lean();
+    const user = await User.findOne({ email: loginData.email }).select('email password _id').lean();
 
-    if (!foundUser) {
+    if (!user) {
         throw new Error("Invalid email or password!");
     }
 
-    const isPasswordValid = await bcrypt.compare(loginData.password, foundUser.password);
+    const isPasswordValid = await bcrypt.compare(loginData.password, user.password);
 
     if (!isPasswordValid) {
         throw new Error("Invalid email or password!");
     }
 
-    const token = userTokenCreation(foundUser);
-    const { _id } = foundUser;
+    const token = userTokenCreation(user);
+    const { _id } = user;
 
     return [token, _id];
 }
 
 async function getUserAndPopulatePosts(userId) {
-    const userData = await User
+    const user = await User
         .findById(userId)
         .select('-password -email')
-        .populate('createdPosts')
+        .populate({
+            path: 'createdPosts',
+            populate: {
+                path: 'owner',
+                select: 'firstName lastName imageUrl'
+            }
+        })
         .lean();
 
-    userData.memberSince = memberSinceDateConverter(userData.createdAt);
-    userData.age = ageCalculator(userData.birthday);
-    userData.createdPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
+    user.memberSince = memberSinceDateConverter(user.createdAt);
+    user.age = ageCalculator(user.birthday);
+    user.createdPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
 
-    return userData
+    return user
 }
 
 async function getUserData(userId) {
-    const userData = await User
-    .findById(userId)
-    .select('-createdPosts -email -password -createdAt -friends')
-    .lean();
+    const user = await User
+        .findById(userId)
+        .select('-createdPosts -email -password -createdAt -friends')
+        .lean();
 
-    return userData;
+    return user;
 }
 
 async function attachPostToUser(ownerId, postId) {
-    const userPosts = await User.findById(ownerId);
+    const user = await User.findById(ownerId);
 
-    userPosts.createdPosts.push(postId);
+    user.createdPosts.push(postId);
 
-    await userPosts.save();
+    await user.save();
 }
 
 async function getAllWithMatchingNames(filter) {
@@ -121,15 +127,15 @@ async function getUserFields(userId, params) {
         newParams = passwordParamsRemover(params);
     }
 
-    const userData = await User.findById(userId)
+    const user = await User.findById(userId)
         .select(newParams)
         .lean()
 
-    if (userData.email) {
-        userData.email = emailMasking(userData.email);
+    if (user.email) {
+        user.email = emailMasking(user.email);
     }
 
-    return userData
+    return user
 }
 
 async function changeAccountCredentials(userId, data) {
@@ -143,55 +149,104 @@ async function changeAccountCredentials(userId, data) {
         throw new Error('Old Passwords do not match!');
     }
 
-    let foundUser = await User.findOne({ _id: userId, email: data.validationData.curEmail });
+    let user = await User.findOne({ _id: userId, email: data.validationData.curEmail });
 
-    if (!foundUser) {
+    if (!user) {
         throw new Error('Invalid data!');
     }
 
-    const isPasswordValid = await bcrypt.compare(data.validationData.curPass, foundUser.password);
+    const isPasswordValid = await bcrypt.compare(data.validationData.curPass, user.password);
 
     if (!isPasswordValid) {
         throw new Error('Invalid data!')
     }
 
     if (data.newValues.hasOwnProperty('email')) {
-        foundUser.email = data.newValues.email;
+        user.email = data.newValues.email;
 
     } else if (data.newValues.hasOwnProperty('newPass')) {
         const newHashedPass = await bcrypt.hash(data.newValues.newPass, SALT_ROUNDS);
 
-        foundUser.password = newHashedPass;
+        user.password = newHashedPass;
 
     } else {
         throw new Error('Invalid credentials to be changed!');
 
     }
 
-    await foundUser.save();
+    await user.save();
 }
 
 async function removePost(userId, postId) {
-    const foundUser = await User.findById(userId);
+    const user = await User.findById(userId);
 
-    foundUser.createdPosts = foundUser.createdPosts.filter(post => post.toString() !== postId);
+    user.createdPosts = user.createdPosts.filter(post => post.toString() !== postId);
 
-    await foundUser.save();
+    await user.save();
 }
 
 async function updateUserData(userId, data) {
     await User.findByIdAndUpdate(userId, data);
 }
 
+async function addFriend(userId, newFriendId) {
+    const user = await User.findById(userId);
+
+    if (user.friends.includes(newFriendId)) {
+        throw new Error("Already added as friends!");
+    }
+
+    user.friends.push(newFriendId);
+
+    await user.save();
+}
+
+async function removeFriend(userId, friendId) {
+    const user = await User.findById(userId);
+
+    user.friends = user.friends.filter(friend => friend.toString() !== friendId);
+
+    await user.save();
+}
+
+async function getFullProfileWithFriendsPosts(userId) {
+    const user = await User
+        .findById(userId)
+        .select('-email -password')
+        .populate({
+            path: 'createdPosts',
+            populate: {
+                path: 'owner',
+                select: 'firstName lastName imageUrl'
+            }
+        })
+        .populate({
+            path: 'friends',
+            select: 'firstName lastName imageUrl createdPosts',
+            populate: {
+                path: 'createdPosts',
+                populate: {
+                    path: 'owner',
+                    select: 'firstName lastName imageUrl',
+                }
+            }
+        })
+
+    return user;
+}
+
 const userRepositories = {
+    getFullProfileWithFriendsPosts,
     changeAccountCredentials,
     getUserAndPopulatePosts,
     getAllWithMatchingNames,
     attachPostToUser,
     updateUserData,
     getUserFields,
+    removeFriend,
     getUserData,
     removePost,
+    addFriend,
     register,
     login,
 }

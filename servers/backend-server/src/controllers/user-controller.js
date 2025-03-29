@@ -37,12 +37,13 @@ userController.get('/logout', (req, res) => {
     res.end();
 })
 
+
 userController.get('/users/:userId/with-posts', async (req, res) => {
     const userId = req.params.userId;
-
+    
     try {
         const userData = await userRepositories.getUserAndPopulatePosts(userId);
-
+        
         res.json(userData);
         res.end()
     } catch (error) {
@@ -51,30 +52,65 @@ userController.get('/users/:userId/with-posts', async (req, res) => {
 
 })
 
-userController.get('/users/:userId', async (req, res) => {
-    const userId = req.params.userId;
-
-    try {
-        const userData = await userRepositories.getUserData(userId);
-
-        res.json(userData);
-        res.end()
-    } catch (error) {
-        console.error(error)
-    }
-})
-
 userController.put('/users/:userId', async (req, res) => {
     const userId = req.params.userId;
     const bodyData = req.body;
 
-    try {        
+    try {
         await userRepositories.updateUserData(userId, bodyData);
 
         res.end()
     } catch (error) {
         console.error(error)
     }
+})
+
+userController.get('/users/:userId/full-profile', async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+        const data = await userRepositories.getFullProfileWithFriendsPosts(userId);
+
+        res.json(data)
+        res.end();
+    } catch (error) {
+        console.error(error);
+    }
+})
+
+userController.patch('/users/:userId/friends', async (req, res) => {
+    const userId = req.params.userId;
+    const { newFriendId } = req.body;
+
+    try {
+        Promise.all([
+            await userRepositories.addFriend(userId, newFriendId),
+            await userRepositories.addFriend(newFriendId, userId),
+        ])
+
+        res.end();
+    } catch (error) {
+        console.error(error);
+    }
+
+    res.end();
+})
+
+userController.delete('/users/:userId/friends/:friendId', async (req, res) => {
+    const {userId, friendId} = req.params;
+
+    try {
+        Promise.all([
+            await userRepositories.removeFriend(userId, friendId),
+            await userRepositories.removeFriend(friendId, userId),
+        ])
+
+        res.end();
+    } catch (error) {
+        console.error(error);
+    }
+
+    res.end();
 })
 
 userController.get('/users/search', async (req, res) => {
@@ -112,10 +148,23 @@ userController.patch('/users/:userId/credentials', async (req, res) => {
 
     try {
         await userRepositories.changeAccountCredentials(userId, data);
-        
+
         res.end();
     } catch (error) {
         console.error(error);
+    }
+})
+
+userController.get('/users/:userId', async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+        const userData = await userRepositories.getUserData(userId);
+
+        res.json(userData);
+        res.end()
+    } catch (error) {
+        console.error(error)
     }
 })
 

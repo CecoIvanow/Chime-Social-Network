@@ -1,6 +1,7 @@
-import defaultAvatar from '/images/default-profile-avatar.png'
-
 import api from '../utils/api.js';
+
+import { storage } from '../firebase/firebase-storage/config.js';
+import { ref, getDownloadURL } from 'firebase/storage';
 
 const userUpdatePayload = {
     validationData: {},
@@ -8,6 +9,11 @@ const userUpdatePayload = {
 }
 
 async function handleRegister(data, setIsUser) {
+    const defaultAvatarRef = ref(storage, '/images/default/default-profile-avatar.png');
+    const defaultAvatarUrl = await getDownloadURL(defaultAvatarRef);
+
+    data.imageUrl = defaultAvatarUrl;
+
     const userId = await api.post('/register', data);
 
     setIsUser(userId);
@@ -28,17 +34,13 @@ async function handleLogout(setIsUser) {
 async function handleUserDataWithPosts(userId, abortSignal) {
     const userData = await api.get(`/users/${userId}/with-posts`, { signal: abortSignal });
 
-    userData.imageUrl = userData.imageUrl ? userData.imageUrl : defaultAvatar;
-
     return userData;
 }
 
 async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
     const matchedUsers = await api.get(`/users/search?name=${searchParam}`, { signal: abortSignal });
 
-    matchedUsers
-        .reverse()
-        .map(user => user.imageUrl = user.imageUrl ? user.imageUrl : defaultAvatar);
+    matchedUsers.reverse()
 
     return matchedUsers;
 }
@@ -81,19 +83,35 @@ async function handlePasswordChange(userId, submittedData) {
 
 async function handleGetUserData(userId, abortSignal) {
     const user = await api.get(`/users/${userId}`, { signal: abortSignal });
-    user.imageUrl = user.imageUrl || defaultAvatar;
 
     return user;
 }
 
+async function handleAddFriend(userId, newFriendId) {
+    await api.patch(`/users/${userId}/friends`, { newFriendId });
+}
+
+async function handleUnfriend(userId, friendId) {
+    await api.delete(`/users/${userId}/friends/${friendId}`);
+}
+
+async function handleGetUserWithFriendsAndPosts(userId, abortSignal) {
+    const data = await api.get(`/users/${userId}/full-profile`, { signal: abortSignal });
+
+    return data;
+}
+
 const userServices = {
+    handleGetUserWithFriendsAndPosts,
     handleGetAllWithMatchingNames,
     handleUserDataWithPosts,
-    handlePasswordChange,
     handleUpdateUserData,
+    handlePasswordChange,
     handleGetUserFields,
     handleGetUserData,
     handleEmailChange,
+    handleAddFriend,
+    handleUnfriend,
     handleRegister,
     handleLogout,
     handleLogin,

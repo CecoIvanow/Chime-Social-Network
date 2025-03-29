@@ -1,11 +1,8 @@
-import defaultAvatar from '/images/default-profile-avatar.png'
 
 import api from '../utils/api.js';
 
 async function handleCreate(payLoad) {
     const newComment = await api.post('/comments', payLoad);
-
-    newComment.owner.imageUrl = newComment.owner.imageUrl ? newComment.owner.imageUrl : defaultAvatar;
 
     return newComment;
 }

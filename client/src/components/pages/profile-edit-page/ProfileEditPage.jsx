@@ -1,23 +1,32 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
+
+import { UserContext } from "../../../contexts/user-context"
 
 import userServices from "../../../services/user-services"
 
 import InputField from "../../ui/inputs/input-field/InputField"
 import TextAreaInput from "../../ui/inputs/textarea-input-field/TextAreaInput"
-import GenderDetails from "../register-page/gender-details/GenderDetails"
+import GenderDetails from "../../ui/inputs/gender-details/GenderDetails"
 import EditControls from "../../shared/controls/edit-controls/EditControls"
 import SectionHeading from "../../ui/headings/SectionHeading"
+import ImageUpload from "./image-upload/ImageUpload"
+
+import { storage } from "../../../firebase/firebase-storage/config"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 
 export default function ProfileEditPage() {
     const [userData, setUserData] = useState({});
+    const [imageUpload, setImageUpload] = useState(null);
 
-    const { userId } = useParams();
+    const { userId: profileId } = useParams();
     const navigateTo = useNavigate();
+    const { isUser: currentUser } = useContext(UserContext)
 
     const formProfileInputs = [
         { fieldName: 'First name', inputType: 'text', inputName: 'firstName', value: userData.firstName },
         { fieldName: 'Last name', inputType: 'text', inputName: 'lastName', value: userData.lastName },
+        { fieldName: 'Birthday', inputType: 'date', inputName: 'birthday', value: userData.birthday },
         { fieldName: 'Location', inputType: 'text', inputName: 'location', value: userData.location },
         { fieldName: 'Occupation', inputType: 'text', inputName: 'occupation', value: userData.occupation },
         { fieldName: 'Education', inputType: 'text', inputName: 'education', value: userData.education },
@@ -25,28 +34,44 @@ export default function ProfileEditPage() {
     ]
 
     useEffect(() => {
+        if (currentUser !== profileId) {
+            navigateTo('/404');
+        }
+
         const abortController = new AbortController();
         const abortSignal = abortController.signal;
 
-        userServices.handleGetUserData(userId, abortSignal)
+        userServices.handleGetUserData(profileId, abortSignal)
             .then(data => setUserData(data))
             .catch(error => console.error(error));
 
         return () => abortController.abort();
-    }, [userId]);
+    }, [profileId, currentUser, navigateTo]);
 
     const onEditSubmitClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
-        await userServices.handleUpdateUserData(userId, data);
+        if (imageUpload) {
+            data.imageUrl = await imageUploadToStorage();
+        }
 
-        navigateTo(`/profile/${userId}`);
+        await userServices.handleUpdateUserData(profileId, data);
+
+        navigateTo(`/profile/${profileId}`);
+    }
+
+    const imageUploadToStorage = async () => {
+        const imageRef = ref(storage, `/images/${profileId}/avatar`);
+        const resp = await uploadBytes(imageRef, imageUpload);
+        const imageUrl = await getDownloadURL(resp.ref);
+
+        return imageUrl;
     }
 
     const onCancelEditClickHandler = async (e) => {
         e.preventDefault();
 
-        navigateTo(`/profile/${userId}`);
+        navigateTo(`/profile/${profileId}`);
     }
 
     return <>
@@ -55,19 +80,14 @@ export default function ProfileEditPage() {
                 sectionName='Edit Profile:'
             />
 
-            <div className="profile-header">
-                <div className="avatar-section">
-                    <img src={userData.imageUrl} className="profile-avatar" alt="Profile picture" />
-                    <label className="avatar-upload">
-                        📷
-                        <input type="file" accept="image/*" />
-                    </label>
-                </div>
-            </div>
+            <ImageUpload
+                imageUrl={userData.imageUrl}
+                setImageUpload={setImageUpload}
+            />
 
             <form action={onEditSubmitClickHandler}>
                 <GenderDetails
-                    chosenGender={userData.gender}
+                    userGender={userData.gender}
                 />
 
                 {formProfileInputs.map(field =>

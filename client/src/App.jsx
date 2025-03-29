@@ -6,7 +6,6 @@ import {
     useLocation,
     Navigate
 } from 'react-router';
-import { useState } from 'react';
 
 import { UserContext } from './contexts/user-context.js';
 
@@ -22,9 +21,11 @@ import ProfilePage from './components/pages/profile-page/ProfilePage.jsx';
 import Logout from './components/pages/logout/Logout.jsx';
 import PostDetailsPage from './components/pages/post-details-page/PostDetailsPage.jsx';
 import ProfileEditPage from './components/pages/profile-edit-page/ProfileEditPage.jsx';
+import usePersistedState from './hooks/usePersistedState.js';
+import PostEditRedirect from './components/pages/post-edit-redirect/PostEditRedirect.jsx';
 
 export default function App() {
-    const [isUser, setIsUser] = useState(false);
+    const [isUser, setIsUser] = usePersistedState(false);
 
     const location = useLocation();
 
@@ -40,8 +41,8 @@ export default function App() {
                 <Route path='/' element={isUser ? <UserHomePage /> : <LandingPage />} />
 
                 {/* User only pages */}
-                <Route path='/profile/:userId/edit' element={isUser ? <ProfileEditPage/> : <Navigate to="/login"/>} />
-                <Route path='/post/:postId/edit' element={isUser ? <PostDetailsPage shouldEdit={true} /> : <Navigate to="/login" />} />
+                <Route path='/profile/:userId/edit' element={isUser ? <ProfileEditPage /> : <Navigate to="/login" />} />
+                <Route path='/post/:postId/edit' element={isUser ? <PostEditRedirect /> : <Navigate to="/login" />} />
                 <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
                 <Route path='/logout' element={isUser ? <Logout /> : <Navigate to="/" />} />
 

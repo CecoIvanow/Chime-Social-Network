@@ -10,7 +10,7 @@ import CreateContent from "../../create-content/CreateContent";
 export default function PostCreateForm() {
     const [postText, setPostText] = useState('');
 
-    const { totalUserPosts, setTotalUserPosts } = useContext(TotalPostsContext);
+    const { totalPosts, setTotalPosts } = useContext(TotalPostsContext);
     const { isUser } = useContext(UserContext);
 
     const onPostSubmitHandler = async (formData) => {
@@ -24,7 +24,7 @@ export default function PostCreateForm() {
 
         const newPost = await postServices.handlePostCreate(postData);
 
-        setTotalUserPosts([newPost, ...totalUserPosts]);
+        setTotalPosts([newPost, ...totalPosts]);
         setPostText('');
     }
 

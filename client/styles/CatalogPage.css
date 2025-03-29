@@ -11,6 +11,7 @@ body {
     background-color: #f3f3f3;
 }
 
+.user-home-page,
 .dashboard-container {
     display: flex;
     justify-content: space-between;
@@ -20,26 +21,29 @@ body {
     gap: 30px;
 }
 
+.posts-section,
 .posts-catalog {
     flex: 2;
     background-color: white;
     border: 2px solid #f0f0f0;
     border-radius: 15px;
     padding: 25px;
-    max-height: 80vh;
+    height: fit-content;
+    height: 539px;
     overflow-y: scroll;
     scrollbar-width: none;
 }
 
+.friends-section,
 .users-catalog {
     flex: 1;
     background-color: white;
     border: 2px solid #f0f0f0;
     border-radius: 15px;
     padding: 25px;
-    max-height: 80vh;
+    height: fit-content;
+    height: 539px;
     overflow-y: scroll;
-    scrollbar-width: none;
 }
 
 .section-heading {

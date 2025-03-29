@@ -5,7 +5,7 @@ import ProfileInfoLabel from "../profile-info-header/ProfileInfoLabel";
 
 import { UserContext } from "../../../../contexts/user-context";
 
-export default function ProfileDataSection({
+export default function ProfileSection({
     userData,
 }) {
     const profileLabels = [

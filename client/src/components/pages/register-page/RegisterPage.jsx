@@ -7,7 +7,7 @@ import { UserContext } from "../../../contexts/user-context";
 import AuthButton from "../../shared/auth/auth-button/AuthButton";
 import AuthForm from "../../shared/auth/auth-form/AuthForm";
 import AuthNavLink from "../../shared/auth/auth-nav-link/AuthNavLink";
-import GenderDetails from "./gender-details/GenderDetails";
+import GenderDetails from "../../ui/inputs/gender-details/GenderDetails";
 
 export default function RegisterPage() {
     const registerFields = [
@@ -21,7 +21,7 @@ export default function RegisterPage() {
 
     const { setIsUser } = useContext(UserContext);
 
-    const submitFormClickHandler = async (_,formData) => {
+    const submitFormClickHandler = async (_, formData) => {
         const data = Object.fromEntries(formData);
 
         await userServices.handleRegister(data, setIsUser);

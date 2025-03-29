@@ -1,5 +1,3 @@
-import defaultAvatar from '/images/default-profile-avatar.png'
-
 import api from '../utils/api.js';
 
 async function handlePostCreate(postData) {
@@ -11,9 +9,7 @@ async function handlePostCreate(postData) {
 async function handleGetAllByContentWithOwners(searchParam, abortSignal) {
     const matchedPosts = await api.get(`/posts/search?content=${searchParam}`, { signal: abortSignal });
 
-    matchedPosts
-        .reverse()
-        .map(post => post.owner.imageUrl = post.owner.imageUrl ? post.owner.imageUrl : defaultAvatar);
+    matchedPosts.reverse()
 
     return matchedPosts;
 }
@@ -35,18 +31,13 @@ async function handleUnlike(userId, postId) {
 async function handleGetPostDataWithComments(postId, abortSignal) {
     const postData = await api.get(`/posts/${postId}/with-comments`, { signal: abortSignal });
 
-    postData.owner.imageUrl = postData.owner.imageUrl ? postData.owner.imageUrl : defaultAvatar;
-    postData.comments
-        .reverse()
-        .map(comment => comment.owner.imageUrl = comment.owner.imageUrl ? comment.owner.imageUrl : defaultAvatar);
+    postData.comments.reverse()
 
     return postData;
 }
 
 async function handleGetPostData(postId, abortSignal) {
     const postData = await api.get(`/posts/${postId}/with-comments`, { signal: abortSignal });
-
-    postData.owner.imageUrl = postData.owner.imageUrl ? postData.owner.imageUrl : defaultAvatar;
 
     return postData;
 }

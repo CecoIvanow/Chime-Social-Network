@@ -16,18 +16,18 @@ import PostHeader from "../../shared/post/post-header/PostHeader";
 import PostText from "./post-text/PostText";
 import PostEditContent from "./post-text/post-edit-content/PostEditContent";
 
-export default function PostDetailsPage({
-    shouldEdit
-}) {
+export default function PostDetailsPage() {
     const location = useLocation();
     const navigateTo = useNavigate();
+
+    const shouldEdit = location.state?.shouldEdit || false;
 
     const [post, setPost] = useState({});
     const [isLiked, setIsLiked] = useState(false);
     const [isEditClicked, setIsEditClicked] = useState(shouldEdit);
     const [postText, setPostText] = useState('');
 
-    const { isUser } = useContext(UserContext)
+    const { isUser: currentUser } = useContext(UserContext)
 
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
@@ -37,10 +37,14 @@ export default function PostDetailsPage({
 
         postServices.handleGetPostDataWithComments(postId, abortSignal)
             .then(data => {
+                if (isEditClicked && (currentUser !== data.owner._id)) {
+                    navigateTo('/404');
+                }
+
                 setPost(data);
                 setPostText(data.text);
 
-                if (data.likes.includes(isUser)) {
+                if (data.likes.includes(currentUser)) {
                     setIsLiked(true);
                 }
             })
@@ -50,7 +54,7 @@ export default function PostDetailsPage({
             abortController.abort();
         }
 
-    }, [location.pathname, isUser]);
+    }, [location.pathname, currentUser]);
 
     if (!post?._id) {
         return null;
@@ -82,14 +86,14 @@ export default function PostDetailsPage({
     }
 
     const onLikePostClickHandler = async () => {
-        await postServices.handleLike(isUser, post._id);
-        post.likes.push(isUser);
+        await postServices.handleLike(currentUser, post._id);
+        post.likes.push(currentUser);
         setIsLiked(true);
     }
 
     const onUnlikePostClockHandler = async () => {
-        await postServices.handleUnlike(isUser, post._id);
-        post.likes = post.likes.filter(userLike => userLike !== isUser);
+        await postServices.handleUnlike(currentUser, post._id);
+        post.likes = post.likes.filter(userLike => userLike !== currentUser);
         setIsLiked(false);
     }
 
@@ -118,7 +122,7 @@ export default function PostDetailsPage({
 
                 <div className='button-div'>
                     <div>
-                        {(isUser && isUser !== post.owner._id) && (
+                        {(currentUser && currentUser !== post.owner._id) && (
                             <PostInteractionButtons
                                 isLiked={isLiked}
                                 onLikeClickHandler={onLikePostClickHandler}
@@ -127,7 +131,7 @@ export default function PostDetailsPage({
                         )}
                     </div>
                     <div className='owner-buttons'>
-                        {(isUser && isUser === post.owner._id) && (
+                        {(currentUser && currentUser === post.owner._id) && (
                             <>
                                 {isEditClicked ? (
                                     <EditControls
@@ -145,7 +149,7 @@ export default function PostDetailsPage({
                     </div>
                 </div>
                 <div className="comments-section">
-                    {isUser && (
+                    {currentUser && (
                         <CommentCreateForm />
                     )}
                     <div className="post-comments">
