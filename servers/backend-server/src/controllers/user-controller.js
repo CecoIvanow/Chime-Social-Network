@@ -82,6 +82,23 @@ userController.patch('/users/:userId/friends', async (req, res) => {
     res.end();
 })
 
+userController.delete('/users/:userId/friends/:friendId', async (req, res) => {
+    const {userId, friendId} = req.params;
+
+    try {
+        Promise.all([
+            await userRepositories.removeFriend(userId, friendId),
+            await userRepositories.removeFriend(friendId, userId),
+        ])
+
+        res.end();
+    } catch (error) {
+        console.error(error);
+    }
+
+    res.end();
+})
+
 userController.get('/users/search', async (req, res) => {
     const { name } = req.query;
 
