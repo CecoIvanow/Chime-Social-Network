@@ -18,6 +18,11 @@ export default function UserItem({
         setIsAddedAsFriend(true);
     }
 
+    const onUnfriendClickHandler = async () => {
+        await userServices.handleUnfriend(isUser, user._id);
+        setIsAddedAsFriend(false);
+    }
+
     return <>
         <div className="user-item">
             <UserItemDetails
@@ -28,7 +33,7 @@ export default function UserItem({
                 <>
                     {isAddedAsFriend ? (
                         <Button
-                            onClickHandler={onAddFriendClickHandler}
+                            onClickHandler={onUnfriendClickHandler}
                             buttonName='Unfriend'
                             btnStyle='button unfriend-btn'
                         />

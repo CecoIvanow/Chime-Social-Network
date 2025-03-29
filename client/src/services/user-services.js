@@ -88,7 +88,11 @@ async function handleGetUserData(userId, abortSignal) {
 }
 
 async function handleAddFriend(userId, newFriendId) {
-    await api.patch(`/users/${userId}/add-friend`, { newFriendId });
+    await api.patch(`/users/${userId}/friends`, { newFriendId });
+}
+
+async function handleUnfriend(userId, friendId) {
+    await api.delete(`/users/${userId}/friends/${friendId}`);
 }
 
 const userServices = {
@@ -100,6 +104,7 @@ const userServices = {
     handleGetUserData,
     handleEmailChange,
     handleAddFriend,
+    handleUnfriend,
     handleRegister,
     handleLogout,
     handleLogin,
