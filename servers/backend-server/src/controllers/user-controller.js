@@ -37,7 +37,6 @@ userController.get('/logout', (req, res) => {
     res.end();
 })
 
-
 userController.get('/users/:userId/with-posts', async (req, res) => {
     const userId = req.params.userId;
     
@@ -113,19 +112,6 @@ userController.delete('/users/:userId/friends/:friendId', async (req, res) => {
     res.end();
 })
 
-userController.get('/users/search', async (req, res) => {
-    const { name } = req.query;
-
-    try {
-        const filteredUsers = await userRepositories.getAllWithMatchingNames(name);
-
-        res.json(filteredUsers);
-        res.end();
-    } catch (error) {
-        console.error(error);
-    }
-})
-
 userController.get('/users/:userId/fields', async (req, res) => {
     const userId = req.params.userId
     const fields = Object.keys(req.query)
@@ -165,6 +151,17 @@ userController.get('/users/:userId', async (req, res) => {
         res.end()
     } catch (error) {
         console.error(error)
+    }
+})
+
+userController.get('/users', async (req, res) => {
+    try {
+        const data = await userRepositories.getAll();
+
+        res.json(data);
+        res.end()
+    } catch (error) {
+        console.error(error);
     }
 })
 
