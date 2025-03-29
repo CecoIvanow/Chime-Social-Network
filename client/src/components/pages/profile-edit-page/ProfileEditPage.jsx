@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
+
+import { UserContext } from "../../../contexts/user-context"
 
 import userServices from "../../../services/user-services"
 
@@ -17,8 +19,9 @@ export default function ProfileEditPage() {
     const [userData, setUserData] = useState({});
     const [imageUpload, setImageUpload] = useState(null);
 
-    const { userId } = useParams();
+    const { userId: profileId } = useParams();
     const navigateTo = useNavigate();
+    const { isUser: currentUser } = useContext(UserContext)
 
     const formProfileInputs = [
         { fieldName: 'First name', inputType: 'text', inputName: 'firstName', value: userData.firstName },
@@ -31,15 +34,19 @@ export default function ProfileEditPage() {
     ]
 
     useEffect(() => {
+        if (currentUser !== profileId) {
+            navigateTo('/404');
+        }
+
         const abortController = new AbortController();
         const abortSignal = abortController.signal;
 
-        userServices.handleGetUserData(userId, abortSignal)
+        userServices.handleGetUserData(profileId, abortSignal)
             .then(data => setUserData(data))
             .catch(error => console.error(error));
 
         return () => abortController.abort();
-    }, [userId]);
+    }, [profileId, currentUser, navigateTo]);
 
     const onEditSubmitClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);
@@ -48,13 +55,13 @@ export default function ProfileEditPage() {
             data.imageUrl = await imageUploadToStorage();
         }
 
-        await userServices.handleUpdateUserData(userId, data);
+        await userServices.handleUpdateUserData(profileId, data);
 
-        navigateTo(`/profile/${userId}`);
+        navigateTo(`/profile/${profileId}`);
     }
 
     const imageUploadToStorage = async () => {
-        const imageRef = ref(storage, `/images/${userId}/avatar`);
+        const imageRef = ref(storage, `/images/${profileId}/avatar`);
         const resp = await uploadBytes(imageRef, imageUpload);
         const imageUrl = await getDownloadURL(resp.ref);
 
@@ -64,7 +71,7 @@ export default function ProfileEditPage() {
     const onCancelEditClickHandler = async (e) => {
         e.preventDefault();
 
-        navigateTo(`/profile/${userId}`);
+        navigateTo(`/profile/${profileId}`);
     }
 
     return <>
