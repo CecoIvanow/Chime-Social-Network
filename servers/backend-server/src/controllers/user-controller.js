@@ -55,13 +55,31 @@ userController.put('/users/:userId', async (req, res) => {
     const userId = req.params.userId;
     const bodyData = req.body;
 
-    try {        
+    try {
         await userRepositories.updateUserData(userId, bodyData);
 
         res.end()
     } catch (error) {
         console.error(error)
     }
+})
+
+userController.patch('/users/:userId/add-friend', async (req, res) => {
+    const userId = req.params.userId;
+    const { newFriendId } = req.body;
+
+    try {
+        Promise.all([
+            await userRepositories.addFriend(userId, newFriendId),
+            await userRepositories.addFriend(newFriendId, userId),
+        ])
+
+        res.end();
+    } catch (error) {
+        console.error(error);
+    }
+
+    res.end();
 })
 
 userController.get('/users/search', async (req, res) => {
@@ -99,7 +117,7 @@ userController.patch('/users/:userId/credentials', async (req, res) => {
 
     try {
         await userRepositories.changeAccountCredentials(userId, data);
-        
+
         res.end();
     } catch (error) {
         console.error(error);
