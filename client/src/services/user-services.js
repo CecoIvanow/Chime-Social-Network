@@ -37,8 +37,8 @@ async function handleUserDataWithPosts(userId, abortSignal) {
     return userData;
 }
 
-async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
-    const matchedUsers = await api.get(`/users/search?name=${searchParam}`, { signal: abortSignal });
+async function handleGetAll(abortSignal) {
+    const matchedUsers = await api.get('/users', { signal: abortSignal });
 
     matchedUsers.reverse()
 
@@ -103,7 +103,7 @@ async function handleGetUserWithFriendsAndPosts(userId, abortSignal) {
 
 const userServices = {
     handleGetUserWithFriendsAndPosts,
-    handleGetAllWithMatchingNames,
+    handleGetAll,
     handleUserDataWithPosts,
     handleUpdateUserData,
     handlePasswordChange,
