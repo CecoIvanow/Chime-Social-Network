@@ -101,25 +101,6 @@ async function attachPostToUser(ownerId, postId) {
     await user.save();
 }
 
-async function getAllWithMatchingNames(filter) {
-    const escapedFilter = escapeRegex(filter);
-
-    const nameRegex = new RegExp(escapedFilter, 'i');
-
-    const matchedUsers = await User
-        .find({})
-        .or([
-            { firstName: nameRegex },
-            { lastName: nameRegex },
-        ])
-        .select(COMMONLY_NEEDED_PARAMS)
-        .lean();
-
-    matchedUsers.map(user => user.memberSince = memberSinceDateConverter(user.createdAt))
-
-    return matchedUsers;
-}
-
 async function getUserFields(userId, params) {
     let newParams = params;
 
@@ -235,11 +216,21 @@ async function getFullProfileWithFriendsPosts(userId) {
     return user;
 }
 
+async function getAll() {
+    const users = await User
+        .find({})
+        .select('firstName lastName imageUrl createdPosts createdAt friends')
+        .lean();
+
+    users.map(user => user.memberSince = memberSinceDateConverter(user.createdAt))
+
+    return users;
+}
+
 const userRepositories = {
     getFullProfileWithFriendsPosts,
     changeAccountCredentials,
     getUserAndPopulatePosts,
-    getAllWithMatchingNames,
     attachPostToUser,
     updateUserData,
     getUserFields,
@@ -248,6 +239,7 @@ const userRepositories = {
     removePost,
     addFriend,
     register,
+    getAll,
     login,
 }
 
