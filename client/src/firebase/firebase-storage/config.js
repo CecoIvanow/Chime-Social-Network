@@ -1,11 +1,8 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// This API is made public in order for the firebase image upload to function properly
+// It will be regenerated and hidden after Softuni's React.js project defence 
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
     apiKey: "AIzaSyACRPxxrqqbp8Pp9EgZZigNj98rED6bKew",
     authDomain: "chime-profile-avatars-database.firebaseapp.com",
@@ -16,6 +13,5 @@ const firebaseConfig = {
     measurementId: "G-KVSX6YDQY1"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
