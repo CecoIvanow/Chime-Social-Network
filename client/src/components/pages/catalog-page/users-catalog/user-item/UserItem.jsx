@@ -1,17 +1,21 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 import { UserContext } from '../../../../../contexts/user-context'
 
 import Button from '../../../../ui/buttons/button/Button'
 import UserItemDetails from './user-item-details/UserItemDetails'
+import userServices from '../../../../../services/user-services';
 
 export default function UserItem({
     user,
 }) {
     const { isUser } = useContext(UserContext);
 
-    const onAddFriendClickHandler = () => {
-        alert('Hello');
+    const [isAddedAsFriend, setIsAddedAsFriend] = useState(user.friends?.includes(isUser));
+
+    const onAddFriendClickHandler = async () => {
+        await userServices.handleAddFriend(isUser, user._id);
+        setIsAddedAsFriend(true);
     }
 
     return <>
@@ -21,11 +25,21 @@ export default function UserItem({
             />
 
             {(isUser && isUser !== user._id) && (
-                <Button
-                    onClickHandler={onAddFriendClickHandler}
-                    buttonName='Add'
-                    btnStyle='button'
-                />
+                <>
+                    {isAddedAsFriend ? (
+                        <Button
+                            onClickHandler={onAddFriendClickHandler}
+                            buttonName='Unfriend'
+                            btnStyle='button unfriend-btn'
+                        />
+                    ) : (
+                        <Button
+                            onClickHandler={onAddFriendClickHandler}
+                            buttonName='Add'
+                            btnStyle='button'
+                        />
+                    )}
+                </>
             )}
         </div>
     </>

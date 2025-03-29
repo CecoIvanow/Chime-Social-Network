@@ -13,7 +13,7 @@ async function handleRegister(data, setIsUser) {
     const defaultAvatarUrl = await getDownloadURL(defaultAvatarRef);
 
     data.imageUrl = defaultAvatarUrl;
-    
+
     const userId = await api.post('/register', data);
 
     setIsUser(userId);
@@ -87,14 +87,19 @@ async function handleGetUserData(userId, abortSignal) {
     return user;
 }
 
+async function handleAddFriend(userId, newFriendId) {
+    await api.patch(`/users/${userId}/add-friend`, { newFriendId });
+}
+
 const userServices = {
     handleGetAllWithMatchingNames,
     handleUserDataWithPosts,
-    handlePasswordChange,
     handleUpdateUserData,
+    handlePasswordChange,
     handleGetUserFields,
     handleGetUserData,
     handleEmailChange,
+    handleAddFriend,
     handleRegister,
     handleLogout,
     handleLogin,

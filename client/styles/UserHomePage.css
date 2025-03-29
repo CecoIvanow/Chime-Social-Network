@@ -238,6 +238,16 @@
     background-color: #3889be;
 }
 
+.unfriend-btn {
+    background-color: #949494;
+    width: 95px;
+}
+
+.unfriend-btn:hover {
+    background-color: #949494;
+    width: 95px;
+}
+
 .comment-btn{
     width: 105px;
 }
@@ -246,6 +256,7 @@
     text-decoration: none;
 
 }
+
 .unlike-btn {
     background-color: #949494;
 }
