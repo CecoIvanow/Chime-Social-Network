@@ -16,7 +16,7 @@ export default function CatalogPage() {
 
     const [totalPosts, setTotalPosts] = useState([]);
     const [totalUsers, setTotalUsers] = useState([]);
-    const [matchingUsers, setMetchingUsers] = useState([]);
+    const [matchingUsers, setMatchingUsers] = useState([]);
     const [matchingPosts, setMetchingPosts] = useState([]);
 
     useEffect(() => {
@@ -34,7 +34,21 @@ export default function CatalogPage() {
     }, [])
 
     useEffect(() => {
-        console.log(totalUsers);
+
+        if (userSearchParams === '') {
+            setMatchingUsers(totalUsers);
+        } else {
+            setMatchingUsers(
+                totalUsers.filter(user => {
+                    const matchByFirstName = user.firstName.toLowerCase().includes(userSearchParams.toLowerCase());
+                    const matchByLastName = user.lastName.toLowerCase().includes(userSearchParams.toLowerCase());
+                    
+                    if (matchByFirstName || matchByLastName) {
+                        return user;
+                    }
+                })
+            )
+        }
     }, [userSearchParams, totalUsers])
 
     useEffect(() => {
@@ -60,7 +74,7 @@ export default function CatalogPage() {
                 />
 
                 <UsersCatalog
-                    totalUsers={totalUsers}
+                    matchingUsers={matchingUsers}
                     setUserSearchParams={setUserSearchParams}
                 />
             </div>
