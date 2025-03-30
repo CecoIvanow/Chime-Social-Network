@@ -17,8 +17,8 @@ async function handleRegister(data, helpers = {}) {
     const { error, userId } = await api.post('/register', data);
 
     if (error) {
-        helpers.setAlert(error)
-        return
+        helpers.setAlert(error);
+        return;
     }
 
     helpers.setIsUser(userId);
@@ -28,8 +28,8 @@ async function handleLogin(data, helpers = {}) {
     const { error, userId } = await api.post('/login', data);
 
     if (error) {
-        helpers.setAlert(error)
-        return
+        helpers.setAlert(error);
+        return;
     }
 
     helpers.setIsUser(userId);
@@ -39,8 +39,13 @@ async function handleLogout(setIsUser) {
     setIsUser(false);
 }
 
-async function handleUserDataWithPosts(userId, abortSignal) {
-    const userData = await api.get(`/users/${userId}/with-posts`, { signal: abortSignal });
+async function handleUserDataWithPosts(userId, helpers = {}) {
+    const { error, userData } = await api.get(`/users/${userId}/with-posts`, { signal: helpers.abortSignal });
+
+    if (error) {
+        helpers.setAlert(error);
+        return;
+    }
 
     return userData;
 }
