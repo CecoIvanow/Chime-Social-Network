@@ -46,6 +46,9 @@ const userSchema = new Schema({
     createdAt: {
         type: Date,
     },
+    memberSince: {
+        type: String
+    },
     friends: [{
         type: Types.ObjectId,
         ref: 'User',

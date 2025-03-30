@@ -33,6 +33,7 @@ async function register(data) {
     // The line below offsets the time with 2+ hours as new Date() is 2 hours behind;
     const creationTime = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
     userData.createdAt = creationTime;
+    userData.memberSince = memberSinceDateConverter(creationTime);
 
     const newUser = await User.create(userData);
 
@@ -79,7 +80,6 @@ async function getUserAndPopulatePosts(userId) {
 
     user.memberSince = memberSinceDateConverter(user.createdAt);
     user.age = ageCalculator(user.birthday);
-    user.createdPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
 
     return user
 }
@@ -212,6 +212,10 @@ async function getFullProfileWithFriendsPosts(userId) {
                 }
             }
         })
+        .lean()
+
+    user.memberSince = memberSinceDateConverter(user.createdAt);
+    user.age = ageCalculator(user.birthday);
 
     return user;
 }
