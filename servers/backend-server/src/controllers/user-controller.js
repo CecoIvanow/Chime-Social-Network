@@ -1,5 +1,6 @@
-import { Router } from "express";
 import 'dotenv/config';
+
+import { Router } from "express";
 
 import userRepositories from "../repositories/user-repositories.js";
 

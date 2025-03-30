@@ -1,6 +1,6 @@
 import Post from "../models/Post.js";
+
 import { postedOnDateConverter } from "../utils/date-time-utils.js";
-import { escapeRegex } from "../utils/regex-utils.js";
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName imageUrl'
 

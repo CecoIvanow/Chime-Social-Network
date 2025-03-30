@@ -3,8 +3,7 @@ import bcrypt from 'bcrypt';
 import User from "../models/User.js";
 import { userTokenCreation } from '../utils/token-utils.js';
 import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-utils.js';
-import { escapeRegex } from '../utils/regex-utils.js';
-import { ageCalculator, memberSinceDateConverter, postedOnDateConverter } from '../utils/date-time-utils.js';
+import { ageCalculator, memberSinceDateConverter } from '../utils/date-time-utils.js';
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName createdPosts createdAt imageUrl friends'
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 13;
