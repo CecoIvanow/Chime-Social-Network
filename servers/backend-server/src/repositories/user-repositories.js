@@ -11,11 +11,8 @@ const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 13;
 async function register(data) {
     const userData = data;
 
-    for (const data in userData) {
-        if (!userData[data]) {
-            throw new Error(`Empty field found!`);
-        }
-    }
+    const userInstance = new User(userData);
+    await userInstance.validate(userData);
 
     if (userData.password !== userData.rePass) {
         throw new Error("Passwords do not match!");
