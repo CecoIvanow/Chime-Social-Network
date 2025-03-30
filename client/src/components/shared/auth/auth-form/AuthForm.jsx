@@ -21,6 +21,7 @@ export default function AuthForm({
                 name={inputName}
                 defaultValue={value}
                 onChange={onValueChangeHandler}
+                required
             />
         </div>
     </>
