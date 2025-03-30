@@ -8,7 +8,7 @@ export default function AlertNotification() {
         if (alert) {
             setTimeout(() => {
                 setAlert(false);
-            }, 2000)
+            }, 5000)
         }
     }, [alert, setAlert])
 
