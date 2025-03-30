@@ -13,8 +13,8 @@ userController.post('/register', async (req, res) => {
     try {
         const [token, userId] = await userRepositories.register(bodyData);
 
-        res.cookie(COOKIE_AUTH_NAME, token, { httpOnly: false });
         res.json(userId);
+        res.end();
     } catch (error) {
         console.error(error);
     }
@@ -25,15 +25,15 @@ userController.post('/login', async (req, res) => {
 
     try {
         const [token, userId] = await userRepositories.login(bodyData);
-        res.cookie(COOKIE_AUTH_NAME, token, { httpOnly: false });
+
         res.json(userId);
+        res.end();;
     } catch (error) {
         console.error(error);
     }
 })
 
 userController.get('/logout', (req, res) => {
-    res.clearCookie(COOKIE_AUTH_NAME);
     res.end();
 })
 
