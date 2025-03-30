@@ -23,6 +23,7 @@ import PostDetailsPage from './components/pages/post-details-page/PostDetailsPag
 import ProfileEditPage from './components/pages/profile-edit-page/ProfileEditPage.jsx';
 import usePersistedState from './hooks/usePersistedState.js';
 import PostEditRedirect from './components/pages/post-edit-redirect/PostEditRedirect.jsx';
+import AlertNotification from './components/ui/alert-notification/AlertNotification.jsx';
 
 export default function App() {
     const [isUser, setIsUser] = usePersistedState(false);
@@ -35,6 +36,8 @@ export default function App() {
             {(isUser || (!isUser && location.pathname !== '/')) && (
                 <MenuBar />
             )}
+
+            <AlertNotification />
 
             <Routes>
                 {/* State dependent pages */}
