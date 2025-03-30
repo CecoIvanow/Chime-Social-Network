@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import postServices from "../../../services/post-services";
 import userServices from "../../../services/user-services";
@@ -7,6 +7,7 @@ import { TotalPostsContext } from "../../../contexts/total-posts-context";
 
 import PostsCatalog from "./posts-catalog/PostsCatalog";
 import UsersCatalog from "./users-catalog/UsersCatalog";
+import { AlertContext } from "../../../contexts/alert-context";
 
 
 export default function CatalogPage() {
@@ -19,12 +20,14 @@ export default function CatalogPage() {
     const [matchingUsers, setMatchingUsers] = useState([]);
     const [matchingPosts, setMatchingPosts] = useState([]);
 
+    const { setAlert } = useContext(AlertContext);
+
     useEffect(() => {
         const abortController = new AbortController();
 
         const abortSignal = abortController.signal;
 
-        userServices.handleGetAll(abortSignal)
+        userServices.handleGetAll({ abortSignal, setAlert })
             .then(data => setTotalUsers(data))
             .catch(error => console.error(error.message))
 
@@ -35,7 +38,7 @@ export default function CatalogPage() {
         return () => {
             abortController.abort();
         }
-    }, [])
+    }, [setAlert]);
 
     useEffect(() => {
         if (userSearchParams === '') {

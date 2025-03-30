@@ -50,12 +50,17 @@ async function handleUserDataWithPosts(userId, helpers = {}) {
     return userData;
 }
 
-async function handleGetAll(abortSignal) {
-    const matchedUsers = await api.get('/users', { signal: abortSignal });
+async function handleGetAll(helpers = {}) {
+    const { error, users } = await api.get('/users', { signal: helpers.abortSignal });
 
-    matchedUsers.reverse()
+    if (error) {
+        helpers.setAlert(error);
+        return;
+    }
 
-    return matchedUsers;
+    users.reverse()
+
+    return users;
 }
 
 async function handleUpdateUserData(userId, payload) {
