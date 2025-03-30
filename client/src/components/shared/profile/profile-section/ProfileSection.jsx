@@ -26,15 +26,14 @@ export default function ProfileSection({
     return <>
         <div className="profile-info-section">
             <div className="profile-header">
-                <img src={userData.imageUrl} className="profile-avatar" alt="Profile picture" />
+                <img src={userData?.imageUrl} className="profile-avatar" alt="Profile picture" />
                 <div className="profile-info">
-                    <h2>{(userData.firstName)} {(userData.lastName)}</h2>
+                    <h2>{(userData?.firstName)} {(userData?.lastName)}</h2>
 
-                    {profileLabels.map(label =>
+                    {profileLabels?.map(label =>
                         <ProfileInfoLabel
                             key={label.labelText}
-                            labelKey={label.labelKey}
-                            labelText={label.labelText}
+                            label={label}
                             userData={userData}
                         />
                     )}

@@ -21,13 +21,13 @@ export default function PostsSection({
                 sectionName={sectionHeadingName}
             />
 
-            {(isUser && isUser === userData._id) && (
+            {(isUser && isUser === userData?._id) && (
                 <PostCreateForm
                     userData={userData}
                 />
             )}
 
-            {totalPosts.map(post =>
+            {totalPosts?.map(post =>
                 <PostItem
                     key={post._id}
                     post={post}

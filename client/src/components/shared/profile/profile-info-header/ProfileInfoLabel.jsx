@@ -1,9 +1,12 @@
 export default function ProfileInfoLabel({
-    labelText,
-    userData,
-    labelKey,
+    label = {},
+    userData = {},
 }) {
     return <>
-        <p><span className="info-label">{labelText}</span> {userData[labelKey] ? userData[labelKey] : 'N\\A'}</p>
+        <p><span
+            className="info-label">
+            {label.labelText}
+        </span>
+            {userData[label.labelKey] ? userData[label.labelKey] : 'N\\A'}</p>
     </>
 }
