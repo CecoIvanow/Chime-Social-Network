@@ -26,8 +26,6 @@ async function handleLogin(data, setIsUser) {
 }
 
 async function handleLogout(setIsUser) {
-    await api.get('/logout');
-
     setIsUser(false);
 }
 
