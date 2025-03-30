@@ -14,10 +14,11 @@ userController.post('/register', async (req, res) => {
     try {
         const [token, userId] = await userRepositories.register(bodyData);
 
-        res.json(userId);
+        res.json({ userId });
         res.end();
     } catch (error) {
-        console.error(error);
+        res.json({ error: error.message });
+        res.end();
     }
 })
 
@@ -40,10 +41,10 @@ userController.get('/logout', (req, res) => {
 
 userController.get('/users/:userId/with-posts', async (req, res) => {
     const userId = req.params.userId;
-    
+
     try {
         const userData = await userRepositories.getUserAndPopulatePosts(userId);
-        
+
         res.json(userData);
         res.end()
     } catch (error) {
@@ -97,7 +98,7 @@ userController.patch('/users/:userId/friends', async (req, res) => {
 })
 
 userController.delete('/users/:userId/friends/:friendId', async (req, res) => {
-    const {userId, friendId} = req.params;
+    const { userId, friendId } = req.params;
 
     try {
         Promise.all([
