@@ -16,7 +16,7 @@ export default function AlertNotification() {
         <div className="error-notification">
             <div className="error-icon"></div>
             <div className="error-content">
-                <p>Incorrect password. Please try again.</p>
+                <p>{alert}</p>
             </div>
         </div>
     </>
