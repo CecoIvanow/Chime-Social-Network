@@ -14,20 +14,25 @@ async function handleRegister(data, helpers = {}) {
 
     data.imageUrl = defaultAvatarUrl;
 
-    const resp = await api.post('/register', data);
+    const { error, userId } = await api.post('/register', data);
 
-    if (resp.error) {
-        helpers.setAlert(resp.error)
+    if (error) {
+        helpers.setAlert(error)
         return
     }
 
-    helpers.setIsUser(resp.userId);
+    helpers.setIsUser(userId);
 }
 
-async function handleLogin(data, setIsUser) {
-    const userId = await api.post('/login', data);
+async function handleLogin(data, helpers = {}) {
+    const { error, userId } = await api.post('/login', data);
 
-    setIsUser(userId);
+    if (error) {
+        helpers.setAlert(error)
+        return
+    }
+
+    helpers.setIsUser(userId);
 }
 
 async function handleLogout(setIsUser) {
