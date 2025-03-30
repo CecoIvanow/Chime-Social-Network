@@ -8,15 +8,20 @@ const userUpdatePayload = {
     newValues: {},
 }
 
-async function handleRegister(data, setIsUser) {
+async function handleRegister(data, helpers = {}) {
     const defaultAvatarRef = ref(storage, '/images/default/default-profile-avatar.png');
     const defaultAvatarUrl = await getDownloadURL(defaultAvatarRef);
 
     data.imageUrl = defaultAvatarUrl;
 
-    const userId = await api.post('/register', data);
+    const resp = await api.post('/register', data);
 
-    setIsUser(userId);
+    if (resp.error) {
+        helpers.setAlert(resp.error)
+        return
+    }
+
+    helpers.setIsUser(resp.userId);
 }
 
 async function handleLogin(data, setIsUser) {
