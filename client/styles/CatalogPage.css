@@ -29,7 +29,7 @@ body {
     border-radius: 15px;
     padding: 25px;
     height: fit-content;
-    height: 539px;
+    height: 83.5658914729vh;
     overflow-y: scroll;
     scrollbar-width: none;
 }
@@ -42,8 +42,9 @@ body {
     border-radius: 15px;
     padding: 25px;
     height: fit-content;
-    height: 539px;
+    height: 83.5658914729vh;
     overflow-y: scroll;
+    scrollbar-width: none;
 }
 
 .section-heading {
