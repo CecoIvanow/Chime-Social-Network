@@ -9,11 +9,15 @@ commentController.post('/comments', async (req, res) => {
     const commentData = req.body;
 
     try {
-        const { newComment } = await commentRepositories.create(commentData);
+        const result = await commentRepositories.create(commentData);
 
-        await postRepositories.attachCommentToPost(commentData.onPost, newComment._id);
+        if (!result?.newComment._id) {
+            return res.end();
+        }
 
-        res.json({ newComment });
+        await postRepositories.attachCommentToPost(commentData.onPost, result.newComment._id);
+
+        res.json({ newComment: result.newComment });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
