@@ -8,6 +8,7 @@ import EditControls from "../../../shared/controls/edit-controls/EditControls";
 
 import { PostContext } from "../../../../contexts/post-context";
 import { UserContext } from "../../../../contexts/user-context";
+import { AlertContext } from "../../../../contexts/alert-context";
 
 export default function CommentItem({
     comment,
@@ -17,6 +18,7 @@ export default function CommentItem({
 
     const { post, setPost } = useContext(PostContext);
     const { isUser } = useContext(UserContext);
+    const { setAlert } = useContext(AlertContext);
 
     const onDeleteCommentClickHandler = async () => {
         const isConfirmed = confirm('Are you sure you want to delete this comment?');
@@ -25,10 +27,14 @@ export default function CommentItem({
             return;
         }
 
-        const removedCommentId = await commentServices.handleDelete(comment._id);
+        try {
+            const removedCommentId = await commentServices.handleDelete(comment._id);
 
-        post.comments = post.comments.filter(comment => comment._id !== removedCommentId);
-        setPost({ ...post });
+            post.comments = post.comments.filter(comment => comment._id !== removedCommentId);
+            setPost({ ...post });
+        } catch (error) {
+            setAlert(error.message)
+        }
     }
 
     const onEditCommentClickHandler = async () => {
@@ -41,9 +47,13 @@ export default function CommentItem({
 
     const onSaveEditHandler = async () => {
 
-        await commentServices.handleUpdate(comment._id, commentText);
+        try {
+            await commentServices.handleUpdate(comment._id, commentText);
+            setIsEditClicked(false);
+        } catch (error) {
+            setAlert(error.message);
+        }
 
-        setIsEditClicked(false);
     }
 
     const onCancelEditHandler = () => {

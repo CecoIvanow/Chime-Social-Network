@@ -2,19 +2,31 @@
 import api from '../utils/api.js';
 
 async function handleCreate(payLoad) {
-    const newComment = await api.post('/comments', payLoad);
+    const resp = await api.post('/comments', payLoad);
 
-    return newComment;
+    if (resp.error) {
+        throw new Error(resp.message);
+    };
+
+    return resp.newComment;
 }
 
 async function handleUpdate(commentId, payLoad) {
-    await api.patch(`/comments/${commentId}`, { text: payLoad });
+    const resp = await api.patch(`/comments/${commentId}`, { text: payLoad });
+
+    if (resp?.error) {
+        throw new Error(resp.message);
+    };
 }
 
 async function handleDelete(commentId) {
-    const removedId = await api.delete(`/comments/${commentId}`);
+    const resp = await api.delete(`/comments/${commentId}`);
 
-    return removedId;
+    if (resp.error) {
+        throw new Error(resp.message);
+    };
+
+    return resp.removedId;
 }
 
 const commentServices = {
