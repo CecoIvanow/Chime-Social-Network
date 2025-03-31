@@ -3,8 +3,7 @@ import bcrypt from 'bcrypt';
 import User from "../models/User.js";
 import { userTokenCreation } from '../utils/token-utils.js';
 import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-utils.js';
-import { escapeRegex } from '../utils/regex-utils.js';
-import { ageCalculator, memberSinceDateConverter, postedOnDateConverter } from '../utils/date-time-utils.js';
+import { ageCalculator, memberSinceDateConverter } from '../utils/date-time-utils.js';
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName createdPosts createdAt imageUrl friends'
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 13;
@@ -12,11 +11,8 @@ const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 13;
 async function register(data) {
     const userData = data;
 
-    for (const data in userData) {
-        if (!userData[data]) {
-            throw new Error(`Empty field found!`);
-        }
-    }
+    const userInstance = new User(userData);
+    await userInstance.validate(userData);
 
     if (userData.password !== userData.rePass) {
         throw new Error("Passwords do not match!");
@@ -33,6 +29,7 @@ async function register(data) {
     // The line below offsets the time with 2+ hours as new Date() is 2 hours behind;
     const creationTime = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
     userData.createdAt = creationTime;
+    userData.memberSince = memberSinceDateConverter(creationTime);
 
     const newUser = await User.create(userData);
 
@@ -79,7 +76,6 @@ async function getUserAndPopulatePosts(userId) {
 
     user.memberSince = memberSinceDateConverter(user.createdAt);
     user.age = ageCalculator(user.birthday);
-    user.createdPosts.map(post => post.postedOn = postedOnDateConverter(post.createdAt));
 
     return user
 }
@@ -99,25 +95,6 @@ async function attachPostToUser(ownerId, postId) {
     user.createdPosts.push(postId);
 
     await user.save();
-}
-
-async function getAllWithMatchingNames(filter) {
-    const escapedFilter = escapeRegex(filter);
-
-    const nameRegex = new RegExp(escapedFilter, 'i');
-
-    const matchedUsers = await User
-        .find({})
-        .or([
-            { firstName: nameRegex },
-            { lastName: nameRegex },
-        ])
-        .select(COMMONLY_NEEDED_PARAMS)
-        .lean();
-
-    matchedUsers.map(user => user.memberSince = memberSinceDateConverter(user.createdAt))
-
-    return matchedUsers;
 }
 
 async function getUserFields(userId, params) {
@@ -231,15 +208,29 @@ async function getFullProfileWithFriendsPosts(userId) {
                 }
             }
         })
+        .lean()
+
+    user.memberSince = memberSinceDateConverter(user.createdAt);
+    user.age = ageCalculator(user.birthday);
 
     return user;
+}
+
+async function getAll() {
+    const users = await User
+        .find({})
+        .select('firstName lastName imageUrl createdPosts createdAt friends')
+        .lean();
+
+    users.map(user => user.memberSince = memberSinceDateConverter(user.createdAt))
+
+    return users;
 }
 
 const userRepositories = {
     getFullProfileWithFriendsPosts,
     changeAccountCredentials,
     getUserAndPopulatePosts,
-    getAllWithMatchingNames,
     attachPostToUser,
     updateUserData,
     getUserFields,
@@ -248,6 +239,7 @@ const userRepositories = {
     removePost,
     addFriend,
     register,
+    getAll,
     login,
 }
 

@@ -6,8 +6,8 @@ async function handlePostCreate(postData) {
     return newPost;
 }
 
-async function handleGetAllByContentWithOwners(searchParam, abortSignal) {
-    const matchedPosts = await api.get(`/posts/search?content=${searchParam}`, { signal: abortSignal });
+async function handleGetAll(abortSignal) {
+    const matchedPosts = await api.get(`/posts`, { signal: abortSignal });
 
     matchedPosts.reverse()
 
@@ -42,17 +42,17 @@ async function handleGetPostData(postId, abortSignal) {
     return postData;
 }
 
-async function handlePostUpdate(postId, newText) {    
-    await api.patch(`/posts/${postId}`, {text: newText});
+async function handlePostUpdate(postId, newText) {
+    await api.patch(`/posts/${postId}`, { text: newText });
 }
 
 const postServices = {
-    handleGetAllByContentWithOwners,
     handleGetPostDataWithComments,
     handleGetPostData,
     handlePostCreate,
     handlePostUpdate,
     handleDelete,
+    handleGetAll,
     handleUnlike,
     handleLike,
 }

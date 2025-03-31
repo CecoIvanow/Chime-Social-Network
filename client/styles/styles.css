@@ -9,3 +9,5 @@
 @import './PostEditPage.css';
 @import './PostDetailsPage.css';
 @import './ProfileEditPage.css';
+@import './AlertNotification.css';
+@import './ErrorMessage.css';

@@ -7,21 +7,23 @@ import { UserContext } from "../../../contexts/user-context";
 import AuthButton from "../../shared/auth/auth-button/AuthButton";
 import AuthForm from "../../shared/auth/auth-form/AuthForm";
 import AuthNavLink from "../../shared/auth/auth-nav-link/AuthNavLink";
+import { AlertContext } from "../../../contexts/alert-context";
 
 export default function LoginPage() {
     const loginFields = [
         { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
         { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' }
     ]
-    
+
     const { setIsUser } = useContext(UserContext);
-    
+    const { setAlert } = useContext(AlertContext);
+
     const submitFormHandler = async (_, formData) => {
         const data = Object.fromEntries(formData);
-        
-        await userServices.handleLogin(data, setIsUser);
+
+        await userServices.handleLogin(data, { setIsUser, setAlert });
     }
-    
+
     const [, action, isPending] = useActionState(submitFormHandler);
 
     return <>

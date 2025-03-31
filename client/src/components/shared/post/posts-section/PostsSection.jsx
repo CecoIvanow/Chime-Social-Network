@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
-import PostCreateForm from "../../../shared/post/post-create-form/PostCreateForm";
-import PostItem from "../../../shared/post/post-item/PostItem";
+import PostCreateForm from "../post-create-form/PostCreateForm";
+import PostItem from "../post-item/PostItem";
 import SectionHeading from '../../../ui/headings/SectionHeading'
 
 import { UserContext } from "../../../../contexts/user-context";
@@ -13,7 +13,7 @@ export default function PostsSection({
 }) {
     const { isUser } = useContext(UserContext)
     const { totalPosts } = useContext(TotalPostsContext);
-
+    
     return (
 
         <div className="posts-section">
@@ -21,11 +21,14 @@ export default function PostsSection({
                 sectionName={sectionHeadingName}
             />
 
-            {(isUser && isUser === userData._id) && (
-                <PostCreateForm />
+            {(isUser && isUser === userData?._id) && (
+                <PostCreateForm
+                    userData={userData}
+                />
             )}
 
-            {totalPosts.map(post => <PostItem
+            {totalPosts?.map(post =>
+                <PostItem
                     key={post._id}
                     post={post}
                 />

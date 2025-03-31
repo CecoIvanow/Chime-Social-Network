@@ -1,6 +1,6 @@
 import Post from "../models/Post.js";
+
 import { postedOnDateConverter } from "../utils/date-time-utils.js";
-import { escapeRegex } from "../utils/regex-utils.js";
 
 const COMMONLY_NEEDED_PARAMS = 'firstName lastName imageUrl'
 
@@ -52,14 +52,9 @@ async function create(postData) {
     return newPost;
 }
 
-async function getAllWithMatchingText(filter) {
-    const escapedFilter = escapeRegex(filter);
-
-    const textRegex = new RegExp(escapedFilter, 'i');
-
+async function getAll() {
     const matchedPosts = await Post
         .find({})
-        .where({ text: textRegex })
         .populate({
             path: 'owner',
             select: COMMONLY_NEEDED_PARAMS
@@ -115,7 +110,6 @@ async function update(postId, payload) {
 
 const postRepositories = {
     getSpecificWithComments,
-    getAllWithMatchingText,
     attachCommentToPost,
     removeComment,
     getSpecific,
@@ -124,6 +118,7 @@ const postRepositories = {
     create,
     remove,
     update,
+    getAll,
 }
 
 export default postRepositories;

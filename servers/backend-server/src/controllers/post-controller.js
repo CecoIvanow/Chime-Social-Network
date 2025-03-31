@@ -6,13 +6,11 @@ import commentRepositories from "../repositories/comment-repositories.js";
 
 const postController = Router();
 
-postController.get('/posts/search', async (req, res) => {
-    const { content } = req.query;
-
+postController.get('/posts', async (req, res) => {
     try {
-        const filteredPosts = await postRepositories.getAllWithMatchingText(content);
+        const data = await postRepositories.getAll();
 
-        res.json(filteredPosts);
+        res.json(data);
         res.end();
     } catch (error) {
         console.error(error);

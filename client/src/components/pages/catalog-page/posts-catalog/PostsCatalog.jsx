@@ -9,7 +9,7 @@ import SearchField from "../../../ui/search-field/SearchField"
 export default function PostsCatalog({
     setPostSearchParams,
 }) {
-    const { totalPosts } = useContext(TotalPostsContext);
+    const { matchingPosts } = useContext(TotalPostsContext);
 
     return <>
         <div className="posts-catalog">
@@ -20,10 +20,10 @@ export default function PostsCatalog({
 
             <SearchField
                 setSearchParams={setPostSearchParams}
-                searchBy={'text'}
+                searchBy={'content'}
             />
 
-            {totalPosts?.map(post =>
+            {matchingPosts?.map(post =>
                 <PostItem
                     key={post._id}
                     post={post}

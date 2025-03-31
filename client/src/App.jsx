@@ -1,5 +1,6 @@
 import '../styles/styles.css'
 
+import { useState } from 'react';
 import {
     Routes,
     Route,
@@ -7,6 +8,7 @@ import {
     Navigate
 } from 'react-router';
 
+import { AlertContext } from './contexts/alert-context.js';
 import { UserContext } from './contexts/user-context.js';
 
 import MenuBar from './components/layout/menu-bar/MenuBar.jsx';
@@ -23,39 +25,50 @@ import PostDetailsPage from './components/pages/post-details-page/PostDetailsPag
 import ProfileEditPage from './components/pages/profile-edit-page/ProfileEditPage.jsx';
 import usePersistedState from './hooks/usePersistedState.js';
 import PostEditRedirect from './components/pages/post-edit-redirect/PostEditRedirect.jsx';
+import AlertNotification from './components/ui/alert-notification/AlertNotification.jsx';
+import ErrorBoundary from './components/layout/error-boundary/ErrorBoundary.jsx';
 
 export default function App() {
     const [isUser, setIsUser] = usePersistedState(false);
+    const [alert, setAlert] = useState(false);
 
     const location = useLocation();
 
     return (
-        <UserContext.Provider value={{ isUser, setIsUser }}>
+        <ErrorBoundary>
+            <AlertContext.Provider value={{ alert, setAlert }}>
+                <UserContext.Provider value={{ isUser, setIsUser }}>
 
-            {(isUser || (!isUser && location.pathname !== '/')) && (
-                <MenuBar />
-            )}
+                    {(isUser || (!isUser && location.pathname !== '/')) && (
+                        <MenuBar />
+                    )}
 
-            <Routes>
-                {/* State dependent pages */}
-                <Route path='/' element={isUser ? <UserHomePage /> : <LandingPage />} />
+                    {alert && (
+                        <AlertNotification />
+                    )}
 
-                {/* User only pages */}
-                <Route path='/profile/:userId/edit' element={isUser ? <ProfileEditPage /> : <Navigate to="/login" />} />
-                <Route path='/post/:postId/edit' element={isUser ? <PostEditRedirect /> : <Navigate to="/login" />} />
-                <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
-                <Route path='/logout' element={isUser ? <Logout /> : <Navigate to="/" />} />
+                    <Routes>
+                        {/* State dependent pages */}
+                        <Route path='/' element={isUser ? <UserHomePage /> : <LandingPage />} />
 
-                {/* Guest only pages */}
-                <Route path='/register' element={!isUser ? <RegisterPage /> : <Navigate to="/" />} />
-                <Route path='/login' element={!isUser ? <LoginPage /> : <Navigate to="/" />} />
+                        {/* User only pages */}
+                        <Route path='/profile/:userId/edit' element={isUser ? <ProfileEditPage /> : <Navigate to="/login" />} />
+                        <Route path='/post/:postId/edit' element={isUser ? <PostEditRedirect /> : <Navigate to="/login" />} />
+                        <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
+                        <Route path='/logout' element={isUser ? <Logout /> : <Navigate to="/" />} />
 
-                {/* Public pages */}
-                <Route path='/post/:postId/details' element={<PostDetailsPage />} />
-                <Route path='/profile/:userId' element={<ProfilePage />} />
-                <Route path='/catalog' element={<CatalogPage />} />
-                <Route path='/*' element={<NotFoundPage />} />
-            </Routes>
-        </UserContext.Provider>
+                        {/* Guest only pages */}
+                        <Route path='/register' element={!isUser ? <RegisterPage /> : <Navigate to="/" />} />
+                        <Route path='/login' element={!isUser ? <LoginPage /> : <Navigate to="/" />} />
+
+                        {/* Public pages */}
+                        <Route path='/post/:postId/details' element={<PostDetailsPage />} />
+                        <Route path='/profile/:userId' element={<ProfilePage />} />
+                        <Route path='/catalog' element={<CatalogPage />} />
+                        <Route path='/*' element={<NotFoundPage />} />
+                    </Routes>
+                </UserContext.Provider>
+            </AlertContext.Provider>
+        </ErrorBoundary>
     )
 }

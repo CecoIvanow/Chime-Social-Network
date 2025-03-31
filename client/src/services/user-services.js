@@ -8,54 +8,82 @@ const userUpdatePayload = {
     newValues: {},
 }
 
-async function handleRegister(data, setIsUser) {
+async function handleRegister(data, helpers = {}) {
     const defaultAvatarRef = ref(storage, '/images/default/default-profile-avatar.png');
     const defaultAvatarUrl = await getDownloadURL(defaultAvatarRef);
 
     data.imageUrl = defaultAvatarUrl;
 
-    const userId = await api.post('/register', data);
+    const resp = await api.post('/register', data);
 
-    setIsUser(userId);
+    if (resp.error) {
+        helpers.setAlert(resp.error);
+        return;
+    }
+
+    helpers.setIsUser(resp.userId);
 }
 
-async function handleLogin(data, setIsUser) {
-    const userId = await api.post('/login', data);
+async function handleLogin(data, helpers = {}) {
+    const resp = await api.post('/login', data);
 
-    setIsUser(userId);
+    if (resp.error) {
+        helpers.setAlert(resp.error);
+        return;
+    }
+
+    helpers.setIsUser(resp.userId);
 }
 
 async function handleLogout(setIsUser) {
-    await api.get('/logout');
-
     setIsUser(false);
 }
 
-async function handleUserDataWithPosts(userId, abortSignal) {
-    const userData = await api.get(`/users/${userId}/with-posts`, { signal: abortSignal });
+async function handleUserDataWithPosts(userId, helpers = {}) {
+    const resp = await api.get(`/users/${userId}/with-posts`, { signal: helpers.abortSignal });
 
-    return userData;
+    if (resp.error) {
+        helpers.setAlert(resp.error);
+        return;
+    }
+
+    return resp.userData;
 }
 
-async function handleGetAllWithMatchingNames(searchParam, abortSignal) {
-    const matchedUsers = await api.get(`/users/search?name=${searchParam}`, { signal: abortSignal });
+async function handleGetAll(helpers = {}) {
+    const resp = await api.get('/users', { signal: helpers.abortSignal });
 
-    matchedUsers.reverse()
+    if (resp.error) {
+        helpers.setAlert(resp.error);
+        return;
+    }
 
-    return matchedUsers;
+    resp.users.reverse()
+
+    return resp.users;
 }
 
-async function handleUpdateUserData(userId, payload) {
-    await api.put(`/users/${userId}`, payload);
+async function handleUpdateUserData(userId, payload, helpers = {}) {
+    const resp = await api.put(`/users/${userId}`, payload);
+
+    if (resp?.error) {
+        helpers.setAlert(resp.error);
+        return;
+    }
 }
 
-async function handleGetUserFields(userId, fields, abortSignal) {
-    const userData = await api.get(`/users/${userId}/fields?${fields}`, { signal: abortSignal });
+async function handleGetUserFields(userId, fields, helpers = {}) {
+    const resp = await api.get(`/users/${userId}/fields?${fields}`, { signal: helpers.abortSignal });
 
-    return userData
+    if (resp.error) {
+        helpers.setAlert(resp.error);
+        return;
+    }
+
+    return resp.userData;
 }
 
-async function handleEmailChange(userId, submittedData) {
+async function handleEmailChange(userId, submittedData, helpers = {}) {
     const { newEmail, ...rest } = submittedData;
 
     userUpdatePayload.validationData = {
@@ -65,10 +93,15 @@ async function handleEmailChange(userId, submittedData) {
         email: newEmail
     };
 
-    await api.patch(`/users/${userId}/credentials`, userUpdatePayload);
+    const resp = await api.patch(`/users/${userId}/credentials`, userUpdatePayload);
+
+    if (resp?.error) {
+        helpers.setAlert(resp.error);
+        return;
+    }
 }
 
-async function handlePasswordChange(userId, submittedData) {
+async function handlePasswordChange(userId, submittedData, helpers = {}) {
     const { newPass, ...rest } = submittedData;
 
     userUpdatePayload.validationData = {
@@ -78,32 +111,56 @@ async function handlePasswordChange(userId, submittedData) {
         newPass
     };
 
-    await api.patch(`/users/${userId}/credentials`, userUpdatePayload);
+    const resp = await api.patch(`/users/${userId}/credentials`, userUpdatePayload);
+
+    if (resp?.error) {
+        helpers.setAlert(resp.error);
+        return;
+    }
 }
 
-async function handleGetUserData(userId, abortSignal) {
-    const user = await api.get(`/users/${userId}`, { signal: abortSignal });
+async function handleGetUserData(userId, helpers = {}) {
+    const resp = await api.get(`/users/${userId}`, { signal: helpers.abortSignal });
 
-    return user;
+    if (resp.error) {
+        helpers.setAlert(resp.error);
+        return;
+    }
+
+    return resp.userData;
 }
 
-async function handleAddFriend(userId, newFriendId) {
-    await api.patch(`/users/${userId}/friends`, { newFriendId });
+async function handleAddFriend(userId, newFriendId, helpers = {}) {
+    const resp = await api.patch(`/users/${userId}/friends`, { newFriendId });
+
+    if (resp?.error) {
+        helpers.setAlert(resp.error);
+        return;
+    }
 }
 
-async function handleUnfriend(userId, friendId) {
-    await api.delete(`/users/${userId}/friends/${friendId}`);
+async function handleUnfriend(userId, friendId, helpers = {}) {
+    const resp = await api.delete(`/users/${userId}/friends/${friendId}`);
+
+    if (resp?.error) {
+        helpers.setAlert(resp.error);
+        return;
+    }
 }
 
-async function handleGetUserWithFriendsAndPosts(userId, abortSignal) {
-    const data = await api.get(`/users/${userId}/full-profile`, { signal: abortSignal });
+async function handleGetUserWithFriendsAndPosts(userId, helpers = {}) {
+    const resp = await api.get(`/users/${userId}/full-profile`, { signal: helpers.abortSignal });
 
-    return data;
+    if (resp.error) {
+        helpers.setAlert(resp.error);
+        return;
+    }
+
+    return resp.userData;
 }
 
 const userServices = {
     handleGetUserWithFriendsAndPosts,
-    handleGetAllWithMatchingNames,
     handleUserDataWithPosts,
     handleUpdateUserData,
     handlePasswordChange,
@@ -113,6 +170,7 @@ const userServices = {
     handleAddFriend,
     handleUnfriend,
     handleRegister,
+    handleGetAll,
     handleLogout,
     handleLogin,
 }

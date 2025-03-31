@@ -3,18 +3,18 @@ import { useParams } from "react-router"
 
 import userServices from "../../../services/user-services";
 
-import PostItem from "../../shared/post/post-item/PostItem";
-import PostCreateForm from "../../shared/post/post-create-form/PostCreateForm";
-import SectionHeading from "../../ui/headings/SectionHeading";
 import ProfileSection from "../../shared/profile/profile-section/ProfileSection";
 
 import { UserContext } from "../../../contexts/user-context";
 import { TotalPostsContext } from "../../../contexts/total-posts-context";
+import PostsSection from "../../shared/post/posts-section/PostsSection";
+import { AlertContext } from "../../../contexts/alert-context";
 
 export default function ProfilePage() {
     const { userId } = useParams();
 
-    const { isUser } = useContext(UserContext)
+    const { isUser } = useContext(UserContext);
+    const { setAlert } = useContext(AlertContext);
 
     const [userData, setUserData] = useState({});
     const [totalPosts, setTotalPosts] = useState([]);
@@ -24,17 +24,17 @@ export default function ProfilePage() {
 
         const abortSignal = abortController.signal;
 
-        userServices.handleUserDataWithPosts(userId, abortSignal)
+        userServices.handleUserDataWithPosts(userId, { abortSignal, setAlert })
             .then(data => {
                 setUserData(data);
-                setTotalPosts(data.createdPosts.reverse());
+                setTotalPosts(data?.createdPosts.reverse());
             })
             .catch(error => console.error(error.message));
 
         return () => {
             abortController.abort();
         }
-    }, [userId])
+    }, [userId, setAlert])
 
     return (
         <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
@@ -43,30 +43,10 @@ export default function ProfilePage() {
                     userData={userData}
                 />
 
-                <div className="posts-section">
-                    <SectionHeading
-                        sectionName={isUser === userData._id ? 'My Posts:' : `${userData.firstName}'s Posts:`}
-                    />
-
-                    {(isUser && isUser === userData._id) && (
-                        <PostCreateForm />
-                    )}
-
-                    {totalPosts.map(post => {
-                        post.owner = {
-                            _id: userData._id,
-                            imageUrl: userData.imageUrl,
-                            lastName: userData.lastName,
-                            firstName: userData.firstName,
-                        };
-
-                        return <PostItem
-                            key={post._id}
-                            post={post}
-                        />
-                    })}
-
-                </div>
+                <PostsSection
+                    sectionHeadingName={isUser === userData?._id ? 'My Posts:' : `${userData?.firstName}'s Posts:`}
+                    userData={userData}
+                />
             </div>
         </TotalPostsContext.Provider>
     )

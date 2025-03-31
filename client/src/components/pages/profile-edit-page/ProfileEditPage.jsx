@@ -14,14 +14,16 @@ import ImageUpload from "./image-upload/ImageUpload"
 
 import { storage } from "../../../firebase/firebase-storage/config"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { AlertContext } from "../../../contexts/alert-context"
 
 export default function ProfileEditPage() {
     const [userData, setUserData] = useState({});
     const [imageUpload, setImageUpload] = useState(null);
 
-    const { userId: profileId } = useParams();
     const navigateTo = useNavigate();
+    const { userId: profileId } = useParams();
     const { isUser: currentUser } = useContext(UserContext)
+    const { setAlert } = useContext(AlertContext);
 
     const formProfileInputs = [
         { fieldName: 'First name', inputType: 'text', inputName: 'firstName', value: userData.firstName },
@@ -55,7 +57,7 @@ export default function ProfileEditPage() {
             data.imageUrl = await imageUploadToStorage();
         }
 
-        await userServices.handleUpdateUserData(profileId, data);
+        await userServices.handleUpdateUserData(profileId, data, { setAlert });
 
         navigateTo(`/profile/${profileId}`);
     }
