@@ -3,7 +3,7 @@ import SearchField from "../../../ui/search-field/SearchField";
 import SectionHeading from "../../../ui/headings/SectionHeading";
 
 export default function FriendsSection({
-    userFriends
+    userFriends = []
 }) {
     const friendsAmount = userFriends.length;
 

@@ -8,10 +8,11 @@ import { UserContext } from "../../../contexts/user-context";
 import FriendsSection from "./friends-section/FriendsSection";
 import PostsSection from "../../shared/post/posts-section/PostsSection";
 import ProfileSection from "../../shared/profile/profile-section/ProfileSection";
+import { AlertContext } from "../../../contexts/alert-context";
 
 export default function UserHomePage() {
     const { isUser } = useContext(UserContext)
-
+    const { setAlert } = useContext(AlertContext);
 
     const [userData, setUserData] = useState({});
     const [totalPosts, setTotalPosts] = useState([]);
@@ -22,15 +23,15 @@ export default function UserHomePage() {
 
         const abortSignal = abortController.signal;
 
-        userServices.handleGetUserWithFriendsAndPosts(isUser, abortSignal)
+        userServices.handleGetUserWithFriendsAndPosts(isUser, { abortSignal, setAlert })
             .then(userData => {
                 setUserData(userData);
-                setUserFriends(userData.friends);
+                setUserFriends(userData?.friends);
                 setTotalPosts(() => {
                     const posts = [];
 
-                    userData.friends.forEach(friend => friend.createdPosts.forEach(post => posts.push(post)));
-                    userData.createdPosts.forEach(post => posts.push(post));
+                    userData.friends?.forEach(friend => friend.createdPosts.forEach(post => posts.push(post)));
+                    userData.createdPosts?.forEach(post => posts.push(post));
                     posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
                     return posts
