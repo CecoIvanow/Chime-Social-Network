@@ -19,6 +19,8 @@ async function handleUpdate(commentId, payLoad) {
     if (resp?.error) {
         throw new Error(resp.error);
     };
+
+    return resp.commentText;
 }
 
 async function handleDelete(commentId) {

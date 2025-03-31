@@ -14,6 +14,7 @@ export default function CommentItem({
     comment,
 }) {
     const [isEditClicked, setIsEditClicked] = useState(false);
+    const [onEditCommentText, setOnEditCommentText] = useState('');
     const [commentText, setCommentText] = useState('');
 
     const { post, setPost } = useContext(PostContext);
@@ -42,27 +43,37 @@ export default function CommentItem({
     }
 
     const onTextChangeHandler = (e) => {
-        setCommentText(e.currentTarget.value);
+        setOnEditCommentText(e.currentTarget.value);
     }
 
     const onSaveEditHandler = async () => {
 
+        if (!commentText.trim()) {
+            return;
+        }
+
         try {
-            await commentServices.handleUpdate(comment._id, commentText);
-            setIsEditClicked(false);
+            const updatedCommentText = await commentServices.handleUpdate(comment._id, onEditCommentText);
+
+            if (updatedCommentText) {
+                setCommentText(updatedCommentText);
+                setOnEditCommentText(updatedCommentText);
+                setIsEditClicked(false);
+            }
+            
         } catch (error) {
             setAlert(error.message);
         }
-
     }
 
     const onCancelEditHandler = () => {
-        setCommentText(comment.text)
+        setOnEditCommentText(commentText);
         setIsEditClicked(false);
     }
 
     useEffect(() => {
         setCommentText(comment.text);
+        setOnEditCommentText(comment.text);
     }, [comment.text])
 
     return <>
@@ -77,7 +88,7 @@ export default function CommentItem({
 
             {isEditClicked ? (
                 <div className="edit-content">
-                    <textarea className="edit-textarea" value={commentText} onChange={onTextChangeHandler} placeholder="Edit your post content..."></textarea>
+                    <textarea className="edit-textarea" defaultValue={onEditCommentText} onChange={onTextChangeHandler} placeholder="Edit your post content..."></textarea>
                 </div>
             ) : (
                 <div className="comment-body">

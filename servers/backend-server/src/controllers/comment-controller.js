@@ -50,8 +50,9 @@ commentController.patch('/comments/:commentId', async (req, res) => {
     const payload = req.body;
 
     try {
-        await commentRepositories.update(commentId, payload);
+        const commentText = await commentRepositories.update(commentId, payload);
 
+        res.json({ commentText });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
