@@ -9,15 +9,16 @@ commentController.post('/comments', async (req, res) => {
     const commentData = req.body;
 
     try {
-        const newComment = await commentRepositories.create(commentData);
+        const { newComment } = await commentRepositories.create(commentData);
 
         await postRepositories.attachCommentToPost(commentData.onPost, newComment._id);
 
-        res.json(newComment);
-        res.end();
+        res.json({ newComment });
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
+    res.end();
 })
 
 commentController.delete('/comments/:commentId', async (req, res) => {
@@ -28,11 +29,12 @@ commentController.delete('/comments/:commentId', async (req, res) => {
 
         await postRepositories.removeComment(postId, commentId);
 
-        res.json(commentId);
-        res.end();
+        res.json({ commentId });
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
+    res.end();
 })
 
 commentController.patch('/comments/:commentId', async (req, res) => {
@@ -42,10 +44,11 @@ commentController.patch('/comments/:commentId', async (req, res) => {
     try {
         await commentRepositories.update(commentId, payload);
 
-        res.end();
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
+    res.end();
 })
 
 export default commentController;

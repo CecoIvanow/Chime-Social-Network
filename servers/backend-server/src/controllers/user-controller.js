@@ -77,7 +77,7 @@ userController.get('/users/:userId/full-profile', async (req, res) => {
         res.json({ userData })
     } catch (error) {
         console.error(error);
-        es.json({ error: error.message });
+        res.json({ error: error.message });
     }
     res.end();
 })
