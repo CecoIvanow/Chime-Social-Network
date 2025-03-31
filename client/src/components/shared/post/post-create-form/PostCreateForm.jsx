@@ -5,7 +5,7 @@ import postServices from "../../../../services/post-services";
 import { UserContext } from "../../../../contexts/user-context";
 import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 
-import CreateContent from "../../create-content/CreateContent";
+import CreateContent from "../../../ui/create-content/CreateContent";
 
 export default function PostCreateForm({
     userData
@@ -17,8 +17,9 @@ export default function PostCreateForm({
 
     const onPostSubmitHandler = async (formData) => {
         const postData = Object.fromEntries(formData);
+        postData.text = postData.text.trim();
 
-        if (!postData.text || postData.text === ' ') {
+        if (!postData.text) {
             return;
         }
 

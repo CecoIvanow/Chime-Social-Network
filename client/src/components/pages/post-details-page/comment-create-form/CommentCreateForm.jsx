@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 
-import CreateContent from "../../../shared/create-content/CreateContent";
+import CreateContent from "../../../ui/create-content/CreateContent";
 
 import { PostContext } from "../../../../contexts/post-context";
 import { UserContext } from "../../../../contexts/user-context";
