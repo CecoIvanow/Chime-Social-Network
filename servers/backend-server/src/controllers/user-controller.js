@@ -82,15 +82,11 @@ userController.get('/users/:userId/full-profile', async (req, res) => {
     res.end();
 })
 
-userController.patch('/users/:userId/friends', async (req, res) => {
-    const userId = req.params.userId;
-    const { newFriendId } = req.body;
+userController.patch('/users/:userId/friends/:friendId', async (req, res) => {
+    const { userId, friendId } = req.params;
 
     try {
-        Promise.all([
-            await userRepositories.addFriend(userId, newFriendId),
-            await userRepositories.addFriend(newFriendId, userId),
-        ])
+        await userRepositories.addFriend(userId, friendId);
 
     } catch (error) {
         console.error(error);
@@ -104,10 +100,7 @@ userController.delete('/users/:userId/friends/:friendId', async (req, res) => {
     const { userId, friendId } = req.params;
 
     try {
-        Promise.all([
-            await userRepositories.removeFriend(userId, friendId),
-            await userRepositories.removeFriend(friendId, userId),
-        ])
+        await userRepositories.removeFriend(userId, friendId);
 
     } catch (error) {
         console.error(error);
@@ -118,10 +111,8 @@ userController.delete('/users/:userId/friends/:friendId', async (req, res) => {
 })
 
 userController.get('/users/:userId/fields', async (req, res) => {
-    const userId = req.params.userId
-    const fields = Object.keys(req.query)
-        .at(0)
-        .split(',')
+    const userId = req.params.userId;
+    const fields = Object.keys(req.query).at(0).split(',');
 
     try {
         const userData = await userRepositories.getUserFields(userId, fields);
