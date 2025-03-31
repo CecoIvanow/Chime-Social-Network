@@ -8,39 +8,42 @@ const postController = Router();
 
 postController.get('/posts', async (req, res) => {
     try {
-        const data = await postRepositories.getAll();
+        const allPosts = await postRepositories.getAll();
 
-        res.json(data);
-        res.end();
+        res.json({ allPosts });
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message })
     }
+    res.end();
 })
 
-postController.get('/posts/:postId', async (req, res) => {
-    const postId = req.params.postId;
+// postController.get('/posts/:postId', async (req, res) => {
+//     const postId = req.params.postId;
 
-    try {
-        const postData = await postRepositories.getSpecific(postId);
+//     try {
+//         const postData = await postRepositories.getSpecific(postId);
 
-        res.json(postData);
-        res.end();
-    } catch (error) {
-        console.error(error)
-    }
-})
+//         res.json(postData);
+//         res.end();
+//     } catch (error) {
+//         console.error(error)
+//     }
+// })
 
 postController.patch('/posts/:postId', async (req, res) => {
     const postId = req.params.postId;
     const payload = req.body;
 
     try {
-        await postRepositories.update(postId, payload);
+        const postText = await postRepositories.update(postId, payload);
 
-        res.end();
+        res.json({ postText });
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
+    res.end();
 })
 
 postController.get('/posts/:postId/with-comments', async (req, res) => {
@@ -49,11 +52,12 @@ postController.get('/posts/:postId/with-comments', async (req, res) => {
     try {
         const postData = await postRepositories.getSpecificWithComments(postId);
 
-        res.json(postData);
-        res.end();
+        res.json({ postData });
     } catch (error) {
-        console.error(error)
+        console.error(error);
+        res.json({ error: error.message });
     }
+    res.end();
 })
 
 postController.post('/posts', async (req, res) => {
@@ -63,13 +67,18 @@ postController.post('/posts', async (req, res) => {
     try {
         const newPost = await postRepositories.create(postData);
 
+        if (!newPost?._id) {
+            return res.end();
+        }
+
         await userRepositories.attachPostToUser(ownerId, newPost._id);
 
-        res.json(newPost);
-        res.end();
+        res.json({ newPost });
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message })
     }
+    res.end();
 })
 
 postController.delete('/posts/:postId', async (req, res) => {
@@ -83,12 +92,12 @@ postController.delete('/posts/:postId', async (req, res) => {
             await commentRepositories.removeAllSharingPost(postId),
         ])
 
-        res.json(postId);
-        res.end();
+        res.json({ removedPostId: postId });
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
-
+    res.end();
 })
 
 postController.post('/posts/:postId/like/:userId', async (req, res) => {
@@ -97,10 +106,11 @@ postController.post('/posts/:postId/like/:userId', async (req, res) => {
 
     try {
         await postRepositories.addLike(postId, userId);
-        res.end();
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message })
     }
+    res.end();
 })
 
 postController.delete('/posts/:postId/like/:userId', async (req, res) => {
@@ -109,10 +119,11 @@ postController.delete('/posts/:postId/like/:userId', async (req, res) => {
 
     try {
         await postRepositories.removeLike(postId, userId);
-        res.end();
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
+    res.end();
 })
 
 export default postController;

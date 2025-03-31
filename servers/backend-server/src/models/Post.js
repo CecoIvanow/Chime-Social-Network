@@ -2,11 +2,13 @@ import { model, Schema, Types } from "mongoose";
 
 const postSchema = new Schema({
     text: {
-        type: String
+        type: String,
+        required: [true, 'Content is missing!'],
     },
     owner: {
         type: Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: [true, 'Owner id is missing!'],
     },
     createdAt: {
         type: Date,

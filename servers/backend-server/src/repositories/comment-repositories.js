@@ -17,9 +17,9 @@ async function create(commentData) {
     ])
 
     if (!ownerId) {
-        throw new Error("Could not create: Creator id is invalid or missing");
+        throw new Error("Could not create: Creator id is invalid or missing, please login again.");
     } else if (!parentPostId) {
-        throw new Error("Could not create: Parent post id is invalid or missing");
+        throw new Error("Could not create: Parent post id is invalid or missing, please login again.");
     } else if (!commentData.text) {
         return;
     }
@@ -41,7 +41,7 @@ async function removeSpecific(commentId) {
     const removedComment = await Comment.findByIdAndDelete(commentId);
 
     if (!removedComment) {
-        throw new Error("Could not remove: Comment is invalid or missing!");
+        throw new Error(`Comment with ID ${commentId} not found or already deleted.`);
     }
 
     return removedComment.onPost;
@@ -49,7 +49,7 @@ async function removeSpecific(commentId) {
 
 async function removeAllSharingPost(postId) {
     if (!postId) {
-        throw new Error("Parent post id is missing!");
+        throw new Error("Parent post ID missing!");
     }
 
     //Pretty scary stuff over here, deleting so many documents
