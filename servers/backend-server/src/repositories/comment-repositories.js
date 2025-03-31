@@ -17,9 +17,9 @@ async function create(commentData) {
     ])
 
     if (!ownerId) {
-        throw new Error("Could not create comment: Creator id is invalid or missing");
+        throw new Error("Could not create: Creator id is invalid or missing");
     } else if (!parentPostId) {
-        throw new Error("Could not create comment: Parent post id is invalid or missing");
+        throw new Error("Could not create: Parent post id is invalid or missing");
     } else if (!commentData.text) {
         return;
     }
@@ -39,6 +39,10 @@ async function create(commentData) {
 
 async function removeSpecific(commentId) {
     const removedComment = await Comment.findByIdAndDelete(commentId);
+
+    if (!removedComment) {
+        throw new Error("Could not remove: Comment is invalid or missing!");
+    }
 
     return removedComment.onPost;
 }

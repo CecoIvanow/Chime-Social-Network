@@ -31,9 +31,13 @@ commentController.delete('/comments/:commentId', async (req, res) => {
     try {
         const parentPostId = await commentRepositories.removeSpecific(commentId);
 
+        if (!parentPostId) {
+            return res.end();
+        }
+
         await postRepositories.removeComment(parentPostId, commentId);
 
-        res.json({ commentId });
+        res.json({ removedId: commentId });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
