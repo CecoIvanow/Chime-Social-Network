@@ -11,28 +11,38 @@ commentController.post('/comments', async (req, res) => {
     try {
         const newComment = await commentRepositories.create(commentData);
 
+        if (!newComment?._id) {
+            return res.end();
+        }
+
         await postRepositories.attachCommentToPost(commentData.onPost, newComment._id);
 
-        res.json(newComment);
-        res.end();
+        res.json({ newComment });
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
+    res.end();
 })
 
 commentController.delete('/comments/:commentId', async (req, res) => {
     const commentId = req.params.commentId;
 
     try {
-        const postId = await commentRepositories.removeSpecific(commentId);
+        const parentPostId = await commentRepositories.removeSpecific(commentId);
 
-        await postRepositories.removeComment(postId, commentId);
+        if (!parentPostId) {
+            return res.end();
+        }
 
-        res.json(commentId);
-        res.end();
+        await postRepositories.removeComment(parentPostId, commentId);
+
+        res.json({ removedId: commentId });
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
+    res.end();
 })
 
 commentController.patch('/comments/:commentId', async (req, res) => {
@@ -40,12 +50,14 @@ commentController.patch('/comments/:commentId', async (req, res) => {
     const payload = req.body;
 
     try {
-        await commentRepositories.update(commentId, payload);
+        const commentText = await commentRepositories.update(commentId, payload);
 
-        res.end();
+        res.json({ commentText });
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
+    res.end();
 })
 
 export default commentController;

@@ -23,7 +23,7 @@ export default function UserHomePage() {
 
         const abortSignal = abortController.signal;
 
-        userServices.handleGetUserWithFriendsAndPosts(isUser, { abortSignal, setAlert })
+        userServices.handleGetFullUserProfile(isUser, { abortSignal, setAlert })
             .then(userData => {
                 setUserData(userData);
                 setUserFriends(userData?.friends);
@@ -37,12 +37,15 @@ export default function UserHomePage() {
                     return posts
                 })
             })
-            .catch(error => console.error(error.message));
+            .catch(error => {
+                console.error(error);
+                setAlert(error.message);
+            });
 
         return () => {
             abortController.abort();
         }
-    }, [isUser])
+    }, [isUser, setAlert])
 
     return <>
         <div className='user-home-page'>

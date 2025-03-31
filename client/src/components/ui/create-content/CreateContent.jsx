@@ -1,6 +1,6 @@
-import Button from "../../ui/buttons/button/Button";
+import Button from "../buttons/button/Button";
 
-export default function CreateEntry({
+export default function CreateContent({
     onTextChangeHandler,
     onSubmitHandler,
     placeholderText,
@@ -16,7 +16,7 @@ export default function CreateEntry({
                         type="text"
                         name="text"
                         id="entry"
-                        value={text}
+                        defaultValue={text}
                         onChange={onTextChangeHandler}
                         placeholder={placeholderText || "Share your thoughts..."}
                     />

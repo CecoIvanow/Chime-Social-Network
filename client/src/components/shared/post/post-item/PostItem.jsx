@@ -11,6 +11,7 @@ import LinkButton from "../../../ui/buttons/link-button/LinkButton";
 import PostInteractionButtons from "../post-interaction-buttons/PostInteractionButtons";
 import PostInteractions from "./post-interactions/PostInteractions";
 import PostHeader from "../post-header/PostHeader";
+import { AlertContext } from "../../../../contexts/alert-context";
 
 export default function PostItem({
     post,
@@ -18,6 +19,7 @@ export default function PostItem({
     const [isLiked, setIsLiked] = useState(false);
 
     const { totalPosts, setTotalPosts } = useContext(TotalPostsContext);
+    const { setAlert } = useContext(AlertContext);
     const { isUser } = useContext(UserContext);
 
     useEffect(() => {
@@ -37,21 +39,36 @@ export default function PostItem({
             return totalPosts; // Returns totalPosts unnecessarily because otherwise eslint marks it as not used!
         }
 
-        const deletedPostId = await postServices.handleDelete(post._id);
+        try {
+            const deletedPostId = await postServices.handleDelete(post._id);
 
-        setTotalPosts(totalPosts => totalPosts.filter(post => post._id !== deletedPostId))
+            setTotalPosts(totalPosts => totalPosts.filter(post => post._id !== deletedPostId))
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+        }
     }
 
     const onLikePostClickHandler = async () => {
-        await postServices.handleLike(isUser, post._id);
-        post.likes.push(isUser);
-        setIsLiked(true);
+        try {
+            await postServices.handleLike(isUser, post._id);
+            post.likes.push(isUser);
+            setIsLiked(true);
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+        }
     }
 
     const onUnlikePostClockHandler = async () => {
-        await postServices.handleUnlike(isUser, post._id);
-        post.likes = post.likes.filter(userLike => userLike !== isUser);
-        setIsLiked(false);
+        try {
+            await postServices.handleUnlike(isUser, post._id);
+            post.likes = post.likes.filter(userLike => userLike !== isUser);
+            setIsLiked(false);
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+        }
     }
 
     return (

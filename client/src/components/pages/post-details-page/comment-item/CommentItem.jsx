@@ -8,15 +8,18 @@ import EditControls from "../../../shared/controls/edit-controls/EditControls";
 
 import { PostContext } from "../../../../contexts/post-context";
 import { UserContext } from "../../../../contexts/user-context";
+import { AlertContext } from "../../../../contexts/alert-context";
 
 export default function CommentItem({
     comment,
 }) {
     const [isEditClicked, setIsEditClicked] = useState(false);
+    const [onEditCommentText, setOnEditCommentText] = useState('');
     const [commentText, setCommentText] = useState('');
 
     const { post, setPost } = useContext(PostContext);
     const { isUser } = useContext(UserContext);
+    const { setAlert } = useContext(AlertContext);
 
     const onDeleteCommentClickHandler = async () => {
         const isConfirmed = confirm('Are you sure you want to delete this comment?');
@@ -25,10 +28,14 @@ export default function CommentItem({
             return;
         }
 
-        const removedCommentId = await commentServices.handleDelete(comment._id);
+        try {
+            const removedCommentId = await commentServices.handleDelete(comment._id);
 
-        post.comments = post.comments.filter(comment => comment._id !== removedCommentId);
-        setPost({ ...post });
+            post.comments = post.comments.filter(comment => comment._id !== removedCommentId);
+            setPost({ ...post });
+        } catch (error) {
+            setAlert(error.message)
+        }
     }
 
     const onEditCommentClickHandler = async () => {
@@ -36,23 +43,37 @@ export default function CommentItem({
     }
 
     const onTextChangeHandler = (e) => {
-        setCommentText(e.currentTarget.value);
+        setOnEditCommentText(e.currentTarget.value);
     }
 
     const onSaveEditHandler = async () => {
 
-        await commentServices.handleUpdate(comment._id, commentText);
+        if (!commentText.trim()) {
+            return;
+        }
 
-        setIsEditClicked(false);
+        try {
+            const updatedCommentText = await commentServices.handleUpdate(comment._id, onEditCommentText);
+
+            if (updatedCommentText) {
+                setCommentText(updatedCommentText);
+                setOnEditCommentText(updatedCommentText);
+                setIsEditClicked(false);
+            }
+            
+        } catch (error) {
+            setAlert(error.message);
+        }
     }
 
     const onCancelEditHandler = () => {
-        setCommentText(comment.text)
+        setOnEditCommentText(commentText);
         setIsEditClicked(false);
     }
 
     useEffect(() => {
         setCommentText(comment.text);
+        setOnEditCommentText(comment.text);
     }, [comment.text])
 
     return <>
@@ -67,7 +88,7 @@ export default function CommentItem({
 
             {isEditClicked ? (
                 <div className="edit-content">
-                    <textarea className="edit-textarea" value={commentText} onChange={onTextChangeHandler} placeholder="Edit your post content..."></textarea>
+                    <textarea className="edit-textarea" defaultValue={onEditCommentText} onChange={onTextChangeHandler} placeholder="Edit your post content..."></textarea>
                 </div>
             ) : (
                 <div className="comment-body">

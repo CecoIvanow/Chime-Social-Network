@@ -21,7 +21,12 @@ export default function LoginPage() {
     const submitFormHandler = async (_, formData) => {
         const data = Object.fromEntries(formData);
 
-        await userServices.handleLogin(data, { setIsUser, setAlert });
+        try {
+            await userServices.handleLogin(data, { setIsUser });
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+        }
     }
 
     const [, action, isPending] = useActionState(submitFormHandler);

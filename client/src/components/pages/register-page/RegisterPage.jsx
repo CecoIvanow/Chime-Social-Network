@@ -26,7 +26,12 @@ export default function RegisterPage() {
     const submitFormClickHandler = async (_, formData) => {
         const data = Object.fromEntries(formData);
 
-        await userServices.handleRegister(data, { setIsUser, setAlert });
+        try {
+            await userServices.handleRegister(data, { setIsUser });
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+        }
     }
 
     const [, action, isPending] = useActionState(submitFormClickHandler);

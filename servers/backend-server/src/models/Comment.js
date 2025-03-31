@@ -2,15 +2,18 @@ import { model, Schema, Types } from "mongoose";
 
 const commentSchema = new Schema({
     text: {
-        type: String
+        type: String,
+        required: [true, 'Content is missing']
     },
     onPost: {
         type: Types.ObjectId,
-        ref: 'Post'
+        ref: 'Post',
+        required: [true, 'Parent post id is missing!'],
     },
     owner: {
         type: Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: [true, 'Owner id is missing !'],
     },
     createdAt: {
         type: Date,

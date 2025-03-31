@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 
 import User from "../models/User.js";
+
 import { userTokenCreation } from '../utils/token-utils.js';
 import { emailMasking, passwordParamsRemover } from '../utils/data-sanitization-utils.js';
 import { ageCalculator, memberSinceDateConverter } from '../utils/date-time-utils.js';
@@ -74,6 +75,10 @@ async function getUserAndPopulatePosts(userId) {
         })
         .lean();
 
+    if (!user) {
+        throw new Error("We couldn't locate your account. Please log in again.");
+    }
+
     user.memberSince = memberSinceDateConverter(user.createdAt);
     user.age = ageCalculator(user.birthday);
 
@@ -86,11 +91,19 @@ async function getUserData(userId) {
         .select('-createdPosts -email -password -createdAt -friends')
         .lean();
 
+    if (!user) {
+        throw new Error("We couldn't locate your account. Please log in again.");
+    }
+
     return user;
 }
 
 async function attachPostToUser(ownerId, postId) {
     const user = await User.findById(ownerId);
+
+    if (!user) {
+        throw new Error("We couldn't locate your account. Please log in again.");
+    }
 
     user.createdPosts.push(postId);
 
@@ -98,15 +111,19 @@ async function attachPostToUser(ownerId, postId) {
 }
 
 async function getUserFields(userId, params) {
-    let newParams = params;
+    let searchParams = params;
 
     if (params.includes('password')) {
-        newParams = passwordParamsRemover(params);
+        searchParams = passwordParamsRemover(params);
     }
 
     const user = await User.findById(userId)
-        .select(newParams)
+        .select(searchParams)
         .lean()
+
+    if (!user) {
+        throw new Error("We couldn't locate your account. Please log in again.");
+    }
 
     if (user.email) {
         user.email = emailMasking(user.email);
@@ -116,74 +133,143 @@ async function getUserFields(userId, params) {
 }
 
 async function changeAccountCredentials(userId, data) {
-    const hasNewPassword = data.newValues.hasOwnProperty('newPass');
-    const isNewPasswordRepeatValid = (data.newValues.newPass === data.validationData.rePass);
-    const isOldPasswordRepeatValid = (data.validationData.curPass === data.validationData.rePass);
+    const rePass = data.validationData.rePass;
+    const newPass = data.newValues.newPass;
+    const curPass = data.validationData.curPass;
+    const curEmail = data.validationData.curEmail;
+    const newEmail = data.newValues.email;
+    const hasNewPassword = !!newPass;
+    const isNewPasswordRepeatValid = newPass === rePass;
+    const isOldPasswordRepeatValid = curPass === rePass;
 
-    if (hasNewPassword && !isNewPasswordRepeatValid) {
-        throw new Error('New Passwords do not match!');
-    } else if (!hasNewPassword && !isOldPasswordRepeatValid) {
-        throw new Error('Old Passwords do not match!');
+    if (!curEmail) {
+        throw new Error("Current email field must be entered!");
     }
 
-    let user = await User.findOne({ _id: userId, email: data.validationData.curEmail });
+    if (!hasNewPassword && !newEmail) {
+        throw new Error("New email field must be entered!");
+    }
+
+    if ((hasNewPassword && (!newPass || !rePass || !curPass)) ||
+        (!hasNewPassword && (!curPass || !rePass))) {
+        throw new Error('Password fields are missing values!');
+    }
+
+    if ((hasNewPassword && !isNewPasswordRepeatValid) ||
+        (!hasNewPassword && !isOldPasswordRepeatValid)) {
+        throw new Error('Repeat password does not match!');
+    }
+
+    let user = await User.findOne({ _id: userId, email: curEmail });
 
     if (!user) {
-        throw new Error('Invalid data!');
+        throw new Error('Invalid email!');
     }
 
-    const isPasswordValid = await bcrypt.compare(data.validationData.curPass, user.password);
+    const isPasswordValid = await bcrypt.compare(curPass, user.password);
 
     if (!isPasswordValid) {
-        throw new Error('Invalid data!')
+        throw new Error('Invalid password!')
     }
 
     if (data.newValues.hasOwnProperty('email')) {
         user.email = data.newValues.email;
 
     } else if (data.newValues.hasOwnProperty('newPass')) {
-        const newHashedPass = await bcrypt.hash(data.newValues.newPass, SALT_ROUNDS);
+        const newHashedPass = await bcrypt.hash(newPass, SALT_ROUNDS);
 
         user.password = newHashedPass;
 
     } else {
-        throw new Error('Invalid credentials to be changed!');
+        throw new Error('Invalid credentials!');
 
     }
 
-    await user.save();
+    // await user.save();
 }
 
 async function removePost(userId, postId) {
-    const user = await User.findById(userId);
+    const user = await User
+        .findById(userId)
+        .select('createdPosts');
+
+    if (!user) {
+        throw new Error("We couldn't locate your account. Please log in again.");
+    }
 
     user.createdPosts = user.createdPosts.filter(post => post.toString() !== postId);
 
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 }
 
 async function updateUserData(userId, data) {
-    await User.findByIdAndUpdate(userId, data);
+    if (!data.firstName) {
+        throw new Error("First name field must not be empty!");
+    } else if (!data.lastName) {
+        throw new Error("Last name field must not be empty!");
+    } else if (!data.birthday) {
+        throw new Error("Birthday field must not be empty!");
+    }
+
+    const user = await User.findByIdAndUpdate(userId, data);
+
+    if (!user) {
+        throw new Error("We couldn't locate your account. Please log in again.");
+    }
 }
 
 async function addFriend(userId, newFriendId) {
-    const user = await User.findById(userId);
+    const [user, friend] = await Promise.all([
+        User.findById(userId).select('friends'),
+        User.findById(newFriendId).select('friends'),
+    ])
 
-    if (user.friends.includes(newFriendId)) {
-        throw new Error("Already added as friends!");
+    if (!user) {
+        throw new Error("We couldn't locate your account. Please log in again.");
     }
 
-    user.friends.push(newFriendId);
+    if (!friend) {
+        throw new Error("We couldn't find the person you're trying to add. Please check if they exist and try again!");
+    }
 
-    await user.save();
+    if (user.friends.includes(newFriendId) || friend.friends.includes(userId)) {
+        throw new Error("Already added as friends!");
+    } else {
+        user.friends.push(newFriendId);
+        friend.friends.push(userId);
+    }
+
+    await Promise.all([
+        user.save({ validateBeforeSave: false }),
+        friend.save({ validateBeforeSave: false }),
+    ])
 }
 
 async function removeFriend(userId, friendId) {
-    const user = await User.findById(userId);
+    const [user, friend] = await Promise.all([
+        User.findById(userId).select('friends'),
+        User.findById(friendId).select('friends'),
+    ])
 
-    user.friends = user.friends.filter(friend => friend.toString() !== friendId);
+    if (!user) {
+        throw new Error("We couldn't locate your account. Please log in again.");
+    }
 
-    await user.save();
+    if (!friend) {
+        throw new Error("We couldn't find the person you're trying to add. Please check if they exist and try again!");
+    }
+
+    if (!user.friends.includes(friendId) || !friend.friends.includes(userId)) {
+        throw new Error("Already removed as friends!");
+    } else {
+        user.friends = user.friends.filter(friend => friend.toString() !== friendId);
+        friend.friends = friend.friends.filter(friend => friend.toString() !== userId);
+    }
+
+    await Promise.all([
+        user.save({ validateBeforeSave: false }),
+        friend.save({ validateBeforeSave: false }),
+    ])
 }
 
 async function getFullProfileWithFriendsPosts(userId) {
@@ -209,6 +295,10 @@ async function getFullProfileWithFriendsPosts(userId) {
             }
         })
         .lean()
+
+    if (!user) {
+        throw new Error("We couldn't locate your account. Please log in again.");
+    }
 
     user.memberSince = memberSinceDateConverter(user.createdAt);
     user.age = ageCalculator(user.birthday);

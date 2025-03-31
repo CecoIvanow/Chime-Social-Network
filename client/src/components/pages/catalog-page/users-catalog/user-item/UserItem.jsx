@@ -17,13 +17,23 @@ export default function UserItem({
     const [isAddedAsFriend, setIsAddedAsFriend] = useState(user.friends?.includes(isUser));
 
     const onAddFriendClickHandler = async () => {
-        await userServices.handleAddFriend(isUser, user._id, { setAlert });
-        setIsAddedAsFriend(true);
+        try {
+            await userServices.handleAddFriend(isUser, user._id, {});
+            setIsAddedAsFriend(true);
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+        }
     }
 
     const onUnfriendClickHandler = async () => {
-        await userServices.handleUnfriend(isUser, user._id, { setAlert });
-        setIsAddedAsFriend(false);
+        try {
+            await userServices.handleUnfriend(isUser, user._id, {});
+            setIsAddedAsFriend(false);
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+        }
     }
 
     return <>
