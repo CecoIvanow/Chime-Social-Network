@@ -18,7 +18,7 @@ async function create(commentData) {
 
     if (!ownerId) {
         throw new Error("Could not create comment: Creator id is invalid or missing");
-    } else if (parentPostId) {
+    } else if (!parentPostId) {
         throw new Error("Could not create comment: Parent post id is invalid or missing");
     } else if (!commentData.text) {
         return;
