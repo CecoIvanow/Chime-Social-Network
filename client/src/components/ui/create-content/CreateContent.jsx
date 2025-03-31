@@ -16,7 +16,7 @@ export default function CreateContent({
                         type="text"
                         name="text"
                         id="entry"
-                        value={text}
+                        defaultValue={text}
                         onChange={onTextChangeHandler}
                         placeholder={placeholderText || "Share your thoughts..."}
                     />

@@ -34,9 +34,12 @@ export default function CatalogPage() {
                 setAlert(error.message);
             })
 
-        postServices.handleGetAll(abortSignal)
+        postServices.handleGetAll({ abortSignal })
             .then(data => setTotalPosts(data))
-            .catch(error => console.error(error.message))
+            .catch(error => {
+                console.error(error);
+                setAlert(error.message);
+            })
 
         return () => {
             abortController.abort();

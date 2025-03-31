@@ -15,6 +15,7 @@ import PostInteractions from "../../shared/post/post-item/post-interactions/Post
 import PostHeader from "../../shared/post/post-header/PostHeader";
 import PostText from "./post-text/PostText";
 import PostEditContent from "./post-text/post-edit-content/PostEditContent";
+import { AlertContext } from "../../../contexts/alert-context";
 
 export default function PostDetailsPage() {
     const location = useLocation();
@@ -27,7 +28,8 @@ export default function PostDetailsPage() {
     const [isEditClicked, setIsEditClicked] = useState(shouldEdit);
     const [postText, setPostText] = useState('');
 
-    const { isUser: currentUser } = useContext(UserContext)
+    const { isUser: currentUser } = useContext(UserContext);
+    const { setAlert } = useContext(AlertContext);
 
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
@@ -48,13 +50,16 @@ export default function PostDetailsPage() {
                     setIsLiked(true);
                 }
             })
-            .catch(error => console.error(error.message));
+            .catch(error => {
+                console.error(error);
+                setAlert(error.message);
+            });
 
         return () => {
             abortController.abort();
         }
 
-    }, [location.pathname, currentUser]);
+    }, [location.pathname, currentUser, navigateTo, isEditClicked, setAlert]);
 
     if (!post?._id) {
         return null;
@@ -70,8 +75,17 @@ export default function PostDetailsPage() {
     }
 
     const onSaveEditClickHandler = async () => {
-        await postServices.handlePostUpdate(post._id, postText);
-        setIsEditClicked(false);
+        try {
+            const updatedText = await postServices.handlePostUpdate(post._id, postText);
+
+            if (updatedText) {
+                setIsEditClicked(false);
+            }
+            
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+        }
     }
 
     const onDeletePostClickHandler = async () => {
@@ -81,14 +95,24 @@ export default function PostDetailsPage() {
             return;
         }
 
-        await postServices.handleDelete(post._id);
-        navigateTo('/catalog');
+        try {
+            await postServices.handleDelete(post._id);
+            navigateTo('/catalog');
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+        }
     }
 
     const onLikePostClickHandler = async () => {
-        await postServices.handleLike(currentUser, post._id);
-        post.likes.push(currentUser);
-        setIsLiked(true);
+        try {
+            await postServices.handleLike(currentUser, post._id);
+            post.likes.push(currentUser);
+            setIsLiked(true);
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+        }
     }
 
     const onUnlikePostClockHandler = async () => {

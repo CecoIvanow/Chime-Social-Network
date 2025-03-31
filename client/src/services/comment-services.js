@@ -8,13 +8,19 @@ async function handleCreate(payLoad) {
         throw new Error(resp.error);
     } else if (resp?.newComment) {
         return resp.newComment
-    } else {
-        return
     }
+
+    return;
 }
 
 async function handleUpdate(commentId, payLoad) {
-    const resp = await api.patch(`/comments/${commentId}`, { text: payLoad });
+    const updatedText = payLoad.trim();
+
+    if (!updatedText) {
+        return;
+    }
+
+    const resp = await api.patch(`/comments/${commentId}`, { text: updatedText });
 
     if (resp?.error) {
         throw new Error(resp.error);
