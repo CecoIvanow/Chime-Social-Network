@@ -57,7 +57,11 @@ async function removeAllSharingPost(postId) {
 }
 
 async function update(commentId, payload) {
-    await Comment.findByIdAndUpdate(commentId, payload);
+    const comment = await Comment.findByIdAndUpdate(commentId, payload);
+
+    if (!comment) {
+        throw new Error("Could not update: Comment is invalid or missing!");
+    }
 }
 
 const commentRepositories = {
