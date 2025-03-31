@@ -17,9 +17,9 @@ async function create(commentData) {
     ])
 
     if (!ownerId) {
-        throw new Error("Could not create comment: Creator id is invalid/missing");
-    } else if (!parentPostId) {
-        throw new Error("Could not create comment: Parent post id is invalid/missing");
+        throw new Error("Could not create comment: Creator id is invalid or missing");
+    } else if (parentPostId) {
+        throw new Error("Could not create comment: Parent post id is invalid or missing");
     } else if (!commentData.text) {
         return;
     }
@@ -34,7 +34,7 @@ async function create(commentData) {
         select: COMMONLY_NEEDED_PARAMS
     });
 
-    return { newComment };
+    return newComment;
 }
 
 async function removeSpecific(commentId) {

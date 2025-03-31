@@ -9,15 +9,15 @@ commentController.post('/comments', async (req, res) => {
     const commentData = req.body;
 
     try {
-        const result = await commentRepositories.create(commentData);
+        const newComment = await commentRepositories.create(commentData);
 
-        if (!result?.newComment._id) {
+        if (!newComment?._id) {
             return res.end();
         }
 
-        await postRepositories.attachCommentToPost(commentData.onPost, result.newComment._id);
+        await postRepositories.attachCommentToPost(commentData.onPost, newComment._id);
 
-        res.json({ newComment: result.newComment });
+        res.json({ newComment });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
@@ -29,9 +29,9 @@ commentController.delete('/comments/:commentId', async (req, res) => {
     const commentId = req.params.commentId;
 
     try {
-        const postId = await commentRepositories.removeSpecific(commentId);
+        const parentPostId = await commentRepositories.removeSpecific(commentId);
 
-        await postRepositories.removeComment(postId, commentId);
+        await postRepositories.removeComment(parentPostId, commentId);
 
         res.json({ commentId });
     } catch (error) {

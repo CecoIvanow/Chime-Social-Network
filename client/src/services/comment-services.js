@@ -5,7 +5,6 @@ async function handleCreate(payLoad) {
     const resp = await api.post('/comments', payLoad);
 
     if (resp?.error) {
-        alert(resp.error);
         throw new Error(resp.error);
     } else if (resp?.newComment) {
         return resp.newComment
