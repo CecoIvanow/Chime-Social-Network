@@ -102,19 +102,6 @@ body {
     margin-top: 30px;
 }
 
-.file-input {
-    display: none;
-}
-
-.custom-file-input {
-    background-color: #2980b9;
-    color: white;
-    padding: 8px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    display: inline-block;
-}
-
 @media (max-width: 768px) {
     .settings-container {
         padding: 15px;
