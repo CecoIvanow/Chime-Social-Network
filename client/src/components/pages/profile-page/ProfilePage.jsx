@@ -4,10 +4,10 @@ import { useParams } from "react-router"
 import userServices from "../../../services/user-services";
 
 import ProfileSection from "../../shared/profile/profile-section/ProfileSection";
+import PostsSection from "../../shared/post/posts-section/PostsSection";
 
 import { UserContext } from "../../../contexts/user-context";
 import { TotalPostsContext } from "../../../contexts/total-posts-context";
-import PostsSection from "../../shared/post/posts-section/PostsSection";
 import { AlertContext } from "../../../contexts/alert-context";
 
 export default function ProfilePage() {
@@ -24,12 +24,15 @@ export default function ProfilePage() {
 
         const abortSignal = abortController.signal;
 
-        userServices.handleUserDataWithPosts(userId, { abortSignal, setAlert })
+        userServices.handleGetUserDataWithPosts(userId, { abortSignal })
             .then(data => {
                 setUserData(data);
                 setTotalPosts(data?.createdPosts.reverse());
             })
-            .catch(error => console.error(error.message));
+            .catch(error => {
+                console.error(error);
+                setAlert(error.message)
+            });
 
         return () => {
             abortController.abort();

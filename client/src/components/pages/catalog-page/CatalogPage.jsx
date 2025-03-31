@@ -27,9 +27,12 @@ export default function CatalogPage() {
 
         const abortSignal = abortController.signal;
 
-        userServices.handleGetAll({ abortSignal, setAlert })
+        userServices.handleGetAll({ abortSignal })
             .then(data => setTotalUsers(data))
-            .catch(error => console.error(error.message))
+            .catch(error => {
+                console.error(error);
+                setAlert(error.message);
+            })
 
         postServices.handleGetAll(abortSignal)
             .then(data => setTotalPosts(data))

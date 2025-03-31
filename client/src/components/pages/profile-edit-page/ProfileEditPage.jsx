@@ -45,10 +45,13 @@ export default function ProfileEditPage() {
 
         userServices.handleGetUserData(profileId, abortSignal)
             .then(data => setUserData(data))
-            .catch(error => console.error(error));
+            .catch(error => {
+                console.error(error);
+                setAlert(error.message);
+            });
 
         return () => abortController.abort();
-    }, [profileId, currentUser, navigateTo]);
+    }, [profileId, currentUser, navigateTo, setAlert]);
 
     const onEditSubmitClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);
@@ -57,7 +60,13 @@ export default function ProfileEditPage() {
             data.imageUrl = await imageUploadToStorage();
         }
 
-        await userServices.handleUpdateUserData(profileId, data, { setAlert });
+        try {
+            await userServices.handleUpdateUserData(profileId, data);
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+            return;
+        }
 
         navigateTo(`/profile/${profileId}`);
     }

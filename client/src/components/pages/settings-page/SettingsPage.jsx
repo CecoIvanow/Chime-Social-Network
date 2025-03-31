@@ -20,7 +20,13 @@ export default function SettingsPage() {
     const onEmailChangeSubmitHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
-        await userServices.handleEmailChange(isUser, data, { setAlert });
+        try {
+            await userServices.handleEmailChange(isUser, data, {});
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+            return;
+        }
 
         navigateTo(`/profile/${isUser}`);
     }
@@ -28,7 +34,13 @@ export default function SettingsPage() {
     const onPasswordChangeSubmitHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
-        await userServices.handlePasswordChange(isUser, data, { setAlert });
+        try {
+            await userServices.handlePasswordChange(isUser, data, {});
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+            return;
+        }
 
         navigateTo(`/profile/${isUser}`);
     }
@@ -39,9 +51,12 @@ export default function SettingsPage() {
         const abortController = new AbortController();
         const abortSignal = abortController.signal;
 
-        userServices.handleGetUserFields(isUser, userFields, { abortSignal, setAlert })
+        userServices.handleGetUserFields(isUser, userFields, { abortSignal })
             .then(data => setUserEmail(data.email))
-            .catch(error => console.error(error.message))
+            .catch(error => {
+                console.error(error);
+                setAlert(error.message);
+            })
 
         return () => {
             abortController.abort();
