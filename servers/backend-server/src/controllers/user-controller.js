@@ -15,11 +15,11 @@ userController.post('/register', async (req, res) => {
         const [token, userId] = await userRepositories.register(bodyData);
 
         res.json({ userId });
-        res.end();
     } catch (error) {
+        console.error(error);
         res.json({ error: error.message });
-        res.end();
     }
+    res.end();
 })
 
 userController.post('/login', async (req, res) => {
@@ -28,11 +28,12 @@ userController.post('/login', async (req, res) => {
     try {
         const [token, userId] = await userRepositories.login(bodyData);
 
-        res.json(userId);
-        res.end();;
+        res.json({ userId });
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
+    res.end();
 })
 
 userController.get('/logout', (req, res) => {
@@ -45,12 +46,12 @@ userController.get('/users/:userId/with-posts', async (req, res) => {
     try {
         const userData = await userRepositories.getUserAndPopulatePosts(userId);
 
-        res.json(userData);
-        res.end()
+        res.json({ userData });
     } catch (error) {
-        console.error(error);
+        res.json({ error: error.message });
     }
 
+    res.end()
 })
 
 userController.put('/users/:userId', async (req, res) => {
@@ -60,23 +61,25 @@ userController.put('/users/:userId', async (req, res) => {
     try {
         await userRepositories.updateUserData(userId, bodyData);
 
-        res.end()
     } catch (error) {
-        console.error(error)
+        console.error(error);
+        res.json({ error: error.message });
     }
+    res.end()
 })
 
 userController.get('/users/:userId/full-profile', async (req, res) => {
     const userId = req.params.userId;
 
     try {
-        const data = await userRepositories.getFullProfileWithFriendsPosts(userId);
+        const userData = await userRepositories.getFullProfileWithFriendsPosts(userId);
 
-        res.json(data)
-        res.end();
+        res.json({ userData })
     } catch (error) {
         console.error(error);
+        es.json({ error: error.message });
     }
+    res.end();
 })
 
 userController.patch('/users/:userId/friends', async (req, res) => {
@@ -89,9 +92,9 @@ userController.patch('/users/:userId/friends', async (req, res) => {
             await userRepositories.addFriend(newFriendId, userId),
         ])
 
-        res.end();
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
 
     res.end();
@@ -106,9 +109,9 @@ userController.delete('/users/:userId/friends/:friendId', async (req, res) => {
             await userRepositories.removeFriend(friendId, userId),
         ])
 
-        res.end();
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
 
     res.end();
@@ -123,11 +126,12 @@ userController.get('/users/:userId/fields', async (req, res) => {
     try {
         const userData = await userRepositories.getUserFields(userId, fields);
 
-        res.json(userData);
-        res.end();
+        res.json({ userData });
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
+    res.end();
 })
 
 userController.patch('/users/:userId/credentials', async (req, res) => {
@@ -137,10 +141,11 @@ userController.patch('/users/:userId/credentials', async (req, res) => {
     try {
         await userRepositories.changeAccountCredentials(userId, data);
 
-        res.end();
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
+    res.end();
 })
 
 userController.get('/users/:userId', async (req, res) => {
@@ -149,22 +154,25 @@ userController.get('/users/:userId', async (req, res) => {
     try {
         const userData = await userRepositories.getUserData(userId);
 
-        res.json(userData);
-        res.end()
+        res.json({ userData });
     } catch (error) {
-        console.error(error)
+        console.error(error);
+        res.json({ error: error.message });
     }
+    res.end()
 })
 
 userController.get('/users', async (req, res) => {
     try {
-        const data = await userRepositories.getAll();
+        const users = await userRepositories.getAll();
 
-        res.json(data);
-        res.end()
+        res.json({ users });
     } catch (error) {
         console.error(error);
+        res.json({ error: error.message });
     }
+
+    res.end()
 })
 
 export default userController;
