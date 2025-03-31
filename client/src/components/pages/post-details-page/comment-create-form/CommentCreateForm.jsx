@@ -19,9 +19,17 @@ export default function CreateCommentForm() {
         const commentData = Object.fromEntries(formData);
         commentData.onPost = location.pathname.split('/').at(2);
         commentData.owner = isUser;
+        if (!commentData.text.trim()) {
+            return;
+        }
 
         try {
             const newComment = await commentServices.handleCreate(commentData);
+
+            if (!newComment) {
+                return;
+            }
+
             post.comments.unshift(newComment);
             setPost({ ...post });
             setCommentText('');

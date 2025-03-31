@@ -1,6 +1,6 @@
 import Button from "../../ui/buttons/button/Button";
 
-export default function CreateEntry({
+export default function CreateContent({
     onTextChangeHandler,
     onSubmitHandler,
     placeholderText,

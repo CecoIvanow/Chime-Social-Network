@@ -122,7 +122,7 @@ export default function PostDetailsPage() {
 
                 <div className='button-div'>
                     <div>
-                        {(currentUser && currentUser !== post.owner._id) && (
+                        {(currentUser && currentUser !== post?.owner._id) && (
                             <PostInteractionButtons
                                 isLiked={isLiked}
                                 onLikeClickHandler={onLikePostClickHandler}
@@ -131,7 +131,7 @@ export default function PostDetailsPage() {
                         )}
                     </div>
                     <div className='owner-buttons'>
-                        {(currentUser && currentUser === post.owner._id) && (
+                        {(currentUser && currentUser === post?.owner._id) && (
                             <>
                                 {isEditClicked ? (
                                     <EditControls
