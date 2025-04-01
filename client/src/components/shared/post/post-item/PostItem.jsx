@@ -2,23 +2,23 @@ import { useContext, useEffect, useState } from "react";
 
 import postServices from "../../../../services/post-services";
 
-import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 import { PostContext } from "../../../../contexts/post-context";
 import { UserContext } from "../../../../contexts/user-context";
+import { AlertContext } from "../../../../contexts/alert-context";
 
 import OwnerControls from "../../controls/owner-controls/OwnerControls";
 import LinkButton from "../../../ui/buttons/link-button/LinkButton";
 import PostInteractionButtons from "../post-interaction-buttons/PostInteractionButtons";
 import PostInteractions from "./post-interactions/PostInteractions";
 import PostHeader from "../post-header/PostHeader";
-import { AlertContext } from "../../../../contexts/alert-context";
 
 export default function PostItem({
     post,
+    totalPosts,
+    setTotalPosts,
 }) {
     const [isLiked, setIsLiked] = useState(false);
 
-    const { totalPosts, setTotalPosts } = useContext(TotalPostsContext);
     const { setAlert } = useContext(AlertContext);
     const { isUser } = useContext(UserContext);
 
