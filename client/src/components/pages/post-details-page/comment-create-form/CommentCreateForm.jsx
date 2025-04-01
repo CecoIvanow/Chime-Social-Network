@@ -19,12 +19,13 @@ export default function CreateCommentForm() {
 
     const onAddCommentSubmitHandler = async (formData) => {
         const commentData = Object.fromEntries(formData);
-        commentData.onPost = location.pathname.split('/').at(2);
-        commentData.owner = isUser;
-
+        
         if (!commentData.text.trim()) {
             return;
         }
+        
+        commentData.onPost = location.pathname.split('/').at(2);
+        commentData.owner = isUser;
 
         try {
             const newComment = await createComment(commentData);
