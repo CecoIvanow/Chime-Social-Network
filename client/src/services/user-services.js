@@ -20,7 +20,7 @@ async function handleRegister(data, helpers = {}) {
         throw new Error(resp.error);
     }
 
-    helpers.setIsUser(resp.userId);
+    helpers.setIsUser(resp.data);
 }
 
 async function handleLogin(data, helpers = {}) {
@@ -30,7 +30,7 @@ async function handleLogin(data, helpers = {}) {
         throw new Error(resp.error);
     }
 
-    helpers.setIsUser(resp.userId);
+    helpers.setIsUser(resp.data);
 }
 
 async function handleLogout(setIsUser) {
@@ -44,7 +44,7 @@ async function handleGetUserDataWithPosts(userId, helpers = {}) {
         throw new Error(resp.error);
     }
 
-    return resp.userData;
+    return resp.data;
 }
 
 async function handleGetAll(helpers = {}) {
@@ -54,9 +54,9 @@ async function handleGetAll(helpers = {}) {
         throw new Error(resp.error);
     }
 
-    resp.users.reverse()
+    resp.data.reverse()
 
-    return resp.users;
+    return resp.data;
 }
 
 async function handleUpdateUserData(userId, payload, helpers = {}) {
@@ -82,7 +82,7 @@ async function handleGetUserFields(userId, fields, helpers = {}) {
         throw new Error(resp.error);
     }
 
-    return resp.userData;
+    return resp.data;
 }
 
 async function handleEmailChange(userId, submittedData, helpers = {}) {
@@ -164,7 +164,7 @@ async function handleGetUserData(userId, helpers = {}) {
         throw new Error(resp.error);
     }
 
-    return resp.userData;
+    return resp.data;
 }
 
 async function handleAddFriend(userId, newFriendId, helpers = {}) {
@@ -190,7 +190,7 @@ async function handleGetFullUserProfile(userId, helpers = {}) {
         throw new Error(resp.error);
     }
 
-    return resp.userData;
+    return resp.data;
 }
 
 const userServices = {

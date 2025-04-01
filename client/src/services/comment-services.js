@@ -6,8 +6,8 @@ async function handleCreate(payLoad) {
 
     if (resp?.error) {
         throw new Error(resp.error);
-    } else if (resp?.newComment) {
-        return resp.newComment
+    } else if (resp?.data) {
+        return resp.data
     }
 
     return;

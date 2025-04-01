@@ -10,11 +10,11 @@ async function handlePostCreate(postData, options = {}) {
 
     if (resp?.error) {
         throw new Error(resp.error);
-    } else if (resp?.newPost) {
-        return resp.newPost;
+    } else if (resp?.data) {
+        return resp.data;
     }
 
-    return resp.newPost;
+    return resp.data;
 }
 
 async function handleGetAll(options = {}) {
@@ -24,9 +24,9 @@ async function handleGetAll(options = {}) {
         throw new Error(resp.error);
     }
 
-    resp.allPosts.reverse();
+    resp.data.reverse();
 
-    return resp.allPosts;
+    return resp.data;
 }
 
 async function handleDelete(postId, options = {}) {
@@ -36,7 +36,7 @@ async function handleDelete(postId, options = {}) {
         throw new Error(resp.error);
     }
 
-    return resp.removedPostId;
+    return resp.data;
 }
 
 async function handleLike(userId, postId, options = {}) {
@@ -62,9 +62,9 @@ async function handleGetPostDataWithComments(postId, options = {}) {
         throw new Error(resp.error);
     }
 
-    resp.postData.comments.reverse();
+    resp.data.comments.reverse();
 
-    return resp.postData;
+    return resp.data;
 }
 
 // async function handleGetPostData(postId, abortSignal, options = {}) {
@@ -86,7 +86,7 @@ async function handlePostUpdate(postId, newText, options = {}) {
         throw new Error(resp.error);
     }
 
-    return resp.postText;
+    return resp.data;
 }
 
 const postServices = {
