@@ -8,9 +8,9 @@ const postController = Router();
 
 postController.get('/posts', async (req, res) => {
     try {
-        const allPosts = await postRepositories.getAll();
+        const data = await postRepositories.getAll();
 
-        res.json({ allPosts });
+        res.json({ data });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message })
@@ -36,9 +36,9 @@ postController.patch('/posts/:postId', async (req, res) => {
     const payload = req.body;
 
     try {
-        const postText = await postRepositories.update(postId, payload);
+        const data = await postRepositories.update(postId, payload);
 
-        res.json({ postText });
+        res.json({ data });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
@@ -50,9 +50,9 @@ postController.get('/posts/:postId/with-comments', async (req, res) => {
     const postId = req.params.postId;
 
     try {
-        const postData = await postRepositories.getSpecificWithComments(postId);
+        const data = await postRepositories.getSpecificWithComments(postId);
 
-        res.json({ postData });
+        res.json({ data });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
@@ -65,15 +65,15 @@ postController.post('/posts', async (req, res) => {
     const ownerId = req.body.owner;
 
     try {
-        const newPost = await postRepositories.create(postData);
+        const data = await postRepositories.create(postData);
 
-        if (!newPost?._id) {
+        if (!data?._id) {
             return res.end();
         }
 
-        await userRepositories.attachPostToUser(ownerId, newPost._id);
+        await userRepositories.attachPostToUser(ownerId, data._id);
 
-        res.json({ newPost });
+        res.json({ data });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message })
@@ -92,7 +92,7 @@ postController.delete('/posts/:postId', async (req, res) => {
             await commentRepositories.removeAllSharingPost(postId),
         ])
 
-        res.json({ removedPostId: postId });
+        res.json({ data: postId });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });

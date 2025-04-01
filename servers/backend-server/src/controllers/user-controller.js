@@ -12,9 +12,9 @@ userController.post('/register', async (req, res) => {
     const bodyData = req.body;
 
     try {
-        const [token, userId] = await userRepositories.register(bodyData);
+        const [token, data] = await userRepositories.register(bodyData);
 
-        res.json({ userId });
+        res.json({ data });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
@@ -26,9 +26,9 @@ userController.post('/login', async (req, res) => {
     const bodyData = req.body;
 
     try {
-        const [token, userId] = await userRepositories.login(bodyData);
+        const [token, data] = await userRepositories.login(bodyData);
 
-        res.json({ userId });
+        res.json({ data });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
@@ -44,9 +44,9 @@ userController.get('/users/:userId/with-posts', async (req, res) => {
     const userId = req.params.userId;
 
     try {
-        const userData = await userRepositories.getUserAndPopulatePosts(userId);
+        const data = await userRepositories.getUserAndPopulatePosts(userId);
 
-        res.json({ userData });
+        res.json({ data });
     } catch (error) {
         res.json({ error: error.message });
     }
@@ -72,9 +72,9 @@ userController.get('/users/:userId/full-profile', async (req, res) => {
     const userId = req.params.userId;
 
     try {
-        const userData = await userRepositories.getFullProfileWithFriendsPosts(userId);
+        const data = await userRepositories.getFullProfileWithFriendsPosts(userId);
 
-        res.json({ userData })
+        res.json({ data })
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
@@ -115,9 +115,9 @@ userController.get('/users/:userId/fields', async (req, res) => {
     const fields = Object.keys(req.query).at(0).split(',');
 
     try {
-        const userData = await userRepositories.getUserFields(userId, fields);
+        const data = await userRepositories.getUserFields(userId, fields);
 
-        res.json({ userData });
+        res.json({ data });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
@@ -143,9 +143,9 @@ userController.get('/users/:userId', async (req, res) => {
     const userId = req.params.userId;
 
     try {
-        const userData = await userRepositories.getUserData(userId);
+        const data = await userRepositories.getUserData(userId);
 
-        res.json({ userData });
+        res.json({ data });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
@@ -155,9 +155,9 @@ userController.get('/users/:userId', async (req, res) => {
 
 userController.get('/users', async (req, res) => {
     try {
-        const users = await userRepositories.getAll();
+        const data = await userRepositories.getAll();
 
-        res.json({ users });
+        res.json({ data });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
