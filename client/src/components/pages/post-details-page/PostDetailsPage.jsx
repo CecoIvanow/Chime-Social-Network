@@ -5,6 +5,7 @@ import postServices from "../../../services/post-services";
 
 import { PostContext } from "../../../contexts/post-context";
 import { UserContext } from "../../../contexts/user-context";
+import { AlertContext } from "../../../contexts/alert-context";
 
 import CommentItem from "./comment-item/CommentItem"
 import CommentCreateForm from "./comment-create-form/CommentCreateForm";
@@ -15,7 +16,6 @@ import PostInteractions from "../../shared/post/post-item/post-interactions/Post
 import PostHeader from "../../shared/post/post-header/PostHeader";
 import PostText from "./post-text/PostText";
 import PostEditContent from "./post-text/post-edit-content/PostEditContent";
-import { AlertContext } from "../../../contexts/alert-context";
 
 export default function PostDetailsPage() {
     const location = useLocation();
@@ -75,13 +75,15 @@ export default function PostDetailsPage() {
     }
 
     const onSaveEditClickHandler = async () => {
+
+
         try {
             const updatedText = await postServices.handlePostUpdate(post._id, postText);
 
             if (updatedText) {
                 setIsEditClicked(false);
             }
-            
+
         } catch (error) {
             console.error(error);
             setAlert(error.message);

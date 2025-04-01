@@ -4,11 +4,11 @@ import userServices from "../../../services/user-services";
 
 import { TotalPostsContext } from "../../../contexts/total-posts-context";
 import { UserContext } from "../../../contexts/user-context";
+import { AlertContext } from "../../../contexts/alert-context";
 
 import FriendsSection from "./friends-section/FriendsSection";
 import PostsSection from "../../shared/post/posts-section/PostsSection";
 import ProfileSection from "../../shared/profile/profile-section/ProfileSection";
-import { AlertContext } from "../../../contexts/alert-context";
 
 export default function UserHomePage() {
     const { isUser } = useContext(UserContext)
