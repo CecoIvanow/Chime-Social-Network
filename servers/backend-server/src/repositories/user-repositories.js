@@ -173,7 +173,7 @@ async function changeAccountCredentials(userId, data) {
     }
 
     if (data.newValues.hasOwnProperty('email')) {
-        user.email = data.newValues.email;
+        user.email = newEmail;
 
     } else if (data.newValues.hasOwnProperty('newPass')) {
         const newHashedPass = await bcrypt.hash(newPass, SALT_ROUNDS);
@@ -185,7 +185,11 @@ async function changeAccountCredentials(userId, data) {
 
     }
 
-    // await user.save();
+    await user.save();
+
+    if (newEmail) {
+        return emailMasking(newEmail);
+    }
 }
 
 async function removePost(userId, postId) {

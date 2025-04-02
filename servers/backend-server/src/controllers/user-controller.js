@@ -130,8 +130,9 @@ userController.patch('/users/:userId/credentials', async (req, res) => {
     const data = req.body;
 
     try {
-        await userRepositories.changeAccountCredentials(userId, data);
+        const email = await userRepositories.changeAccountCredentials(userId, data);
 
+        res.json({ data: email });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
