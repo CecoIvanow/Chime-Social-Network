@@ -28,7 +28,7 @@ To set up the project locally, follow these steps:
    ```bash
    cd .\servers\backend-server\
 
-   npm istall
+   npm install
    
 3. **Start the server**
 
