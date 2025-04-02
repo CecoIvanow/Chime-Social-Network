@@ -16,7 +16,7 @@ export default function useCommentServices() {
             return;
         }
 
-        const data = await fetchExecute('/comments', 'POST', {...payload, text: trimmedText});
+        const data = await fetchExecute('/comments', 'POST', { ...payload, text: trimmedText });
 
         return data;
     }, [fetchExecute, isLoadingRef]);
@@ -37,9 +37,20 @@ export default function useCommentServices() {
         return data;
     }, [fetchExecute, isLoadingRef]);
 
+    const deleteComment = useCallback(async (commentId) => {
+        if (isLoadingRef.current) {
+            return;
+        }
+
+        const data = await fetchExecute(`/comments/${commentId}`, 'DELETE');
+
+        return data;
+    }, [fetchExecute, isLoadingRef]);
+
     return {
         isLoading,
         createComment,
         updateComment,
+        deleteComment,
     }
 }
