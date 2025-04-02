@@ -51,6 +51,7 @@ export default function UserHomePage() {
                 <PostsSection
                     sectionHeadingName='Friends Posts:'
                     userData={userData}
+                    isLoading={isLoading}
                 />
             </TotalPostsContext.Provider>
 

@@ -10,11 +10,11 @@ import CommentCreateForm from "./comment-create-form/CommentCreateForm";
 import OwnerControls from "../../shared/controls/owner-controls/OwnerControls";
 import EditControls from "../../shared/controls/edit-controls/EditControls";
 import PostInteractionButtons from "../../shared/post/post-interaction-buttons/PostInteractionButtons";
-import PostInteractions from "../../shared/post/post-item/post-interactions/PostInteractions";
 import PostHeader from "../../shared/post/post-header/PostHeader";
 import PostText from "./post-text/PostText";
 import PostEditContent from "./post-text/post-edit-content/PostEditContent";
 import usePostServices from "../../../hooks/usePostServices";
+import PostInteractions from "../../shared/post/posts-list/post-item/post-interactions/PostInteractions";
 
 export default function PostDetailsPage() {
     const location = useLocation();
@@ -60,7 +60,7 @@ export default function PostDetailsPage() {
             abortController.abort();
         }
 
-    }, [location.pathname, currentUser, navigateTo, isEditClicked, setAlert]);
+    }, [location.pathname, currentUser, navigateTo, isEditClicked, setAlert, getPostWithComments]);
 
     if (!post?._id) {
         return null;
