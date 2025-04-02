@@ -86,8 +86,9 @@ userController.patch('/users/:userId/friends/:friendId', async (req, res) => {
     const { userId, friendId } = req.params;
 
     try {
-        await userRepositories.addFriend(userId, friendId);
+        const newFriendId = await userRepositories.addFriend(userId, friendId);
 
+        res.json({ data: newFriendId });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
@@ -100,8 +101,9 @@ userController.delete('/users/:userId/friends/:friendId', async (req, res) => {
     const { userId, friendId } = req.params;
 
     try {
-        await userRepositories.removeFriend(userId, friendId);
+        const removedFriendId = await userRepositories.removeFriend(userId, friendId);
 
+        res.json({ data: removedFriendId })
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });

@@ -245,6 +245,8 @@ async function addFriend(userId, newFriendId) {
         user.save({ validateBeforeSave: false }),
         friend.save({ validateBeforeSave: false }),
     ])
+
+    return newFriendId;
 }
 
 async function removeFriend(userId, friendId) {
@@ -272,6 +274,8 @@ async function removeFriend(userId, friendId) {
         user.save({ validateBeforeSave: false }),
         friend.save({ validateBeforeSave: false }),
     ])
+
+    return friendId;
 }
 
 async function getFullProfileWithFriendsPosts(userId) {
