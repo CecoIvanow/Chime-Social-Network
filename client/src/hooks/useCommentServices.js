@@ -26,13 +26,13 @@ export default function useCommentServices() {
             return;
         }
 
-        const finalCommentText = text.trim();
+        const trimmedText = text.trim();
 
-        if (!finalCommentText) {
+        if (!trimmedText) {
             return;
         }
 
-        const data = await fetchExecute(`/comments/${commentId}`, 'PATCH', { text: finalCommentText });
+        const data = await fetchExecute(`/comments/${commentId}`, 'PATCH', { text: trimmedText });
 
         return data;
     }, [fetchExecute, isLoadingRef]);
