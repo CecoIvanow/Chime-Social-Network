@@ -6,11 +6,15 @@ export default function useCommentServices() {
 
     const createComment = useCallback(async (payload) => {
         if (!isLoadingRef.current) {
+            if (!payload.text) {
+                return;
+            }
+
             const data = await fetchExecute('/comments', 'POST', payload);
 
             return data;
         }
-    }, [fetchExecute, isLoadingRef])
+    }, [fetchExecute, isLoadingRef]);
 
     return {
         isLoading,
