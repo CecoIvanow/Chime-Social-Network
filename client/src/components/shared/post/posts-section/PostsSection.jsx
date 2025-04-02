@@ -1,18 +1,18 @@
 import { useContext } from "react";
 
 import PostCreateForm from "../post-create-form/PostCreateForm";
-import PostItem from "../post-item/PostItem";
 import SectionHeading from '../../../ui/headings/SectionHeading'
 
 import { UserContext } from "../../../../contexts/user-context";
-import { TotalPostsContext } from "../../../../contexts/total-posts-context";
+import PostsList from "../posts-list/PostsList";
+import LoadingSpinner from "../../../ui/loading-spinner/LoadingSpinner";
 
 export default function PostsSection({
     userData,
+    isLoading,
     sectionHeadingName,
 }) {
     const { isUser } = useContext(UserContext)
-    const { totalPosts } = useContext(TotalPostsContext);
 
     return (
 
@@ -27,11 +27,10 @@ export default function PostsSection({
                 />
             )}
 
-            {totalPosts?.map(post =>
-                <PostItem
-                    key={post._id}
-                    post={post}
-                />
+            {isLoading ? (
+                <LoadingSpinner />
+            ) : (
+                <PostsList />
             )}
 
         </div>

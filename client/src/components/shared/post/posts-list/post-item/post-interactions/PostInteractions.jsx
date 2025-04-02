@@ -1,6 +1,6 @@
 import { useContext } from "react"
 
-import { PostContext } from "../../../../../contexts/post-context"
+import { PostContext } from "../../../../../../contexts/post-context";
 
 export default function PostInteractions() {
 

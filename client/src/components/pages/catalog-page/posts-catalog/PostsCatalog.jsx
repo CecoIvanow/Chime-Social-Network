@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react"
 
-import PostItem from "../../../shared/post/post-item/PostItem"
 import SectionHeading from "../../../ui/headings/SectionHeading"
 import SearchField from "../../../ui/search-field/SearchField"
 
@@ -8,6 +7,8 @@ import { AlertContext } from "../../../../contexts/alert-context";
 import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 
 import usePostServices from "../../../../hooks/usePostServices";
+import PostsList from "../../../shared/post/posts-list/PostsList";
+import LoadingSpinner from "../../../ui/loading-spinner/LoadingSpinner";
 
 export default function PostsCatalog() {
     const [postSearchParams, setPostSearchParams] = useState('');
@@ -15,7 +16,7 @@ export default function PostsCatalog() {
     const [matchingPosts, setMatchingPosts] = useState([]);
 
     const { setAlert } = useContext(AlertContext);
-    const { getAllPosts } = usePostServices();
+    const { getAllPosts, isLoading } = usePostServices();
 
     useEffect(() => {
         getAllPosts()
@@ -57,13 +58,11 @@ export default function PostsCatalog() {
                 searchBy={'content'}
             />
 
-            <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
-                {matchingPosts?.map(post =>
-                    <PostItem
-                        key={post._id}
-                        post={post}
-
-                    />
+            <TotalPostsContext.Provider value={{ totalPosts: matchingPosts, setTotalPosts }}>
+                {isLoading ? (
+                    <LoadingSpinner />
+                ) : (
+                    <PostsList />
                 )}
             </TotalPostsContext.Provider>
         </div>

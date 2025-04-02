@@ -1,17 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 
-import { PostContext } from "../../../../contexts/post-context";
-import { UserContext } from "../../../../contexts/user-context";
-import { AlertContext } from "../../../../contexts/alert-context";
-import { TotalPostsContext } from "../../../../contexts/total-posts-context";
-
-import OwnerControls from "../../controls/owner-controls/OwnerControls";
-import LinkButton from "../../../ui/buttons/link-button/LinkButton";
-import PostInteractionButtons from "../post-interaction-buttons/PostInteractionButtons";
+import PostHeader from "../../post-header/PostHeader";
 import PostInteractions from "./post-interactions/PostInteractions";
-import PostHeader from "../post-header/PostHeader";
+import LinkButton from "../../../../ui/buttons/link-button/LinkButton";
+import OwnerControls from "../../../controls/owner-controls/OwnerControls";
+import PostInteractionButtons from "../../post-interaction-buttons/PostInteractionButtons";
 
-import usePostServices from "../../../../hooks/usePostServices";
+import { AlertContext } from "../../../../../contexts/alert-context";
+import { UserContext } from "../../../../../contexts/user-context";
+import { TotalPostsContext } from "../../../../../contexts/total-posts-context";
+import { PostContext } from "../../../../../contexts/post-context";
+
+import usePostServices from "../../../../../hooks/usePostServices";
 
 export default function PostItem({
     post,
@@ -104,7 +104,7 @@ export default function PostItem({
                         )}
                     </div>
                     <div>
-                        {isUser === post.owner._id && (
+                        {isUser && isUser === post.owner._id && (
                             <OwnerControls
                                 urlLink={`/post/${post._id}/edit`}
                                 onDeleteClickHandler={onDeletePostClickHandler}

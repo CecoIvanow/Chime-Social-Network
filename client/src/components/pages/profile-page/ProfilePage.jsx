@@ -35,18 +35,20 @@ export default function ProfilePage() {
     }, [userId, setAlert, getUserWithPosts])
 
     return (
-        <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
-            <div className="profile-container">
-                <ProfileSection
-                    userData={userData}
-                    isLoading={isLoading}
-                />
+        <div className="profile-container">
+            <ProfileSection
+                userData={userData}
+                isLoading={isLoading}
+            />
 
+            <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
                 <PostsSection
                     sectionHeadingName={isUser === userData?._id ? 'My Posts:' : `${userData?.firstName}'s Posts:`}
                     userData={userData}
+                    isLoading={isLoading}
                 />
-            </div>
-        </TotalPostsContext.Provider>
+            </TotalPostsContext.Provider>
+            
+        </div>
     )
 }
