@@ -1,13 +1,12 @@
 import { useActionState, useContext } from "react";
 
-import userServices from "../../../services/user-services";
-
-import { UserContext } from "../../../contexts/user-context";
-
 import AuthButton from "../../shared/auth/auth-button/AuthButton";
 import AuthForm from "../../shared/auth/auth-form/AuthForm";
 import AuthNavLink from "../../shared/auth/auth-nav-link/AuthNavLink";
+
 import { AlertContext } from "../../../contexts/alert-context";
+
+import useUserServices from "../../../hooks/useUserServices";
 
 export default function LoginPage() {
     const loginFields = [
@@ -15,14 +14,15 @@ export default function LoginPage() {
         { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' }
     ]
 
-    const { setIsUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
+
+    const { login } = useUserServices();
 
     const submitFormHandler = async (_, formData) => {
         const data = Object.fromEntries(formData);
 
         try {
-            await userServices.handleLogin(data, { setIsUser });
+            await login(data);
         } catch (error) {
             console.error(error);
             setAlert(error.message);

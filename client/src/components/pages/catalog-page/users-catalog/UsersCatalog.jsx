@@ -1,9 +1,12 @@
 import { useContext, useEffect, useState } from "react";
+
 import SectionHeading from "../../../ui/headings/SectionHeading"
 import SearchField from "../../../ui/search-field/SearchField"
 import UserItem from "./user-item/UserItem"
-import userServices from "../../../../services/user-services";
+
 import { AlertContext } from "../../../../contexts/alert-context";
+
+import useUserServices from "../../../../hooks/useUserServices";
 
 export default function UsersCatalog() {
 
@@ -13,22 +16,16 @@ export default function UsersCatalog() {
 
     const { setAlert } = useContext(AlertContext);
 
+    const { getAllUsers } = useUserServices();
+
     useEffect(() => {
-        const abortController = new AbortController();
-
-        const abortSignal = abortController.signal;
-
-        userServices.handleGetAll({ abortSignal })
+        getAllUsers()
             .then(data => setTotalUsers(data))
             .catch(error => {
                 console.error(error);
                 setAlert(error.message);
             })
-
-        return () => {
-            abortController.abort();
-        }
-    }, [setAlert]);
+    }, [setAlert, getAllUsers]);
 
     useEffect(() => {
         if (userSearchParams === '') {
@@ -54,7 +51,7 @@ export default function UsersCatalog() {
 
     return <>
         <div className="users-catalog">
-            
+
             <SectionHeading
                 sectionName='Registered Users:'
             />

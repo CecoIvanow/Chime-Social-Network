@@ -6,9 +6,8 @@ export default function EmailChangeForm({
     userEmail,
     onSubmitHandler
 }) {
-
     const emailChabgeSettingsFields = [
-        { fieldName: `Account Email - ${userEmail}`, inputType: 'text', inputName: 'curEmail' },
+        { fieldName: `Account Email`, inputType: 'text', inputName: 'curEmail' },
         { fieldName: 'New Email', inputType: 'text', inputName: 'newEmail' },
         { fieldName: 'Current Password', inputType: 'password', inputName: 'curPass' },
         { fieldName: 'Repeat Password', inputType: 'password', inputName: 'rePass' },
@@ -17,14 +16,14 @@ export default function EmailChangeForm({
     return <>
         <form action={onSubmitHandler}>
             <div className="settings-card password-section">
-                
+
                 <SectionHeading
                     sectionName={`Account Email - ${userEmail}`}
                 />
 
                 {emailChabgeSettingsFields.map(field =>
                     <InputField
-                        key={field.fieldName}   
+                        key={field.fieldName}
                         fieldName={field.fieldName}
                         inputType={field.inputType}
                         inputName={field.inputName}

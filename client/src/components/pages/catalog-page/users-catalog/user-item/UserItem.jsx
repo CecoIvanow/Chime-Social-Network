@@ -6,7 +6,7 @@ import { AlertContext } from '../../../../../contexts/alert-context';
 import Button from '../../../../ui/buttons/button/Button'
 import UserItemDetails from './user-item-details/UserItemDetails'
 
-import userServices from '../../../../../services/user-services';
+import useUserServices from '../../../../../hooks/useUserServices';
 
 export default function UserItem({
     user,
@@ -16,10 +16,15 @@ export default function UserItem({
 
     const [isAddedAsFriend, setIsAddedAsFriend] = useState(user.friends?.includes(isUser));
 
+    const { addFriend, removeFriend } = useUserServices();
+
     const onAddFriendClickHandler = async () => {
         try {
-            await userServices.handleAddFriend(isUser, user._id, {});
-            setIsAddedAsFriend(true);
+            const isSuccessfull = await addFriend(isUser, user._id);
+
+            if (isSuccessfull) {
+                setIsAddedAsFriend(true);
+            }
         } catch (error) {
             console.error(error);
             setAlert(error.message);
@@ -28,8 +33,11 @@ export default function UserItem({
 
     const onUnfriendClickHandler = async () => {
         try {
-            await userServices.handleUnfriend(isUser, user._id, {});
-            setIsAddedAsFriend(false);
+            const isSuccessfull = await removeFriend(isUser, user._id);
+
+            if (isSuccessfull) {
+                setIsAddedAsFriend(false);
+            }
         } catch (error) {
             console.error(error);
             setAlert(error.message);

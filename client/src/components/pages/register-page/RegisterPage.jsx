@@ -1,14 +1,13 @@
 import { useActionState, useContext } from "react";
 
-import userServices from "../../../services/user-services";
-
-import { UserContext } from "../../../contexts/user-context";
-
 import AuthButton from "../../shared/auth/auth-button/AuthButton";
 import AuthForm from "../../shared/auth/auth-form/AuthForm";
 import AuthNavLink from "../../shared/auth/auth-nav-link/AuthNavLink";
 import GenderDetails from "../../ui/inputs/gender-details/GenderDetails";
+
 import { AlertContext } from "../../../contexts/alert-context";
+
+import useUserServices from "../../../hooks/useUserServices";
 
 export default function RegisterPage() {
     const registerFields = [
@@ -20,14 +19,15 @@ export default function RegisterPage() {
         { fieldName: 'Confirm Password', inputType: 'password', placeholderText: 'password', inputName: 'rePass' },
     ]
 
-    const { setIsUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
+
+    const { register } = useUserServices();
 
     const submitFormClickHandler = async (_, formData) => {
         const data = Object.fromEntries(formData);
 
         try {
-            await userServices.handleRegister(data, { setIsUser });
+            await register(data);
         } catch (error) {
             console.error(error);
             setAlert(error.message);
