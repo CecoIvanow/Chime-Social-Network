@@ -187,9 +187,7 @@ async function changeAccountCredentials(userId, data) {
 
     await user.save();
 
-    if (newEmail) {
-        return emailMasking(newEmail);
-    }
+    return true;
 }
 
 async function removePost(userId, postId) {
