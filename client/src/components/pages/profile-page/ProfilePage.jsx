@@ -19,7 +19,7 @@ export default function ProfilePage() {
     const { isUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
-    const { getUserWithPosts } = useUserServices();
+    const { getUserWithPosts, isLoading } = useUserServices();
 
     useEffect(() => {
 
@@ -39,6 +39,7 @@ export default function ProfilePage() {
             <div className="profile-container">
                 <ProfileSection
                     userData={userData}
+                    isLoading={isLoading}
                 />
 
                 <PostsSection

@@ -17,7 +17,7 @@ export default function UserHomePage() {
     const [totalPosts, setTotalPosts] = useState([]);
     const [userFriends, setUserFriends] = useState([]);
 
-    const { getFullUserProfile } = useUserServices();
+    const { getFullUserProfile, isLoading } = useUserServices();
 
     useEffect(() => {
         getFullUserProfile(isUser)
@@ -38,12 +38,13 @@ export default function UserHomePage() {
                 console.error(error);
                 setAlert(error.message);
             });
-    }, [isUser, setAlert])
+    }, [isUser, setAlert, getFullUserProfile])
 
     return <>
         <div className='user-home-page'>
             <ProfileSection
                 userData={userData}
+                isLoading={isLoading}
             />
 
             <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
