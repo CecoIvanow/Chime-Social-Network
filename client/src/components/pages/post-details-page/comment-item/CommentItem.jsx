@@ -10,6 +10,8 @@ import { PostContext } from "../../../../contexts/post-context";
 import { UserContext } from "../../../../contexts/user-context";
 import { AlertContext } from "../../../../contexts/alert-context";
 
+import useCommentServices from "../../../../hooks/useCommentServices";
+
 export default function CommentItem({
     comment,
 }) {
@@ -20,6 +22,8 @@ export default function CommentItem({
     const { post, setPost } = useContext(PostContext);
     const { isUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
+
+    const { updateComment } = useCommentServices();
 
     const onDeleteCommentClickHandler = async () => {
         const isConfirmed = confirm('Are you sure you want to delete this comment?');
@@ -47,13 +51,8 @@ export default function CommentItem({
     }
 
     const onSaveEditHandler = async () => {
-
-        if (!commentText.trim()) {
-            return;
-        }
-
         try {
-            const updatedCommentText = await commentServices.handleUpdate(comment._id, onEditCommentText);
+            const updatedCommentText = await updateComment(comment._id, onEditCommentText);
 
             if (updatedCommentText) {
                 setCommentText(updatedCommentText);
