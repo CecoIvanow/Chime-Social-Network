@@ -10,6 +10,10 @@ Chime is a social network developed as the final project for SoftUni's React.js 
 - **Profile Management**: Edit your public profile information, update login credentials, and upload a custom avatar.
 - **User Interaction**: View other users' profiles and public data.
 
+## Dependencies
+
+In order for the server to start, you need to have mongodb installed and running on your computer
+
 ## Installation
 
 To set up the project locally, follow these steps:
