@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import SearchField from "../../../ui/search-field/SearchField";
 import SectionHeading from "../../../ui/headings/SectionHeading";
 import FriendsList from "./friends-list/FriendsList";
@@ -9,6 +11,31 @@ export default function FriendsSection({
 }) {
     const friendsAmount = userFriends.length;
 
+    const [friendSearchParams, setFriendSearchParams] = useState('');
+    const [matchingFriends, setMatchingFriends] = useState([]);
+
+    useEffect(() => {
+        if (friendSearchParams === '') {
+            setMatchingFriends(userFriends);
+        } else {
+            setMatchingFriends(
+                userFriends.filter(user => {
+                    const matchByFirstName = user.firstName
+                        .toLowerCase()
+                        .includes(friendSearchParams.toLowerCase());
+
+                    const matchByLastName = user.lastName
+                        .toLowerCase()
+                        .includes(friendSearchParams.toLowerCase());
+
+                    if (matchByFirstName || matchByLastName) {
+                        return true;
+                    }
+                })
+            )
+        }
+    }, [friendSearchParams, userFriends])
+
     return <>
         <div className="friends-section">
 
@@ -17,13 +44,15 @@ export default function FriendsSection({
             />
 
             <SearchField
+                setSearchParams={setFriendSearchParams}
+                searchBy={'name'}
             />
 
             {isLoading ? (
                 <LoadingSpinner />
             ) : (
                 <FriendsList
-                    userFriends={userFriends}
+                    matchingFriends={matchingFriends}
                 />
             )}
 
