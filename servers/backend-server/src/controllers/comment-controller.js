@@ -37,7 +37,7 @@ commentController.delete('/comments/:commentId', async (req, res) => {
 
         await postRepositories.removeComment(data, commentId);
 
-        res.json({ removedId: commentId });
+        res.json({ data: commentId });
     } catch (error) {
         console.error(error);
         res.json({ error: error.message });
