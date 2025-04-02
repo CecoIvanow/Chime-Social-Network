@@ -16,12 +16,12 @@ export default function MenuBar() {
                         <li><Link to={`/profile/${isUser}`} title='Profile'><img src="\images\profile-icon.png" alt="Profile" /></Link></li>
                     )}
                     <li><Link to="/catalog" title='Catalog'><img src="\images\catalog-icon.png" alt="Catalog" /></Link></li>
-                    {isUser && (
+                    {/* {isUser && (
                         <>
                             <li><Link to="/notifications" title='Notifications'><img src="\images\notifications-icon.png" alt="Notifications" /></Link></li>
                             <li><Link to="/messages" title='Messages'><img src="\images\messages-icon.png" alt="Messages" /></Link></li>
                         </>
-                    )}
+                    )} */}
                 </ul>
                 <ul className='auth-menu'>
                     {isUser && (
