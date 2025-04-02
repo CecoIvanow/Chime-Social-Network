@@ -55,6 +55,7 @@ export default function UserHomePage() {
             </TotalPostsContext.Provider>
 
             <FriendsSection
+                isLoading={isLoading}
                 userFriends={userFriends}
             />
 

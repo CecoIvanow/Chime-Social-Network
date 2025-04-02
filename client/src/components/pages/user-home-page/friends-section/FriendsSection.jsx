@@ -1,9 +1,11 @@
-import FriendItem from "./friend-item/FriendItem";
 import SearchField from "../../../ui/search-field/SearchField";
 import SectionHeading from "../../../ui/headings/SectionHeading";
+import FriendsList from "./friends-list/FriendsList";
+import LoadingSpinner from "../../../ui/loading-spinner/LoadingSpinner";
 
 export default function FriendsSection({
-    userFriends = []
+    userFriends = [],
+    isLoading,
 }) {
     const friendsAmount = userFriends.length;
 
@@ -17,14 +19,14 @@ export default function FriendsSection({
             <SearchField
             />
 
-            <div className='friends-list'>
-                {userFriends.map(friend =>
-                    <FriendItem
-                        key={friend._id}
-                        friend={friend}
-                    />
-                )}
-            </div>
+            {isLoading ? (
+                <LoadingSpinner />
+            ) : (
+                <FriendsList
+                    userFriends={userFriends}
+                />
+            )}
+
         </div >
     </>
 }
