@@ -22,7 +22,6 @@ export default function CreateCommentForm() {
         
         commentData.onPost = location.pathname.split('/').at(2);
         commentData.owner = isUser;
-        commentData.text = commentData.text.trim();
         
         try {
             const newComment = await createComment(commentData);
