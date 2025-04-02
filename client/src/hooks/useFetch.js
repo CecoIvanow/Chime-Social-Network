@@ -14,7 +14,9 @@ export default function useFetch() {
 
     useEffect(() => {
         return () => {
-            abortControllerRef.current.abort();
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
         }
     }, [])
 
