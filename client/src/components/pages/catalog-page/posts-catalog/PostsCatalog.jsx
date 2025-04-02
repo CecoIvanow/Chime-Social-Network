@@ -3,32 +3,29 @@ import { useContext, useEffect, useState } from "react"
 import PostItem from "../../../shared/post/post-item/PostItem"
 import SectionHeading from "../../../ui/headings/SectionHeading"
 import SearchField from "../../../ui/search-field/SearchField"
-import postServices from "../../../../services/post-services";
+
 import { AlertContext } from "../../../../contexts/alert-context";
+import { TotalPostsContext } from "../../../../contexts/total-posts-context";
+
+import usePostServices from "../../../../hooks/usePostServices";
 
 export default function PostsCatalog() {
     const [postSearchParams, setPostSearchParams] = useState('');
     const [totalPosts, setTotalPosts] = useState([]);
     const [matchingPosts, setMatchingPosts] = useState([]);
 
-    const { setAlert } = useContext(AlertContext)
+    const { setAlert } = useContext(AlertContext);
+    const { getAllPosts } = usePostServices();
 
     useEffect(() => {
-        const abortController = new AbortController();
-
-        const abortSignal = abortController.signal;
-
-        postServices.handleGetAll({ abortSignal })
+        getAllPosts()
             .then(data => setTotalPosts(data))
             .catch(error => {
                 console.error(error);
                 setAlert(error.message);
             })
 
-        return () => {
-            abortController.abort();
-        }
-    }, [setAlert]);
+    }, [setAlert, getAllPosts]);
 
     useEffect(() => {
         if (postSearchParams === '') {
@@ -46,7 +43,7 @@ export default function PostsCatalog() {
                 })
             )
         }
-    }, [postSearchParams, totalPosts])
+    }, [postSearchParams, totalPosts]);
 
     return <>
         <div className="posts-catalog">
@@ -60,14 +57,15 @@ export default function PostsCatalog() {
                 searchBy={'content'}
             />
 
-            {matchingPosts?.map(post =>
-                <PostItem
-                    key={post._id}
-                    post={post}
-                    totalPosts={totalPosts}
-                    setTotalPosts={setTotalPosts}
-                />
-            )}
+            <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
+                {matchingPosts?.map(post =>
+                    <PostItem
+                        key={post._id}
+                        post={post}
+
+                    />
+                )}
+            </TotalPostsContext.Provider>
         </div>
     </>
 }
