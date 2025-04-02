@@ -47,6 +47,9 @@ export default function useFetch() {
                 case 'POST':
                     resp = await api.post(url, payload, { signal: abortControllerRef.current.signal });
                     break;
+                case 'PUT':
+                    resp = await api.put(url, payload, { signal: abortControllerRef.current.signal });
+                    break;
                 case 'PATCH':
                     resp = await api.patch(url, payload, { signal: abortControllerRef.current.signal });
                     break;
@@ -64,7 +67,10 @@ export default function useFetch() {
             return;
 
         } catch (error) {
-            if (error.name !== 'AbortError') {
+            if (error.message === 'Failed to fetch') {
+                console.error(error);
+                setAlert('Failed to fetch, please try again!');
+            } else if (error.name !== 'AbortError') {
                 console.error(error);
                 setAlert(error.message);
             }
