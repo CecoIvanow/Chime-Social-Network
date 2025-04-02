@@ -1,12 +1,11 @@
 import { useContext, useState } from 'react'
 
-import { UserContext } from '../../../../../contexts/user-context'
-import { AlertContext } from '../../../../../contexts/alert-context';
+import { UserContext } from '../../../../../../contexts/user-context'
+import { AlertContext } from '../../../../../../contexts/alert-context';
 
-import Button from '../../../../ui/buttons/button/Button'
-import UserItemDetails from './user-item-details/UserItemDetails'
-
-import useUserServices from '../../../../../hooks/useUserServices';
+import useUserServices from '../../../../../../hooks/useUserServices';
+import UserItemDetails from './user-item-details/UserItemDetails';
+import Button from '../../../../../ui/buttons/button/Button';
 
 export default function UserItem({
     user,

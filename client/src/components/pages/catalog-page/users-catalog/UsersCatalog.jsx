@@ -2,11 +2,12 @@ import { useContext, useEffect, useState } from "react";
 
 import SectionHeading from "../../../ui/headings/SectionHeading"
 import SearchField from "../../../ui/search-field/SearchField"
-import UserItem from "./user-item/UserItem"
 
 import { AlertContext } from "../../../../contexts/alert-context";
 
 import useUserServices from "../../../../hooks/useUserServices";
+import UsersList from "./users-list/UsersList";
+import LoadingSpinner from "../../../ui/loading-spinner/LoadingSpinner";
 
 export default function UsersCatalog() {
 
@@ -16,7 +17,7 @@ export default function UsersCatalog() {
 
     const { setAlert } = useContext(AlertContext);
 
-    const { getAllUsers } = useUserServices();
+    const { getAllUsers, isLoading } = useUserServices();
 
     useEffect(() => {
         getAllUsers()
@@ -61,10 +62,11 @@ export default function UsersCatalog() {
                 searchBy={'name'}
             />
 
-            {matchingUsers.map(user =>
-                <UserItem
-                    key={user._id}
-                    user={user}
+            {isLoading ? (
+                <LoadingSpinner />
+            ) : (
+                <UsersList
+                    matchingUsers={matchingUsers}
                 />
             )}
 
