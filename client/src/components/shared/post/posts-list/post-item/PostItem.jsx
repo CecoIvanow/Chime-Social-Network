@@ -4,6 +4,7 @@ import PostHeader from "../../post-header/PostHeader";
 import PostInteractions from "./post-interactions/PostInteractions";
 import LinkButton from "../../../../ui/buttons/link-button/LinkButton";
 import OwnerControls from "../../../controls/owner-controls/OwnerControls";
+import PostInteractionButtons from "../../post-interaction-buttons/PostInteractionButtons";
 
 import { AlertContext } from "../../../../../contexts/alert-context";
 import { UserContext } from "../../../../../contexts/user-context";
@@ -87,7 +88,7 @@ export default function PostItem({
                         {isUser && (
                             <>
                                 {(isUser !== post.owner._id &&
-                                    <PostInteractions
+                                    <PostInteractionButtons
                                         isLiked={isLiked}
                                         onLikeClickHandler={onLikePostClickHandler}
                                         onUnlikeClickHandler={onUnlikePostClockHandler}
@@ -103,7 +104,7 @@ export default function PostItem({
                         )}
                     </div>
                     <div>
-                        {isUser === post.owner._id && (
+                        {isUser && isUser === post.owner._id && (
                             <OwnerControls
                                 urlLink={`/post/${post._id}/edit`}
                                 onDeleteClickHandler={onDeletePostClickHandler}
