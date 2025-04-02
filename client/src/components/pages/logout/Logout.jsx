@@ -1,14 +1,12 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 
-import userServices from "../../../services/user-services";
-
-import { UserContext } from "../../../contexts/user-context";
+import useUserServices from "../../../hooks/useUserServices";
 
 export default function Logout() {
-    const { setIsUser } = useContext(UserContext)
+    const { logout } = useUserServices();
 
     useEffect(() => {
-        userServices.handleLogout(setIsUser)
+        logout()
             .catch(error => console.error(error.message));
-    }, [setIsUser])
+    }, [logout])
 }

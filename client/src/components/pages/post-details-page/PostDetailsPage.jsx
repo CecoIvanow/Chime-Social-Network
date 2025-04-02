@@ -1,10 +1,9 @@
 import { useLocation, useNavigate } from "react-router"
 import { useContext, useEffect, useState } from "react";
 
-import postServices from "../../../services/post-services";
-
 import { PostContext } from "../../../contexts/post-context";
 import { UserContext } from "../../../contexts/user-context";
+import { AlertContext } from "../../../contexts/alert-context";
 
 import CommentItem from "./comment-item/CommentItem"
 import CommentCreateForm from "./comment-create-form/CommentCreateForm";
@@ -15,7 +14,7 @@ import PostInteractions from "../../shared/post/post-item/post-interactions/Post
 import PostHeader from "../../shared/post/post-header/PostHeader";
 import PostText from "./post-text/PostText";
 import PostEditContent from "./post-text/post-edit-content/PostEditContent";
-import { AlertContext } from "../../../contexts/alert-context";
+import usePostServices from "../../../hooks/usePostServices";
 
 export default function PostDetailsPage() {
     const location = useLocation();
@@ -31,13 +30,15 @@ export default function PostDetailsPage() {
     const { isUser: currentUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
+    const { deletePost, likePost, unlikePost, editPost, getPostWithComments } = usePostServices()
+
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
 
         const abortController = new AbortController();
         const abortSignal = abortController.signal;
 
-        postServices.handleGetPostDataWithComments(postId, abortSignal)
+        getPostWithComments(postId, abortSignal)
             .then(data => {
                 if (isEditClicked && (currentUser !== data.owner._id)) {
                     navigateTo('/404');
@@ -75,13 +76,15 @@ export default function PostDetailsPage() {
     }
 
     const onSaveEditClickHandler = async () => {
+
+
         try {
-            const updatedText = await postServices.handlePostUpdate(post._id, postText);
+            const updatedText = await editPost(post._id, postText);
 
             if (updatedText) {
                 setIsEditClicked(false);
             }
-            
+
         } catch (error) {
             console.error(error);
             setAlert(error.message);
@@ -96,7 +99,7 @@ export default function PostDetailsPage() {
         }
 
         try {
-            await postServices.handleDelete(post._id);
+            await deletePost(post._id);
             navigateTo('/catalog');
         } catch (error) {
             console.error(error);
@@ -106,7 +109,7 @@ export default function PostDetailsPage() {
 
     const onLikePostClickHandler = async () => {
         try {
-            await postServices.handleLike(currentUser, post._id);
+            await likePost(currentUser, post._id);
             post.likes.push(currentUser);
             setIsLiked(true);
         } catch (error) {
@@ -116,7 +119,7 @@ export default function PostDetailsPage() {
     }
 
     const onUnlikePostClockHandler = async () => {
-        await postServices.handleUnlike(currentUser, post._id);
+        await unlikePost(currentUser, post._id);
         post.likes = post.likes.filter(userLike => userLike !== currentUser);
         setIsLiked(false);
     }

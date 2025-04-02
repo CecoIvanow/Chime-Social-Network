@@ -173,7 +173,7 @@ async function changeAccountCredentials(userId, data) {
     }
 
     if (data.newValues.hasOwnProperty('email')) {
-        user.email = data.newValues.email;
+        user.email = newEmail;
 
     } else if (data.newValues.hasOwnProperty('newPass')) {
         const newHashedPass = await bcrypt.hash(newPass, SALT_ROUNDS);
@@ -185,7 +185,9 @@ async function changeAccountCredentials(userId, data) {
 
     }
 
-    // await user.save();
+    await user.save();
+
+    return true;
 }
 
 async function removePost(userId, postId) {
@@ -243,6 +245,8 @@ async function addFriend(userId, newFriendId) {
         user.save({ validateBeforeSave: false }),
         friend.save({ validateBeforeSave: false }),
     ])
+
+    return newFriendId;
 }
 
 async function removeFriend(userId, friendId) {
@@ -270,6 +274,8 @@ async function removeFriend(userId, friendId) {
         user.save({ validateBeforeSave: false }),
         friend.save({ validateBeforeSave: false }),
     ])
+
+    return friendId;
 }
 
 async function getFullProfileWithFriendsPosts(userId) {

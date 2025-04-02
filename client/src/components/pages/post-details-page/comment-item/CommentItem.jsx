@@ -1,14 +1,14 @@
 import { Link } from "react-router"
 import { useContext, useEffect, useState } from "react";
 
-import commentServices from "../../../../services/comment-services"
-
 import OwnerControls from "../../../shared/controls/owner-controls/OwnerControls";
 import EditControls from "../../../shared/controls/edit-controls/EditControls";
 
 import { PostContext } from "../../../../contexts/post-context";
 import { UserContext } from "../../../../contexts/user-context";
 import { AlertContext } from "../../../../contexts/alert-context";
+
+import useCommentServices from "../../../../hooks/useCommentServices";
 
 export default function CommentItem({
     comment,
@@ -21,6 +21,8 @@ export default function CommentItem({
     const { isUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
+    const { updateComment, deleteComment } = useCommentServices();
+
     const onDeleteCommentClickHandler = async () => {
         const isConfirmed = confirm('Are you sure you want to delete this comment?');
 
@@ -29,7 +31,7 @@ export default function CommentItem({
         }
 
         try {
-            const removedCommentId = await commentServices.handleDelete(comment._id);
+            const removedCommentId = await deleteComment(comment._id);
 
             post.comments = post.comments.filter(comment => comment._id !== removedCommentId);
             setPost({ ...post });
@@ -47,13 +49,8 @@ export default function CommentItem({
     }
 
     const onSaveEditHandler = async () => {
-
-        if (!commentText.trim()) {
-            return;
-        }
-
         try {
-            const updatedCommentText = await commentServices.handleUpdate(comment._id, onEditCommentText);
+            const updatedCommentText = await updateComment(comment._id, onEditCommentText);
 
             if (updatedCommentText) {
                 setCommentText(updatedCommentText);

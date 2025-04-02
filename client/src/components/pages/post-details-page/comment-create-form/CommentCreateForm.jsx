@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
 
+import useCommentServices from "../../../../hooks/useCommentServices";
+
 import CreateContent from "../../../ui/create-content/CreateContent";
 
 import { PostContext } from "../../../../contexts/post-context";
 import { UserContext } from "../../../../contexts/user-context";
 import { AlertContext } from "../../../../contexts/alert-context";
-
-import commentServices from "../../../../services/comment-services";
 
 export default function CreateCommentForm() {
     const [commentText, setCommentText] = useState('');
@@ -15,16 +15,16 @@ export default function CreateCommentForm() {
     const { isUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
+    const { createComment } = useCommentServices();
+
     const onAddCommentSubmitHandler = async (formData) => {
         const commentData = Object.fromEntries(formData);
+        
         commentData.onPost = location.pathname.split('/').at(2);
         commentData.owner = isUser;
-        if (!commentData.text.trim()) {
-            return;
-        }
-
+        
         try {
-            const newComment = await commentServices.handleCreate(commentData);
+            const newComment = await createComment(commentData);
 
             if (!newComment) {
                 return;
@@ -37,7 +37,7 @@ export default function CreateCommentForm() {
             setAlert(error.message);
         }
 
-    }
+    };
 
     const onTextChangeHandler = (e) => {
         setCommentText(e.currentTarget.value);

@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
 
-import { UserContext } from "../../../contexts/user-context"
-
-import userServices from "../../../services/user-services"
+import { storage } from "../../../firebase/firebase-storage/config"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 
 import InputField from "../../ui/inputs/input-field/InputField"
 import TextAreaInput from "../../ui/inputs/textarea-input-field/TextAreaInput"
@@ -12,18 +11,23 @@ import EditControls from "../../shared/controls/edit-controls/EditControls"
 import SectionHeading from "../../ui/headings/SectionHeading"
 import ImageUpload from "./image-upload/ImageUpload"
 
-import { storage } from "../../../firebase/firebase-storage/config"
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import useUserServices from "../../../hooks/useUserServices"
+
 import { AlertContext } from "../../../contexts/alert-context"
+import { UserContext } from "../../../contexts/user-context"
 
 export default function ProfileEditPage() {
+    const navigateTo = useNavigate();
+
     const [userData, setUserData] = useState({});
     const [imageUpload, setImageUpload] = useState(null);
 
-    const navigateTo = useNavigate();
     const { userId: profileId } = useParams();
+
     const { isUser: currentUser } = useContext(UserContext)
     const { setAlert } = useContext(AlertContext);
+
+    const { updateUser, getUserData } = useUserServices();
 
     const formProfileInputs = [
         { fieldName: 'First name', inputType: 'text', inputName: 'firstName', value: userData.firstName },
@@ -40,18 +44,14 @@ export default function ProfileEditPage() {
             navigateTo('/404');
         }
 
-        const abortController = new AbortController();
-        const abortSignal = abortController.signal;
-
-        userServices.handleGetUserData(profileId, abortSignal)
+        getUserData(profileId)
             .then(data => setUserData(data))
             .catch(error => {
                 console.error(error);
                 setAlert(error.message);
             });
 
-        return () => abortController.abort();
-    }, [profileId, currentUser, navigateTo, setAlert]);
+    }, [profileId, currentUser, navigateTo, setAlert, getUserData]);
 
     const onEditSubmitClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);
@@ -61,7 +61,7 @@ export default function ProfileEditPage() {
         }
 
         try {
-            await userServices.handleUpdateUserData(profileId, data);
+            await updateUser(profileId, data);
         } catch (error) {
             console.error(error);
             setAlert(error.message);

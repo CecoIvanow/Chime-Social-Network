@@ -1,26 +1,28 @@
 import { useContext, useEffect, useState } from "react";
 
-import postServices from "../../../../services/post-services";
-
-import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 import { PostContext } from "../../../../contexts/post-context";
 import { UserContext } from "../../../../contexts/user-context";
+import { AlertContext } from "../../../../contexts/alert-context";
+import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 
 import OwnerControls from "../../controls/owner-controls/OwnerControls";
 import LinkButton from "../../../ui/buttons/link-button/LinkButton";
 import PostInteractionButtons from "../post-interaction-buttons/PostInteractionButtons";
 import PostInteractions from "./post-interactions/PostInteractions";
 import PostHeader from "../post-header/PostHeader";
-import { AlertContext } from "../../../../contexts/alert-context";
+
+import usePostServices from "../../../../hooks/usePostServices";
 
 export default function PostItem({
     post,
 }) {
     const [isLiked, setIsLiked] = useState(false);
 
-    const { totalPosts, setTotalPosts } = useContext(TotalPostsContext);
     const { setAlert } = useContext(AlertContext);
     const { isUser } = useContext(UserContext);
+    const { totalPosts, setTotalPosts } = useContext(TotalPostsContext)
+
+    const { deletePost, likePost, unlikePost } = usePostServices();
 
     useEffect(() => {
         if (post?.likes.includes(isUser)) {
@@ -40,7 +42,7 @@ export default function PostItem({
         }
 
         try {
-            const deletedPostId = await postServices.handleDelete(post._id);
+            const deletedPostId = await deletePost(post._id);
 
             setTotalPosts(totalPosts => totalPosts.filter(post => post._id !== deletedPostId))
         } catch (error) {
@@ -51,7 +53,7 @@ export default function PostItem({
 
     const onLikePostClickHandler = async () => {
         try {
-            await postServices.handleLike(isUser, post._id);
+            await likePost(isUser, post._id);
             post.likes.push(isUser);
             setIsLiked(true);
         } catch (error) {
@@ -62,7 +64,7 @@ export default function PostItem({
 
     const onUnlikePostClockHandler = async () => {
         try {
-            await postServices.handleUnlike(isUser, post._id);
+            await unlikePost(isUser, post._id);
             post.likes = post.likes.filter(userLike => userLike !== isUser);
             setIsLiked(false);
         } catch (error) {

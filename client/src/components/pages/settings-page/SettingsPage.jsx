@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react"
 import { useNavigate } from 'react-router'
 
-
-import userServices from "../../../services/user-services";
 import PasswordChangeForm from "./password-change-form/PasswordChangeForm";
 import EmailChangeForm from "./email-change-form/EmailChangeForm";
 
 import { UserContext } from "../../../contexts/user-context";
 import { AlertContext } from "../../../contexts/alert-context";
+
+import useUserServices from "../../../hooks/useUserServices";
 
 export default function SettingsPage() {
     const navigateTo = useNavigate();
@@ -17,51 +17,50 @@ export default function SettingsPage() {
     const { isUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
+    const { getUserFields } = useUserServices();
+
+    const { changeUserEmail, changeUserPassword } = useUserServices();
+
     const onEmailChangeSubmitHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
         try {
-            await userServices.handleEmailChange(isUser, data, {});
+            const isSuccessfull = await changeUserEmail(isUser, data);
+
+            if (isSuccessfull) {
+                navigateTo(`/profile/${isUser}`);
+            }
         } catch (error) {
             console.error(error);
             setAlert(error.message);
-            return;
         }
-
-        navigateTo(`/profile/${isUser}`);
     }
 
     const onPasswordChangeSubmitHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
         try {
-            await userServices.handlePasswordChange(isUser, data, {});
+            const isSuccessfull = await changeUserPassword(isUser, data, {});
+
+            if (isSuccessfull) {
+                navigateTo(`/profile/${isUser}`);
+            }
         } catch (error) {
             console.error(error);
             setAlert(error.message);
-            return;
         }
-
-        navigateTo(`/profile/${isUser}`);
     }
 
     useEffect(() => {
         const userFields = 'email';
 
-        const abortController = new AbortController();
-        const abortSignal = abortController.signal;
-
-        userServices.handleGetUserFields(isUser, userFields, { abortSignal })
+        getUserFields(isUser, userFields)
             .then(data => setUserEmail(data.email))
             .catch(error => {
                 console.error(error);
                 setAlert(error.message);
             })
-
-        return () => {
-            abortController.abort();
-        }
-    }, [isUser, setAlert]);
+    }, [isUser, setAlert, getUserFields]);
 
     return <>
         <div className="settings-container">

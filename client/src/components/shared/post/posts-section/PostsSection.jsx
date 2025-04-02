@@ -13,7 +13,7 @@ export default function PostsSection({
 }) {
     const { isUser } = useContext(UserContext)
     const { totalPosts } = useContext(TotalPostsContext);
-    
+
     return (
 
         <div className="posts-section">
