@@ -15,9 +15,12 @@ export default function FriendsSection({
     const [matchingFriends, setMatchingFriends] = useState([]);
 
     useEffect(() => {
-        if (friendSearchParams === '') {
+        if (matchingFriends.length === userFriends.length) {
+            return;
+        } else if (friendSearchParams === '') {
             setMatchingFriends(userFriends);
         } else {
+            console.log('Hi');
             setMatchingFriends(
                 userFriends.filter(user => {
                     const matchByFirstName = user.firstName
