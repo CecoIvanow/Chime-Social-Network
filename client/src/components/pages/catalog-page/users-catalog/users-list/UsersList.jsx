@@ -4,7 +4,7 @@ export default function UsersList({
     matchingUsers
 }) {
     return <>
-        {matchingUsers.map(user =>
+        {matchingUsers?.map(user =>
             <UserItem
                 key={user._id}
                 user={user}

@@ -75,7 +75,7 @@ export default function useUserServices() {
 
         const users = await fetchExecute(`/users`);
 
-        users.reverse();
+        users?.reverse();
 
         return users
     }, [fetchExecute, isLoadingRef]);
