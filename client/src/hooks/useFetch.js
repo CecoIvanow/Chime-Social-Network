@@ -12,13 +12,17 @@ export default function useFetch() {
 
     const abortControllerRef = useRef(null);
 
-    useEffect(() => {
-        return () => {
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
-            }
-        }
-    }, [])
+    // TODO Need to fix the cleanup function, when using strict mode it doesnt allow the fetch to execute
+
+    // useEffect(() => {
+    //     return () => {
+    //         if (abortControllerRef.current) {
+    //             console.log('Abort!');
+                
+    //             abortControllerRef.current.abort();
+    //         }
+    //     }
+    // }, [])
 
     const fetchExecute = useCallback(async (url, method = 'GET', payload) => {
         const convertedMethod = method.toUpperCase();
