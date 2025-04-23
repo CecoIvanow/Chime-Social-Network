@@ -3,13 +3,13 @@ import { useCallback, useContext, useMemo } from "react";
 import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "../firebase/firebase-storage/config.js";
 
-import useFetch from "./useFetch.js"
+import useFetch from "./useFetchApiCall.js"
 
 import { UserContext } from "../contexts/user-context.js";
 
 export default function useUserServices() {
     const { fetchExecute, isLoading, isLoadingRef } = useFetch();
-    const { setIsUser } = useContext(UserContext);
+    const { setIsUser } = useContext(UserContext);    
 
     const userUpdatePayload = useMemo(() => {
         return {
