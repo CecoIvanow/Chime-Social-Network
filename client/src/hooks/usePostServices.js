@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import useFetch from "./useFetch.js";
+import useFetch from "./useFetchApiCall.js";
 
 export default function usePostServices() {
     const { fetchExecute, isLoading, isLoadingRef } = useFetch();
@@ -73,7 +73,7 @@ export default function usePostServices() {
 
         const data = await fetchExecute(`/posts`);
 
-        return data.reverse();
+        return data?.reverse();
     }, [fetchExecute, isLoadingRef]);
 
     const getPostWithComments = useCallback(async (postId) => {
@@ -83,8 +83,8 @@ export default function usePostServices() {
 
         const data = await fetchExecute(`/posts/${postId}/with-comments`);
 
-        data.comments.reverse();
-        
+        data.comments?.reverse();
+
         return data;
     }, [fetchExecute, isLoadingRef]);
 

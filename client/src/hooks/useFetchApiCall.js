@@ -1,8 +1,8 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useRef, useState } from 'react';
 
 import { AlertContext } from '../contexts/alert-context.js';
 
-import api from '../utils/api';
+import api from '../utils/api.js';
 
 export default function useFetch() {
     const [loadingState, setLoadingState] = useState(false);
@@ -12,20 +12,11 @@ export default function useFetch() {
 
     const abortControllerRef = useRef(null);
 
-    useEffect(() => {
-        return () => {
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
-            }
-        }
-    }, [])
-
     const fetchExecute = useCallback(async (url, method = 'GET', payload) => {
         const convertedMethod = method.toUpperCase();
 
-        if (abortControllerRef.current) {
-            abortControllerRef.current.abort();
-        }
+        abortControllerRef.current?.abort();
+
         abortControllerRef.current = new AbortController();
 
         setLoadingState(loadingState => {

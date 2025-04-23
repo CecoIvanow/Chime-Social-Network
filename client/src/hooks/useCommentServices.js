@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import useFetch from "./useFetch.js";
+import useFetch from "./useFetchApiCall.js";
 
 export default function useCommentServices() {
     const { fetchExecute, isLoading, isLoadingRef } = useFetch();
