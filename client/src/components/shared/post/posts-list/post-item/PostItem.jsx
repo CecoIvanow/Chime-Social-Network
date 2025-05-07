@@ -54,7 +54,13 @@ export default function PostItem({
     const onLikePostClickHandler = async () => {
         try {
             await likePost(isUser, post._id);
-            post.likes.push(isUser);
+            setTotalPosts(totalPosts =>
+                totalPosts.map(curPost =>
+                    curPost._id === post._id
+                        ? { ...curPost, likes: [...curPost.likes, isUser] }
+                        : curPost
+                )
+            );
             setIsLiked(true);
         } catch (error) {
             console.error(error);
@@ -62,10 +68,16 @@ export default function PostItem({
         }
     }
 
-    const onUnlikePostClockHandler = async () => {
+    const onUnlikePostClickHandler = async () => {
         try {
             await unlikePost(isUser, post._id);
-            post.likes = post.likes.filter(userLike => userLike !== isUser);
+            setTotalPosts(totalPosts =>
+                totalPosts.map(curPost =>
+                    curPost._id === post._id
+                        ? { ...curPost, likes: curPost.likes.filter(userLike => userLike !== isUser) }
+                        : curPost
+                )
+            )
             setIsLiked(false);
         } catch (error) {
             console.error(error);
@@ -91,7 +103,7 @@ export default function PostItem({
                                     <PostInteractionButtons
                                         isLiked={isLiked}
                                         onLikeClickHandler={onLikePostClickHandler}
-                                        onUnlikeClickHandler={onUnlikePostClockHandler}
+                                        onUnlikeClickHandler={onUnlikePostClickHandler}
                                     />
                                 )}
 
