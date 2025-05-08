@@ -7,9 +7,6 @@ import { AlertContext } from "../../../contexts/alert-context";
 
 import CommentItem from "./comment-item/CommentItem"
 import CommentCreateForm from "./comment-create-form/CommentCreateForm";
-import OwnerControls from "../../shared/controls/owner-controls/OwnerControls";
-import EditControls from "../../shared/controls/edit-controls/EditControls";
-import PostLikeButtons from "../../shared/post/posts-list/post-item/post-interactions/post-like-buttons/PostLikeButtons";
 import PostHeader from "../../shared/post/post-header/PostHeader";
 import PostText from "./post-text/PostText";
 import PostEditContent from "./post-text/post-edit-content/PostEditContent";
@@ -23,14 +20,13 @@ export default function PostDetailsPage() {
     const shouldEdit = location.state?.shouldEdit || false;
 
     const [post, setPost] = useState({});
-    const [isLiked, setIsLiked] = useState(false);
-    const [isEditClicked, setIsEditClicked] = useState(shouldEdit);
     const [postText, setPostText] = useState('');
+    const [isEditClicked, setIsEditClicked] = useState(shouldEdit);
 
     const { isUser: currentUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
-    const { deletePost, likePost, unlikePost, editPost, getPostWithComments } = usePostServices()
+    const { deletePost, editPost, getPostWithComments } = usePostServices()
 
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
@@ -46,10 +42,6 @@ export default function PostDetailsPage() {
 
                 setPost(data);
                 setPostText(data.text);
-
-                if (data.likes.includes(currentUser)) {
-                    setIsLiked(true);
-                }
             })
             .catch(error => {
                 console.error(error);
@@ -107,23 +99,6 @@ export default function PostDetailsPage() {
         }
     }
 
-    const onLikePostClickHandler = async () => {
-        try {
-            await likePost(currentUser, post._id);
-            post.likes.push(currentUser);
-            setIsLiked(true);
-        } catch (error) {
-            console.error(error);
-            setAlert(error.message);
-        }
-    }
-
-    const onUnlikePostClockHandler = async () => {
-        await unlikePost(currentUser, post._id);
-        post.likes = post.likes.filter(userLike => userLike !== currentUser);
-        setIsLiked(false);
-    }
-
     const onEditPostClickHandler = async () => {
         setIsEditClicked(true);
     }
@@ -145,36 +120,14 @@ export default function PostDetailsPage() {
                     />
                 )}
 
-                <PostInteractions />
+                <PostInteractions
+                    isEditClicked={isEditClicked}
+                    onDeletePostClickHandler={onDeletePostClickHandler}
+                    onEditPostClickHandler={onEditPostClickHandler}
+                    onSaveEditClickHandler={onSaveEditClickHandler}
+                    onCancelEditClickHandler={onCancelEditClickHandler}
+                />
 
-                <div className='button-div'>
-                    <div>
-                        {(currentUser && currentUser !== post?.owner._id) && (
-                            <PostLikeButtons
-                                isLiked={isLiked}
-                                onLikeClickHandler={onLikePostClickHandler}
-                                onUnlikeClickHandler={onUnlikePostClockHandler}
-                            />
-                        )}
-                    </div>
-                    <div className='owner-buttons'>
-                        {(currentUser && currentUser === post?.owner._id) && (
-                            <>
-                                {isEditClicked ? (
-                                    <EditControls
-                                        onSaveClickHandler={onSaveEditClickHandler}
-                                        onCancelClickHandler={onCancelEditClickHandler}
-                                    />
-                                ) : (
-                                    <OwnerControls
-                                        onEditClickHandler={onEditPostClickHandler}
-                                        onDeleteClickHandler={onDeletePostClickHandler}
-                                    />
-                                )}
-                            </>
-                        )}
-                    </div>
-                </div>
                 <div className="comments-section">
                     {currentUser && (
                         <CommentCreateForm />

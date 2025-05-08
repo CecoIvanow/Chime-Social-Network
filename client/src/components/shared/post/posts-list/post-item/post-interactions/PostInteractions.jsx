@@ -1,4 +1,4 @@
-import {  useContext, useState } from "react"
+import { useContext, useState } from "react"
 
 import { PostContext } from "../../../../../../contexts/post-context";
 import { LikesContext } from "../../../../../../contexts/likes-context";
@@ -7,7 +7,11 @@ import PostInteractionsAmount from "./post-interactions-amount/PostInteractionsA
 import PostButtons from "./post-buttons/PostButtons";
 
 export default function PostInteractions({
-    onDeletePostClickHandler
+    isEditClicked,
+    onDeletePostClickHandler,
+    onEditPostClickHandler,
+    onSaveEditClickHandler,
+    onCancelEditClickHandler
 }) {
 
     const { post } = useContext(PostContext);
@@ -18,7 +22,11 @@ export default function PostInteractions({
         <LikesContext.Provider value={{ likes, setLikes }}>
             <PostInteractionsAmount />
             <PostButtons
+                isEditClicked={isEditClicked}
                 onDeletePostClickHandler={onDeletePostClickHandler}
+                onEditPostClickHandler={onEditPostClickHandler}
+                onSaveEditClickHandler={onSaveEditClickHandler}
+                onCancelEditClickHandler={onCancelEditClickHandler}
             />
         </ LikesContext.Provider >
     )
