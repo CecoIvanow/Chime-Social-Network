@@ -62,10 +62,10 @@ async function login(data) {
     return [token, _id];
 }
 
-async function getUserAndPopulatePosts(userId) {
-    const user = await User
+async function getUserPosts(userId) {
+    const posts = await User
         .findById(userId)
-        .select('-password -email')
+        .select('createdPosts firstName')
         .populate({
             path: 'createdPosts',
             populate: {
@@ -75,14 +75,13 @@ async function getUserAndPopulatePosts(userId) {
         })
         .lean();
 
-    if (!user) {
-        throw new Error("We couldn't locate your account. Please log in again.");
+    console.log(posts);
+
+    if (!posts) {
+        throw new Error("We couldn't finc your posts Please log in again.");
     }
 
-    user.memberSince = memberSinceDateConverter(user.createdAt);
-    user.age = ageCalculator(user.birthday);
-
-    return user
+    return posts
 }
 
 async function getUserData(userId) {
@@ -326,7 +325,7 @@ async function getAll() {
 const userRepositories = {
     getFullProfileWithFriendsPosts,
     changeAccountCredentials,
-    getUserAndPopulatePosts,
+    getUserPosts,
     attachPostToUser,
     updateUserData,
     getUserFields,
