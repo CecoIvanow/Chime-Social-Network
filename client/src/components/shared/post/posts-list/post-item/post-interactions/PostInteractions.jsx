@@ -1,4 +1,4 @@
-import { memo, useContext, useState } from "react"
+import {  useContext, useState } from "react"
 
 import { PostContext } from "../../../../../../contexts/post-context";
 import { LikesContext } from "../../../../../../contexts/likes-context";
@@ -6,7 +6,9 @@ import { LikesContext } from "../../../../../../contexts/likes-context";
 import PostInteractionsAmount from "./post-interactions-amount/PostInteractionsAmount";
 import PostButtons from "./post-buttons/PostButtons";
 
-export default function PostInteractions() {
+export default function PostInteractions({
+    onDeletePostClickHandler
+}) {
 
     const { post } = useContext(PostContext);
 
@@ -15,7 +17,9 @@ export default function PostInteractions() {
     return (
         <LikesContext.Provider value={{ likes, setLikes }}>
             <PostInteractionsAmount />
-            <PostButtons />
+            <PostButtons
+                onDeletePostClickHandler={onDeletePostClickHandler}
+            />
         </ LikesContext.Provider >
     )
 }
