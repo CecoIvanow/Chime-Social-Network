@@ -65,7 +65,7 @@ async function login(data) {
 async function getUserPosts(userId) {
     const posts = await User
         .findById(userId)
-        .select('createdPosts firstName')
+        .select('createdPosts')
         .populate({
             path: 'createdPosts',
             populate: {
@@ -74,8 +74,6 @@ async function getUserPosts(userId) {
             }
         })
         .lean();
-
-    console.log(posts);
 
     if (!posts) {
         throw new Error("We couldn't find your posts Please log in again.");

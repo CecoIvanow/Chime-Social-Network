@@ -3,13 +3,16 @@ import { useCallback, useContext, useMemo } from "react";
 import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "../firebase/firebase-storage/config.js";
 
-import useFetch from "./useFetchApiCall.js"
+import useFetchApiCall from "./useFetchApiCall.js"
 
 import { UserContext } from "../contexts/user-context.js";
 
 export default function useUserServices() {
-    const { fetchExecute, isLoading, isLoadingRef } = useFetch();
-    const { setIsUser } = useContext(UserContext);    
+    const { fetchExecute, isLoading, abortFetchRequest } = useFetchApiCall();
+
+    const { setIsUser } = useContext(UserContext);
+
+    const userRequests = useMemo(() => [], []);
 
     const userUpdatePayload = useMemo(() => {
         return {
@@ -18,27 +21,38 @@ export default function useUserServices() {
         }
     }, [])
 
+    const abortAll = useCallback(() => {
+        for (const { method, url } of userRequests) {
+            abortFetchRequest(url, method);
+        }
+    }, [abortFetchRequest, userRequests])
+
+    const getUserPosts = useCallback(async (userId) => {
+        const url = `/users/${userId}/posts`;
+        userRequests.push({ url, method: 'GET' });
+        return await fetchExecute(url);
+    }, [fetchExecute, userRequests]);
+
+    const getUserData = useCallback(async (userId) => {
+        const url = `/users/${userId}`;
+        userRequests.push({ url, method: 'GET' });
+        return await fetchExecute(url);
+
+    }, [fetchExecute, userRequests]);
+
     const register = useCallback(async (payload) => {
         const defaultAvatarRef = ref(storage, '/images/default/default-profile-avatar.png');
         const defaultAvatarUrl = await getDownloadURL(defaultAvatarRef);
 
         payload.imageUrl = defaultAvatarUrl;
 
-        if (isLoadingRef.current) {
-            return;
-        }
-
         const userId = await fetchExecute('/register', 'POST', payload);
 
         setIsUser(userId);
 
-    }, [fetchExecute, isLoadingRef, setIsUser]);
+    }, [fetchExecute, setIsUser]);
 
     const login = useCallback(async (payload) => {
-
-        if (isLoadingRef.current) {
-            return;
-        }
 
         const userId = await fetchExecute('/login', 'POST', payload);
 
@@ -46,44 +60,24 @@ export default function useUserServices() {
 
         return userId;
 
-    }, [fetchExecute, isLoadingRef, setIsUser]);
+    }, [fetchExecute, setIsUser]);
 
     const logout = useCallback(async () => {
 
-        if (isLoadingRef.current) {
-            return;
-        }
-
         setIsUser(false);
 
-    }, [isLoadingRef, setIsUser]);
-
-    const getUserPosts = useCallback(async (userId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
-
-        const userData = await fetchExecute(`/users/${userId}/posts`);
-
-        return userData
-    }, [fetchExecute, isLoadingRef]);
+    }, [setIsUser]);
 
     const getAllUsers = useCallback(async () => {
-        if (isLoadingRef.current) {
-            return;
-        }
 
         const users = await fetchExecute(`/users`);
 
         users?.reverse();
 
         return users
-    }, [fetchExecute, isLoadingRef]);
+    }, [fetchExecute]);
 
     const updateUser = useCallback(async (userId, payload) => {
-        if (isLoadingRef.current) {
-            return;
-        }
 
         if (!payload.firstName) {
             throw new Error("First name field must not be empty!");
@@ -97,23 +91,17 @@ export default function useUserServices() {
 
         return data;
 
-    }, [fetchExecute, isLoadingRef]);
+    }, [fetchExecute]);
 
     const getUserFields = useCallback(async (userId, fields) => {
-        if (isLoadingRef.current) {
-            return;
-        }
 
         const data = await fetchExecute(`/users/${userId}/fields?${fields}`);
 
         return data;
 
-    }, [fetchExecute, isLoadingRef]);
+    }, [fetchExecute]);
 
     const changeUserEmail = useCallback(async (userId, userData) => {
-        if (isLoadingRef.current) {
-            return;
-        }
 
         const { newEmail, ...rest } = userData;
 
@@ -152,12 +140,9 @@ export default function useUserServices() {
 
         return data;
 
-    }, [fetchExecute, isLoadingRef, userUpdatePayload]);
+    }, [fetchExecute, userUpdatePayload]);
 
     const changeUserPassword = useCallback(async (userId, userData) => {
-        if (isLoadingRef.current) {
-            return;
-        }
 
         const { newPass, ...rest } = userData;
 
@@ -191,51 +176,31 @@ export default function useUserServices() {
 
         return data;
 
-    }, [fetchExecute, isLoadingRef, userUpdatePayload]);
-
-    const getUserData = useCallback(async (userId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
-
-        const userData = await fetchExecute(`/users/${userId}`);
-
-        return userData;
-
-    }, [fetchExecute, isLoadingRef]);
+    }, [fetchExecute, userUpdatePayload]);
 
     const getFullUserProfile = useCallback(async (userId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
 
         const userData = await fetchExecute(`/users/${userId}/full-profile`);
 
         return userData;
 
-    }, [fetchExecute, isLoadingRef]);
+    }, [fetchExecute]);
 
     const addFriend = useCallback(async (userId, newFriendId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
 
         const friendId = await fetchExecute(`/users/${userId}/friends/${newFriendId}`, 'PATCH');
 
         return friendId;
 
-    }, [fetchExecute, isLoadingRef]);
+    }, [fetchExecute]);
 
     const removeFriend = useCallback(async (userId, friendId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
 
         const removedFriendId = await fetchExecute(`/users/${userId}/friends/${friendId}`, 'DELETE');
 
         return removedFriendId;
 
-    }, [fetchExecute, isLoadingRef]);
+    }, [fetchExecute]);
 
     return {
         isLoading,
@@ -252,5 +217,6 @@ export default function useUserServices() {
         getFullUserProfile,
         addFriend,
         removeFriend,
+        abortAll,
     }
 }

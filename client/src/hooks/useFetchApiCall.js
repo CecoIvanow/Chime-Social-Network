@@ -1,51 +1,62 @@
-import { useCallback, useContext, useRef, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 
 import { AlertContext } from '../contexts/alert-context.js';
 
 import api from '../utils/api.js';
 
-export default function useFetch() {
+export default function useFetchApiCall() {
+    const requestsMap = useMemo(() => new Map(), []);
+    const controllersMap = useMemo(() => new Map(), []);
+
     const [loadingState, setLoadingState] = useState(false);
-    const isLoadingRef = useRef(false);
 
     const { setAlert } = useContext(AlertContext);
 
-    const abortControllerRef = useRef(null);
+    const keyCreator = (url, method) => `${method}:${url}`;
+
+    const abortFetchRequest = useCallback((url, method) => {
+        const controllerKey = keyCreator(url, method);
+        const controller = controllersMap.get(controllerKey);
+
+        console.log(controller);
+
+        if (controller) {
+            controller.abort();
+            controllersMap.delete(controllerKey);
+            requestsMap.delete(controllerKey);
+        }
+    }, [controllersMap, requestsMap]);
 
     const fetchExecute = useCallback(async (url, method = 'GET', payload) => {
         const convertedMethod = method.toUpperCase();
 
-        abortControllerRef.current?.abort();
+        const requestKey = keyCreator(url, method);
+        requestsMap.set(requestKey, true);
 
-        abortControllerRef.current = new AbortController();
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+        controllersMap.set(requestKey, abortController);
 
-        setLoadingState(loadingState => {
-            if (loadingState === false) {
-                isLoadingRef.current = true;
-                return true;
-            }
-
-            return loadingState;
-        });
+        setLoadingState(true);
 
         try {
             let resp = null;
 
             switch (convertedMethod) {
                 case 'GET':
-                    resp = await api.get(url, { signal: abortControllerRef.current.signal });
+                    resp = await api.get(url, { signal });
                     break;
                 case 'POST':
-                    resp = await api.post(url, payload, { signal: abortControllerRef.current.signal });
+                    resp = await api.post(url, payload, { signal });
                     break;
                 case 'PUT':
-                    resp = await api.put(url, payload, { signal: abortControllerRef.current.signal });
+                    resp = await api.put(url, payload, { signal });
                     break;
                 case 'PATCH':
-                    resp = await api.patch(url, payload, { signal: abortControllerRef.current.signal });
+                    resp = await api.patch(url, payload, { signal });
                     break;
                 case 'DELETE':
-                    resp = await api.delete(url, { signal: abortControllerRef.current.signal });
+                    resp = await api.delete(url, { signal });
                     break;
             }
 
@@ -66,20 +77,15 @@ export default function useFetch() {
                 setAlert(error.message);
             }
         } finally {
-            setLoadingState(loadingState => {
-                if (loadingState === true) {
-                    isLoadingRef.current = false;
-                    return false;
-                }
-
-                return loadingState;
-            });
+            requestsMap.delete(requestKey);
+            controllersMap.delete(requestKey);
+            setLoadingState(false);
         }
-    }, [setAlert]);
+    }, [setAlert, requestsMap, controllersMap]);
 
     return {
         isLoading: loadingState,
         fetchExecute,
-        isLoadingRef,
+        abortFetchRequest,
     }
 }
