@@ -19,12 +19,16 @@ export default function PostsSection() {
     const { setAlert } = useContext(AlertContext);
 
     const [totalPosts, setTotalPosts] = useState([]);
+    const [userName, setUserName] = useState(null);
 
     const { getUserPosts, isLoading } = useUserServices();
     
     useEffect(() => {
         getUserPosts(userId)
-            .then(data => setTotalPosts(data.createdPosts))
+            .then(data => {
+                setTotalPosts(data?.createdPosts);
+                setUserName(data?.firstName);
+            })
             .catch(error => {
                 console.error(error);
                 setAlert(error.message)
@@ -35,7 +39,7 @@ export default function PostsSection() {
         <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
             <div className="posts-section">
                 <SectionHeading
-                    sectionName={isUser === userId ? 'My Posts:' : `${totalPosts?.firstName}'s Posts:`}
+                    sectionName={isUser === userId ? 'My Posts:' : `${userName}'s Posts:`}
                 />
 
                 {(isUser && isUser === userId) && (
