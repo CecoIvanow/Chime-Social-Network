@@ -12,7 +12,7 @@ export default function PostsList() {
         {totalPosts?.map(post =>
             <PostItem
                 key={post._id}
-                post={post}
+                postItem={post}
             />
         )}
     </>

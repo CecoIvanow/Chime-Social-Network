@@ -9,7 +9,7 @@ import CommentItem from "./comment-item/CommentItem"
 import CommentCreateForm from "./comment-create-form/CommentCreateForm";
 import OwnerControls from "../../shared/controls/owner-controls/OwnerControls";
 import EditControls from "../../shared/controls/edit-controls/EditControls";
-import PostInteractionButtons from "../../shared/post/post-interaction-buttons/PostInteractionButtons";
+import PostLikeButtons from "../../shared/post/posts-list/post-item/post-interactions/post-like-buttons/PostLikeButtons";
 import PostHeader from "../../shared/post/post-header/PostHeader";
 import PostText from "./post-text/PostText";
 import PostEditContent from "./post-text/post-edit-content/PostEditContent";
@@ -150,7 +150,7 @@ export default function PostDetailsPage() {
                 <div className='button-div'>
                     <div>
                         {(currentUser && currentUser !== post?.owner._id) && (
-                            <PostInteractionButtons
+                            <PostLikeButtons
                                 isLiked={isLiked}
                                 onLikeClickHandler={onLikePostClickHandler}
                                 onUnlikeClickHandler={onUnlikePostClockHandler}
