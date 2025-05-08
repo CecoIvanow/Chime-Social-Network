@@ -1,38 +1,54 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 import PostCreateForm from "../post-create-form/PostCreateForm";
 import SectionHeading from '../../../ui/headings/SectionHeading'
-
-import { UserContext } from "../../../../contexts/user-context";
 import PostsList from "../posts-list/PostsList";
 import LoadingSpinner from "../../../ui/loading-spinner/LoadingSpinner";
 
-export default function PostsSection({
-    userData,
-    isLoading,
-    sectionHeadingName,
-}) {
-    const { isUser } = useContext(UserContext)
+import { UserContext } from "../../../../contexts/user-context";
+import { AlertContext } from "../../../../contexts/alert-context";
+import { TotalPostsContext } from "../../../../contexts/total-posts-context";
+
+import useUserServices from "../../../../hooks/useUserServices";
+
+export default function PostsSection() {
+    const { userId } = useParams();
+
+    const { isUser } = useContext(UserContext);
+    const { setAlert } = useContext(AlertContext);
+
+    const [totalPosts, setTotalPosts] = useState([]);
+
+    const { getUserPosts, isLoading } = useUserServices();
+    
+    useEffect(() => {
+        getUserPosts(isUser)
+            .then(data => setTotalPosts(data.createdPosts))
+            .catch(error => {
+                console.error(error);
+                setAlert(error.message)
+            });
+    }, [getUserPosts, isUser, setAlert]);
 
     return (
-
-        <div className="posts-section">
-            <SectionHeading
-                sectionName={sectionHeadingName}
-            />
-
-            {(isUser && isUser === userData?._id) && (
-                <PostCreateForm
-                    userData={userData}
+        <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
+            <div className="posts-section">
+                <SectionHeading
+                    sectionName={isUser === userId ? 'My Posts:' : `${totalPosts?.firstName}'s Posts:`}
                 />
-            )}
 
-            {isLoading ? (
-                <LoadingSpinner />
-            ) : (
-                <PostsList />
-            )}
+                {(isUser && isUser === userId) && (
+                    <PostCreateForm />
+                )}
 
-        </div>
+                {isLoading ? (
+                    <LoadingSpinner />
+                ) : (
+                    <PostsList />
+                )}
+
+            </div>
+        </TotalPostsContext.Provider>
     )
 }

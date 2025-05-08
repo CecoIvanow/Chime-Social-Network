@@ -58,12 +58,12 @@ export default function useUserServices() {
 
     }, [isLoadingRef, setIsUser]);
 
-    const getUserWithPosts = useCallback(async (userId) => {
+    const getUserPosts = useCallback(async (userId) => {
         if (isLoadingRef.current) {
             return;
         }
 
-        const userData = await fetchExecute(`/users/${userId}/with-posts`);
+        const userData = await fetchExecute(`/users/${userId}/posts`);
 
         return userData
     }, [fetchExecute, isLoadingRef]);
@@ -242,7 +242,7 @@ export default function useUserServices() {
         register,
         login,
         logout,
-        getUserWithPosts,
+        getUserPosts,
         getAllUsers,
         updateUser,
         getUserFields,
