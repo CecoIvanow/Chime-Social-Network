@@ -36,10 +36,7 @@ export default function ProfilePage() {
 
     return (
         <div className="profile-container">
-            <ProfileSection
-                userData={userData}
-                isLoading={isLoading}
-            />
+            <ProfileSection />
 
             <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
                 <PostsSection
@@ -48,7 +45,7 @@ export default function ProfilePage() {
                     isLoading={isLoading}
                 />
             </TotalPostsContext.Provider>
-            
+
         </div>
     )
 }
