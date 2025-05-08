@@ -78,7 +78,7 @@ async function getUserPosts(userId) {
     console.log(posts);
 
     if (!posts) {
-        throw new Error("We couldn't finc your posts Please log in again.");
+        throw new Error("We couldn't find your posts Please log in again.");
     }
 
     return posts
