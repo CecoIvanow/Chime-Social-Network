@@ -23,13 +23,13 @@ export default function PostsSection() {
     const { getUserPosts, isLoading } = useUserServices();
     
     useEffect(() => {
-        getUserPosts(isUser)
+        getUserPosts(userId)
             .then(data => setTotalPosts(data.createdPosts))
             .catch(error => {
                 console.error(error);
                 setAlert(error.message)
             });
-    }, [getUserPosts, isUser, setAlert]);
+    }, [getUserPosts, userId, setAlert]);
 
     return (
         <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
