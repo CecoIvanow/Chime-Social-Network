@@ -8,19 +8,13 @@ import PostLikeButtons from '../post-like-buttons/PostLikeButtons'
 import { UserContext } from '../../../../../../../contexts/user-context'
 import { PostContext } from '../../../../../../../contexts/post-context'
 import { LikesContext } from '../../../../../../../contexts/likes-context';
+import { PostActionsContext } from '../../../../../../../contexts/post-actions-context'
 
-export default function PostButtons({
-    isEditClicked,
-    onDeletePostClickHandler,
-    onEditPostClickHandler,
-    onSaveEditClickHandler,
-    onCancelEditClickHandler,
-    onLikeClickHandler,
-    onUnlikeClickHandler,
-}) {
-    const { likes, setLikes } = useContext(LikesContext);
-    const { isUser } = useContext(UserContext);
+export default function PostButtons() {
     const { post } = useContext(PostContext);
+    const { isUser } = useContext(UserContext);
+    const { likes, setLikes } = useContext(LikesContext);
+    const { isEditClicked } = useContext(PostActionsContext);
 
     return <>
         <div className='button-div'>
@@ -31,8 +25,6 @@ export default function PostButtons({
                             <PostLikeButtons
                                 likes={likes}
                                 setLikes={setLikes}
-                                onLikeClickHandler={onLikeClickHandler}
-                                onUnlikeClickHandler={onUnlikeClickHandler}
                             />
                         )}
 
@@ -44,15 +36,10 @@ export default function PostButtons({
                 {(isUser && isUser === post?.owner._id) && (
                     <>
                         {isEditClicked ? (
-                            <EditControls
-                                onSaveClickHandler={onSaveEditClickHandler}
-                                onCancelClickHandler={onCancelEditClickHandler}
-                            />
+                            <EditControls />
                         ) : (
                             <OwnerControls
                                 urlLink={`/post/${post._id}/edit`}
-                                onEditClickHandler={onEditPostClickHandler}
-                                onDeleteClickHandler={onDeletePostClickHandler}
                             />
                         )}
                     </>

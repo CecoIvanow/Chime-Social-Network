@@ -1,11 +1,15 @@
+import { useContext } from "react";
+
 import Button from "../../../ui/buttons/button/Button";
 import LinkButton from "../../../ui/buttons/link-button/LinkButton";
 
+import { PostActionsContext } from "../../../../contexts/post-actions-context";
+
 export default function EditControls({
     urlLink,
-    onSaveClickHandler,
-    onCancelClickHandler,
 }) {
+    const { onCancelEditClickHandler, onSaveEditClickHandler } = useContext(PostActionsContext);
+
     return <>
         {urlLink ? (
             <>
@@ -20,7 +24,7 @@ export default function EditControls({
                 <Button
                     buttonName="Edit"
                     btnStyle="button"
-                    onClickHandler={onSaveClickHandler}
+                        onClickHandler={onSaveEditClickHandler}
                 />
             </>
         )}
@@ -28,7 +32,7 @@ export default function EditControls({
         <Button
             buttonName='Close'
             btnStyle='button delete-btn'
-            onClickHandler={onCancelClickHandler}
+            onClickHandler={onCancelEditClickHandler}
         />
     </>
 }

@@ -2,8 +2,9 @@ import { useContext, useEffect } from "react";
 
 import PostItem from "./post-item/PostItem";
 
-import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 import { AlertContext } from "../../../../contexts/alert-context";
+import { PostActionsContext } from "../../../../contexts/post-actions-context";
+import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 import { UserContext } from "../../../../contexts/user-context";
 
 import usePostServices from "../../../../hooks/usePostServices";
@@ -60,15 +61,23 @@ export default function PostsList() {
         }
     }
 
+    const postActionsContextValues = {
+        onLikeClickHandler,
+        onUnlikeClickHandler,
+        onDeletePostClickHandler,
+    }
+
     return <>
         {totalPosts?.map(post =>
-            <PostItem
+            <PostActionsContext.Provider
+                value={postActionsContextValues}
                 key={post._id}
-                postItem={post}
-                onDeletePostClickHandler={onDeletePostClickHandler}
-                onLikeClickHandler={onLikeClickHandler}
-                onUnlikeClickHandler={onUnlikeClickHandler}
-            />
+            >
+                <PostItem
+                    key={post._id}
+                    postItem={post}
+                />
+            </PostActionsContext.Provider>
         )}
     </>
 }

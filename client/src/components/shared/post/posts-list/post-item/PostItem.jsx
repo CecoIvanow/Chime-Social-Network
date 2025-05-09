@@ -8,9 +8,6 @@ import { PostContext } from "../../../../../contexts/post-context";
 
 export default function PostItem({
     postItem,
-    onDeletePostClickHandler,
-    onLikeClickHandler,
-    onUnlikeClickHandler,
 }) {
     const [post, setPost] = useState(postItem);
 
@@ -28,11 +25,7 @@ export default function PostItem({
                     postText={post.text}
                 />
 
-                <PostInteractions
-                    onDeletePostClickHandler={() => onDeletePostClickHandler(post._id)}
-                    onLikeClickHandler={onLikeClickHandler}
-                    onUnlikeClickHandler={onUnlikeClickHandler}
-                />
+                <PostInteractions />
             </li >
         </PostContext.Provider>
     )

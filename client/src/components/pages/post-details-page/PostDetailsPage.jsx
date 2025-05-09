@@ -12,6 +12,7 @@ import PostText from "./post-text/PostText";
 import PostEditContent from "./post-text/post-edit-content/PostEditContent";
 import usePostServices from "../../../hooks/usePostServices";
 import PostInteractions from "../../shared/post/posts-list/post-item/post-interactions/PostInteractions";
+import { PostActionsContext } from "../../../contexts/post-actions-context";
 
 export default function PostDetailsPage() {
     const location = useLocation();
@@ -119,6 +120,16 @@ export default function PostDetailsPage() {
         }
     }
 
+    const postActionsContextValues = {
+        isEditClicked,
+        onLikeClickHandler,
+        onUnlikeClickHandler,
+        onEditPostClickHandler,
+        onSaveEditClickHandler,
+        onCancelEditClickHandler,
+        onDeletePostClickHandler,
+    }
+
     return (
         <PostContext.Provider value={{ post, setPost }}>
             <li className='post-page-body'>
@@ -136,15 +147,9 @@ export default function PostDetailsPage() {
                     />
                 )}
 
-                <PostInteractions
-                    isEditClicked={isEditClicked}
-                    onDeletePostClickHandler={onDeletePostClickHandler}
-                    onEditPostClickHandler={onEditPostClickHandler}
-                    onSaveEditClickHandler={onSaveEditClickHandler}
-                    onCancelEditClickHandler={onCancelEditClickHandler}
-                    onLikeClickHandler={onLikeClickHandler}
-                    onUnlikeClickHandler={onUnlikeClickHandler}
-                />
+                <PostActionsContext.Provider value={postActionsContextValues}>
+                    <PostInteractions />
+                </PostActionsContext.Provider>
 
                 <div className="comments-section">
                     {currentUser && (
