@@ -12,8 +12,13 @@ export default function PostInteractions() {
 
     const [likes, setLikes] = useState(post.likes || []);
 
+    const likesContextValues = {
+        likes,
+        setLikes
+    }
+
     return (
-        <LikesContext.Provider value={{ likes, setLikes }}>
+        <LikesContext.Provider value={likesContextValues}>
             <PostInteractionsAmount />
             
             <PostButtons />

@@ -7,13 +7,11 @@ import PostLikeButtons from '../post-like-buttons/PostLikeButtons'
 
 import { UserContext } from '../../../../../../../contexts/user-context'
 import { PostContext } from '../../../../../../../contexts/post-context'
-import { LikesContext } from '../../../../../../../contexts/likes-context';
 import { PostActionsContext } from '../../../../../../../contexts/post-actions-context'
 
 export default function PostButtons() {
     const { post } = useContext(PostContext);
     const { isUser } = useContext(UserContext);
-    const { likes, setLikes } = useContext(LikesContext);
     const { isEditClicked } = useContext(PostActionsContext);
 
     return <>
@@ -22,10 +20,7 @@ export default function PostButtons() {
                 {isUser && (
                     <>
                         {(isUser !== post.owner._id &&
-                            <PostLikeButtons
-                                likes={likes}
-                                setLikes={setLikes}
-                            />
+                            <PostLikeButtons/>
                         )}
 
                         <PostCommentButton />
