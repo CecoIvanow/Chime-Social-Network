@@ -28,7 +28,7 @@ export default function ProfilePage() {
                 ])
                 
                 setUserData(userData);
-                setTotalPosts(userPosts?.createdPosts);
+                setTotalPosts(userPosts?.createdPosts.reverse());
                 
             } catch (error) {
                 console.error(error);
