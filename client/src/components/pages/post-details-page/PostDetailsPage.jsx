@@ -130,8 +130,13 @@ export default function PostDetailsPage() {
         onDeletePostClickHandler,
     }
 
+    const postContextValues = {
+        post,
+        setPost
+    }
+
     return (
-        <PostContext.Provider value={{ post, setPost }}>
+        <PostContext.Provider value={postContextValues}>
             <li className='post-page-body'>
 
                 <PostHeader />

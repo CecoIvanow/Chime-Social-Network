@@ -15,8 +15,13 @@ export default function PostItem({
         return null;
     }
 
+    const postContextValues = {
+        post,
+        setPost
+    }
+
     return (
-        <PostContext.Provider value={{ post, setPost }}>
+        <PostContext.Provider value={postContextValues}>
             <li className='post-item'>
 
                 <PostHeader />
