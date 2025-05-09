@@ -34,6 +34,11 @@ export default function App() {
 
     const location = useLocation();
 
+    const alertContextValues = {
+        alert,
+        setAlert
+    }
+
     const userContextValues = {
         isUser,
         setIsUser
@@ -41,7 +46,7 @@ export default function App() {
 
     return (
         <ErrorBoundary>
-            <AlertContext.Provider value={{ alert, setAlert }}>
+            <AlertContext.Provider value={alertContextValues}>
                 <UserContext.Provider value={userContextValues}>
 
                     {(isUser || (!isUser && location.pathname !== '/')) && (
