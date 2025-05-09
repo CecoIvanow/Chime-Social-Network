@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import PostHeader from "../../post-header/PostHeader";
 import PostInteractions from "./post-interactions/PostInteractions";
@@ -18,12 +18,17 @@ export default function PostItem({
     const { totalPosts, setTotalPosts } = useContext(TotalPostsContext);
     const { setAlert } = useContext(AlertContext);
 
-    const { deletePost } = usePostServices();
+    const { deletePost, abortAll } = usePostServices();
+
+    useEffect(() => {
+        return () => {
+            abortAll()
+        }
+    }, [abortAll]);
 
     if (!post?._id) {
         return null;
     }
-
 
     const onDeletePostClickHandler = async () => {
         const isDeleteConFirmed = confirm('Are you sure you want to delete this post');

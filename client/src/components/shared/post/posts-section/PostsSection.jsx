@@ -16,10 +16,16 @@ export default function PostsSection({
 
     const { isUser } = useContext(UserContext);
 
+    const sectionName = userId ?
+        isUser === userId ?
+            'My Posts:' :
+            `${userName}'s Posts:` :
+        'Friends Posts:';
+
     return (
         <div className="posts-section">
             <SectionHeading
-                sectionName={isUser === userId ? 'My Posts:' : `${userName}'s Posts:`}
+                sectionName={sectionName}
             />
 
             {(isUser && isUser === userId) && (

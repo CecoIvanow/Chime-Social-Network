@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 import Button from "../../../../../../ui/buttons/button/Button"
 
@@ -10,14 +10,20 @@ import { LikesContext } from "../../../../../../../contexts/likes-context";
 import usePostServices from "../../../../../../../hooks/usePostServices";
 
 export default function PostLikeButtons() {
-    const { likePost, unlikePost } = usePostServices();
-
     const { post } = useContext(PostContext);
     const { isUser } = useContext(UserContext)
     const { setAlert } = useContext(AlertContext);
     const { likes, setLikes } = useContext(LikesContext);
 
+    const { likePost, unlikePost, abortAll } = usePostServices();
+
     const isLiked = likes.includes(isUser);
+
+    useEffect(() => {
+        return () => {
+            abortAll();
+        }
+    }, [abortAll])
 
     const onLikeClickHandler = async () => {
         try {

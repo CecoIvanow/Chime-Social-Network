@@ -21,7 +21,7 @@ export default function CommentItem({
     const { isUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
-    const { updateComment, deleteComment } = useCommentServices();
+    const { updateComment, deleteComment, abortAll } = useCommentServices();
 
     const onDeleteCommentClickHandler = async () => {
         const isConfirmed = confirm('Are you sure you want to delete this comment?');
@@ -57,7 +57,7 @@ export default function CommentItem({
                 setOnEditCommentText(updatedCommentText);
                 setIsEditClicked(false);
             }
-            
+
         } catch (error) {
             setAlert(error.message);
         }
@@ -72,6 +72,12 @@ export default function CommentItem({
         setCommentText(comment.text);
         setOnEditCommentText(comment.text);
     }, [comment.text])
+
+    useEffect(() => {
+        return () => {
+            abortAll
+        }
+    }, [abortAll])
 
     return <>
         <li className='comment-item'>

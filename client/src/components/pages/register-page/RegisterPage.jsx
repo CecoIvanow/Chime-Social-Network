@@ -1,4 +1,4 @@
-import { useActionState, useContext } from "react";
+import { useActionState, useContext, useEffect } from "react";
 
 import AuthButton from "../../shared/auth/auth-button/AuthButton";
 import AuthForm from "../../shared/auth/auth-form/AuthForm";
@@ -21,7 +21,7 @@ export default function RegisterPage() {
 
     const { setAlert } = useContext(AlertContext);
 
-    const { register } = useUserServices();
+    const { register, abortAll } = useUserServices();
 
     const submitFormClickHandler = async (_, formData) => {
         const data = Object.fromEntries(formData);
@@ -35,6 +35,12 @@ export default function RegisterPage() {
     }
 
     const [, action, isPending] = useActionState(submitFormClickHandler);
+
+    useEffect(() => {
+        return () => {
+            abortAll();
+        }
+    }, [abortAll]);
 
     return <>
         <div className='register-page'>

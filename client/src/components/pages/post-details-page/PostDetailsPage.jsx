@@ -26,7 +26,7 @@ export default function PostDetailsPage() {
     const { isUser: currentUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
-    const { deletePost, editPost, getPostWithComments } = usePostServices()
+    const { deletePost, editPost, getPostWithComments, abortAll } = usePostServices()
 
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
@@ -36,7 +36,7 @@ export default function PostDetailsPage() {
                 if (isEditClicked && (currentUser !== data.owner._id)) {
                     navigateTo('/404');
                 }
-                
+
                 setPost(data);
                 setPostText(data.text);
             })
@@ -44,7 +44,11 @@ export default function PostDetailsPage() {
                 console.error(error);
                 setAlert(error.message);
             });
-    }, [location.pathname, currentUser, navigateTo, isEditClicked, setAlert, getPostWithComments]);
+
+        return () => {
+            abortAll();
+        }
+    }, [location.pathname, currentUser, navigateTo, isEditClicked, setAlert, getPostWithComments, abortAll]);
 
     if (!post?._id) {
         return null;
@@ -60,8 +64,6 @@ export default function PostDetailsPage() {
     }
 
     const onSaveEditClickHandler = async () => {
-
-
         try {
             const updatedText = await editPost(post._id, postText);
 

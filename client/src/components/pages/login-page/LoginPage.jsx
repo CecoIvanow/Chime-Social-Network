@@ -1,4 +1,4 @@
-import { useActionState, useContext } from "react";
+import { useActionState, useContext, useEffect } from "react";
 
 import AuthButton from "../../shared/auth/auth-button/AuthButton";
 import AuthForm from "../../shared/auth/auth-form/AuthForm";
@@ -16,7 +16,7 @@ export default function LoginPage() {
 
     const { setAlert } = useContext(AlertContext);
 
-    const { login } = useUserServices();
+    const { login, abortAll } = useUserServices();
 
     const submitFormHandler = async (_, formData) => {
         const data = Object.fromEntries(formData);
@@ -30,6 +30,12 @@ export default function LoginPage() {
     }
 
     const [, action, isPending] = useActionState(submitFormHandler);
+
+    useEffect(() => {
+        return () => {
+            abortAll();
+        }
+    }, [abortAll])
 
     return <>
         <div className="login-page">

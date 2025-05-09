@@ -21,6 +21,7 @@ export default function PostInteractions({
     return (
         <LikesContext.Provider value={{ likes, setLikes }}>
             <PostInteractionsAmount />
+            
             <PostButtons
                 isEditClicked={isEditClicked}
                 onDeletePostClickHandler={onDeletePostClickHandler}

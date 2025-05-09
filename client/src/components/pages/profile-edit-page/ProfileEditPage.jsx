@@ -11,10 +11,10 @@ import EditControls from "../../shared/controls/edit-controls/EditControls"
 import SectionHeading from "../../ui/headings/SectionHeading"
 import ImageUpload from "./image-upload/ImageUpload"
 
-import useUserServices from "../../../hooks/useUserServices"
-
 import { AlertContext } from "../../../contexts/alert-context"
 import { UserContext } from "../../../contexts/user-context"
+
+import useUserServices from "../../../hooks/useUserServices"
 
 export default function ProfileEditPage() {
     const navigateTo = useNavigate();
@@ -27,16 +27,16 @@ export default function ProfileEditPage() {
     const { isUser: currentUser } = useContext(UserContext)
     const { setAlert } = useContext(AlertContext);
 
-    const { updateUser, getUserData } = useUserServices();
+    const { updateUser, getUserData, abortAll } = useUserServices();
 
     const formProfileInputs = [
-        { fieldName: 'First name', inputType: 'text', inputName: 'firstName', value: userData.firstName },
-        { fieldName: 'Last name', inputType: 'text', inputName: 'lastName', value: userData.lastName },
-        { fieldName: 'Birthday', inputType: 'date', inputName: 'birthday', value: userData.birthday },
-        { fieldName: 'Location', inputType: 'text', inputName: 'location', value: userData.location },
-        { fieldName: 'Occupation', inputType: 'text', inputName: 'occupation', value: userData.occupation },
-        { fieldName: 'Education', inputType: 'text', inputName: 'education', value: userData.education },
-        { fieldName: 'Status', inputType: 'text', inputName: 'status', value: userData.status },
+        { fieldName: 'First name', inputType: 'text', inputName: 'firstName', value: userData?.firstName },
+        { fieldName: 'Last name', inputType: 'text', inputName: 'lastName', value: userData?.lastName },
+        { fieldName: 'Birthday', inputType: 'date', inputName: 'birthday', value: userData?.birthday },
+        { fieldName: 'Location', inputType: 'text', inputName: 'location', value: userData?.location },
+        { fieldName: 'Occupation', inputType: 'text', inputName: 'occupation', value: userData?.occupation },
+        { fieldName: 'Education', inputType: 'text', inputName: 'education', value: userData?.education },
+        { fieldName: 'Status', inputType: 'text', inputName: 'status', value: userData?.status },
     ]
 
     useEffect(() => {
@@ -51,7 +51,10 @@ export default function ProfileEditPage() {
                 setAlert(error.message);
             });
 
-    }, [profileId, currentUser, navigateTo, setAlert, getUserData]);
+        return () => {
+            abortAll();
+        }
+    }, [profileId, currentUser, navigateTo, setAlert, getUserData, abortAll]);
 
     const onEditSubmitClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);
@@ -92,13 +95,13 @@ export default function ProfileEditPage() {
             />
 
             <ImageUpload
-                imageUrl={userData.imageUrl}
+                imageUrl={userData?.imageUrl}
                 setImageUpload={setImageUpload}
             />
 
             <form action={onEditSubmitClickHandler}>
                 <GenderDetails
-                    userGender={userData.gender}
+                    userGender={userData?.gender}
                 />
 
                 {formProfileInputs.map(field =>
@@ -114,7 +117,7 @@ export default function ProfileEditPage() {
                 <TextAreaInput
                     fieldName='Bio'
                     inputName='bio'
-                    initialValue={userData.bio}
+                    initialValue={userData?.bio}
                 />
 
                 <div className='button-div'>

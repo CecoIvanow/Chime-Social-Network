@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { UserContext } from '../../../../../../contexts/user-context'
 import { AlertContext } from '../../../../../../contexts/alert-context';
@@ -15,7 +15,7 @@ export default function UserItem({
 
     const [isAddedAsFriend, setIsAddedAsFriend] = useState(user.friends?.includes(isUser));
 
-    const { addFriend, removeFriend } = useUserServices();
+    const { addFriend, removeFriend, abortAll } = useUserServices();
 
     const onAddFriendClickHandler = async () => {
         try {
@@ -42,6 +42,12 @@ export default function UserItem({
             setAlert(error.message);
         }
     }
+
+    useEffect(() => {
+        return () => {
+            abortAll();
+        }
+    }, [abortAll]);
 
     return <>
         <div className="user-item">

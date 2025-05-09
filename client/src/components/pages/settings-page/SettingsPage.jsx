@@ -17,9 +17,7 @@ export default function SettingsPage() {
     const { isUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
-    const { getUserFields } = useUserServices();
-
-    const { changeUserEmail, changeUserPassword } = useUserServices();
+    const { changeUserEmail, changeUserPassword, getUserFields, abortAll } = useUserServices();
 
     const onEmailChangeSubmitHandler = async (formData) => {
         const data = Object.fromEntries(formData);
@@ -55,12 +53,16 @@ export default function SettingsPage() {
         const userFields = 'email';
 
         getUserFields(isUser, userFields)
-            .then(data => setUserEmail(data.email))
+            .then(data => setUserEmail(data?.email))
             .catch(error => {
                 console.error(error);
                 setAlert(error.message);
             })
-    }, [isUser, setAlert, getUserFields]);
+
+        return () => {
+            abortAll();
+        }
+    }, [isUser, setAlert, getUserFields, abortAll]);
 
     return <>
         <div className="settings-container">
