@@ -6,28 +6,22 @@ import { LikesContext } from "../../../../../../contexts/likes-context";
 import PostInteractionsAmount from "./post-interactions-amount/PostInteractionsAmount";
 import PostButtons from "./post-buttons/PostButtons";
 
-export default function PostInteractions({
-    isEditClicked,
-    onDeletePostClickHandler,
-    onEditPostClickHandler,
-    onSaveEditClickHandler,
-    onCancelEditClickHandler
-}) {
+export default function PostInteractions() {
 
     const { post } = useContext(PostContext);
 
     const [likes, setLikes] = useState(post.likes || []);
 
+    const likesContextValues = {
+        likes,
+        setLikes
+    }
+
     return (
-        <LikesContext.Provider value={{ likes, setLikes }}>
+        <LikesContext.Provider value={likesContextValues}>
             <PostInteractionsAmount />
-            <PostButtons
-                isEditClicked={isEditClicked}
-                onDeletePostClickHandler={onDeletePostClickHandler}
-                onEditPostClickHandler={onEditPostClickHandler}
-                onSaveEditClickHandler={onSaveEditClickHandler}
-                onCancelEditClickHandler={onCancelEditClickHandler}
-            />
+            
+            <PostButtons />
         </ LikesContext.Provider >
     )
 }

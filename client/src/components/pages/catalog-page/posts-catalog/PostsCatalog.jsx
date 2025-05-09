@@ -1,32 +1,21 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 import SectionHeading from "../../../ui/headings/SectionHeading"
 import SearchField from "../../../ui/search-field/SearchField"
 
-import { AlertContext } from "../../../../contexts/alert-context";
 import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 
-import usePostServices from "../../../../hooks/usePostServices";
 import PostsList from "../../../shared/post/posts-list/PostsList";
 import LoadingSpinner from "../../../ui/loading-spinner/LoadingSpinner";
 
-export default function PostsCatalog() {
+export default function PostsCatalog({
+    setTotalPosts,
+    totalPosts,
+    isLoading
+}) {
     const [postSearchParams, setPostSearchParams] = useState('');
-    const [totalPosts, setTotalPosts] = useState([]);
+
     const [matchingPosts, setMatchingPosts] = useState([]);
-
-    const { setAlert } = useContext(AlertContext);
-    const { getAllPosts, isLoading } = usePostServices();
-
-    useEffect(() => {
-        getAllPosts()
-            .then(data => setTotalPosts(data))
-            .catch(error => {
-                console.error(error);
-                setAlert(error.message);
-            })
-
-    }, [setAlert, getAllPosts]);
 
     useEffect(() => {
         if (postSearchParams === '') {
@@ -46,6 +35,11 @@ export default function PostsCatalog() {
         }
     }, [postSearchParams, totalPosts]);
 
+    const totalPostsContextValues = {
+        totalPosts: matchingPosts,
+        setTotalPosts
+    }
+
     return <>
         <div className="posts-catalog">
 
@@ -58,7 +52,7 @@ export default function PostsCatalog() {
                 searchBy={'content'}
             />
 
-            <TotalPostsContext.Provider value={{ totalPosts: matchingPosts, setTotalPosts }}>
+            <TotalPostsContext.Provider value={totalPostsContextValues}>
                 {isLoading ? (
                     <LoadingSpinner />
                 ) : (

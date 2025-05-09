@@ -34,10 +34,20 @@ export default function App() {
 
     const location = useLocation();
 
+    const alertContextValues = {
+        alert,
+        setAlert
+    }
+
+    const userContextValues = {
+        isUser,
+        setIsUser
+    }
+
     return (
         <ErrorBoundary>
-            <AlertContext.Provider value={{ alert, setAlert }}>
-                <UserContext.Provider value={{ isUser, setIsUser }}>
+            <AlertContext.Provider value={alertContextValues}>
+                <UserContext.Provider value={userContextValues}>
 
                     {(isUser || (!isUser && location.pathname !== '/')) && (
                         <MenuBar />

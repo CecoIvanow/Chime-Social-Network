@@ -12,6 +12,7 @@ import PostText from "./post-text/PostText";
 import PostEditContent from "./post-text/post-edit-content/PostEditContent";
 import usePostServices from "../../../hooks/usePostServices";
 import PostInteractions from "../../shared/post/posts-list/post-item/post-interactions/PostInteractions";
+import { PostActionsContext } from "../../../contexts/post-actions-context";
 
 export default function PostDetailsPage() {
     const location = useLocation();
@@ -26,7 +27,7 @@ export default function PostDetailsPage() {
     const { isUser: currentUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
-    const { deletePost, editPost, getPostWithComments } = usePostServices()
+    const { deletePost, editPost, getPostWithComments, likePost, unlikePost, abortAll } = usePostServices()
 
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
@@ -36,7 +37,7 @@ export default function PostDetailsPage() {
                 if (isEditClicked && (currentUser !== data.owner._id)) {
                     navigateTo('/404');
                 }
-                
+
                 setPost(data);
                 setPostText(data.text);
             })
@@ -44,7 +45,11 @@ export default function PostDetailsPage() {
                 console.error(error);
                 setAlert(error.message);
             });
-    }, [location.pathname, currentUser, navigateTo, isEditClicked, setAlert, getPostWithComments]);
+
+        return () => {
+            abortAll();
+        }
+    }, [location.pathname, currentUser, navigateTo, isEditClicked, setAlert, getPostWithComments, abortAll]);
 
     if (!post?._id) {
         return null;
@@ -60,8 +65,6 @@ export default function PostDetailsPage() {
     }
 
     const onSaveEditClickHandler = async () => {
-
-
         try {
             const updatedText = await editPost(post._id, postText);
 
@@ -95,8 +98,45 @@ export default function PostDetailsPage() {
         setIsEditClicked(true);
     }
 
+    const onUnlikeClickHandler = async () => {
+        try {
+            await unlikePost(currentUser, post._id);
+            return true;
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+            return false;
+        }
+    }
+
+    const onLikeClickHandler = async () => {
+        try {
+            await likePost(currentUser, post._id);
+            return true;
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+            return false;
+        }
+    }
+
+    const postActionsContextValues = {
+        isEditClicked,
+        onLikeClickHandler,
+        onUnlikeClickHandler,
+        onEditPostClickHandler,
+        onSaveEditClickHandler,
+        onCancelEditClickHandler,
+        onDeletePostClickHandler,
+    }
+
+    const postContextValues = {
+        post,
+        setPost
+    }
+
     return (
-        <PostContext.Provider value={{ post, setPost }}>
+        <PostContext.Provider value={postContextValues}>
             <li className='post-page-body'>
 
                 <PostHeader />
@@ -112,13 +152,9 @@ export default function PostDetailsPage() {
                     />
                 )}
 
-                <PostInteractions
-                    isEditClicked={isEditClicked}
-                    onDeletePostClickHandler={onDeletePostClickHandler}
-                    onEditPostClickHandler={onEditPostClickHandler}
-                    onSaveEditClickHandler={onSaveEditClickHandler}
-                    onCancelEditClickHandler={onCancelEditClickHandler}
-                />
+                <PostActionsContext.Provider value={postActionsContextValues}>
+                    <PostInteractions />
+                </PostActionsContext.Provider>
 
                 <div className="comments-section">
                     {currentUser && (

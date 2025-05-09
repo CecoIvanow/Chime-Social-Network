@@ -7,6 +7,7 @@ import { AlertContext } from "../../../contexts/alert-context";
 import FriendsSection from "./friends-section/FriendsSection";
 import PostsSection from "../../shared/post/posts-section/PostsSection";
 import ProfileSection from "../../shared/profile/profile-section/ProfileSection";
+
 import useUserServices from "../../../hooks/useUserServices";
 
 export default function UserHomePage() {
@@ -17,7 +18,7 @@ export default function UserHomePage() {
     const [totalPosts, setTotalPosts] = useState([]);
     const [userFriends, setUserFriends] = useState([]);
 
-    const { getFullUserProfile, isLoading } = useUserServices();
+    const { getFullUserProfile, isLoading, abortAll } = useUserServices();
 
     useEffect(() => {
         getFullUserProfile(isUser)
@@ -38,7 +39,16 @@ export default function UserHomePage() {
                 console.error(error);
                 setAlert(error.message);
             });
-    }, [isUser, setAlert, getFullUserProfile])
+
+        return () => {
+            abortAll();
+        }
+    }, [isUser, setAlert, getFullUserProfile, abortAll]);
+
+    const totalPostsContextValues = {
+        totalPosts,
+        setTotalPosts
+    }
 
     return <>
         <div className='user-home-page'>
@@ -47,10 +57,9 @@ export default function UserHomePage() {
                 isLoading={isLoading}
             />
 
-            <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
+            <TotalPostsContext.Provider value={totalPostsContextValues}>
                 <PostsSection
-                    sectionHeadingName='Friends Posts:'
-                    userData={userData}
+                    userName={userData?.firstName}
                     isLoading={isLoading}
                 />
             </TotalPostsContext.Provider>

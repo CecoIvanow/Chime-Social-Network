@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { UserContext } from "../../../../contexts/user-context";
 import { TotalPostsContext } from "../../../../contexts/total-posts-context";
@@ -14,7 +14,7 @@ export default function PostCreateForm() {
     const { setAlert } = useContext(AlertContext);
     const { isUser } = useContext(UserContext);
 
-    const { createPost } = usePostServices();
+    const { createPost, abortAll } = usePostServices();
 
     const onPostSubmitHandler = async (formData) => {
         const postData = Object.fromEntries(formData);
@@ -39,6 +39,12 @@ export default function PostCreateForm() {
     const onTextChangeHandler = (e) => {
         setPostText(e.currentTarget.value);
     }
+
+    useEffect(() => {
+        return () => {
+            abortAll();
+        }
+    }, [abortAll])
 
     return <CreateContent
         text={postText}

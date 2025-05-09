@@ -1,11 +1,17 @@
+import { useContext } from "react";
+
 import Button from "../../../ui/buttons/button/Button";
 import LinkButton from "../../../ui/buttons/link-button/LinkButton";
 
+import { PostActionsContext } from "../../../../contexts/post-actions-context";
+import { PostContext } from "../../../../contexts/post-context";
+
 export default function OwnerControls({
     urlLink,
-    onEditClickHandler,
-    onDeleteClickHandler
 }) {
+    const { post } = useContext(PostContext);
+    const { onDeletePostClickHandler, onEditPostClickHandler } = useContext(PostActionsContext);
+
     return <>
         {urlLink ? (
             <>
@@ -20,7 +26,7 @@ export default function OwnerControls({
                 <Button
                     buttonName="Edit"
                     btnStyle="button"
-                    onClickHandler={onEditClickHandler}
+                        onClickHandler={onEditPostClickHandler}
                 />
             </>
         )}
@@ -28,7 +34,7 @@ export default function OwnerControls({
         <Button
             buttonName="Delete"
             btnStyle="button delete-btn"
-            onClickHandler={onDeleteClickHandler}
+            onClickHandler={() => onDeletePostClickHandler(post._id)}
         />
     </>
 }

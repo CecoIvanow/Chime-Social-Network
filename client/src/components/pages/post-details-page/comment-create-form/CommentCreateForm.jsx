@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import useCommentServices from "../../../../hooks/useCommentServices";
 
@@ -15,7 +15,13 @@ export default function CreateCommentForm() {
     const { isUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
-    const { createComment } = useCommentServices();
+    const { createComment, abortAll } = useCommentServices();
+
+    useEffect(() => {
+        return () => {
+            abortAll();
+        }
+    }, [abortAll])
 
     const onAddCommentSubmitHandler = async (formData) => {
         const commentData = Object.fromEntries(formData);

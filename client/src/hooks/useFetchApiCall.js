@@ -18,8 +18,6 @@ export default function useFetchApiCall() {
         const controllerKey = keyCreator(url, method);
         const controller = controllersMap.get(controllerKey);
 
-        console.log(controller);
-
         if (controller) {
             controller.abort();
             controllersMap.delete(controllerKey);
