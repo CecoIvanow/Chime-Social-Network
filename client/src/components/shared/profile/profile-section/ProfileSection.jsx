@@ -5,6 +5,7 @@ export default function ProfileSection({
     userData,
     isLoading,
 }) {
+
     return <>
         <div className="profile-info-section">
             {isLoading ? (

@@ -3,13 +3,16 @@ import { useCallback, useContext, useMemo } from "react";
 import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "../firebase/firebase-storage/config.js";
 
-import useFetch from "./useFetchApiCall.js"
+import useFetchApiCall from "./useFetchApiCall.js"
 
 import { UserContext } from "../contexts/user-context.js";
 
 export default function useUserServices() {
-    const { fetchExecute, isLoading, isLoadingRef } = useFetch();
-    const { setIsUser } = useContext(UserContext);    
+    const { fetchExecute, isLoading, abortFetchRequest } = useFetchApiCall();
+
+    const { setIsUser } = useContext(UserContext);
+
+    const userRequests = useMemo(() => [], []);
 
     const userUpdatePayload = useMemo(() => {
         return {
@@ -18,73 +21,76 @@ export default function useUserServices() {
         }
     }, [])
 
+    const abortAll = useCallback(() => {
+        for (const { method, url } of userRequests) {
+            abortFetchRequest(url, method);
+        }
+    }, [abortFetchRequest, userRequests])
+
+    const getUserPosts = useCallback(async (userId) => {
+        const url = `/users/${userId}/posts`;
+        const method = 'GET'
+        userRequests.push({ url, method, });
+
+        return await fetchExecute(url);
+    }, [fetchExecute, userRequests]);
+
+    const getUserData = useCallback(async (userId) => {
+        const url = `/users/${userId}`;
+        const method = 'GET';
+        userRequests.push({ url, method, });
+
+        return await fetchExecute(url);
+    }, [fetchExecute, userRequests]);
+
     const register = useCallback(async (payload) => {
         const defaultAvatarRef = ref(storage, '/images/default/default-profile-avatar.png');
         const defaultAvatarUrl = await getDownloadURL(defaultAvatarRef);
-
         payload.imageUrl = defaultAvatarUrl;
 
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = '/register';
+        const method = 'POST';
+        userRequests.push({ url, method, });
 
-        const userId = await fetchExecute('/register', 'POST', payload);
-
-        setIsUser(userId);
-
-    }, [fetchExecute, isLoadingRef, setIsUser]);
-
-    const login = useCallback(async (payload) => {
-
-        if (isLoadingRef.current) {
-            return;
-        }
-
-        const userId = await fetchExecute('/login', 'POST', payload);
+        const userId = await fetchExecute(url, method, payload);
 
         setIsUser(userId);
 
         return userId;
+    }, [fetchExecute, setIsUser, userRequests]);
 
-    }, [fetchExecute, isLoadingRef, setIsUser]);
+    const login = useCallback(async (payload) => {
+        const url = '/login';
+        const method = 'POST';
+        userRequests.push({ url, method, });
+
+        const userId = await fetchExecute(url, method, payload);
+
+        setIsUser(userId);
+
+        return userId;
+    }, [fetchExecute, setIsUser, userRequests]);
 
     const logout = useCallback(async () => {
-
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = '/logout';
+        const method = 'GET';
+        userRequests.push({ url, method, });
 
         setIsUser(false);
 
-    }, [isLoadingRef, setIsUser]);
-
-    const getUserWithPosts = useCallback(async (userId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
-
-        const userData = await fetchExecute(`/users/${userId}/with-posts`);
-
-        return userData
-    }, [fetchExecute, isLoadingRef]);
+    }, [setIsUser, userRequests]);
 
     const getAllUsers = useCallback(async () => {
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = '/users';
+        const method = 'GET';
+        userRequests.push({ url, method, });
 
-        const users = await fetchExecute(`/users`);
+        const users = await fetchExecute(url);
 
-        users?.reverse();
-
-        return users
-    }, [fetchExecute, isLoadingRef]);
+        return users?.reverse();
+    }, [fetchExecute, userRequests]);
 
     const updateUser = useCallback(async (userId, payload) => {
-        if (isLoadingRef.current) {
-            return;
-        }
-
         if (!payload.firstName) {
             throw new Error("First name field must not be empty!");
         } else if (!payload.lastName) {
@@ -93,74 +99,58 @@ export default function useUserServices() {
             throw new Error("Birthday field must not be empty!");
         }
 
-        const data = await fetchExecute(`/users/${userId}`, 'PUT', payload);
+        const url = `/users/${userId}`;
+        const method = 'PUT';
+        userRequests.push({ url, method, });
 
-        return data;
-
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(url, method, payload);
+    }, [fetchExecute, userRequests]);
 
     const getUserFields = useCallback(async (userId, fields) => {
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = `/users/${userId}/fields?${fields}`;
+        const method = 'GET';
+        userRequests.push({ url, method, });
 
-        const data = await fetchExecute(`/users/${userId}/fields?${fields}`);
-
-        return data;
-
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(url);
+    }, [fetchExecute, userRequests]);
 
     const changeUserEmail = useCallback(async (userId, userData) => {
-        if (isLoadingRef.current) {
-            return;
-        }
-
         const { newEmail, ...rest } = userData;
-
         userUpdatePayload.validationData = {
             ...rest
         };
-
         userUpdatePayload.newValues = {
             email: newEmail
         };
 
         const curEmail = userUpdatePayload.validationData.curEmail;
-
         if (!curEmail) {
             throw new Error('Current email field must be entered!');
         }
-
         if (!newEmail) {
             throw new Error('New email field must be entered!');
         }
 
         const curPass = userUpdatePayload.validationData.curPass;
         const rePass = userUpdatePayload.validationData.rePass;
-
         if (!curPass || !rePass) {
             throw new Error('Password fields are missing values!');
         }
 
         const isOldPasswordRepeatValid = (curPass === rePass);
-
         if (!isOldPasswordRepeatValid) {
             throw new Error('Repeat password does not match!');
         }
 
-        const data = await fetchExecute(`/users/${userId}/credentials`, 'PATCH', userUpdatePayload);
+        const url = `/users/${userId}/credentials`;
+        const method = 'PATCH';
+        userRequests.push({ url, method, });
 
-        return data;
-
-    }, [fetchExecute, isLoadingRef, userUpdatePayload]);
+        return await fetchExecute(url, method, userUpdatePayload);
+    }, [fetchExecute, userUpdatePayload, userRequests]);
 
     const changeUserPassword = useCallback(async (userId, userData) => {
-        if (isLoadingRef.current) {
-            return;
-        }
-
         const { newPass, ...rest } = userData;
-
         userUpdatePayload.validationData = {
             ...rest
         };
@@ -169,80 +159,58 @@ export default function useUserServices() {
         };
 
         const curEmail = userUpdatePayload.validationData.curEmail;
-
         if (!curEmail) {
             throw new Error('Current email field must be entered!');
         }
 
         const curPass = userUpdatePayload.validationData.curPass;
         const rePass = userUpdatePayload.validationData.rePass;
-
         if (!curPass || !newPass || !rePass) {
             throw new Error('Password fields are missing values!');
         }
 
         const isNewPasswordRepeatValid = (newPass === rePass);
-
         if (!isNewPasswordRepeatValid) {
             throw new Error('Repeat password does not match!');
         }
 
-        const data = await fetchExecute(`/users/${userId}/credentials`, 'PATCH', userUpdatePayload);
+        const url = `/users/${userId}/credentials`;
+        const method = 'PATCH';
+        userRequests.push({ url, method, });
 
-        return data;
-
-    }, [fetchExecute, isLoadingRef, userUpdatePayload]);
-
-    const getUserData = useCallback(async (userId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
-
-        const userData = await fetchExecute(`/users/${userId}`);
-
-        return userData;
-
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(`/users/${userId}/credentials`, method, userUpdatePayload);
+    }, [fetchExecute, userUpdatePayload, userRequests]);
 
     const getFullUserProfile = useCallback(async (userId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = `/users/${userId}/full-profile`;
+        const method = 'GET';
+        userRequests.push({ url, method, });
 
-        const userData = await fetchExecute(`/users/${userId}/full-profile`);
-
-        return userData;
-
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(url);
+    }, [fetchExecute, userRequests]);
 
     const addFriend = useCallback(async (userId, newFriendId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = `/users/${userId}/friends/${newFriendId}`;
+        const method = 'PATCH';
+        userRequests.push({ url, method, });
 
-        const friendId = await fetchExecute(`/users/${userId}/friends/${newFriendId}`, 'PATCH');
-
-        return friendId;
-
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(url, method);
+    }, [fetchExecute, userRequests]);
 
     const removeFriend = useCallback(async (userId, friendId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = `/users/${userId}/friends/${friendId}`;
+        const method = 'DELETE';
+        userRequests.push({ url, method, });
 
-        const removedFriendId = await fetchExecute(`/users/${userId}/friends/${friendId}`, 'DELETE');
-
-        return removedFriendId;
-
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(`/users/${userId}/friends/${friendId}`, 'DELETE');
+    }, [fetchExecute, userRequests]);
 
     return {
         isLoading,
         register,
         login,
         logout,
-        getUserWithPosts,
+        getUserPosts,
         getAllUsers,
         updateUser,
         getUserFields,
@@ -252,5 +220,6 @@ export default function useUserServices() {
         getFullUserProfile,
         addFriend,
         removeFriend,
+        abortAll,
     }
 }
