@@ -45,6 +45,11 @@ export default function UserHomePage() {
         }
     }, [isUser, setAlert, getFullUserProfile, abortAll]);
 
+    const totalPostsContextValues = {
+        totalPosts,
+        setTotalPosts
+    }
+
     return <>
         <div className='user-home-page'>
             <ProfileSection
@@ -52,7 +57,7 @@ export default function UserHomePage() {
                 isLoading={isLoading}
             />
 
-            <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
+            <TotalPostsContext.Provider value={totalPostsContextValues}>
                 <PostsSection
                     userName={userData?.firstName}
                     isLoading={isLoading}

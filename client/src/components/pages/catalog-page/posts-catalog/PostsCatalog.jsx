@@ -35,6 +35,11 @@ export default function PostsCatalog({
         }
     }, [postSearchParams, totalPosts]);
 
+    const totalPostsContextValues = {
+        totalPosts: matchingPosts,
+        setTotalPosts
+    }
+
     return <>
         <div className="posts-catalog">
 
@@ -47,7 +52,7 @@ export default function PostsCatalog({
                 searchBy={'content'}
             />
 
-            <TotalPostsContext.Provider value={{ totalPosts: matchingPosts, setTotalPosts }}>
+            <TotalPostsContext.Provider value={totalPostsContextValues}>
                 {isLoading ? (
                     <LoadingSpinner />
                 ) : (

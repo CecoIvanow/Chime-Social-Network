@@ -42,6 +42,11 @@ export default function ProfilePage() {
         }
     }, [getUserData, getUserPosts, userId, setAlert, abortAll]);
 
+    const totalPostsContextValues = {
+        totalPosts,
+        setTotalPosts
+    }
+
     return (
         <div className="profile-container">
             <ProfileSection
@@ -49,7 +54,7 @@ export default function ProfilePage() {
                 userData={userData}
             />
 
-            <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
+            <TotalPostsContext.Provider value={totalPostsContextValues}>
                 <PostsSection
                     isLoading={isLoading}
                     userName={userData?.firstName}
