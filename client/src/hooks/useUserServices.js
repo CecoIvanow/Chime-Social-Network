@@ -29,14 +29,16 @@ export default function useUserServices() {
 
     const getUserPosts = useCallback(async (userId) => {
         const url = `/users/${userId}/posts`;
-        userRequests.push({ url, method: 'GET' });
+        const method = 'GET'
+        userRequests.push({ url, method, });
 
         return await fetchExecute(url);
     }, [fetchExecute, userRequests]);
 
     const getUserData = useCallback(async (userId) => {
         const url = `/users/${userId}`;
-        userRequests.push({ url, method: 'GET' });
+        const method = 'GET';
+        userRequests.push({ url, method, });
 
         return await fetchExecute(url);
     }, [fetchExecute, userRequests]);

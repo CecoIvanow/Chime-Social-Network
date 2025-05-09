@@ -1,92 +1,88 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import useFetch from "./useFetchApiCall.js";
 
 export default function usePostServices() {
-    const { fetchExecute, isLoading, isLoadingRef } = useFetch();
+    const { fetchExecute, isLoading, abortFetchRequest } = useFetch();
+
+    const postRequests = useMemo(() => [], []);
+
+    const abortAll = useCallback(() => {
+        for (const { method, url } of postRequests) {
+            abortFetchRequest(url, method);
+        }
+    }, [abortFetchRequest, postRequests])
 
     const createPost = useCallback(async (payload) => {
-        if (isLoadingRef.current) {
-            return;
-        }
-
         const trimmedText = payload.text.trim();
-
         if (!trimmedText) {
             return;
         }
 
-        const data = await fetchExecute('/posts', 'POST', { ...payload, text: trimmedText });
+        const url = `/posts`;
+        const method = 'POST'
+        postRequests.push({ url, method, });
 
-        return data;
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(url, method, { ...payload, text: trimmedText });
+    }, [fetchExecute, postRequests]);
 
     const deletePost = useCallback(async (postId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = `/posts/${postId}`;
+        const method = 'DELETE'
+        postRequests.push({ url, method, });
 
-        const data = await fetchExecute(`/posts/${postId}`, 'DELETE');
-
-        return data;
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(url, method);
+    }, [fetchExecute, postRequests]);
 
     const likePost = useCallback(async (userId, postId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = `/posts/${postId}/like/${userId}`;
+        const method = 'POST'
+        postRequests.push({ url, method, });
 
-        await fetchExecute(`/posts/${postId}/like/${userId}`, 'POST');
-
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(url, method);
+    }, [fetchExecute, postRequests]);
 
     const unlikePost = useCallback(async (userId, postId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = `/posts/${postId}/like/${userId}`;
+        const method = 'DELETE'
+        postRequests.push({ url, method, });
 
-        await fetchExecute(`/posts/${postId}/like/${userId}`, 'DELETE');
-
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(url, method);
+    }, [fetchExecute, postRequests]);
 
     const editPost = useCallback(async (postId, text) => {
-        if (isLoadingRef.current) {
-            return;
-        }
-
         const trimmedText = text.trim();
-
         if (!trimmedText) {
             return;
         }
 
-        const data = await fetchExecute(`/posts/${postId}`, 'PATCH', { text: trimmedText });
+        const url = `/posts/${postId}`;
+        const method = 'PATCH'
+        postRequests.push({ url, method, });
 
-        return data;
-
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(url, method, { text: trimmedText });
+    }, [fetchExecute, postRequests]);
 
     const getAllPosts = useCallback(async () => {
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = `/posts`;
+        const method = 'GET'
+        postRequests.push({ url, method, });
 
         const data = await fetchExecute(`/posts`);
 
         return data?.reverse();
-    }, [fetchExecute, isLoadingRef]);
+    }, [fetchExecute, postRequests]);
 
     const getPostWithComments = useCallback(async (postId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = `/posts/${postId}/with-comments`;
+        const method = 'GET'
+        postRequests.push({ url, method, });
 
-        const data = await fetchExecute(`/posts/${postId}/with-comments`);
-
-        data.comments?.reverse();
+        const data = await fetchExecute(url);
+        data?.comments.reverse();
 
         return data;
-    }, [fetchExecute, isLoadingRef]);
+    }, [fetchExecute, postRequests]);
 
     return {
         isLoading,
@@ -97,5 +93,6 @@ export default function usePostServices() {
         editPost,
         getAllPosts,
         getPostWithComments,
+        abortAll,
     }
 }
