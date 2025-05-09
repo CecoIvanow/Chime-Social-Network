@@ -1,53 +1,34 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 
-import { UserContext } from '../../../../../../contexts/user-context'
-import { AlertContext } from '../../../../../../contexts/alert-context';
-
-import useUserServices from '../../../../../../hooks/useUserServices';
 import UserItemDetails from './user-item-details/UserItemDetails';
 import Button from '../../../../../ui/buttons/button/Button';
 
+import { UserContext } from '../../../../../../contexts/user-context'
+
 export default function UserItem({
     user,
+    handleAddFriend,
+    handleRemoveFriend,
 }) {
     const { isUser } = useContext(UserContext);
-    const { setAlert } = useContext(AlertContext);
 
     const [isAddedAsFriend, setIsAddedAsFriend] = useState(user.friends?.includes(isUser));
 
-    const { addFriend, removeFriend, abortAll } = useUserServices();
+    const handleUnfriendClick = async () => {
+        const isSuccessfull = await handleRemoveFriend(user);
 
-    const onAddFriendClickHandler = async () => {
-        try {
-            const isSuccessfull = await addFriend(isUser, user._id);
-
-            if (isSuccessfull) {
-                setIsAddedAsFriend(true);
-            }
-        } catch (error) {
-            console.error(error);
-            setAlert(error.message);
+        if (isSuccessfull) {
+            setIsAddedAsFriend(false);
         }
     }
 
-    const onUnfriendClickHandler = async () => {
-        try {
-            const isSuccessfull = await removeFriend(isUser, user._id);
+    const handleAddFriendClick = async () => {
+        const isSuccessfull = await handleAddFriend(user)
 
-            if (isSuccessfull) {
-                setIsAddedAsFriend(false);
-            }
-        } catch (error) {
-            console.error(error);
-            setAlert(error.message);
+        if (isSuccessfull) {
+            setIsAddedAsFriend(true);
         }
     }
-
-    useEffect(() => {
-        return () => {
-            abortAll();
-        }
-    }, [abortAll]);
 
     return <>
         <div className="user-item">
@@ -59,13 +40,13 @@ export default function UserItem({
                 <>
                     {isAddedAsFriend ? (
                         <Button
-                            onClickHandler={onUnfriendClickHandler}
+                            onClickHandler={handleUnfriendClick}
                             buttonName='Unfriend'
                             btnStyle='button unfriend-btn'
                         />
                     ) : (
                         <Button
-                            onClickHandler={onAddFriendClickHandler}
+                            onClickHandler={handleAddFriendClick}
                             buttonName='Add'
                             btnStyle='button'
                         />

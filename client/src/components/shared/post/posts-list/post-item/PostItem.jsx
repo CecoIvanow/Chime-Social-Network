@@ -1,50 +1,21 @@
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 
 import PostHeader from "../../post-header/PostHeader";
 import PostInteractions from "./post-interactions/PostInteractions";
 import PostText from "../../../../pages/post-details-page/post-text/PostText";
 
 import { PostContext } from "../../../../../contexts/post-context";
-import { AlertContext } from "../../../../../contexts/alert-context";
-import { TotalPostsContext } from "../../../../../contexts/total-posts-context"
-
-import usePostServices from "../../../../../hooks/usePostServices";
 
 export default function PostItem({
     postItem,
+    onDeletePostClickHandler,
+    onLikeClickHandler,
+    onUnlikeClickHandler,
 }) {
     const [post, setPost] = useState(postItem);
 
-    const { totalPosts, setTotalPosts } = useContext(TotalPostsContext);
-    const { setAlert } = useContext(AlertContext);
-
-    const { deletePost, abortAll } = usePostServices();
-
-    useEffect(() => {
-        return () => {
-            abortAll()
-        }
-    }, [abortAll]);
-
     if (!post?._id) {
         return null;
-    }
-
-    const onDeletePostClickHandler = async () => {
-        const isDeleteConFirmed = confirm('Are you sure you want to delete this post');
-
-        if (!isDeleteConFirmed) {
-            return totalPosts; // Returns totalPosts unnecessarily because otherwise eslint marks it as not used!
-        }
-
-        try {
-            const deletedPostId = await deletePost(post._id);
-
-            setTotalPosts(totalPosts => totalPosts.filter(post => post._id !== deletedPostId))
-        } catch (error) {
-            console.error(error);
-            setAlert(error.message);
-        }
     }
 
     return (
@@ -58,7 +29,9 @@ export default function PostItem({
                 />
 
                 <PostInteractions
-                    onDeletePostClickHandler={onDeletePostClickHandler}
+                    onDeletePostClickHandler={() => onDeletePostClickHandler(post._id)}
+                    onLikeClickHandler={onLikeClickHandler}
+                    onUnlikeClickHandler={onUnlikeClickHandler}
                 />
             </li >
         </PostContext.Provider>

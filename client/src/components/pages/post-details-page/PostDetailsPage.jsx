@@ -26,7 +26,7 @@ export default function PostDetailsPage() {
     const { isUser: currentUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
-    const { deletePost, editPost, getPostWithComments, abortAll } = usePostServices()
+    const { deletePost, editPost, getPostWithComments, likePost, unlikePost, abortAll } = usePostServices()
 
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
@@ -97,6 +97,28 @@ export default function PostDetailsPage() {
         setIsEditClicked(true);
     }
 
+    const onUnlikeClickHandler = async () => {
+        try {
+            await unlikePost(currentUser, post._id);
+            return true;
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+            return false;
+        }
+    }
+
+    const onLikeClickHandler = async () => {
+        try {
+            await likePost(currentUser, post._id);
+            return true;
+        } catch (error) {
+            console.error(error);
+            setAlert(error.message);
+            return false;
+        }
+    }
+
     return (
         <PostContext.Provider value={{ post, setPost }}>
             <li className='post-page-body'>
@@ -120,6 +142,8 @@ export default function PostDetailsPage() {
                     onEditPostClickHandler={onEditPostClickHandler}
                     onSaveEditClickHandler={onSaveEditClickHandler}
                     onCancelEditClickHandler={onCancelEditClickHandler}
+                    onLikeClickHandler={onLikeClickHandler}
+                    onUnlikeClickHandler={onUnlikeClickHandler}
                 />
 
                 <div className="comments-section">

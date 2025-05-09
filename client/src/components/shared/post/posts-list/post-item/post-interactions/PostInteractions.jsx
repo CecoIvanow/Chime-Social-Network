@@ -11,7 +11,9 @@ export default function PostInteractions({
     onDeletePostClickHandler,
     onEditPostClickHandler,
     onSaveEditClickHandler,
-    onCancelEditClickHandler
+    onCancelEditClickHandler,
+    onLikeClickHandler,
+    onUnlikeClickHandler,
 }) {
 
     const { post } = useContext(PostContext);
@@ -21,13 +23,15 @@ export default function PostInteractions({
     return (
         <LikesContext.Provider value={{ likes, setLikes }}>
             <PostInteractionsAmount />
-            
+
             <PostButtons
                 isEditClicked={isEditClicked}
                 onDeletePostClickHandler={onDeletePostClickHandler}
                 onEditPostClickHandler={onEditPostClickHandler}
                 onSaveEditClickHandler={onSaveEditClickHandler}
                 onCancelEditClickHandler={onCancelEditClickHandler}
+                onLikeClickHandler={onLikeClickHandler}
+                onUnlikeClickHandler={onUnlikeClickHandler}
             />
         </ LikesContext.Provider >
     )

@@ -14,7 +14,9 @@ export default function PostButtons({
     onDeletePostClickHandler,
     onEditPostClickHandler,
     onSaveEditClickHandler,
-    onCancelEditClickHandler
+    onCancelEditClickHandler,
+    onLikeClickHandler,
+    onUnlikeClickHandler,
 }) {
     const { likes, setLikes } = useContext(LikesContext);
     const { isUser } = useContext(UserContext);
@@ -29,6 +31,8 @@ export default function PostButtons({
                             <PostLikeButtons
                                 likes={likes}
                                 setLikes={setLikes}
+                                onLikeClickHandler={onLikeClickHandler}
+                                onUnlikeClickHandler={onUnlikeClickHandler}
                             />
                         )}
 
