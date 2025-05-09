@@ -31,15 +31,12 @@ export default function PostDetailsPage() {
     useEffect(() => {
         const postId = location.pathname.split('/').at(2);
 
-        const abortController = new AbortController();
-        const abortSignal = abortController.signal;
-
-        getPostWithComments(postId, abortSignal)
+        getPostWithComments(postId)
             .then(data => {
                 if (isEditClicked && (currentUser !== data.owner._id)) {
                     navigateTo('/404');
                 }
-
+                
                 setPost(data);
                 setPostText(data.text);
             })
@@ -47,11 +44,6 @@ export default function PostDetailsPage() {
                 console.error(error);
                 setAlert(error.message);
             });
-
-        return () => {
-            abortController.abort();
-        }
-
     }, [location.pathname, currentUser, navigateTo, isEditClicked, setAlert, getPostWithComments]);
 
     if (!post?._id) {
