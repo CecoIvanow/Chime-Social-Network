@@ -1,56 +1,57 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import useFetch from "./useFetchApiCall.js";
 
 export default function useCommentServices() {
-    const { fetchExecute, isLoading, isLoadingRef } = useFetch();
+    const { fetchExecute, isLoading, abortFetchRequest } = useFetch();
+
+    const commentRequests = useMemo(() => [], []);
+
+    const abortAll = useCallback(() => {
+        for (const { method, url } of commentRequests) {
+            abortFetchRequest(url, method);
+        }
+    }, [abortFetchRequest, commentRequests])
 
     const createComment = useCallback(async (payload) => {
-        if (isLoadingRef.current) {
-            return;
-        }
-
         const trimmedText = payload.text.trim();
-
         if (!trimmedText) {
             return;
         }
 
-        const data = await fetchExecute('/comments', 'POST', { ...payload, text: trimmedText });
+        const url = `/comments`;
+        const method = 'POST'
+        commentRequests.push({ url, method, });
 
-        return data;
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(url, method, { ...payload, text: trimmedText });
+    }, [fetchExecute, commentRequests]);
 
     const updateComment = useCallback(async (commentId, text) => {
-        if (isLoadingRef.current) {
-            return;
-        }
-
         const trimmedText = text.trim();
-
         if (!trimmedText) {
             return;
         }
 
-        const data = await fetchExecute(`/comments/${commentId}`, 'PATCH', { text: trimmedText });
+        const url = `/comments/${commentId}`;
+        const method = 'PATCH'
+        commentRequests.push({ url, method, });
 
-        return data;
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(url, method, { text: trimmedText });
+    }, [fetchExecute, commentRequests]);
 
     const deleteComment = useCallback(async (commentId) => {
-        if (isLoadingRef.current) {
-            return;
-        }
+        const url = `/comments/${commentId}`;
+        const method = 'DELETE'
+        commentRequests.push({ url, method, });
 
-        const data = await fetchExecute(`/comments/${commentId}`, 'DELETE');
-
-        return data;
-    }, [fetchExecute, isLoadingRef]);
+        return await fetchExecute(url, method);
+    }, [fetchExecute, commentRequests]);
 
     return {
-        isLoading,
+        abortAll,
         createComment,
         updateComment,
         deleteComment,
+        isLoading,
     }
 }
