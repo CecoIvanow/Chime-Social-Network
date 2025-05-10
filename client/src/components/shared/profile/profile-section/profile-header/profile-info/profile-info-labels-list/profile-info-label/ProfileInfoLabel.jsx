@@ -1,4 +1,4 @@
-export default function ProfileInfoLabels({
+export default function ProfileInfoLabel({
     label = {},
     userData = {},
 }) {
