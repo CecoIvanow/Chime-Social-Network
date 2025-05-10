@@ -2,8 +2,8 @@ import { useContext } from 'react'
 
 import EditControls from '../../../controls/edit-controls/EditControls'
 import OwnerControls from '../../../controls/owner-controls/OwnerControls'
-import PostCommentButton from '../post-comment-button/PostCommentButton'
-import PostLikeButtons from '../post-like-buttons/PostLikeButtons'
+import PostCommentButton from './post-comment-button/PostCommentButton'
+import PostLikeButtons from './post-like-buttons/PostLikeButtons'
 
 import { UserContext } from '../../../../../contexts/user-context'
 import { PostContext } from '../../../../../contexts/post-context'
