@@ -1,9 +1,9 @@
 import { useContext, useState } from 'react'
 
 import UserItemDetails from './user-item-details/UserItemDetails';
-import Button from '../../../../../ui/buttons/button/Button';
 
 import { UserContext } from '../../../../../../contexts/user-context'
+import AddFriendButton from './add-friend-button/AddFriendButton';
 
 export default function UserItem({
     user,
@@ -37,21 +37,11 @@ export default function UserItem({
             />
 
             {(isUser && isUser !== user._id) && (
-                <>
-                    {isAddedAsFriend ? (
-                        <Button
-                            onClickHandler={handleUnfriendClick}
-                            buttonName='Unfriend'
-                            btnStyle='button unfriend-btn'
-                        />
-                    ) : (
-                        <Button
-                            onClickHandler={handleAddFriendClick}
-                            buttonName='Add'
-                            btnStyle='button'
-                        />
-                    )}
-                </>
+                <AddFriendButton
+                    isAddedAsFriend={isAddedAsFriend}
+                    handleAddFriendClick={handleAddFriendClick}
+                    handleUnfriendClick={handleUnfriendClick}
+                />
             )}
         </div>
     </>
