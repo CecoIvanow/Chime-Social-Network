@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router";
 
 import CreateContent from "../../../ui/create-content/CreateContent";
 import usePostServices from "../../../../hooks/usePostServices";
@@ -14,8 +13,6 @@ export default function PostCreateForm() {
     const { totalPosts, setTotalPosts } = useContext(TotalPostsContext);
     const { setAlert } = useContext(AlertContext);
     const { isUser } = useContext(UserContext);
-
-    const { userId } = useParams();
 
     const { createPost, abortAll } = usePostServices();
 
@@ -50,13 +47,11 @@ export default function PostCreateForm() {
     }, [abortAll])
 
     return <>
-        {(isUser && isUser === userId) && (
             <CreateContent
                 text={postText}
                 buttonText={'Post'}
                 onTextChangeHandler={onTextChangeHandler}
                 onSubmitHandler={onPostSubmitHandler}
             />
-        )}
     </>
 }
