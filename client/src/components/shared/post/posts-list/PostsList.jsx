@@ -64,7 +64,7 @@ export default function PostsList() {
     const actionsContextValues = {
         onLikeClickHandler,
         onUnlikeClickHandler,
-        onDeletePostClickHandler,
+        onDeleteClickHandler: onDeletePostClickHandler,
     }
 
     return <>

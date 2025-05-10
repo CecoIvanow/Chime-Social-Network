@@ -16,6 +16,7 @@ export default function OwnerButtons() {
         ) : (
             <OwnerControls
                 urlLink={`/post/${post._id}/edit`}
+                itemId={post._id}
             />
         )}
     </div>
