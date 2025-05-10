@@ -8,24 +8,28 @@ import PostLikeButtons from './post-like-buttons/PostLikeButtons'
 import { UserContext } from '../../../../../contexts/user-context'
 import { PostContext } from '../../../../../contexts/post-context'
 import { ActionsContext } from '../../../../../contexts/actions-context'
+import { useParams } from 'react-router'
 
 export default function PostButtons() {
     const { post } = useContext(PostContext);
     const { isUser } = useContext(UserContext);
     const { isEditClicked } = useContext(ActionsContext);
 
+    const { postId } = useParams();
+
     return <>
         <div className='button-div'>
             <div>
-                {isUser && (
-                    <>
-                        {(isUser !== post.owner._id &&
-                            <PostLikeButtons />
-                        )}
+                {isUser && <>
+                    {(isUser !== post.owner._id) &&
+                        <PostLikeButtons />
+                    }
 
+                    {!postId && 
                         <PostCommentButton />
-                    </>
-                )}
+                    }
+                </>
+                }
             </div>
             <div className='owner-buttons'>
                 {(isUser && isUser === post?.owner._id) && (
