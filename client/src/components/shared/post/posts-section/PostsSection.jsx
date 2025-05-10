@@ -28,9 +28,7 @@ export default function PostsSection({
                 sectionName={sectionName}
             />
 
-            {(isUser && isUser === userId) && (
-                <PostCreateForm />
-            )}
+            <PostCreateForm />
 
             {isLoading ? (
                 <LoadingSpinner />

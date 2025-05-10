@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router";
+
+import CreateContent from "../../../ui/create-content/CreateContent";
+import usePostServices from "../../../../hooks/usePostServices";
 
 import { UserContext } from "../../../../contexts/user-context";
 import { TotalPostsContext } from "../../../../contexts/total-posts-context";
-
-import CreateContent from "../../../ui/create-content/CreateContent";
 import { AlertContext } from "../../../../contexts/alert-context";
-import usePostServices from "../../../../hooks/usePostServices";
 
 export default function PostCreateForm() {
     const [postText, setPostText] = useState('');
@@ -13,6 +14,8 @@ export default function PostCreateForm() {
     const { totalPosts, setTotalPosts } = useContext(TotalPostsContext);
     const { setAlert } = useContext(AlertContext);
     const { isUser } = useContext(UserContext);
+
+    const { userId } = useParams();
 
     const { createPost, abortAll } = usePostServices();
 
@@ -46,10 +49,14 @@ export default function PostCreateForm() {
         }
     }, [abortAll])
 
-    return <CreateContent
-        text={postText}
-        buttonText={'Post'}
-        onTextChangeHandler={onTextChangeHandler}
-        onSubmitHandler={onPostSubmitHandler}
-    />
+    return <>
+        {(isUser && isUser === userId) && (
+            <CreateContent
+                text={postText}
+                buttonText={'Post'}
+                onTextChangeHandler={onTextChangeHandler}
+                onSubmitHandler={onPostSubmitHandler}
+            />
+        )}
+    </>
 }
