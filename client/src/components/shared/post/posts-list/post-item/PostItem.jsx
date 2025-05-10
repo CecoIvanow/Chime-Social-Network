@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 import PostHeader from "../../post-header/PostHeader";
-import PostInteractions from "./post-interactions/PostInteractions";
-import PostText from "../../../../pages/post-details-page/post-text/PostText";
+import PostInteractions from "../../post-interactions/PostInteractions";
+import PostText from "../../post-text/PostText";
 
 import { PostContext } from "../../../../../contexts/post-context";
 

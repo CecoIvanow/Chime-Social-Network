@@ -12,9 +12,9 @@ export default function PostsSection({
     isLoading,
     userName,
 }) {
-    const { userId } = useParams();
-
     const { isUser } = useContext(UserContext);
+
+    const { userId } = useParams();
 
     const sectionName = userId ?
         isUser === userId ?
@@ -27,7 +27,7 @@ export default function PostsSection({
             <SectionHeading
                 sectionName={sectionName}
             />
-
+            
             {(isUser && isUser === userId) && (
                 <PostCreateForm />
             )}
