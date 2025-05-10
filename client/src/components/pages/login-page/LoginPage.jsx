@@ -10,14 +10,14 @@ import { AlertContext } from "../../../contexts/alert-context";
 import useUserServices from "../../../hooks/useUserServices";
 
 export default function LoginPage() {
-    const { setAlert } = useContext(AlertContext);
-
-    const { login, abortAll } = useUserServices();
-
     const loginFields = [
         { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
         { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' }
     ]
+
+    const { setAlert } = useContext(AlertContext);
+
+    const { login, abortAll } = useUserServices();
 
     const submitFormHandler = async (_, formData) => {
         const data = Object.fromEntries(formData);

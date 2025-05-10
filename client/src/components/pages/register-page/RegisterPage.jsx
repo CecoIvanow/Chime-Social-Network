@@ -1,13 +1,14 @@
 import { useActionState, useContext, useEffect } from "react";
 
 import AuthButton from "../../ui/auth/auth-button/AuthButton";
-import AuthForm from "../../ui/auth/auth-form/AuthForm";
 import AuthNavLink from "../../ui/auth/auth-nav-link/AuthNavLink";
+import GenderDetails from "../../shared/user-details/gender-details/GenderDetails";
+import AuthHeaderTitle from "../../shared/auth/auth-header-title/AuthHeaderTitle";
+import AuthFormsList from "../../shared/auth/auth-forms-list/AuthFormsList";
 
 import { AlertContext } from "../../../contexts/alert-context";
 
 import useUserServices from "../../../hooks/useUserServices";
-import GenderDetails from "../../shared/user-details/gender-details/GenderDetails";
 
 export default function RegisterPage() {
     const registerFields = [
@@ -46,23 +47,17 @@ export default function RegisterPage() {
         <div className='register-page'>
             <div className="container">
 
-                <div className="title">Registration</div>
+                <AuthHeaderTitle
+                    title='Register'
+                />
+
                 <div className="content">
 
                     <form action={action}>
-                        <div className="user-details">
 
-                            {registerFields.map(field =>
-                                <AuthForm
-                                    key={field.fieldName}
-                                    fieldName={field.fieldName}
-                                    inputName={field.inputName}
-                                    inputType={field.inputType}
-                                    placeholderText={field.placeholderText}
-                                />
-                            )}
-
-                        </div>
+                        <AuthFormsList
+                            authFieldsList={registerFields}
+                        />
 
                         <GenderDetails />
 
