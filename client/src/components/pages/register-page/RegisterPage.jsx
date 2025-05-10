@@ -3,11 +3,11 @@ import { useActionState, useContext, useEffect } from "react";
 import AuthButton from "../../shared/auth/auth-button/AuthButton";
 import AuthForm from "../../shared/auth/auth-form/AuthForm";
 import AuthNavLink from "../../shared/auth/auth-nav-link/AuthNavLink";
-import GenderDetails from "../../ui/inputs/gender-details/GenderDetails";
 
 import { AlertContext } from "../../../contexts/alert-context";
 
 import useUserServices from "../../../hooks/useUserServices";
+import GenderDetails from "../../shared/user-details/gender-details/GenderDetails";
 
 export default function RegisterPage() {
     const registerFields = [

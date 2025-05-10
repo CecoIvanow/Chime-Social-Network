@@ -4,12 +4,12 @@ import { useNavigate, useParams } from "react-router"
 import { storage } from "../../../firebase/firebase-storage/config"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 
-import InputField from "../../ui/inputs/input-field/InputField"
-import TextAreaInput from "../../ui/inputs/textarea-input-field/TextAreaInput"
-import GenderDetails from "../../ui/inputs/gender-details/GenderDetails"
-import EditControls from "../../shared/controls/edit-controls/EditControls"
+import GenderDetails from "../../shared/user-details/gender-details/GenderDetails"
 import SectionHeading from "../../ui/headings/SectionHeading"
 import ImageUpload from "./image-upload/ImageUpload"
+import ProfileBioTextarea from "./profile-bio-textarea/ProfileBioTextarea"
+import ProfileEditButtons from "./profile-edit-buttons/ProfileEditButtons"
+import InputFieldsList from "../../shared/input-fields/input-fields-list/InputFieldsList"
 
 import { AlertContext } from "../../../contexts/alert-context"
 import { ActionsContext } from "../../../contexts/actions-context"
@@ -88,7 +88,7 @@ export default function ProfileEditPage() {
         navigateTo(`/profile/${profileId}`);
     }
 
-    const actionsContextValues = {
+    const profileEditActionsContextValues = {
         onCancelEditClickHandler
     }
 
@@ -108,32 +108,17 @@ export default function ProfileEditPage() {
                     userGender={userData?.gender}
                 />
 
-                {formProfileInputs.map(field =>
-                    <InputField
-                        key={field.inputName}
-                        fieldName={field.fieldName}
-                        inputName={field.inputName}
-                        inputType={field.inputType}
-                        initialValue={field.value}
-                    />
-                )}
-
-                <TextAreaInput
-                    fieldName='Bio'
-                    inputName='bio'
-                    initialValue={userData?.bio}
+                <InputFieldsList
+                    inputFields={formProfileInputs}
                 />
 
-                <div className='button-div'>
-                    <div></div>
-                    <div className="owner-buttons">
-                        <ActionsContext.Provider value={actionsContextValues}>
-                            <EditControls
-                                onCancelClickHandler={onCancelEditClickHandler}
-                            />
-                        </ActionsContext.Provider>
-                    </div>
-                </div>
+                <ProfileBioTextarea
+                    userData={userData}
+                />
+
+                <ActionsContext.Provider value={profileEditActionsContextValues}>
+                    <ProfileEditButtons />
+                </ActionsContext.Provider>
             </form>
         </div>
     </>
