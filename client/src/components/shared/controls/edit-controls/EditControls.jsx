@@ -7,6 +7,7 @@ import { ActionsContext } from "../../../../contexts/actions-context";
 
 export default function EditControls({
     urlLink,
+    itemId,
 }) {
     const { onCancelEditClickHandler, onSaveEditClickHandler } = useContext(ActionsContext);
 
@@ -24,7 +25,7 @@ export default function EditControls({
                 <Button
                     buttonName="Edit"
                     btnStyle="button"
-                    onClickHandler={onSaveEditClickHandler}
+                        onClickHandler={() => onSaveEditClickHandler(itemId)}
                 />
             </>
         )}
