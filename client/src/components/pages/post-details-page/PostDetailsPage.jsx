@@ -8,10 +8,10 @@ import { AlertContext } from "../../../contexts/alert-context";
 import CommentItem from "./comment-item/CommentItem"
 import CommentCreateForm from "./comment-create-form/CommentCreateForm";
 import PostHeader from "../../shared/post/post-header/PostHeader";
-import PostText from "./post-text/PostText";
-import PostEditContent from "./post-text/post-edit-content/PostEditContent";
+import PostText from "../../shared/post/post-text/PostText";
+import PostEditContent from "./post-edit-content/PostEditContent";
 import usePostServices from "../../../hooks/usePostServices";
-import PostInteractions from "../../shared/post/posts-list/post-item/post-interactions/PostInteractions";
+import PostInteractions from "../../shared/post/post-interactions/PostInteractions";
 import { PostActionsContext } from "../../../contexts/post-actions-context";
 
 export default function PostDetailsPage() {

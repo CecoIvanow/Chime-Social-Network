@@ -1,6 +1,6 @@
 import { memo, useContext } from "react"
 
-import { PostContext } from "../../../../../../../../contexts/post-context"
+import { PostContext } from "../../../../../../contexts/post-context"
 
 function PostCommentsAmount() {
     const { post } = useContext(PostContext);
