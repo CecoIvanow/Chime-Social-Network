@@ -1,8 +1,8 @@
 import { useActionState, useContext, useEffect } from "react";
 
-import AuthButton from "../../shared/auth/auth-button/AuthButton";
-import AuthForm from "../../shared/auth/auth-form/AuthForm";
-import AuthNavLink from "../../shared/auth/auth-nav-link/AuthNavLink";
+import AuthButton from "../../ui/auth/auth-button/AuthButton";
+import AuthForm from "../../ui/auth/auth-form/AuthForm";
+import AuthNavLink from "../../ui/auth/auth-nav-link/AuthNavLink";
 
 import { AlertContext } from "../../../contexts/alert-context";
 
