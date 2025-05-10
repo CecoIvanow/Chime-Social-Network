@@ -7,12 +7,12 @@ import PostLikeButtons from './post-like-buttons/PostLikeButtons'
 
 import { UserContext } from '../../../../../contexts/user-context'
 import { PostContext } from '../../../../../contexts/post-context'
-import { PostActionsContext } from '../../../../../contexts/post-actions-context'
+import { ActionsContext } from '../../../../../contexts/actions-context'
 
 export default function PostButtons() {
     const { post } = useContext(PostContext);
     const { isUser } = useContext(UserContext);
-    const { isEditClicked } = useContext(PostActionsContext);
+    const { isEditClicked } = useContext(ActionsContext);
 
     return <>
         <div className='button-div'>

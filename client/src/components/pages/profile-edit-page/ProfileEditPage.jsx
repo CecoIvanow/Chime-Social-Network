@@ -12,10 +12,10 @@ import SectionHeading from "../../ui/headings/SectionHeading"
 import ImageUpload from "./image-upload/ImageUpload"
 
 import { AlertContext } from "../../../contexts/alert-context"
+import { ActionsContext } from "../../../contexts/actions-context"
 import { UserContext } from "../../../contexts/user-context"
 
 import useUserServices from "../../../hooks/useUserServices"
-import { PostActionsContext } from "../../../contexts/post-actions-context"
 
 export default function ProfileEditPage() {
     const navigateTo = useNavigate();
@@ -88,7 +88,7 @@ export default function ProfileEditPage() {
         navigateTo(`/profile/${profileId}`);
     }
 
-    const postActionsContextValues = {
+    const actionsContextValues = {
         onCancelEditClickHandler
     }
 
@@ -127,11 +127,11 @@ export default function ProfileEditPage() {
                 <div className='button-div'>
                     <div></div>
                     <div className="owner-buttons">
-                        <PostActionsContext.Provider value={postActionsContextValues}>
+                        <ActionsContext.Provider value={actionsContextValues}>
                             <EditControls
                                 onCancelClickHandler={onCancelEditClickHandler}
                             />
-                        </PostActionsContext.Provider>
+                        </ActionsContext.Provider>
                     </div>
                 </div>
             </form>

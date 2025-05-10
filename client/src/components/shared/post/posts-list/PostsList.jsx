@@ -3,7 +3,7 @@ import { useContext, useEffect } from "react";
 import PostItem from "./post-item/PostItem";
 
 import { AlertContext } from "../../../../contexts/alert-context";
-import { PostActionsContext } from "../../../../contexts/post-actions-context";
+import { ActionsContext } from "../../../../contexts/actions-context";
 import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 import { UserContext } from "../../../../contexts/user-context";
 
@@ -61,7 +61,7 @@ export default function PostsList() {
         }
     }
 
-    const postActionsContextValues = {
+    const actionsContextValues = {
         onLikeClickHandler,
         onUnlikeClickHandler,
         onDeletePostClickHandler,
@@ -69,15 +69,15 @@ export default function PostsList() {
 
     return <>
         {totalPosts?.map(post =>
-            <PostActionsContext.Provider
-                value={postActionsContextValues}
+            <ActionsContext.Provider
+                value={actionsContextValues}
                 key={post._id}
             >
                 <PostItem
                     key={post._id}
                     postItem={post}
                 />
-            </PostActionsContext.Provider>
+            </ActionsContext.Provider>
         )}
     </>
 }

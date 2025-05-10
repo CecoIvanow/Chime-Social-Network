@@ -5,13 +5,13 @@ import Button from "../../../../../ui/buttons/button/Button";
 import { PostContext } from "../../../../../../contexts/post-context";
 import { UserContext } from "../../../../../../contexts/user-context";
 import { LikesContext } from "../../../../../../contexts/likes-context";
-import { PostActionsContext } from "../../../../../../contexts/post-actions-context";
+import { ActionsContext } from "../../../../../../contexts/actions-context";
 
 export default function PostLikeButtons() {
     const { post } = useContext(PostContext);
     const { isUser } = useContext(UserContext)
     const { likes, setLikes } = useContext(LikesContext);
-    const { onLikeClickHandler, onUnlikeClickHandler } = useContext(PostActionsContext);
+    const { onLikeClickHandler, onUnlikeClickHandler } = useContext(ActionsContext);
 
     const isLiked = likes.includes(isUser);
 

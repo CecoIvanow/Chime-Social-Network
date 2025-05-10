@@ -12,7 +12,7 @@ import PostText from "../../shared/post/post-text/PostText";
 import PostEditContent from "./post-edit-content/PostEditContent";
 import usePostServices from "../../../hooks/usePostServices";
 import PostInteractions from "../../shared/post/post-interactions/PostInteractions";
-import { PostActionsContext } from "../../../contexts/post-actions-context";
+import { ActionsContext } from "../../../contexts/actions-context";
 
 export default function PostDetailsPage() {
     const location = useLocation();
@@ -120,7 +120,7 @@ export default function PostDetailsPage() {
         }
     }
 
-    const postActionsContextValues = {
+    const actionsContextValues = {
         isEditClicked,
         onLikeClickHandler,
         onUnlikeClickHandler,
@@ -152,9 +152,9 @@ export default function PostDetailsPage() {
                     />
                 )}
 
-                <PostActionsContext.Provider value={postActionsContextValues}>
+                <ActionsContext.Provider value={actionsContextValues}>
                     <PostInteractions />
-                </PostActionsContext.Provider>
+                </ActionsContext.Provider>
 
                 <div className="comments-section">
                     {currentUser && (
