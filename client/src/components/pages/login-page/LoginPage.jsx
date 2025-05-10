@@ -14,6 +14,11 @@ export default function LoginPage() {
 
     const { login, abortAll } = useUserServices();
 
+    const loginFields = [
+        { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
+        { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' }
+    ]
+
     const submitFormHandler = async (_, formData) => {
         const data = Object.fromEntries(formData);
 
@@ -45,7 +50,7 @@ export default function LoginPage() {
 
                     <form action={action}>
 
-                        <AuthFormsList />
+                        <AuthFormsList authFieldsList={loginFields} />
 
                         <AuthButton
                             buttonText="Login"
