@@ -3,14 +3,13 @@ import { useContext } from "react";
 import Button from "../../../ui/buttons/button/Button";
 import LinkButton from "../../../ui/buttons/link-button/LinkButton";
 
-import { PostContext } from "../../../../contexts/post-context";
 import { ActionsContext } from "../../../../contexts/actions-context";
 
 export default function OwnerControls({
+    itemId,
     urlLink,
 }) {
-    const { post } = useContext(PostContext);
-    const { onDeletePostClickHandler, onEditPostClickHandler } = useContext(ActionsContext);
+    const { onDeleteClickHandler, onEditClickHandler } = useContext(ActionsContext);
 
     return <>
         {urlLink ? (
@@ -26,7 +25,7 @@ export default function OwnerControls({
                 <Button
                     buttonName="Edit"
                     btnStyle="button"
-                        onClickHandler={onEditPostClickHandler}
+                    onClickHandler={onEditClickHandler}
                 />
             </>
         )}
@@ -34,7 +33,7 @@ export default function OwnerControls({
         <Button
             buttonName="Delete"
             btnStyle="button delete-btn"
-            onClickHandler={() => onDeletePostClickHandler(post._id)}
+            onClickHandler={() => onDeleteClickHandler(itemId)}
         />
     </>
 }

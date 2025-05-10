@@ -37,7 +37,7 @@ export default function FriendsSection({
                 })
             )
         }
-    }, [friendSearchParams, userFriends])
+    }, [friendSearchParams, userFriends, matchingFriends.length])
 
     return <>
         <div className="friends-section">

@@ -5,14 +5,16 @@ import { PostContext } from "../../../contexts/post-context";
 import { UserContext } from "../../../contexts/user-context";
 import { AlertContext } from "../../../contexts/alert-context";
 
-import CommentItem from "./comment-item/CommentItem"
 import CommentCreateForm from "./comment-create-form/CommentCreateForm";
-import PostHeader from "../../shared/post/post-header/PostHeader";
-import PostText from "../../shared/post/post-text/PostText";
+import CommentsSection from "./comments-section/CommentsSection";
 import PostEditContent from "./post-edit-content/PostEditContent";
-import usePostServices from "../../../hooks/usePostServices";
+import PostHeader from "../../shared/post/post-header/PostHeader";
 import PostInteractions from "../../shared/post/post-interactions/PostInteractions";
+import PostText from "../../shared/post/post-text/PostText";
+
 import { ActionsContext } from "../../../contexts/actions-context";
+
+import usePostServices from "../../../hooks/usePostServices";
 
 export default function PostDetailsPage() {
     const location = useLocation();
@@ -64,9 +66,9 @@ export default function PostDetailsPage() {
         setIsEditClicked(false);
     }
 
-    const onSaveEditClickHandler = async () => {
+    const onSaveEditClickHandler = async (postId) => {
         try {
-            const updatedText = await editPost(post._id, postText);
+            const updatedText = await editPost(postId, postText);
 
             if (updatedText) {
                 setIsEditClicked(false);
@@ -78,7 +80,7 @@ export default function PostDetailsPage() {
         }
     }
 
-    const onDeletePostClickHandler = async () => {
+    const onDeletePostClickHandler = async (postId) => {
         const isDeleteConfirmed = confirm('Are you sure you want to delete this post?');
 
         if (!isDeleteConfirmed) {
@@ -86,7 +88,7 @@ export default function PostDetailsPage() {
         }
 
         try {
-            await deletePost(post._id);
+            await deletePost(postId);
             navigateTo('/catalog');
         } catch (error) {
             console.error(error);
@@ -127,7 +129,7 @@ export default function PostDetailsPage() {
         onEditPostClickHandler,
         onSaveEditClickHandler,
         onCancelEditClickHandler,
-        onDeletePostClickHandler,
+        onDeleteClickHandler: onDeletePostClickHandler,
     }
 
     const postContextValues = {
@@ -137,8 +139,7 @@ export default function PostDetailsPage() {
 
     return (
         <PostContext.Provider value={postContextValues}>
-            <li className='post-page-body'>
-
+            <div className='post-page-body'>
                 <PostHeader />
 
                 {isEditClicked ? (
@@ -156,23 +157,12 @@ export default function PostDetailsPage() {
                     <PostInteractions />
                 </ActionsContext.Provider>
 
-                <div className="comments-section">
-                    {currentUser && (
-                        <CommentCreateForm />
-                    )}
-                    <div className="post-comments">
-                        <p>All Comments:</p>
-                        <ul>
-                            {post.comments.map(comment =>
-                                <CommentItem
-                                    key={comment._id}
-                                    comment={comment}
-                                />
-                            )}
-                        </ul>
-                    </div>
-                </div>
-            </li >
+                {currentUser && (
+                    <CommentCreateForm />
+                )}
+
+                <CommentsSection />
+            </div >
         </PostContext.Provider>
     )
 }
