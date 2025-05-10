@@ -15,6 +15,7 @@ import { AlertContext } from "../../../contexts/alert-context"
 import { UserContext } from "../../../contexts/user-context"
 
 import useUserServices from "../../../hooks/useUserServices"
+import { PostActionsContext } from "../../../contexts/post-actions-context"
 
 export default function ProfileEditPage() {
     const navigateTo = useNavigate();
@@ -22,10 +23,9 @@ export default function ProfileEditPage() {
     const [userData, setUserData] = useState({});
     const [imageUpload, setImageUpload] = useState(null);
 
-    const { userId: profileId } = useParams();
-
-    const { isUser: currentUser } = useContext(UserContext)
     const { setAlert } = useContext(AlertContext);
+    const { isUser: currentUser } = useContext(UserContext)
+    const { userId: profileId } = useParams();
 
     const { updateUser, getUserData, abortAll } = useUserServices();
 
@@ -88,6 +88,10 @@ export default function ProfileEditPage() {
         navigateTo(`/profile/${profileId}`);
     }
 
+    const postActionsContextValues = {
+        onCancelEditClickHandler
+    }
+
     return <>
         <div className="edit-profile-container">
             <SectionHeading
@@ -123,9 +127,11 @@ export default function ProfileEditPage() {
                 <div className='button-div'>
                     <div></div>
                     <div className="owner-buttons">
-                        <EditControls
-                            onCancelClickHandler={onCancelEditClickHandler}
-                        />
+                        <PostActionsContext.Provider value={postActionsContextValues}>
+                            <EditControls
+                                onCancelClickHandler={onCancelEditClickHandler}
+                            />
+                        </PostActionsContext.Provider>
                     </div>
                 </div>
             </form>
