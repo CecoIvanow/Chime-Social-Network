@@ -1,6 +1,6 @@
 import PostInteractionButtons from './post-interaction-buttons/PostInteractionButtons'
 
-import OwnerButtons from './owner-buttons/OwnerButtons'
+import OwnerButtons from '../../../controls/owner-buttons/OwnerButtons'
 import { useContext } from 'react'
 import { UserContext } from '../../../../../contexts/user-context'
 import { PostContext } from '../../../../../contexts/post-context';
@@ -13,7 +13,10 @@ export default function PostButtons() {
         <PostInteractionButtons />
 
         {(isUser && isUser === post?.owner._id) &&
-            <OwnerButtons />
+            <OwnerButtons
+                urlLink={`/post/${post._id}/edit`}
+                itemId={post._id}
+            />
         }
     </div>
 }

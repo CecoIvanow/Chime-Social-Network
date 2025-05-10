@@ -20,7 +20,7 @@ export default function PostInteractions() {
     return (
         <LikesContext.Provider value={likesContextValues}>
             <PostInteractionsAmount />
-
+            
             <PostButtons />
         </ LikesContext.Provider >
     )
