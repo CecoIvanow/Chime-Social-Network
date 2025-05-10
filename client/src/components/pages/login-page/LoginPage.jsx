@@ -1,8 +1,9 @@
 import { useActionState, useContext, useEffect } from "react";
 
-import AuthButton from "../../shared/auth/auth-button/AuthButton";
-import AuthForm from "../../shared/auth/auth-form/AuthForm";
-import AuthNavLink from "../../shared/auth/auth-nav-link/AuthNavLink";
+import AuthButton from "../../ui/auth/auth-button/AuthButton";
+import AuthFormsList from "../../shared/auth/auth-forms-list/AuthFormsList";
+import AuthHeaderTitle from "../../shared/auth/auth-header-title/AuthHeaderTitle";
+import AuthNavLink from "../../ui/auth/auth-nav-link/AuthNavLink";
 
 import { AlertContext } from "../../../contexts/alert-context";
 
@@ -41,23 +42,15 @@ export default function LoginPage() {
         <div className="login-page">
             <div className="container">
 
-                <div className="title">Login</div>
+                <AuthHeaderTitle
+                    title='Login'
+                />
+
                 <div className="content">
 
                     <form action={action}>
-                        <div className="user-details">
 
-                            {loginFields.map(field =>
-                                <AuthForm
-                                    key={field.fieldName}
-                                    fieldName={field.fieldName}
-                                    inputName={field.inputName}
-                                    inputType={field.inputType}
-                                    placeholderText={field.placeholderText}
-                                />
-                            )}
-
-                        </div>
+                        <AuthFormsList authFieldsList={loginFields} />
 
                         <AuthButton
                             buttonText="Login"
