@@ -1,8 +1,8 @@
 import { memo, useContext } from "react";
 
-import LinkButton from "../../../../../ui/buttons/link-button/LinkButton";
+import LinkButton from "../../../../../../ui/buttons/link-button/LinkButton";
 
-import { PostContext } from "../../../../../../contexts/post-context";
+import { PostContext } from "../../../../../../../contexts/post-context";
 
 function PostCommentButton() {
     const { post } = useContext(PostContext);
