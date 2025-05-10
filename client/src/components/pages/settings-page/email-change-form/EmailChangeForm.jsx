@@ -1,12 +1,12 @@
 import Button from "../../../ui/buttons/button/Button";
-import InputField from "../../../ui/inputs/input-field/InputField";
 import SectionHeading from "../../../ui/headings/SectionHeading";
+import InputFieldsList from "../../../shared/input-fields/input-fields-list/InputFieldsList";
 
 export default function EmailChangeForm({
     userEmail,
     onSubmitHandler
 }) {
-    const emailChabgeSettingsFields = [
+    const emailChangeSettingsFields = [
         { fieldName: `Account Email`, inputType: 'text', inputName: 'curEmail' },
         { fieldName: 'New Email', inputType: 'text', inputName: 'newEmail' },
         { fieldName: 'Current Password', inputType: 'password', inputName: 'curPass' },
@@ -21,14 +21,9 @@ export default function EmailChangeForm({
                     sectionName={`Account Email - ${userEmail}`}
                 />
 
-                {emailChabgeSettingsFields.map(field =>
-                    <InputField
-                        key={field.fieldName}
-                        fieldName={field.fieldName}
-                        inputType={field.inputType}
-                        inputName={field.inputName}
-                    />
-                )}
+                <InputFieldsList
+                    inputFields={emailChangeSettingsFields}
+                />
 
                 <Button
                     btnStyle="save-button"

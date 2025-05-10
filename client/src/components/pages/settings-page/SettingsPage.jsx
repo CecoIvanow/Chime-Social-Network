@@ -66,6 +66,7 @@ export default function SettingsPage() {
 
     return <>
         <div className="settings-container">
+
             <EmailChangeForm
                 userEmail={userEmail}
                 onSubmitHandler={onEmailChangeSubmitHandler}
