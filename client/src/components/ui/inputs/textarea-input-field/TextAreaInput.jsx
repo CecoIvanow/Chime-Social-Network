@@ -4,9 +4,14 @@ export default function TextAreaInput({
     inputName
 }) {
     return <>
-        <div className="form-group">
-            <label className="form-label">{fieldName}</label>
-            <textarea className="edit-textarea" name={inputName} defaultValue={initialValue}></textarea>
+        <div className="form-group" data-testid="form-group">
+            <label className="form-label" htmlFor={inputName}>{fieldName}</label>
+            <textarea
+                id={inputName}
+                className="edit-textarea"
+                name={inputName}
+                defaultValue={initialValue}
+            />
         </div>
     </>
 }
