@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 
 import useCommentServices from "../../../../hooks/useCommentServices";
 
-import CreateContent from "../../../ui/create-content/CreateContent";
+import CreateContentInputField from "../../../shared/input-fields/create-content-input-field/CreateContentInputField";
 
 import { PostContext } from "../../../../contexts/post-context";
 import { UserContext } from "../../../../contexts/user-context";
@@ -25,10 +25,10 @@ export default function CreateCommentForm() {
 
     const onAddCommentSubmitHandler = async (formData) => {
         const commentData = Object.fromEntries(formData);
-        
+
         commentData.onPost = location.pathname.split('/').at(2);
         commentData.owner = isUser;
-        
+
         try {
             const newComment = await createComment(commentData);
 
@@ -49,7 +49,7 @@ export default function CreateCommentForm() {
         setCommentText(e.currentTarget.value);
     }
 
-    return <CreateContent
+    return <CreateContentInputField
         onTextChangeHandler={onTextChangeHandler}
         onSubmitHandler={onAddCommentSubmitHandler}
         buttonText={'Reply'}
