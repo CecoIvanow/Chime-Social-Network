@@ -1,11 +1,11 @@
+import { MemoryRouter } from "react-router";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import LinkButton from "./LinkButton";
-import { MemoryRouter } from "react-router";
 
 describe('LinkButton component', () => {
-    it('Should be rendered', () => {
+    it('Should render', () => {
         render(
             <MemoryRouter>
                 <LinkButton />

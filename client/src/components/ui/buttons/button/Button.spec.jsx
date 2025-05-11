@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import Button from "./Button";
 
 describe('LinkrButton component', () => {
-    it('Should be rendered', () => {
+    it('Should render', () => {
         render(<Button />);
 
         expect(screen.getByRole('button')).toBeInTheDocument();
