@@ -4,7 +4,7 @@ export default function SearchField({
     setSearchParams,
     searchBy
 }) {
-    
+
     const [curTimeOutId, setCurTimeOutId] = useState(null);
 
     async function onValueChangeHandler(e) {
@@ -21,9 +21,18 @@ export default function SearchField({
         setCurTimeOutId(newTimeOutId);
     }
 
-    return <>
-        <div className="search-filter">
-            <input type="text" className="search-input" placeholder={`Search by ${searchBy}...`} onChange={onValueChangeHandler}/>
+    return (
+        <div
+            className="search-filter"
+            data-testid="search-field-container"
+        >
+            <input
+                type="text"
+                className="search-input"
+                placeholder={`Search by ${searchBy}...`}
+                onChange={onValueChangeHandler}
+                data-testid="search-field-input"
+            />
         </div>
-    </>
+    )
 }
