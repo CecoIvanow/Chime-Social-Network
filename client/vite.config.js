@@ -6,8 +6,9 @@ export default defineConfig({
     plugins: [react()],
     test: {
         coverage: {
+            all: true,
             provider: 'istanbul',
-            extension: ['.js', '.jsx'],
+            extension: ['.js', '.jsx']
         },
         setupFiles: ['./src/tests/setup.js'],
         environment: 'jsdom',
