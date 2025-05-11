@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 
-import CreateContent from "../../../ui/create-content/CreateContent";
+import CreateContentInputField from "../../input-fields/create-content-input-field/CreateContentInputField";
 import usePostServices from "../../../../hooks/usePostServices";
 
 import { UserContext } from "../../../../contexts/user-context";
@@ -47,11 +47,11 @@ export default function PostCreateForm() {
     }, [abortAll])
 
     return <>
-            <CreateContent
-                text={postText}
-                buttonText={'Post'}
-                onTextChangeHandler={onTextChangeHandler}
-                onSubmitHandler={onPostSubmitHandler}
-            />
+        <CreateContentInputField
+            text={postText}
+            buttonText={'Post'}
+            onTextChangeHandler={onTextChangeHandler}
+            onSubmitHandler={onPostSubmitHandler}
+        />
     </>
 }

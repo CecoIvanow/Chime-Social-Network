@@ -6,9 +6,15 @@ export default function InputField({
 }) {
 
     return <>
-        <div className="form-group">
-            <label className="form-label">{fieldName}</label>
-            <input type={inputType} className="form-input" name={inputName} defaultValue={initialValue} />
+        <div className="form-group" data-testid="form-group">
+            <label className="form-label" htmlFor={inputName}>{fieldName}</label>
+            <input
+                id={inputName}
+                type={inputType}
+                className="form-input"
+                name={inputName}
+                defaultValue={initialValue}
+            />
         </div>
     </>
 }
