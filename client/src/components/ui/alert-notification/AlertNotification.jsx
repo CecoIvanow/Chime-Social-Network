@@ -18,9 +18,12 @@ export default function AlertNotification() {
     }, [alert, setAlert])
 
     return <>
-        <div className="error-notification">
-            <div className="error-icon"></div>
-            <div className="error-content">
+        <div
+            className="error-notification"
+            data-testid="error-notification"
+        >
+            <div className="error-icon" data-testid="error-icon" />
+            <div className="error-content" data-testid="error-content">
                 <p>{alert}</p>
             </div>
         </div>
