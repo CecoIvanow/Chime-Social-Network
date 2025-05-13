@@ -13,9 +13,11 @@ export default function AuthForm({
     }
 
     return <>
-        <div className="input-box">
+        <div className="input-box" data-testid="auth-input-box">
             <span className="details">{fieldName}</span>
+            <label htmlFor={inputName} data-testid="auth-input-label"></label>
             <input
+                id={inputName}
                 type={inputType}
                 placeholder={`Enter your ${placeholderText}`}
                 name={inputName}
