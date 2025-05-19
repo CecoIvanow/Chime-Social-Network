@@ -25,7 +25,7 @@ export default function EditControls({
                 <Button
                     buttonName="Edit"
                     btnStyle="button"
-                        onClickHandler={() => onSaveEditClickHandler(itemId)}
+                    onClickHandler={() => onSaveEditClickHandler(itemId)}
                 />
             </>
         )}
