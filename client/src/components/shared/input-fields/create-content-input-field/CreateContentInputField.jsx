@@ -10,7 +10,7 @@ export default function CreateContentInputField({
 }) {
     return <>
         <div className='entry-create'>
-            <form action={onSubmitHandler}>
+            <form action={onSubmitHandler} data-testid="form-action-submit">
                 <CreateContentInput
                     onTextChangeHandler={onTextChangeHandler}
                     placeholderText={placeholderText}
