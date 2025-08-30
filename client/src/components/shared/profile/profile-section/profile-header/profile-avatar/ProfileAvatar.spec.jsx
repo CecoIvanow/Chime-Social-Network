@@ -9,7 +9,7 @@ const mockProps = {
     }
 }
 
-describe("ProfileAvatar", () => {
+describe("ProfileAvatar component", () => {
     it("renders user image with correct alt and src", () => {
         render(<ProfileAvatar userData={mockProps.userData} />)
 
