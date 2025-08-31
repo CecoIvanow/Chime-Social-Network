@@ -11,16 +11,18 @@ export default function CreateContentInputField({
     return <>
         <div className='entry-create'>
             <form action={onSubmitHandler} data-testid="form-action-submit">
+            <form action={onSubmitHandler} data-testid="content-form" >
                 <CreateContentInput
                     onTextChangeHandler={onTextChangeHandler}
                     placeholderText={placeholderText}
                     text={text}
                 />
 
-                <Button
-                    btnStyle="button"
-                    buttonName={buttonText}
-                />
+                    <Button
+                        btnStyle="button"
+                        buttonName={buttonText}
+                    />
+                </form>
             </form>
         </div>
     </>

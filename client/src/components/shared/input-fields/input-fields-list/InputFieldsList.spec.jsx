@@ -1,11 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
-import InputFieldsList from "./InputFieldsList";
+import InputFieldsList from "./InputFieldsList.jsx";
+
 
 vi.mock("../../../ui/inputs/input-field/InputField", () => ({
     default: ({ fieldName, inputName, inputType, initialValue }) => (
-        <div data-testid="input-field">
+        <div data-testid="input-field" >
             <span>{fieldName}</span>
             <span>{inputName}</span>
             <span>{inputType}</span>
@@ -14,38 +15,36 @@ vi.mock("../../../ui/inputs/input-field/InputField", () => ({
     )
 }));
 
-const mockedFields = [
+const mockFields = [
     {
-        fieldName: 'Age',
-        inputName: 'age',
-        inputType: 'number',
-        value: '27',
+        fieldName: "Username",
+        inputName: "username",
+        inputType: "text",
+        value: "Enter username",
     },
     {
-        fieldName: 'First Name',
-        inputName: 'firstName',
-        inputType: 'string',
-        value: 'Petar',
+        fieldName: "Password",
+        inputName: "pass",
+        inputType: "password",
+        value: "Enter password",
     },
-];
+]
 
 beforeEach(() => {
-    render(
-        <InputFieldsList
-            inputFields={mockedFields}
-        />
-    );
-})
+    render(<InputFieldsList
+        inputFields={mockFields}
+    />)
+});
 
 describe('InputFieldsList component', () => {
     it('renders with correct number of InputField components', () => {
         const inputFields = screen.getAllByTestId('input-field');
 
-        expect(inputFields).toHaveLength(mockedFields.length)
+        expect(inputFields).toHaveLength(mockFields.length);
     });
 
-    it('renders InputField component with passed props', () => {
-        for (const field of mockedFields) {
+    it('renders inputField component with passed props', () => {
+        for (const field of mockFields) {
             expect(screen.getByText(field.fieldName)).toBeInTheDocument();
             expect(screen.getByText(field.inputName)).toBeInTheDocument();
             expect(screen.getByText(field.inputType)).toBeInTheDocument();
