@@ -34,17 +34,17 @@ describe("profileInfoLabelsList", () => {
     });
 
     it("passes correct props to each ProfileInfoLabel component", () => {
-            expect(screen.getByText("Bio:")).toBeInTheDocument();
-            expect(screen.getByText("Age:")).toBeInTheDocument();
-            expect(screen.getByText("Gender:")).toBeInTheDocument();
-            expect(screen.getByText("Location:")).toBeInTheDocument();
-            expect(screen.getByText("Occupation:")).toBeInTheDocument();
-            expect(screen.getByText("Education:")).toBeInTheDocument();
-            expect(screen.getByText("Status:")).toBeInTheDocument();
-            expect(screen.getByText("Member Since:")).toBeInTheDocument();
+        expect(screen.getByText("Bio:")).toBeInTheDocument();
+        expect(screen.getByText("Age:")).toBeInTheDocument();
+        expect(screen.getByText("Gender:")).toBeInTheDocument();
+        expect(screen.getByText("Location:")).toBeInTheDocument();
+        expect(screen.getByText("Occupation:")).toBeInTheDocument();
+        expect(screen.getByText("Education:")).toBeInTheDocument();
+        expect(screen.getByText("Status:")).toBeInTheDocument();
+        expect(screen.getByText("Member Since:")).toBeInTheDocument();
 
-            expect(screen.getByText(mockUserData.bio)).toBeInTheDocument();
-            expect(screen.getByText(mockUserData.memberSince)).toBeInTheDocument();
-            expect(screen.getByText(mockUserData.gender)).toBeInTheDocument();
+        expect(screen.getByText(mockUserData.bio)).toBeInTheDocument();
+        expect(screen.getByText(mockUserData.memberSince)).toBeInTheDocument();
+        expect(screen.getByText(mockUserData.gender)).toBeInTheDocument();
     })
 })
