@@ -25,7 +25,7 @@ describe("ProfileInfoLabel componen", () => {
     })
 
     it("renders with N\\A if empty userData is passed", () => {
-        render(<ProfileInfoLabel userData={{}} label={mockProps.label} />);
+        render(<ProfileInfoLabel userData={undefined} label={mockProps.label} />);
 
         expect(screen.getByText('Bio')).toBeInTheDocument();
         expect(screen.queryByText('Coder')).not.toBeInTheDocument();
