@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useParams } from "react-router";
 
 import PostCreateForm from "../post-create-form/PostCreateForm";
-import SectionHeading from '../../../ui/headings/SectionHeading'
+import SectionHeading from "../../../ui/headings/SectionHeading"
 import PostsList from "../posts-list/PostsList";
 import LoadingSpinner from "../../../ui/loading-spinner/LoadingSpinner";
 
@@ -27,7 +27,7 @@ export default function PostsSection({
             <SectionHeading
                 sectionName={sectionName}
             />
-            
+
             {(isUser && isUser === userId) && (
                 <PostCreateForm />
             )}

@@ -10,10 +10,28 @@ export default function PostHeader() {
     return <>
         <div className='post-header'>
             <div>
-                <img className='owner-picture' src={post.owner.imageUrl} alt="" />
-                <p className='post-owner'><Link to={`/profile/${post.owner._id}`}>{`${post.owner.firstName} ${post.owner.lastName}`}</Link></p>
+                <img
+                    src={post.owner.imageUrl}
+                    className='owner-picture'
+                    data-testid="owner-image"
+                />
+                <p className='post-owner'>
+                    <Link
+                        to={`/profile/${post.owner._id}`}
+                        data-testid="profile-link"
+                    >
+                        {`${post.owner.firstName} ${post.owner.lastName}`}
+                    </Link>
+                </p>
             </div>
-            <div className='created-on'><Link to={`/post/${post._id}/details`}>Posted on {post.postedOn}</Link></div>
+            <div className='created-on'>
+                <Link
+                    to={`/post/${post._id}/details`}
+                    data-testid="post-link"
+                >
+                    Posted on {post.postedOn}
+                </Link>
+            </div>
         </div>
     </>
 }
