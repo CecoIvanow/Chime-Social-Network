@@ -6,6 +6,9 @@ on:
             - main
             - development
             - ci/**
+    pull_request:
+        branches:
+            - main
           
     workflow_dispatch:
 
