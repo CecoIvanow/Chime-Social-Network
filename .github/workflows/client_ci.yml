@@ -7,10 +7,6 @@ on:
             - development
             - ci/**
     pull_request:
-        branches:
-            - main
-            - development
-            - ci/**
           
     workflow_dispatch:
 
