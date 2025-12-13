@@ -1,4 +1,4 @@
-name: Client Tests
+name: Client CI
 
 on:
     push:
@@ -7,15 +7,11 @@ on:
             - development
             - ci/**
     pull_request:
-        branches:
-            - main
-            - development
-            - ci/**
           
     workflow_dispatch:
 
 jobs:
-  test:
+  client_test:
 
     runs-on: ubuntu-latest
 
@@ -34,6 +30,9 @@ jobs:
 
     - name: Install dependencies
       run: npm ci
+
+    - name: Audit dependencies
+      run: npm audit
 
     - name: Run tests
       run: npm test
