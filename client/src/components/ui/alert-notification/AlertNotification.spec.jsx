@@ -13,7 +13,7 @@ describe('AlertNotification component', () => {
             </AlertContext.Provider>
         );
 
-        expect(screen.getByTestId('error-notification')).not.toBeInTheDocument();
+        expect(screen.getByTestId('error-notification')).toNotBeInTheDocument();
         expect(screen.getByTestId('error-icon')).toBeInTheDocument();
         expect(screen.getByTestId('error-content')).toBeInTheDocument();
         expect(screen.getByText('Something broke!')).toBeInTheDocument();
