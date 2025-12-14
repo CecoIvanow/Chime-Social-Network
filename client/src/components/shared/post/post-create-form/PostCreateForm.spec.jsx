@@ -131,7 +131,7 @@ describe('PostCreateForm component', () => {
     });
 
     it('sets setAlert on createPost rejection', async () => {
-        mockUsePostServices.createPost.mockRejectedValue(new Error('Fail test!'))
+        mockUsePostServices.createPost.mockRejectedValue(new Error('Successful test failure!'))
 
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
@@ -156,7 +156,7 @@ describe('PostCreateForm component', () => {
         await waitFor(() => {
             expect(mockUsePostServices.createPost).toHaveBeenCalledTimes(1);
             expect(mockSetAlert).toHaveBeenCalledTimes(1);
-            expect(mockSetAlert).toHaveBeenCalledWith('Fail test!');
+            expect(mockSetAlert).toHaveBeenCalledWith('Successful test failure!');
         })
     });
 
