@@ -1,3 +1,17 @@
+name: Chime
+services:
+    chime_fe:
+        stdin_open: true
+        tty: true
+        networks:
+            - chime_network
+        container_name: Chime_Frontend
+        ports:
+            - 4569:4569
+        build:
+            context: ./client
+            dockerfile: Dockerfile.frontend
+        image: cecoi6/chime_fe:latest
     chime_be:
         stdin_open: true
         tty: true
@@ -9,8 +23,8 @@
         env_file:
             - ./servers/backend-server/.env
         build:
-          context: ./servers/backend-server
-          dockerfile: Dockerfile.backend
+            context: ./servers/backend-server
+            dockerfile: Dockerfile.backend
         image: cecoi6/chime_be
-    networks:
-        chime_network:
+networks:
+    chime_network:
