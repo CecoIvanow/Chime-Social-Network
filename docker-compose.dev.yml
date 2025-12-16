@@ -21,7 +21,7 @@ services:
             - chime_network
         container_name: Chime_Backend_Dev
         volumes: 
-            - .servers/backend-server/src:/app/src
+            - ./servers/backend-server/src:/app/src
         ports:
             - 4012:4012
         env_file:
