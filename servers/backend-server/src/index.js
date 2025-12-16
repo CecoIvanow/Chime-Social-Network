@@ -23,7 +23,9 @@ try {
 app.use((req, res, next) => {
     const whitelistedOrigins = [
         'http://localhost:4569',
-        'http://localhost:3567'
+        'http://localhost:3567',
+        '0.0.0.0:4569',
+        '0.0.0.0:3567',
     ]
 
     const originIndex = whitelistedOrigins.indexOf(req.headers.origin);
