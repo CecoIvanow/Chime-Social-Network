@@ -9,7 +9,7 @@ const port = 4012;
 const app = express();
 
 // MongoDB setup
-const URI = process.env.DATABASE_URI || 'mongodb://127.0.0.1:/Chime';
+const URI = process.env.DATABASE_URI || 'mongodb://127.0.0.1:27017/Chime';
 try {
     await mongoose.connect(URI);
 
@@ -23,7 +23,9 @@ try {
 app.use((req, res, next) => {
     const whitelistedOrigins = [
         'http://localhost:4569',
-        'http://localhost:3567'
+        'http://localhost:3567',
+        '0.0.0.0:4569',
+        '0.0.0.0:3567',
     ]
 
     const originIndex = whitelistedOrigins.indexOf(req.headers.origin);
@@ -41,4 +43,4 @@ app.use(cookieParser());
 app.use(routes);
 
 // Express starting
-app.listen(port, () => console.log(`Server is listening on port http://localhost:4012`));
+app.listen(port, "0.0.0.0", () => console.log(`Server is listening on port http://localhost:4012`));

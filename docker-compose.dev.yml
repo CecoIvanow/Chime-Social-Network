@@ -1,0 +1,48 @@
+name: Chime_Development
+services:
+    chime_fe_dev:
+        stdin_open: true
+        tty: true
+        networks:
+            - chime_network
+        container_name: Chime_Frontend_Dev
+        volumes: 
+            - ./client/src:/app/src
+        ports:
+            - 3567:3567
+        build:
+            context: ./client
+            dockerfile: Dockerfile.frontend.dev
+        image: cecoi6/chime_fe_dev
+    chime_be_dev:
+        stdin_open: true
+        tty: true
+        networks:
+            - chime_network
+        container_name: Chime_Backend_Dev
+        volumes: 
+            - .servers/backend-server/src:/app/src
+        ports:
+            - 4012:4012
+        env_file:
+            - ./servers/backend-server/.env.development
+        build:
+            context: ./servers/backend-server
+            dockerfile: Dockerfile.backend.dev
+        image: cecoi6/chime_be_dev
+    mongo:
+        stdin_open: true    
+        tty: true
+        networks:
+            - chime_network
+        container_name: mongo
+        volumes:
+            - data:/data/db
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+            - MONGO_INITDB_ROOT_PASSWORD=secret
+        image: mongo
+networks:
+    chime_network:
+volumes:
+    data:
