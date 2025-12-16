@@ -6,6 +6,8 @@ services:
         networks:
             - chime_network
         container_name: Chime_Frontend_Dev
+        volumes: 
+            - ./client/src:/app/src
         ports:
             - 3567:3567
         build:
@@ -18,6 +20,8 @@ services:
         networks:
             - chime_network
         container_name: Chime_Backend_Dev
+        volumes: 
+            - .servers/backend-server/src:/app/src
         ports:
             - 4012:4012
         env_file:
