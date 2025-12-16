@@ -21,7 +21,7 @@ services:
         ports:
             - 4012:4012
         env_file:
-            - ./servers/backend-server/.env
+            - ./servers/backend-server/.env.production
         build:
             context: ./servers/backend-server
             dockerfile: Dockerfile.backend
