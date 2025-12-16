@@ -1,0 +1,16 @@
+    chime_be:
+        stdin_open: true
+        tty: true
+        networks:
+            - chime_network
+        container_name: Chime_Backend
+        ports:
+            - 4012:4012
+        env_file:
+            - ./servers/backend-server/.env
+        build:
+          context: ./servers/backend-server
+          dockerfile: Dockerfile.backend
+        image: cecoi6/chime_be
+    networks:
+        chime_network:
