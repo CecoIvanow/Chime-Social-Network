@@ -9,7 +9,7 @@ const port = 4012;
 const app = express();
 
 // MongoDB setup
-const URI = `mongodb+srv://${process.env.DATABASE_NAME}:${process.env.DATABASE_PASSWORD}@cluster0.f93mo.mongodb.net/?appName=Cluster0` || 'mongodb://127.0.0.1:/Chime';
+const URI = process.env.DATABASE_URI || 'mongodb://127.0.0.1:27017/Chime';
 try {
     await mongoose.connect(URI);
 

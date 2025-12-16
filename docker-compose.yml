@@ -11,7 +11,7 @@ services:
         build:
             context: ./client
             dockerfile: Dockerfile.frontend
-        image: cecoi6/chime_fe:latest
+        image: cecoi6/chime_fe
     chime_be:
         stdin_open: true
         tty: true
