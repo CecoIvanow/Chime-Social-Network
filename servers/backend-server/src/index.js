@@ -9,7 +9,7 @@ const port = 4012;
 const app = express();
 
 // MongoDB setup
-const URI = process.env.DATABASE_URI || 'mongodb://127.0.0.1:/Chime';
+const URI = `mongodb+srv://${process.env.DATABASE_NAME}:${process.env.DATABASE_PASSWORD}@cluster0.f93mo.mongodb.net/?appName=Cluster0` || 'mongodb://127.0.0.1:/Chime';
 try {
     await mongoose.connect(URI);
 
@@ -43,4 +43,4 @@ app.use(cookieParser());
 app.use(routes);
 
 // Express starting
-app.listen(port, () => console.log(`Server is listening on port http://localhost:4012`));
+app.listen(port, "0.0.0.0", () => console.log(`Server is listening on port http://localhost:4012`));
