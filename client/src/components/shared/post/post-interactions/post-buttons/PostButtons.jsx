@@ -1,7 +1,8 @@
-import PostInteractionButtons from './post-interaction-buttons/PostInteractionButtons'
-
-import OwnerButtons from '../../../controls/owner-buttons/OwnerButtons'
 import { useContext } from 'react'
+
+import PostInteractionButtons from './post-interaction-buttons/PostInteractionButtons'
+import OwnerButtons from '../../../controls/owner-buttons/OwnerButtons'
+
 import { UserContext } from '../../../../../contexts/user-context'
 import { PostContext } from '../../../../../contexts/post-context';
 
