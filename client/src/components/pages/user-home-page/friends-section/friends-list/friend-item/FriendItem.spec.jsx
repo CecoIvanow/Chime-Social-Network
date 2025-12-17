@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import FriendItem from "./FriendItem";
@@ -22,5 +22,18 @@ describe("FrientItem component", () => {
 
         expect(screen.getByText(`${friend.firstName} ${friend.lastName}`)).toBeInTheDocument();
         expect(screen.getByAltText("Profile Picture")).toHaveAttribute('src', friend.imageUrl);
+    });
+
+    it("triggers onClickHandler on click", () => {
+        render(
+            <FriendItem
+                friend={friend}
+                onClickHandler={onClickHandler}
+            />
+        );
+
+        fireEvent.click(screen.getByText(`${friend.firstName} ${friend.lastName}`));
+
+        expect(onClickHandler).toHaveBeenCalledOnce();
     });
 });
