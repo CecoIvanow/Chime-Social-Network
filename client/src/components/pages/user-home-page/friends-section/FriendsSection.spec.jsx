@@ -14,7 +14,7 @@ vi.mock("../../../ui/search-field/SearchField", () => ({
 }));
 
 vi.mock("../../../ui/headings/SectionHeading", () => ({
-    default: ({ sectionName }) => <div>{sectionName}</div>
+    default: ({ sectionName }) => <div data-testid="section-heading">{sectionName}</div>
 }));
 
 vi.mock("./friends-list/FriendsList", () => ({
@@ -62,4 +62,15 @@ describe("FriendsSection component", () => {
             expect(screen.getAllByTestId("friends-list")).toHaveLength(userFriends.length);
         }
     });
-})
+
+    it("renders sectionHeading with correct friends amount", () => {
+        render(
+            <FriendsSection
+                isLoading={isLoading}
+                userFriends={userFriends}
+            />
+        );
+
+        expect(screen.getByTestId("section-heading")).toHaveTextContent(`Friends (${userFriends.length}):`)
+    });
+});
