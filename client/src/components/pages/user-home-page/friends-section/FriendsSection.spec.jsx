@@ -60,6 +60,16 @@
             }
         });
 
+        it("does not render FriendsList on missing user friends", () => {           
+            render(
+                <FriendsSection
+                    isLoading={isLoading}
+                />
+            );
+
+            expect(screen.queryAllByTestId("friends-list")).toHaveLength(0);
+        });
+
         it("renders SectionHeading with correct friends amount", () => {
             render(
                 <FriendsSection
