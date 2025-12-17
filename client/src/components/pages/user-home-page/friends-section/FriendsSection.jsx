@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import SearchField from "../../../ui/search-field/SearchField";
 import SectionHeading from "../../../ui/headings/SectionHeading";
@@ -9,6 +9,8 @@ export default function FriendsSection({
     userFriends = [],
     isLoading,
 }) {
+    const memoizedUserFriends = useMemo(() => userFriends, [JSON.stringify(userFriends)]);
+
     const friendsAmount = userFriends.length;
 
     const [friendSearchParams, setFriendSearchParams] = useState('');
@@ -16,10 +18,10 @@ export default function FriendsSection({
 
     useEffect(() => {
         if (friendSearchParams === '') {
-            setMatchingFriends(userFriends);
+            setMatchingFriends(memoizedUserFriends);
         } else {
             setMatchingFriends(
-                userFriends.filter(user => {
+                memoizedUserFriends.filter(user => {
                     const matchByFirstName = user.firstName
                         .toLowerCase()
                         .includes(friendSearchParams.toLowerCase());
@@ -34,7 +36,7 @@ export default function FriendsSection({
                 })
             )
         }
-    }, [friendSearchParams, userFriends, matchingFriends.length])
+    }, [friendSearchParams, memoizedUserFriends, matchingFriends.length]);
 
     return <>
         <div className="friends-section">
