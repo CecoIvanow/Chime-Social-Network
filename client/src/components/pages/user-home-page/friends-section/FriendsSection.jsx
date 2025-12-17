@@ -15,9 +15,7 @@ export default function FriendsSection({
     const [matchingFriends, setMatchingFriends] = useState([]);
 
     useEffect(() => {
-        if (matchingFriends.length === userFriends.length) {
-            return;
-        } else if (friendSearchParams === '') {
+        if (friendSearchParams === '') {
             setMatchingFriends(userFriends);
         } else {
             setMatchingFriends(
