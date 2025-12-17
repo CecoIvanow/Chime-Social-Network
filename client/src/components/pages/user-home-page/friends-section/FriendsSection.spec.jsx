@@ -1,4 +1,4 @@
-import { getByTestId, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import FriendsSection from "./FriendsSection";
@@ -8,8 +8,8 @@ vi.mock("../../../ui/search-field/SearchField", () => ({
         <input
             type="text"
             data-testid="search-field"
-            placeholder={searchBy}
-            onChange={setSearchParams}
+            placeholder={`Search by ${searchBy}`}
+            onChange={(e) => setSearchParams(e.target.value)}
         />
 }));
 
@@ -40,9 +40,6 @@ describe("FriendsSection component", () => {
 
     const isLoading = false;
 
-    const setFriendSearchParams = vi.fn();
-    const setMatchingFriends = vi.fn();
-
     it.each([
         { isLoading: true, renderedComp: "LoadingSpinner" },
         { isLoading: false, renderedComp: "FriendsList" },
@@ -72,5 +69,19 @@ describe("FriendsSection component", () => {
         );
 
         expect(screen.getByTestId("section-heading")).toHaveTextContent(`Friends (${userFriends.length}):`)
+    });
+
+    it("renders SearchField with correct prop and triggers setFriendSearchParams on change", () => {
+        render(
+            <FriendsSection
+                isLoading={isLoading}
+                userFriends={userFriends}
+            />
+        );
+        
+        fireEvent.input(screen.getByPlaceholderText("Search by name"), { target: {value: 'Ivan'} })
+        
+        expect(screen.getByPlaceholderText("Search by name")).toBeInTheDocument();
+        expect(screen.getByPlaceholderText("Search by name")).toHaveValue('Ivan');
     });
 });

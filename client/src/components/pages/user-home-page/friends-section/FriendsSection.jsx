@@ -20,7 +20,6 @@ export default function FriendsSection({
         } else if (friendSearchParams === '') {
             setMatchingFriends(userFriends);
         } else {
-            console.log('Hi');
             setMatchingFriends(
                 userFriends.filter(user => {
                     const matchByFirstName = user.firstName
