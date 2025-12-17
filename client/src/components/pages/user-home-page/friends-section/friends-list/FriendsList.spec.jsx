@@ -19,4 +19,14 @@ describe("FriendsList component", () => {
 
         expect(screen.getAllByTestId("friend-item")).toHaveLength(matchingFriends.length);
     });
+
+    it("renders FriendItem with passed props", () => {
+        render(
+            <FriendsList
+                matchingFriends={matchingFriends}
+            />
+        );
+
+        expect(screen.getAllByTestId("friend-item").at(0)).toHaveTextContent(matchingFriends[0]);
+    });
 });
