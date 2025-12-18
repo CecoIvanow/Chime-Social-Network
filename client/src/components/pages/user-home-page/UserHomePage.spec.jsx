@@ -145,8 +145,6 @@ describe("UserHomePage component", () => {
         { isLoading: true, renderedComp: "isLoading" },
         { isLoading: false, renderedComp: "PostsSection" },
     ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
-        const namePattern = new RegExp(`^${userData.firstName}$`);
-
         useUserServices.mockReturnValue({
             abortAll: vi.fn(),
             getFullUserProfile: vi.fn().mockResolvedValue(userData),
@@ -167,9 +165,9 @@ describe("UserHomePage component", () => {
         } else {
             let totalPostsAmount = userData.createdPosts.length;
             let allPosts = Array.from(userData.createdPosts);
-            
+
             userData.friends.forEach(friend => totalPostsAmount += friend.createdPosts.length);
-            
+
             userData.friends.forEach(friend => friend.createdPosts.forEach(post => allPosts.push(post)));
 
             expect(await screen.findAllByTestId("post")).toHaveLength(totalPostsAmount);
@@ -177,5 +175,25 @@ describe("UserHomePage component", () => {
 
             allPosts.forEach(post => expect(screen.getByText(post.content)).toBeInTheDocument());
         };
+    });
+
+    it("triggers setAlert on rejected getFullPromise", async () => {
+        useUserServices.mockReturnValue({
+            abortAll: vi.fn(),
+            getFullUserProfile: vi.fn().mockRejectedValue(new Error("test reject getFullUserProfile")),
+            isLoading: false,
+        });
+
+        render(
+            <AlertContext.Provider value={{ setAlert }}>
+                <UserContext.Provider value={{ isUser }}>
+                    <UserHomePage />
+                </UserContext.Provider>
+            </AlertContext.Provider>
+        );
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledOnce();
+        })
     });
 });
