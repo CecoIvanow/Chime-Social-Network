@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import UserHomePage from "./UserHomePage";
 
@@ -82,7 +82,7 @@ describe("UserHomePage component", () => {
     it.each([
         { isLoading: true, renderedComp: "isLoading" },
         { isLoading: false, renderedComp: "FriendsSection" },
-    ])("on isLoading $isLoading renders $renderedComp and passes props", async ({ isLoading }) => {
+    ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
         useUserServices.mockReturnValue({
             abortAll: vi.fn(),
             getFullUserProfile: vi.fn().mockResolvedValue(userData),
@@ -107,6 +107,35 @@ describe("UserHomePage component", () => {
             userData.friends.forEach(friend => {
                 expect(screen.getByText(friend.name)).toBeInTheDocument();
             });
+        };
+    });
+
+    it.each([
+        { isLoading: true, renderedComp: "isLoading" },
+        { isLoading: false, renderedComp: "ProfileSection" },
+    ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
+        const namePattern = new RegExp(`^${userData.firstName}$`);
+
+        useUserServices.mockReturnValue({
+            abortAll: vi.fn(),
+            getFullUserProfile: vi.fn().mockResolvedValue(userData),
+            isLoading,
+        });
+
+        render(
+            <AlertContext.Provider value={{ setAlert }}>
+                <UserContext.Provider value={{ isUser }}>
+                    <UserHomePage />
+                </UserContext.Provider>
+            </AlertContext.Provider>
+        );
+
+        if (isLoading) {
+            expect(await screen.findByTestId("profile-loading-spinner")).toBeInTheDocument();
+            expect(screen.queryByTestId("profile-section")).not.toBeInTheDocument();
+        } else {
+            expect(await screen.findByTestId("profile-section")).toHaveTextContent(namePattern);
+            expect(screen.queryByTestId("profile-loading-spinner")).not.toBeInTheDocument();
         };
     });
 });
