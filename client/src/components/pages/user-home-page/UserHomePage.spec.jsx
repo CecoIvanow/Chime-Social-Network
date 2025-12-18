@@ -75,19 +75,17 @@ describe("UserHomePage component", () => {
             { _id: "userPost1", content: "Tsetso's first post" },
             { _id: "userPost2", content: "Tsetso's first post" }
         ]
-    }
+    };
 
-    const abortAll = vi.fn();
     const setAlert = vi.fn();
-    const getFullUserProfile = vi.fn();
 
     it.each([
         { isLoading: true, renderedComp: "isLoading" },
-        { isLoading: false, renderedComp: "isLoading" },
+        { isLoading: false, renderedComp: "FriendsSection" },
     ])("on isLoading $isLoading renders $renderedComp and passes props", async ({ isLoading }) => {
         useUserServices.mockReturnValue({
-            abortAll,
-            getFullUserProfile: getFullUserProfile.mockResolvedValue(userData),
+            abortAll: vi.fn(),
+            getFullUserProfile: vi.fn().mockResolvedValue(userData),
             isLoading,
         });
 
