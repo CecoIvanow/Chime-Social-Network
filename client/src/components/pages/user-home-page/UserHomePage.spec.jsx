@@ -52,6 +52,7 @@ vi.mock("../../../hooks/useUserServices");
 
 describe("UserHomePage component", () => {
     const isUser = "userId";
+    const setAlert = vi.fn();
 
     const userData = {
         firstName: "Tsetso",
@@ -78,8 +79,6 @@ describe("UserHomePage component", () => {
             { _id: "userPost2", content: "Tsetso's second post" }
         ]
     };
-
-    const setAlert = vi.fn();
 
     it.each([
         { isLoading: true, renderedComp: "isLoading" },
@@ -195,5 +194,27 @@ describe("UserHomePage component", () => {
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledOnce();
         })
+    });
+
+    it("triggers abortAll on unmount", () => {
+        const abortAll = vi.fn();
+
+        useUserServices.mockReturnValue({
+            abortAll,
+            getFullUserProfile: vi.fn().mockResolvedValue(userData),
+            isLoading: false,
+        });
+
+        const { unmount } = render(
+            <AlertContext.Provider value={{ setAlert }}>
+                <UserContext.Provider value={{ isUser }}>
+                    <UserHomePage />
+                </UserContext.Provider>
+            </AlertContext.Provider>
+        );
+
+        unmount();
+
+        expect(abortAll).toHaveBeenCalledOnce();
     });
 });
