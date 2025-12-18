@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import UserHomePage from "./UserHomePage";
@@ -27,8 +27,10 @@ vi.mock("../../shared/post/posts-section/PostsSection", () => ({
                     <div data-testid="posts-loading-spinner" > Loading...</div>
                 ) : (
                     <>
-                        <div data-testid="posts-section">{userName}</div>
-                        {TotalPostsContextValues?.totalPosts?.map(post => <div data-testid="post" key={post._id}>{post.content}</div>)}
+                        <div data-testid="posts-section">
+                            {userName}
+                            {TotalPostsContextValues?.totalPosts?.map(post => <div data-testid="post" key={post._id}>{post.content}</div>)}
+                        </div>
                     </>
                 )
             )}
@@ -73,7 +75,7 @@ describe("UserHomePage component", () => {
         ],
         createdPosts: [
             { _id: "userPost1", content: "Tsetso's first post" },
-            { _id: "userPost2", content: "Tsetso's first post" }
+            { _id: "userPost2", content: "Tsetso's second post" }
         ]
     };
 
@@ -136,6 +138,44 @@ describe("UserHomePage component", () => {
         } else {
             expect(await screen.findByTestId("profile-section")).toHaveTextContent(namePattern);
             expect(screen.queryByTestId("profile-loading-spinner")).not.toBeInTheDocument();
+        };
+    });
+
+    it.each([
+        { isLoading: true, renderedComp: "isLoading" },
+        { isLoading: false, renderedComp: "PostsSection" },
+    ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
+        const namePattern = new RegExp(`^${userData.firstName}$`);
+
+        useUserServices.mockReturnValue({
+            abortAll: vi.fn(),
+            getFullUserProfile: vi.fn().mockResolvedValue(userData),
+            isLoading,
+        });
+
+        render(
+            <AlertContext.Provider value={{ setAlert }}>
+                <UserContext.Provider value={{ isUser }}>
+                    <UserHomePage />
+                </UserContext.Provider>
+            </AlertContext.Provider>
+        );
+
+        if (isLoading) {
+            expect(await screen.findByTestId("posts-loading-spinner")).toBeInTheDocument();
+            expect(screen.queryByTestId("posts-section")).not.toBeInTheDocument();
+        } else {
+            let totalPostsAmount = userData.createdPosts.length;
+            let allPosts = Array.from(userData.createdPosts);
+            
+            userData.friends.forEach(friend => totalPostsAmount += friend.createdPosts.length);
+            
+            userData.friends.forEach(friend => friend.createdPosts.forEach(post => allPosts.push(post)));
+
+            expect(await screen.findAllByTestId("post")).toHaveLength(totalPostsAmount);
+            expect(screen.queryByTestId("posts-loading-spinner")).not.toBeInTheDocument();
+
+            allPosts.forEach(post => expect(screen.getByText(post.content)).toBeInTheDocument());
         };
     });
 });
