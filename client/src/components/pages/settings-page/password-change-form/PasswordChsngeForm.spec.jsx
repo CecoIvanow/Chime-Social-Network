@@ -78,5 +78,11 @@ describe("PasswordChangeForm component", () => {
         };
     });
 
-    
+    it("on submit handler gets attached to PasswordChangeForm", () => {
+        renderComp();
+
+        fireEvent.click(screen.getByTestId("button"));
+
+        expect(onSubmitHandlerMock).toHaveBeenCalledOnce();
+    });
 });
