@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import EmailChangeForm from "./EmailChangeForm";
@@ -30,7 +30,7 @@ vi.mock("../../../shared/input-fields/input-fields-list/InputFieldsList", () => 
 
 describe("EmailChangeForm component", () => {
     const userEmail = "example@email.com";
-    
+
     const onSubmitHandlerMock = vi.fn();
 
     const emailChangeSettingsFields = [
@@ -80,4 +80,12 @@ describe("EmailChangeForm component", () => {
             expect(inputs[i]).toHaveAttribute("type", emailChangeSettingsFields[i].inputType);
         };
     });
+
+    it("on submit handler gets attached to EmailChangeForm", () => {
+        renderComp();
+
+        fireEvent.click(screen.getByTestId("button"));
+
+        expect(onSubmitHandlerMock).toHaveBeenCalledOnce();
+    })
 });
