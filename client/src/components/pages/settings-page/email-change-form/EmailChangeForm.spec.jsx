@@ -28,11 +28,30 @@ vi.mock("../../../shared/input-fields/input-fields-list/InputFieldsList", () => 
 }));
 
 describe("EmailChangeForm component", () => {
-    it("renders Button component with hardcoded values", () => {
-        render(
-            <EmailChangeForm />
-        );
+    const userEmail = "example@email.com";
+    const onSubmitHandlerMock = vi.fn();
 
-        expect(screen.getByTestId("button")).toHaveTextContent("Change Email");
-    })
-})
+    function renderComp() {
+        render(
+            <EmailChangeForm
+                userEmail={userEmail}
+                onSubmitHandler={onSubmitHandlerMock}
+            />
+        );
+    }
+
+    it("renders Button component with hardcoded values", () => {
+        const pattern = new RegExp("^Change Email$");
+
+        renderComp();
+        expect(screen.getByTestId("button")).toHaveTextContent(pattern);
+    });
+
+    it("renders SectionHeading component with hardcoded values", () => {
+        const pattern = new RegExp(`^Account Email - ${userEmail}$`);
+
+
+        renderComp();
+        expect(screen.getByTestId("section-heading")).toHaveTextContent(pattern);
+    });
+});
