@@ -60,5 +60,23 @@ describe("PasswordChangeForm component", () => {
         expect(screen.getByTestId("section-heading")).toHaveTextContent(pattern);
     });
 
+    it("renders InputFieldsList with passed props", () => {
+        renderComp();
 
+        const labels = screen.getAllByTestId("label-el");
+        const inputs = screen.getAllByTestId('input-el');
+
+        for (let i = 0; i < passwordChangeSettingsFields.length; i++) {
+            const pattern = new RegExp(`^${passwordChangeSettingsFields[i].fieldName}$`);
+
+            expect(labels[i]).toHaveTextContent(pattern);
+            expect(labels[i]).toHaveAttribute("for", passwordChangeSettingsFields[i].inputName);
+
+            expect(inputs[i]).toHaveAttribute("id", passwordChangeSettingsFields[i].inputName);
+            expect(inputs[i]).toHaveAttribute("name", passwordChangeSettingsFields[i].fieldName);
+            expect(inputs[i]).toHaveAttribute("type", passwordChangeSettingsFields[i].inputType);
+        };
+    });
+
+    
 });
