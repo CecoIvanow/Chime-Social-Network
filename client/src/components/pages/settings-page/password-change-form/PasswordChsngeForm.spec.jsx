@@ -53,5 +53,12 @@ describe("PasswordChangeForm component", () => {
         expect(screen.getByTestId("button")).toHaveTextContent(pattern);
     });
 
+    it("renders SectionHeading component with hardcoded values", () => {
+        const pattern = /^Account Password - \*\*\*\*\*\*$/;
+
+        renderComp();
+        expect(screen.getByTestId("section-heading")).toHaveTextContent(pattern);
+    });
+
 
 });
