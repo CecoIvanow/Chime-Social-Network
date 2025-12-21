@@ -92,5 +92,12 @@ describe("RegisterPage component", () => {
         renderComp();
 
         expect(screen.getByTestId("header-title")).toHaveTextContent(pattern);
+    });
+
+    it("renders GenderDetails", () => {
+        renderComp();
+
+        expect(screen.getByTestId("gender-details")).toBeInTheDocument();
+
     })
 })
