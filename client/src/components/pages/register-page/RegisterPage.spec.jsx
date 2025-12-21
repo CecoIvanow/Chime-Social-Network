@@ -121,4 +121,12 @@ describe("RegisterPage component", () => {
 
         expect(screen.getByTestId("auth-button")).toBeDisabled();
     });
+
+    it("triggers abortAll on unmount", () => {
+        const unmount = renderComp();
+
+        unmount();
+
+        expect(abortAll).toHaveBeenCalled();
+    });
 });
