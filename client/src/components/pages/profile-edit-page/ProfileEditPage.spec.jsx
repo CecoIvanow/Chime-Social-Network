@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import React from "react";
 
@@ -40,13 +40,19 @@ vi.mock("./profile-bio-textarea/ProfileBioTextArea", () => ({
 vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
     default: () => <>
         <ActionsContext.Consumer>
-            {actions => (
+            {actions => <>
                 <button
                     data-testid="edit-profile-cancel-button"
                     onClick={(e) => actions.onCancelEditClickHandler(e.currentTarget)}
                 >
                 </button>
-            )}
+                <button
+                    data-testid="edit-profile-submit-button"
+                    type="submit"
+                >
+                </button>
+            </>
+            }
         </ActionsContext.Consumer>
     </>
 }));
@@ -90,7 +96,7 @@ describe("ProfileEditPage component", () => {
         bio: "This is my bio",
         firstName: "Ivan",
         lastName: "Petrov",
-        birthday: "19.03.1998",
+        birthday: "1998-03-19",
         location: "Sofia",
         occupation: "JS Developer",
         education: "N/A",
@@ -165,5 +171,25 @@ describe("ProfileEditPage component", () => {
         renderComp();
 
         expect(await screen.findByTestId("profile-bio")).toHaveValue(userData.bio);
+    });
+
+    it("renders InputFieldsList with passed props", async () => {
+        
+        renderComp();
+        
+        const labelsEl = screen.getAllByTestId("label-el");
+        const inputsEl = screen.getAllByTestId("input-el");
+        const inputs = await screen.findAllByTestId("input-el");
+        
+        for (let i = 0; i < formProfileInputs.length; i++) {
+            const pattern = new RegExp(`^${formProfileInputs[i].fieldName}$`);
+            
+            expect(labelsEl[i]).toHaveTextContent(pattern);
+            expect(labelsEl[i]).toHaveAttribute("for", formProfileInputs[i].inputName);
+            
+            expect(inputsEl[i]).toHaveAttribute("type", formProfileInputs[i].inputType);
+            expect(inputsEl[i]).toHaveAttribute("id", formProfileInputs[i].inputName);
+            expect(inputs[i]).toHaveValue(formProfileInputs[i].value);
+        }
     })
 });
