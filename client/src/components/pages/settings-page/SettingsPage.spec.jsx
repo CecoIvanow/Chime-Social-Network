@@ -10,26 +10,38 @@ import { UserContext } from "../../../contexts/user-context";
 
 import useUserServices from "../../../hooks/useUserServices";
 
+vi.mock("../../../hooks/useUserServices");
+
+vi.mock("react-router");
+
 vi.mock("./password-change-form/PasswordChangeForm", () => ({
     default: ({ onSubmitHandler }) => <>
-        <form action={onSubmitHandler} data-testid="password-form">
-            <button data-testid="password-submit-button">Submit Pass</button>;
+        <form
+            action={onSubmitHandler}
+            data-testid="password-form"
+            onSubmit={e => {
+                e.preventDefault();
+                onSubmitHandler(new FormData(e.target))
+            }}
+        >
         </form>
     </>
 }));
 
 vi.mock("./email-change-form/EmailChangeForm", () => ({
     default: ({ userEmail, onSubmitHandler }) => <>
-        <form action={onSubmitHandler} data-testid="email-form">
+        <form
+            action={onSubmitHandler}
+            data-testid="email-form"
+            onSubmit={e => {
+                e.preventDefault();
+                onSubmitHandler(new FormData(e.target))
+            }}
+        >
             <div data-testid="user-email">{userEmail}</div>
-            <button data-testid="email-submit-button">Submit Email</button>;
         </form>
     </>
 }));
-
-vi.mock("../../../hooks/useUserServices");
-
-vi.mock("react-router");
 
 describe("SettingsPage component", () => {
     const userData = { email: "example@email.com" };
@@ -40,23 +52,27 @@ describe("SettingsPage component", () => {
     const abortAll = vi.fn();
 
     function renderComp(
-        isGetUserFieldsMockResolved = true,
-        isChangeUserPasswordMockResolved = true,
-        isChangeUserEmailMockResolved = true
+        options = {
+            getUserFieldsMockResolved: true,
+            changeUserPasswordMockResolved: true,
+            changeUserEmailMockResolved: true,
+            changeUserPasswordReturnValue: true,
+            changeUserEmailReturnValue: true,
+        }
     ) {
 
-        const getUserFieldsMock = isGetUserFieldsMockResolved ?
+        const getUserFieldsMock = options.getUserFieldsMockResolved ?
             vi.fn().mockResolvedValue(userData) :
             vi.fn().mockRejectedValue(new Error("Successfully rejected getUserFields!"));
 
         useNavigate.mockReturnValue(navigateTo);
 
-        const changeUserPasswordMock = isChangeUserPasswordMockResolved ?
-            vi.fn().mockResolvedValue(true) :
+        const changeUserPasswordMock = options.changeUserPasswordMockResolved ?
+            vi.fn().mockResolvedValue(options.changeUserPasswordReturnValue) :
             vi.fn().mockRejectedValue(new Error("Successfully rejected changeUserPassword!"));
 
-        const changeUserEmailMock = isChangeUserEmailMockResolved ?
-            vi.fn().mockResolvedValue(true) :
+        const changeUserEmailMock = options.changeUserEmailMockResolved ?
+            vi.fn().mockResolvedValue(options.changeUserEmailReturnValue) :
             vi.fn().mockRejectedValue(new Error("Successfully rejected changeUserEmail!"));
 
         useUserServices.mockReturnValue(({
@@ -74,58 +90,108 @@ describe("SettingsPage component", () => {
             </AlertContext.Provider>
         );
 
-        return unmount
+        return { unmount, changeUserEmailMock, changeUserPasswordMock };
     };
 
     it("renders password change form and passes props", async () => {
-        renderComp();
+        const { changeUserPasswordMock } = renderComp();
 
         expect(screen.getByTestId("password-form")).toBeInTheDocument();
         expect(navigateTo).not.toHaveBeenCalled();
 
-        fireEvent.click(screen.getByTestId("password-submit-button"));
+        fireEvent.submit(screen.getByTestId("password-form"));
 
         await waitFor(() => {
+            expect(changeUserPasswordMock).toHaveBeenCalled();
             expect(navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
         });
     });
 
+    it("does not navigate when changeUserPassword returns false", async () => {
+        const { changeUserPasswordMock } = renderComp({
+            getUserFieldsMockResolved: true,
+            changeUserPasswordMockResolved: true,
+            changeUserEmailMockResolved: true,
+            changeUserPasswordReturnValue: false,
+            changeUserEmailReturnValue: true,
+        });
+
+        fireEvent.submit(screen.getByTestId("password-form"));
+
+        await waitFor(() => {
+            expect(changeUserPasswordMock).toHaveBeenCalled();
+            expect(navigateTo).not.toHaveBeenCalled();
+            expect(setAlert).not.toHaveBeenCalled();
+        });
+    });
+
     it("triggers set alert on rejected user password change", async () => {
-        renderComp(true, false);
+        renderComp({
+            getUserFieldsMockResolved: true,
+            changeUserPasswordMockResolved: false,
+            changeUserEmailMockResolved: true,
+            changeUserPasswordReturnValue: true,
+            changeUserEmailReturnValue: true,
+        });
 
         expect(screen.getByTestId("password-form")).toBeInTheDocument();
         expect(navigateTo).not.toHaveBeenCalled();
 
-        fireEvent.click(screen.getByTestId("password-submit-button"));
+        fireEvent.submit(screen.getByTestId("password-form"));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledOnce();
         });
     });
 
-    it("renders password change form and passes props", async () => {
-        const emailPattern = new RegExp(`^${userData.email}$`)
+    it("renders email change form and passes props", async () => {
+        const emailPattern = new RegExp(`^${userData.email}$`);
 
-        renderComp();
+        const { changeUserEmailMock } = renderComp();
 
         expect(screen.getByTestId("email-form")).toBeInTheDocument();
         expect(navigateTo).not.toHaveBeenCalled();
 
-        fireEvent.click(screen.getByTestId("email-submit-button"));
+        fireEvent.submit(screen.getByTestId("email-form"));
 
         await waitFor(() => {
+            expect(changeUserEmailMock).toHaveBeenCalled();
             expect(navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
             expect(screen.getByTestId("user-email")).toHaveTextContent(emailPattern);
         });
     });
 
+    it("does not navigate when changeUserEmail returns false", async () => {
+        const { changeUserEmailMock } = renderComp({
+            getUserFieldsMockResolved: true,
+            changeUserPasswordMockResolved: true,
+            changeUserEmailMockResolved: true,
+            changeUserPasswordReturnValue: true,
+            changeUserEmailReturnValue: false,
+        });
+
+        fireEvent.submit(screen.getByTestId("email-form"));
+
+        await waitFor(() => {
+            expect(changeUserEmailMock).toHaveBeenCalled();
+            expect(navigateTo).not.toHaveBeenCalled();
+            expect(setAlert).not.toHaveBeenCalled();
+        });
+    });
+
     it("triggers set alert on rejected user email change", async () => {
-        renderComp(true, true, false);
+        renderComp({
+            getUserFieldsMockResolved: true,
+            changeUserPasswordMockResolved: true,
+            changeUserEmailMockResolved: false,
+            changeUserPasswordReturnValue: true,
+            changeUserEmailReturnValue: true,
+        });
 
         expect(screen.getByTestId("email-form")).toBeInTheDocument();
         expect(navigateTo).not.toHaveBeenCalled();
 
-        fireEvent.click(screen.getByTestId("email-submit-button"));
+        fireEvent.submit(screen.getByTestId("email-form"));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledOnce();
@@ -133,7 +199,13 @@ describe("SettingsPage component", () => {
     });
 
     it("triggers set alert on rejected get user fields call", async () => {
-        renderComp(false);
+        renderComp({
+            getUserFieldsMockResolved: false,
+            changeUserPasswordMockResolved: true,
+            changeUserEmailMockResolved: true,
+            changeUserPasswordReturnValue: true,
+            changeUserEmailReturnValue: true,
+        });
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledOnce();
@@ -141,13 +213,13 @@ describe("SettingsPage component", () => {
         });
     });
 
-    it("triggers abort all on unmount", async () => {
-        const unmount = renderComp();
+    it("triggers abortAll on unmount", async () => {
+        const { unmount } = renderComp();
 
         unmount();
 
         await waitFor(() => {
             expect(abortAll).toHaveBeenCalledOnce();
-        })
-    })
+        });
+    });
 });
