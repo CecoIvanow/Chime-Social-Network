@@ -1,4 +1,4 @@
-import { getByTestId, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import React from "react";
 
@@ -136,5 +136,11 @@ describe("ProfileEditPage component", () => {
         renderComp();
 
         expect(screen.getByTestId("section-heading")).toHaveTextContent(pattern);
+    });
+
+    it("renders ImageUpload with passed props", async () => {
+        renderComp();
+
+        expect(await screen.findByTestId("image-upload")).toHaveAttribute("src", userData.imageUrl);
     });
 });
