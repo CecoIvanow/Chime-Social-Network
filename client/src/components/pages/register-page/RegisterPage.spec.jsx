@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, getByTestId, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import RegisterPage from "./RegisterPage";
@@ -41,16 +41,21 @@ vi.mock("../../shared/auth/auth-header-title/AuthHeaderTitle", () => ({
 vi.mock("../../shared/auth/auth-forms-list/AuthFormsList", () => ({
     default: ({ authFieldsList }) => <>
         <div data-testid="forms-list">
-            {authFieldsList.map(field => {
-                <>
-                    <label htmlFor={field.inputName}>{field.fieldName}</label>
-                    <input
-                        id={field.inputName}
-                        type={field.inputType}
-                        placeholder={field.placeholderText}
-                    />
-                </>
-            })}
+            {authFieldsList.map(field => <>
+                <label
+                    data-testid="label-el"
+                    htmlFor={field.inputName}
+                >
+                    {field.fieldName}
+                </label>
+                <input
+                    data-testid="input-el"
+                    id={field.inputName}
+                    type={field.inputType}
+                    placeholder={field.placeholderText}
+                />
+            </>
+            )}
         </div>
     </>
 }));
@@ -71,8 +76,8 @@ describe("RegisterPage component", () => {
 
     function renderComp(registerMockResolved = true) {
         const registerMock = registerMockResolved ?
-        register :
-        vi.fn().mockRejectedValue(new Error("Successfully rejected register call!"));
+            register :
+            vi.fn().mockRejectedValue(new Error("Successfully rejected register call!"));
 
         useUserServices.mockReturnValue({
             abortAll,
@@ -111,6 +116,23 @@ describe("RegisterPage component", () => {
         expect(screen.getByTestId("nav-link")).toHaveAttribute("href", "/login")
     });
 
+    it("renders AuthFormsList with passed props", () => {
+        renderComp();
+
+        const labels = screen.getAllByTestId("label-el");
+        const inputs = screen.getAllByTestId('input-el');
+
+        for (let i = 0; i < registerFields.length; i++) {
+            const pattern = new RegExp(`^${registerFields[i].fieldName}$`);
+
+            expect(labels[i]).toHaveTextContent(pattern);
+            expect(labels[i]).toHaveAttribute("for", registerFields[i].inputName);
+
+            expect(inputs[i]).toHaveAttribute("id", registerFields[i].inputName);
+            expect(inputs[i]).toHaveAttribute("type", registerFields[i].inputType);
+            expect(inputs[i]).toHaveAttribute("placeholder", registerFields[i].placeholderText);
+        }
+    });
 
     it("renders AuthButton enabled with passed props", () => {
         renderComp();
@@ -134,13 +156,23 @@ describe("RegisterPage component", () => {
         expect(abortAll).toHaveBeenCalled();
     });
 
-    it("form submit triggers register method", async () => {
+    it("on form submit triggers register method with successfull call", async () => {
         renderComp();
 
         fireEvent.click(screen.getByTestId("auth-button"));
 
         await waitFor(() => {
             expect(register).toHaveBeenCalled();
+        });
+    });
+
+    it("on form submit triggers setAlert on rejected register method call", async () => {
+        renderComp(false);
+
+        fireEvent.click(screen.getByTestId("auth-button"));
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalled();
         });
     });
 });
