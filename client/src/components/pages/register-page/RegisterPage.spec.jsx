@@ -57,7 +57,7 @@ vi.mock("../../shared/auth/auth-forms-list/AuthFormsList", () => ({
 
 describe("RegisterPage component", () => {
     const abortAll = vi.fn();
-    const register = vi.fn();
+    const register = vi.fn().mockResolvedValue(true);
     const setAlert = vi.fn();
 
     const registerFields = [
@@ -69,10 +69,14 @@ describe("RegisterPage component", () => {
         { fieldName: 'Confirm Password', inputType: 'password', placeholderText: 'password', inputName: 'rePass' },
     ]
 
-    function renderComp() {
+    function renderComp(registerMockResolved = true) {
+        const registerMock = registerMockResolved ?
+        register :
+        vi.fn().mockRejectedValue(new Error("Successfully rejected register call!"));
+
         useUserServices.mockReturnValue({
             abortAll,
-            register,
+            register: registerMock,
         });
 
         const { unmount } = render(
@@ -128,5 +132,15 @@ describe("RegisterPage component", () => {
         unmount();
 
         expect(abortAll).toHaveBeenCalled();
+    });
+
+    it("form submit triggers register method", async () => {
+        renderComp();
+
+        fireEvent.click(screen.getByTestId("auth-button"));
+
+        await waitFor(() => {
+            expect(register).toHaveBeenCalled();
+        });
     });
 });
