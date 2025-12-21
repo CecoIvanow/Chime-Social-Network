@@ -11,7 +11,12 @@ import { UserContext } from "../../../contexts/user-context"
 import useUserServices from "../../../hooks/useUserServices"
 
 vi.mock("../../shared/user-details/gender-details/GenderDetails", () => ({
-    default: ({ userGender }) => <div data-testid="gender-details">{userGender}</div>
+    default: ({ userGender }) => <input
+        data-testid="gender-details"
+        name="gender"
+        type="text"
+        defaultValue={userGender}
+    />
 }));
 
 vi.mock("../../ui/headings/SectionHeading", () => ({
@@ -19,7 +24,9 @@ vi.mock("../../ui/headings/SectionHeading", () => ({
 }));
 
 vi.mock("./image-upload/ImageUpload", () => ({
-    default: ({ imageUrl }) => <img src={imageUrl} data-testid="image-upload" />
+    default: ({ imageUrl }) => <>
+        <img src={imageUrl} data-testid="image-upload" />
+    </>
 }));
 
 vi.mock("./profile-bio-textarea/ProfileBioTextArea", () => ({
@@ -120,11 +127,11 @@ describe("ProfileEditPage component", () => {
         })
 
         const { unmount } = render(
-                <AlertContext.Provider value={{ setAlert }}>
-                    <UserContext.Provider value={{ isUser }}>
-                        <ProfileEditPage />
-                    </UserContext.Provider>
-                </AlertContext.Provider>
+            <AlertContext.Provider value={{ setAlert }}>
+                <UserContext.Provider value={{ isUser }}>
+                    <ProfileEditPage />
+                </UserContext.Provider>
+            </AlertContext.Provider>
         );
 
         return unmount;
@@ -142,5 +149,11 @@ describe("ProfileEditPage component", () => {
         renderComp();
 
         expect(await screen.findByTestId("image-upload")).toHaveAttribute("src", userData.imageUrl);
+    });
+
+    it("renders GenderDetails with passed defaultValue", async () => {
+        renderComp();
+
+        expect(await screen.findByTestId("gender-details")).toHaveValue(userData.gender);
     });
 });
