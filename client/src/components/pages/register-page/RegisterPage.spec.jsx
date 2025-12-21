@@ -106,4 +106,11 @@ describe("RegisterPage component", () => {
         expect(screen.getByTestId("nav-link")).toBeInTheDocument();
         expect(screen.getByTestId("nav-link")).toHaveAttribute("href", "/login")
     });
-})
+
+
+    it("renders AuthButton enabled with passed props", () => {
+        renderComp();
+
+        expect(screen.getByTestId("auth-button")).not.toBeDisabled();
+    });
+});
