@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import React from "react";
 
@@ -37,25 +37,25 @@ vi.mock("./profile-bio-textarea/ProfileBioTextArea", () => ({
     />
 }));
 
-vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
-    default: () => <>
-        <ActionsContext.Consumer>
-            {actions => <>
-                <button
-                    data-testid="edit-profile-cancel-button"
-                    onClick={(e) => actions.onCancelEditClickHandler(e.currentTarget)}
-                >
-                </button>
-                <button
-                    data-testid="edit-profile-submit-button"
-                    type="submit"
-                >
-                </button>
-            </>
-            }
-        </ActionsContext.Consumer>
-    </>
-}));
+    vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
+        default: () => <>
+            <ActionsContext.Consumer>
+                {actions => <>
+                    <button
+                        data-testid="edit-profile-cancel-button"
+                        onClick={(e) => actions.onCancelEditClickHandler(e)}
+                    >
+                    </button>
+                    <button
+                        data-testid="edit-profile-submit-button"
+                        type="submit"
+                    >
+                    </button>
+                </>
+                }
+            </ActionsContext.Consumer>
+        </>
+    }));
 
 vi.mock("../../shared/input-fields/input-fields-list/InputFieldsList", () => ({
     default: ({ inputFields }) => inputFields.map(field => (
@@ -77,11 +77,12 @@ vi.mock("../../shared/input-fields/input-fields-list/InputFieldsList", () => ({
 vi.mock("../../../hooks/useUserServices");
 
 vi.mock("react-router", () => ({
-    useNavigate: () => vi.fn(),
+    useNavigate: () => navigateMock,
     useParams: () => useParamsMock(),
 }));
 
-const useParamsMock = vi.fn()
+const useParamsMock = vi.fn();
+const navigateMock = vi.fn();
 
 describe("ProfileEditPage component", () => {
     const updateUser = vi.fn();
@@ -89,6 +90,7 @@ describe("ProfileEditPage component", () => {
     const abortAll = vi.fn();
     const setAlert = vi.fn();
     const isUser = "curUserId";
+    const userPageIdMock = "someUserId";
 
     const userData = {
         gender: "Male",
@@ -117,7 +119,7 @@ describe("ProfileEditPage component", () => {
         options = {
             updateUserResult: true,
             getUserDataResult: true,
-            useParamsMockValue: "someUserId"
+            useParamsMockValue: userPageIdMock,
         }
     ) {
         useParamsMock.mockReturnValue({ userId: options.useParamsMockValue });
@@ -190,6 +192,18 @@ describe("ProfileEditPage component", () => {
             expect(inputsEl[i]).toHaveAttribute("type", formProfileInputs[i].inputType);
             expect(inputsEl[i]).toHaveAttribute("id", formProfileInputs[i].inputName);
             expect(inputs[i]).toHaveValue(formProfileInputs[i].value);
-        }
-    })
+        };
+    });
+
+    it("on cancel edit click handler triggers on ProfileEditButtons cancellation", () => {
+        renderComp();
+        
+        const cancelButton = screen.getByTestId("edit-profile-cancel-button");
+
+        expect(cancelButton).toBeInTheDocument();
+
+        fireEvent.click(cancelButton);
+
+        expect(navigateMock).toHaveBeenCalledWith(`/profile/${userPageIdMock}`);
+    });
 });
