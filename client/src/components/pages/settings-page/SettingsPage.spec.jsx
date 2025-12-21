@@ -115,4 +115,17 @@ describe("SettingsPage component", () => {
             expect(screen.getByTestId("user-email")).toHaveTextContent(emailPattern);
         });
     });
+
+    it("triggers set alert on rejected user email change", async () => {
+        renderComp(true, true, false);
+
+        expect(screen.getByTestId("email-form")).toBeInTheDocument();
+        expect(navigateTo).not.toHaveBeenCalled();
+
+        fireEvent.click(screen.getByTestId("email-submit-button"));
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledOnce();
+        });
+    });
 });
