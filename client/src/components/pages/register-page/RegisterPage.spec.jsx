@@ -113,4 +113,12 @@ describe("RegisterPage component", () => {
 
         expect(screen.getByTestId("auth-button")).not.toBeDisabled();
     });
+
+    it("renders AuthButton disabled with passed props on submitted form", () => {
+        renderComp();
+
+        fireEvent.click(screen.getByTestId("auth-button"));
+
+        expect(screen.getByTestId("auth-button")).toBeDisabled();
+    });
 });
