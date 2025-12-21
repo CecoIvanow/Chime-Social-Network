@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { useContext } from "react";
 
 import ProfilePage from "./ProfilePage";
 
@@ -127,5 +126,20 @@ describe("ProfilePage component", () => {
             });
             expect(screen.queryByTestId("posts-loading-spinner")).not.toBeInTheDocument();
         };
+    });
+
+    it.each([
+        { getUserData: false, renderedComp: "ProfileSection" },
+        { getUserPosts: false, renderedComp: "ProfileSection" },
+    ])("triggers setAlert on rejected $renderedComp", async ({ getUserData, getUserPosts }) => {
+        renderComp({
+            isLoading: false,
+            getUserData,
+            getUserPosts,
+        });
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalled();
+        })
     });
 });
