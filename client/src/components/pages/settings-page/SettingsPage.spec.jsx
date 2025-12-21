@@ -37,6 +37,7 @@ describe("SettingsPage component", () => {
     const isUser = "userId";
     const navigateTo = vi.fn();
     const setAlert = vi.fn();
+    const abortAll = vi.fn();
 
     function renderComp(
         isGetUserFieldsMockResolved = true,
@@ -62,7 +63,7 @@ describe("SettingsPage component", () => {
             changeUserEmail: changeUserEmailMock,
             changeUserPassword: changeUserPasswordMock,
             getUserFields: getUserFieldsMock,
-            abortAll: vi.fn(),
+            abortAll,
         }))
 
         render(
@@ -126,6 +127,15 @@ describe("SettingsPage component", () => {
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledOnce();
+        });
+    });
+
+    it("triggers set alert on rejected get user fields call", async () => {
+        renderComp(false);
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledOnce();
+            expect(screen.getByTestId("user-email")).toHaveTextContent('');
         });
     });
 });
