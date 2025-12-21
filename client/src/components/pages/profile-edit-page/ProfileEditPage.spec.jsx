@@ -30,7 +30,11 @@ vi.mock("./image-upload/ImageUpload", () => ({
 }));
 
 vi.mock("./profile-bio-textarea/ProfileBioTextArea", () => ({
-    default: ({ userData }) => <div data-testid="profile-bio">{userData.bio}</div>
+    default: ({ userData }) => <textarea
+        data-testid="profile-bio"
+        name="bio"
+        defaultValue={userData.bio}
+    />
 }));
 
 vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
@@ -156,4 +160,10 @@ describe("ProfileEditPage component", () => {
 
         expect(await screen.findByTestId("gender-details")).toHaveValue(userData.gender);
     });
+
+    it("renders ProfileBioTextArea with passed props", async () => {
+        renderComp();
+
+        expect(await screen.findByTestId("profile-bio")).toHaveValue(userData.bio);
+    })
 });
