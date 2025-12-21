@@ -22,7 +22,7 @@ vi.mock("./email-change-form/EmailChangeForm", () => ({
     default: ({ userEmail, onSubmitHandler }) => <>
         <form action={onSubmitHandler} data-testid="email-form">
             <div data-testid="user-email">{userEmail}</div>
-            <button>Submit Email</button>;
+            <button data-testid="email-submit-button">Submit Email</button>;
         </form>
     </>
 }));
@@ -38,9 +38,13 @@ describe("SettingsPage component", () => {
     
     const isUser = "userId";
     const navigateTo = vi.fn();
+    const setAlert = vi.fn();
 
-    function renderComp(isGetUserFieldsMockResolved = true, isChangeUserPasswordMockResolved = true, isChangeUserEmailMockResolved = true) {
-        const setAlert = vi.fn();
+    function renderComp(
+        isGetUserFieldsMockResolved = true,
+        isChangeUserPasswordMockResolved = true,
+        isChangeUserEmailMockResolved = true
+    ) {
 
         const getUserFieldsMock = isGetUserFieldsMockResolved ?
             vi.fn().mockResolvedValue(userData) :
@@ -82,6 +86,19 @@ describe("SettingsPage component", () => {
 
         await waitFor(() => {
             expect(navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
+        });
+    });
+
+    it("triggers set alert on rejected change user password", async () => {
+        renderComp(true, false);
+
+        expect(screen.getByTestId("password-form")).toBeInTheDocument();
+        expect(navigateTo).not.toHaveBeenCalled();
+
+        fireEvent.click(screen.getByTestId("password-submit-button"));
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledOnce();
         });
     });
 });
