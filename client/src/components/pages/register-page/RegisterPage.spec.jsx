@@ -23,7 +23,7 @@ vi.mock("../../ui/auth/auth-button/AuthButton", () => ({
 vi.mock("../../ui/auth/auth-nav-link/AuthNavLink", () => ({
     default: ({ path, buttonText }) =>
         <Link
-            date-testid="nav-link"
+            data-testid="nav-link"
             to={path}
         >
             {buttonText}
@@ -98,6 +98,12 @@ describe("RegisterPage component", () => {
         renderComp();
 
         expect(screen.getByTestId("gender-details")).toBeInTheDocument();
+    });
 
-    })
+    it("renders AuthNavLink with passed props", () => {
+        renderComp();
+
+        expect(screen.getByTestId("nav-link")).toBeInTheDocument();
+        expect(screen.getByTestId("nav-link")).toHaveAttribute("href", "/login")
+    });
 })
