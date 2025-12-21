@@ -32,9 +32,7 @@ vi.mock("../../../hooks/useUserServices");
 vi.mock("react-router");
 
 describe("SettingsPage component", () => {
-    const userData = [
-        {email: "example@email.com"}
-    ];
+    const userData = {email: "example@email.com"};
     
     const isUser = "userId";
     const navigateTo = vi.fn();
@@ -89,7 +87,7 @@ describe("SettingsPage component", () => {
         });
     });
 
-    it("triggers set alert on rejected change user password", async () => {
+    it("triggers set alert on rejected user password change", async () => {
         renderComp(true, false);
 
         expect(screen.getByTestId("password-form")).toBeInTheDocument();
@@ -99,6 +97,22 @@ describe("SettingsPage component", () => {
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledOnce();
+        });
+    });
+
+    it("renders password change form and passes props", async () => {
+        const emailPattern = new RegExp(`^${userData.email}$`)
+
+        renderComp();
+
+        expect(screen.getByTestId("email-form")).toBeInTheDocument();
+        expect(navigateTo).not.toHaveBeenCalled();
+
+        fireEvent.click(screen.getByTestId("email-submit-button"));
+
+        await waitFor(() => {
+            expect(navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
+            expect(screen.getByTestId("user-email")).toHaveTextContent(emailPattern);
         });
     });
 });
