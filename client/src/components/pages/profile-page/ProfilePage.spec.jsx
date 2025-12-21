@@ -74,11 +74,13 @@ describe("ProfilePage component", () => {
             abortAll,
         });
 
-        render(
+        const { unmount } = render(
             <AlertContext.Provider value={{ setAlert }}>
                 <ProfilePage />
             </AlertContext.Provider>
         );
+
+        return unmount;
     }
 
     it.each([
@@ -141,5 +143,13 @@ describe("ProfilePage component", () => {
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalled();
         })
+    });
+
+    it("triggers abortAll on unmount", () => {
+        const unmount = renderComp();
+
+        unmount();
+
+        expect(abortAll).toHaveBeenCalled();
     });
 });
