@@ -32,8 +32,8 @@ vi.mock("../../../hooks/useUserServices");
 vi.mock("react-router");
 
 describe("SettingsPage component", () => {
-    const userData = {email: "example@email.com"};
-    
+    const userData = { email: "example@email.com" };
+
     const isUser = "userId";
     const navigateTo = vi.fn();
     const setAlert = vi.fn();
@@ -66,13 +66,15 @@ describe("SettingsPage component", () => {
             abortAll,
         }))
 
-        render(
+        const { unmount } = render(
             <AlertContext.Provider value={{ setAlert }}>
                 <UserContext.Provider value={{ isUser }}>
                     <SettingsPage />
                 </UserContext.Provider>
             </AlertContext.Provider>
-        )
+        );
+
+        return unmount
     };
 
     it("renders password change form and passes props", async () => {
@@ -138,4 +140,14 @@ describe("SettingsPage component", () => {
             expect(screen.getByTestId("user-email")).toHaveTextContent('');
         });
     });
+
+    it("triggers abort all on unmount", async () => {
+        const unmount = renderComp();
+
+        unmount();
+
+        await waitFor(() => {
+            expect(abortAll).toHaveBeenCalledOnce();
+        })
+    })
 });
