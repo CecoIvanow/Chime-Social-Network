@@ -90,7 +90,7 @@ describe("ProfileEditPage component", () => {
     const abortAll = vi.fn();
     const setAlert = vi.fn();
     const isUser = "curUserId";
-    const userPageIdMock = "someUserId";
+    const userPageIdMock = isUser;
 
     const userData = {
         gender: "Male",
@@ -219,8 +219,16 @@ describe("ProfileEditPage component", () => {
         })
     });
 
-    it.todo("add test for navigational behaviour on different useParams and userId", () => {
+    it("on different useParams and userId triggers navigateTo with /404", () => {
+        renderComp({
+            getUserDataResult: true,
+            updateUserResult: true,
+            useParamsMockValue: "differentId",
+        });
+
+        expect(navigateMock).toHaveBeenCalledWith("/404");
     });
+    
     it.todo("add test for navigational behaviour on successful form submit", () => {
     });
     it.todo("add trigger test for setAlert on rejected form submit call", () => {
