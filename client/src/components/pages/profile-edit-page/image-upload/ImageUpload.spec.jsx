@@ -3,14 +3,8 @@ import { describe, expect, it, vi, beforeAll } from "vitest";
 
 import ImageUpload from "./ImageUpload";
 
-beforeAll(() => {
-    const global = window;
-    
-    global.URL.createObjectURL = vi.fn(() => "blob:mock-image-url");
-    global.URL.revokeObjectURL = vi.fn();
-})
-
 describe("ImageUpload component", () => {
+    const global = window;
     const imageUrlMock = "https://firebase.mock/avatar.webp";
     const setImageUploadMock = vi.fn();
     const imageFile = new File(
@@ -18,6 +12,12 @@ describe("ImageUpload component", () => {
         "avatar.png",
         {type: "image/png"}
     );
+
+
+    beforeAll(() => {
+        global.URL.createObjectURL = vi.fn(() => "blob:mock-image-url");
+        global.URL.revokeObjectURL = vi.fn();
+    })
 
     function renderComp() {
         render(
@@ -50,5 +50,14 @@ describe("ImageUpload component", () => {
 
         expect(setImageUploadMock).not.toHaveBeenCalled();
         expect(screen.getByAltText("Profile picture")).toHaveAttribute("src", imageUrlMock);
+    });
+
+    it("revokes previous image on new upload", () => {
+        renderComp();
+
+        fireEvent.change(screen.getByTestId("image-input"), { target: { files: [imageFile] } });
+        fireEvent.change(screen.getByTestId("image-input"), { target: { files: [imageFile] } });
+
+        expect(global.URL.revokeObjectURL).toHaveBeenCalled();
     })
 });
