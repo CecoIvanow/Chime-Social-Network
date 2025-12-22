@@ -263,7 +263,22 @@ describe("ProfileEditPage component", () => {
         });
     });
     
-    it.todo("add trigger test for setAlert on rejected form submit call", () => {
+    it("triggers setAlert on rejected form submit", async () => {
+        renderComp({
+            updateUserResult: false,
+            getUserDataResult: true,
+            useParamsMockValue: isUser,
+        });
+
+        fireEvent.click(
+            screen.getByTestId("edit-profile-submit-button")
+        );
+
+        await waitFor(() => {
+            expect(updateUser).toHaveBeenCalled();
+            expect(navigateMock).not.toHaveBeenCalled();
+            expect(setAlert).toHaveBeenCalled();
+        });
     });
 
 
