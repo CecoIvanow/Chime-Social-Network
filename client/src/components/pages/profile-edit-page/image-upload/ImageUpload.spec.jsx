@@ -41,5 +41,14 @@ describe("ImageUpload component", () => {
 
         expect(setImageUploadMock).toHaveBeenCalledWith(imageFile);
         expect(screen.getByAltText("Profile picture")).toHaveAttribute("src", "blob:mock-image-url");
+    });
+
+    it("renders original image preview on empty upload", () => {
+        renderComp();
+
+        fireEvent.change(screen.getByTestId("image-input"), { target: { files: [] } });
+
+        expect(setImageUploadMock).not.toHaveBeenCalled();
+        expect(screen.getByAltText("Profile picture")).toHaveAttribute("src", imageUrlMock);
     })
 });
