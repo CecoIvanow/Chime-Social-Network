@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 import React from "react";
 
 import ProfileEditPage from "./ProfileEditPage";
@@ -26,8 +26,13 @@ vi.mock("../../ui/headings/SectionHeading", () => ({
 }));
 
 vi.mock("./image-upload/ImageUpload", () => ({
-    default: ({ imageUrl }) => <>
+    default: ({ imageUrl, setImageUpload }) => <>
         <img src={imageUrl} data-testid="image-upload" />
+        <input
+            data-testid="image-upload-input"
+            type="file"
+            onChange={(e) => setImageUpload(e.target.files[0])}
+        />
     </>
 }));
 
@@ -95,6 +100,18 @@ vi.mock("react-router", () => ({
 
 const useParamsMock = vi.fn();
 const navigateMock = vi.fn();
+
+beforeEach(() => {
+    ref.mockReturnValue("mock-image-ref");
+
+    uploadBytes.mockResolvedValue({
+        ref: "mock-image-ref",
+    });
+
+    getDownloadURL.mockResolvedValue(
+        "https://firebase.mock/avatar.webp"
+    );
+});
 
 describe("ProfileEditPage component", () => {
     const updateUser = vi.fn();
@@ -288,5 +305,25 @@ describe("ProfileEditPage component", () => {
         unmount();
 
         expect(abortAll).toHaveBeenCalled();
+    });
+
+    it("uploads image to Firebase storage on form submit when image is selected", async () => {
+        uploadBytes.mockResolvedValueOnce({
+            ref: "mock-image-ref",
+        });
+
+        renderComp();
+
+        const mockFile = new File(["mock-content"], "avatar.png", { type: "image/png" });
+        const fileInput = screen.getByTestId("image-upload-input");
+
+        fireEvent.change(fileInput, { target: { files: [mockFile] } });
+        fireEvent.click(screen.getByTestId("edit-profile-submit-button"));
+
+        await waitFor(() => {
+            expect(ref).toHaveBeenCalledWith(storage, `/images/${isUser}/avatar`);
+            expect(uploadBytes).toHaveBeenCalledWith("mock-image-ref", mockFile);
+            expect(getDownloadURL).toHaveBeenCalledWith("mock-image-ref");
+        });
     });
 });
