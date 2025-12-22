@@ -37,25 +37,25 @@ vi.mock("./profile-bio-textarea/ProfileBioTextArea", () => ({
     />
 }));
 
-    vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
-        default: () => <>
-            <ActionsContext.Consumer>
-                {actions => <>
-                    <button
-                        data-testid="edit-profile-cancel-button"
-                        onClick={(e) => actions.onCancelEditClickHandler(e)}
-                    >
-                    </button>
-                    <button
-                        data-testid="edit-profile-submit-button"
-                        type="submit"
-                    >
-                    </button>
-                </>
-                }
-            </ActionsContext.Consumer>
-        </>
-    }));
+vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
+    default: () => <>
+        <ActionsContext.Consumer>
+            {actions => <>
+                <button
+                    data-testid="edit-profile-cancel-button"
+                    onClick={(e) => actions.onCancelEditClickHandler(e)}
+                >
+                </button>
+                <button
+                    data-testid="edit-profile-submit-button"
+                    type="submit"
+                >
+                </button>
+            </>
+            }
+        </ActionsContext.Consumer>
+    </>
+}));
 
 vi.mock("../../shared/input-fields/input-fields-list/InputFieldsList", () => ({
     default: ({ inputFields }) => inputFields.map(field => (
@@ -176,19 +176,19 @@ describe("ProfileEditPage component", () => {
     });
 
     it("renders InputFieldsList with passed props", async () => {
-        
+
         renderComp();
-        
+
         const labelsEl = screen.getAllByTestId("label-el");
         const inputsEl = screen.getAllByTestId("input-el");
         const inputs = await screen.findAllByTestId("input-el");
-        
+
         for (let i = 0; i < formProfileInputs.length; i++) {
             const pattern = new RegExp(`^${formProfileInputs[i].fieldName}$`);
-            
+
             expect(labelsEl[i]).toHaveTextContent(pattern);
             expect(labelsEl[i]).toHaveAttribute("for", formProfileInputs[i].inputName);
-            
+
             expect(inputsEl[i]).toHaveAttribute("type", formProfileInputs[i].inputType);
             expect(inputsEl[i]).toHaveAttribute("id", formProfileInputs[i].inputName);
             expect(inputs[i]).toHaveValue(formProfileInputs[i].value);
@@ -197,7 +197,7 @@ describe("ProfileEditPage component", () => {
 
     it("on cancel edit click handler triggers on ProfileEditButtons cancellation", () => {
         renderComp();
-        
+
         const cancelButton = screen.getByTestId("edit-profile-cancel-button");
 
         expect(cancelButton).toBeInTheDocument();
@@ -205,5 +205,20 @@ describe("ProfileEditPage component", () => {
         fireEvent.click(cancelButton);
 
         expect(navigateMock).toHaveBeenCalledWith(`/profile/${userPageIdMock}`);
+    });
+
+    it.todo("add trigger test for setAlert on rejected getUserData call", () => {
+    });
+    it.todo("add test for navigational behaviour on successful form submit", () => {
+    });
+    it.todo("add trigger test for setAlert on rejected form submit call", () => {
+    });
+    
+    it("triggers abortAll on unmount", () => {
+        const unmount = renderComp();
+
+        unmount();
+
+        expect(abortAll).toHaveBeenCalled();
     });
 });
