@@ -9,6 +9,8 @@ import { ActionsContext } from "../../../contexts/actions-context"
 import { UserContext } from "../../../contexts/user-context"
 
 import useUserServices from "../../../hooks/useUserServices"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../../../firebase/firebase-storage/config";
 
 vi.mock("../../shared/user-details/gender-details/GenderDetails", () => ({
     default: ({ userGender }) => <input
@@ -74,6 +76,16 @@ vi.mock("../../shared/input-fields/input-fields-list/InputFieldsList", () => ({
     ))
 }));
 
+vi.mock("firebase/storage", () => ({
+    ref: vi.fn(),
+    uploadBytes: vi.fn(),
+    getDownloadURL: vi.fn(),
+}));
+
+vi.mock("../../../firebase/firebase-storage/config", () => ({
+    storage: {},
+}))
+
 vi.mock("../../../hooks/useUserServices");
 
 vi.mock("react-router", () => ({
@@ -90,6 +102,16 @@ describe("ProfileEditPage component", () => {
     const abortAll = vi.fn();
     const setAlert = vi.fn();
     const isUser = "curUserId";
+
+    ref.mockReturnValue("mock-image-ref");
+
+    uploadBytes.mockResolvedValue({
+        ref: "mock-image-ref",
+    });
+
+    getDownloadURL.mockResolvedValue(
+        "https://firebase.mock/avatar.webp"
+    );
 
     const userData = {
         gender: "Male",
@@ -228,7 +250,17 @@ describe("ProfileEditPage component", () => {
         expect(navigateMock).toHaveBeenCalledWith("/404");
     });
 
-    it.todo("add test for navigational behaviour on successful form submit", () => {
+    it("triggers navigateTo on successful form submit", async () => {
+        renderComp();
+
+        fireEvent.click(
+            screen.getByTestId("edit-profile-submit-button")
+        );
+
+        await waitFor(() => {
+            expect(updateUser).toHaveBeenCalled();
+            expect(navigateMock).toHaveBeenCalledWith(`/profile/${isUser}`);
+        });
     });
     
     it.todo("add trigger test for setAlert on rejected form submit call", () => {
