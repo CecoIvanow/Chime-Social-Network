@@ -207,13 +207,26 @@ describe("ProfileEditPage component", () => {
         expect(navigateMock).toHaveBeenCalledWith(`/profile/${userPageIdMock}`);
     });
 
-    it.todo("add trigger test for setAlert on rejected getUserData call", () => {
+    it("triggers setAlert on rejected getUserData call", async () => {
+        renderComp({
+            getUserDataResult: false,
+            updateUserResult: true,
+            useParamsMockValue: userPageIdMock,
+        });
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalled();
+        })
+    });
+
+    it.todo("add test for navigational behaviour on different useParams and userId", () => {
     });
     it.todo("add test for navigational behaviour on successful form submit", () => {
     });
     it.todo("add trigger test for setAlert on rejected form submit call", () => {
     });
-    
+
+
     it("triggers abortAll on unmount", () => {
         const unmount = renderComp();
 
