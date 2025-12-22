@@ -90,7 +90,6 @@ describe("ProfileEditPage component", () => {
     const abortAll = vi.fn();
     const setAlert = vi.fn();
     const isUser = "curUserId";
-    const userPageIdMock = isUser;
 
     const userData = {
         gender: "Male",
@@ -119,7 +118,7 @@ describe("ProfileEditPage component", () => {
         options = {
             updateUserResult: true,
             getUserDataResult: true,
-            useParamsMockValue: userPageIdMock,
+            useParamsMockValue: isUser,
         }
     ) {
         useParamsMock.mockReturnValue({ userId: options.useParamsMockValue });
@@ -204,14 +203,14 @@ describe("ProfileEditPage component", () => {
 
         fireEvent.click(cancelButton);
 
-        expect(navigateMock).toHaveBeenCalledWith(`/profile/${userPageIdMock}`);
+        expect(navigateMock).toHaveBeenCalledWith(`/profile/${isUser}`);
     });
 
     it("triggers setAlert on rejected getUserData call", async () => {
         renderComp({
             getUserDataResult: false,
             updateUserResult: true,
-            useParamsMockValue: userPageIdMock,
+            useParamsMockValue: isUser,
         });
 
         await waitFor(() => {
@@ -228,9 +227,10 @@ describe("ProfileEditPage component", () => {
 
         expect(navigateMock).toHaveBeenCalledWith("/404");
     });
-    
+
     it.todo("add test for navigational behaviour on successful form submit", () => {
     });
+    
     it.todo("add trigger test for setAlert on rejected form submit call", () => {
     });
 
