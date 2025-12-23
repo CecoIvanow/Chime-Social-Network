@@ -30,7 +30,15 @@ function setup(options = {
 describe("CommentButtons component", () => {
     it("renders OwnerButtons with passed props on matchimg isUser and owner id", () => {
         setup();
-        
+
         expect(screen.getByTestId("owner-button")).toHaveTextContent(comment._id);
+    });
+
+    it("does not render OwnerButtons on different isUser and owner id", () => {
+        setup({
+            matchingIds: false
+        });
+
+        expect(screen.queryByTestId("owner-button")).not.toBeInTheDocument();
     });
 });
