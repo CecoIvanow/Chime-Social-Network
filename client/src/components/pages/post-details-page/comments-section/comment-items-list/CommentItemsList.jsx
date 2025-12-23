@@ -28,8 +28,10 @@ export default function CommentItemsList() {
         try {
             const removedCommentId = await deleteComment(commentId);
 
-            post.comments = post.comments.filter(comment => comment._id !== removedCommentId);
-            setPost({ ...post });
+            setPost(prevPost => ({
+                ...prevPost,
+                comments: prevPost.comments.filter(comment => comment._id !== removedCommentId)
+            }));
         } catch (error) {
             setAlert(error.message)
         }
