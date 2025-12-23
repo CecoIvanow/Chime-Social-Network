@@ -17,24 +17,27 @@ vi.mock("./comment-item/CommentItem", () => ({
                 >
                     {comment.content}
                 </p>
-                <button
-                    onClick={() => actions.onSaveEditClickHandler(comment._id)}
-                    data-testid="save-button"
-                >
-                    Save
-                </button>
-                <button
-                    onClick={() => actions.onCancelEditClickHandler()}
-                    data-testid="cancel-button"
-                >
-                    Cancel
-                </button>
-                <button
-                    onClick={() => actions.onEditClickHandler()}
-                    data-testid="edit-button"
-                >
-                    Edit
-                </button>
+                {actions.isEditClicked ? <>
+                    <button
+                        onClick={() => actions.onSaveEditClickHandler(comment._id)}
+                        data-testid="save-button"
+                    >
+                        Save
+                    </button>
+                    <button
+                        onClick={() => actions.onCancelEditClickHandler()}
+                        data-testid="cancel-button"
+                    >
+                        Cancel
+                    </button>
+                </> : (
+                    <button
+                        onClick={() => actions.onEditClickHandler()}
+                        data-testid="edit-button"
+                    >
+                        Edit
+                    </button>
+                )}
                 <button
                     onClick={() => actions.onDeleteClickHandler(comment._id)}
                     data-testid="delete-button"
@@ -74,8 +77,8 @@ function setup(options = {
     deleteCommentSuccess: true,
 }) {
     options.deleteCommentSuccess ?
-    deleteCommentMock.mockResolvedValue(TEST_COMMENT) :
-    deleteCommentMock.mockRejectedValue(new Error("Successfully rejected delete comment!"));
+        deleteCommentMock.mockResolvedValue(TEST_COMMENT) :
+        deleteCommentMock.mockRejectedValue(new Error("Successfully rejected delete comment!"));
 
     render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -89,7 +92,7 @@ function setup(options = {
 describe("CommentItemsList", () => {
     it("renders CommentItem with passed props", () => {
         setup();
-        
+
         for (let i = 0; i < post.comments.length; i++) {
             expect(screen.getAllByTestId("comment-content")[i]).toHaveTextContent(post.comments.at(i).content);
         };
@@ -136,5 +139,14 @@ describe("CommentItemsList", () => {
             expect(deleteCommentMock).toHaveBeenCalledWith(TEST_COMMENT);
             expect(setAlert).toHaveBeenCalled();
         });
+    });
+
+    it("renders edit button on comments on isEditClicked false", () => {
+        setup();
+
+        expect(screen.getAllByTestId("edit-button")).toHaveLength(post.comments.length);
+
+        expect(screen.queryByTestId("cancel-button")).not.toBeInTheDocument();
+        expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
     });
 });
