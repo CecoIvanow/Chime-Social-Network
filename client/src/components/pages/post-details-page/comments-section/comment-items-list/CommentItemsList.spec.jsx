@@ -11,12 +11,12 @@ vi.mock("./comment-item/CommentItem", () => ({
     default: ({ comment }) =>
         <ActionsContext.Consumer>
             {actions => <>
-                {actions.isEditClicked ? <>
                     <input
                         onChange={(e) => actions.onTextChangeHandler(e)}
-                        data-testid="input-field-comment-content"
+                        data-testid="comment-content"
                         defaultValue={comment.content}
                     />
+                {actions.isEditClicked ? <>
                     <button
                         onClick={() => actions.onSaveEditClickHandler(comment._id)}
                         data-testid="save-button"
@@ -30,11 +30,6 @@ vi.mock("./comment-item/CommentItem", () => ({
                         Cancel
                     </button>
                 </> : <>
-                    <p
-                        data-testid="comment-content"
-                    >
-                        {comment.content}
-                    </p>
                     <button
                         onClick={() => actions.onEditClickHandler()}
                         data-testid="edit-button"
@@ -97,7 +92,7 @@ describe("CommentItemsList", () => {
         setup();
 
         for (let i = 0; i < post.comments.length; i++) {
-            expect(screen.getAllByTestId("comment-content")[i]).toHaveTextContent(post.comments.at(i).content);
+            expect(screen.getAllByTestId("comment-content")[i]).toHaveValue(post.comments.at(i).content);
         };
     });
 
@@ -160,7 +155,7 @@ describe("CommentItemsList", () => {
 
         expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
         
-        expect(screen.getByTestId("input-field-comment-content")).toHaveValue(post.comments.at(0).content);
+        expect(screen.getByTestId("comment-content")).toHaveValue(post.comments.at(0).content);
         expect(screen.getByTestId("save-button")).toBeInTheDocument();
         expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
     });
@@ -171,8 +166,8 @@ describe("CommentItemsList", () => {
         const NEW_VALUE = "The comment content has changed";
 
         fireEvent.click(screen.getByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("input-field-comment-content"), {target: {value: NEW_VALUE}});
+        fireEvent.change(screen.getByTestId("comment-content"), {target: {value: NEW_VALUE}});
 
-        expect(screen.getByTestId("input-field-comment-content")).toHaveValue(NEW_VALUE);
+        expect(screen.getByTestId("comment-content")).toHaveValue(NEW_VALUE);
     });
 });
