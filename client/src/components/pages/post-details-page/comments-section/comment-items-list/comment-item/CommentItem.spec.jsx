@@ -25,12 +25,11 @@ const comment = {
     text: "This is a comment."
 };
 
-const isEditClicked = false;
 const setCommentText = vi.fn();
 const setOnEditCommentText = vi.fn();
 
 function setup(options = {
-    isEditClicked,
+    isEditClicked: true,
 }) {
     const isEditClicked = options.isEditClicked || false;
 
@@ -56,5 +55,23 @@ describe("CommentItem component", () => {
         setup();
 
         expect(screen.getByTestId("comment-button")).toHaveTextContent(comment.text);
+    });
+
+    it.each([
+        { renderedComp: "CommentText", isEditClicked: false },
+        { renderedComp: "CommentEditTextArea", isEditClicked: true },
+    ])("renders $renderedComp on isEditClicked $isEditClicked", ({ isEditClicked }) => {
+
+        setup({
+            isEditClicked
+        });
+
+        if (isEditClicked) {
+            expect(screen.getByTestId("comment-edit-text-area")).toBeInTheDocument();
+            expect(screen.queryByTestId("comment-text")).not.toBeInTheDocument();
+        } else {
+            expect(screen.queryByTestId("comment-edit-text-area")).not.toBeInTheDocument();
+            expect(screen.getByTestId("comment-text")).toBeInTheDocument();
+        };
     });
 });
