@@ -75,10 +75,15 @@ const NEW_COMMENT_CONTENT = "The comment content has changed";
 function setup(options = {
     deleteCommentSuccess: true,
     updateCommentSuccess: true,
+    updateCommentTruthyReturn: true
 }) {
-    options.updateCommentSuccess ?
-        updateCommentMock.mockResolvedValue(NEW_COMMENT_CONTENT) :
+    if (!options.updateCommentSuccess) {
         updateCommentMock.mockRejectedValue(new Error("Successfully rejected comment update!"));
+    } else if (!options.updateCommentTruthyReturn) {
+        updateCommentMock.mockResolvedValue(""); // falsy value
+    } else {
+        updateCommentMock.mockResolvedValue(NEW_COMMENT_CONTENT);
+    }
 
     options.deleteCommentSuccess ?
         deleteCommentMock.mockResolvedValue(TEST_COMMENT) :
@@ -136,6 +141,7 @@ describe("CommentItemsList", () => {
         setup({
             deleteCommentSuccess: false,
             updateCommentSuccess: true,
+            updateCommentTruthyReturn: true
         });
 
         vi.spyOn(window, "confirm").mockReturnValue(true);
@@ -216,6 +222,7 @@ describe("CommentItemsList", () => {
         setup({
             deleteCommentSuccess: true,
             updateCommentSuccess: false,
+            updateCommentTruthyReturn: true
         });
 
         fireEvent.click(screen.getByTestId("edit-button"));
@@ -227,6 +234,29 @@ describe("CommentItemsList", () => {
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalled();
+        });
+    });
+    
+    it("does NOT exit edit mode when updateComment returns falsy value", async () => {
+        setup({
+            deleteCommentSuccess: true,
+            updateCommentSuccess: true,
+            updateCommentTruthyReturn: false
+        });
+
+        fireEvent.click(screen.getByTestId("edit-button"));
+        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_COMMENT_CONTENT } });
+
+        expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
+
+        fireEvent.click(screen.getByTestId("save-button"));
+
+        await waitFor(() => {
+            expect(updateCommentMock).toHaveBeenCalledWith(TEST_COMMENT, NEW_COMMENT_CONTENT);
+            expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
+            expect(screen.getByTestId("save-button")).toBeInTheDocument();
+            expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
+            expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
         });
     });
 
