@@ -87,17 +87,16 @@ function setup(options = {
 };
 
 describe("CommentItemsList", () => {
-    beforeEach(() => {
-        setup();
-    });
-
     it("renders CommentItem with passed props", () => {
+        setup();
+        
         for (let i = 0; i < post.comments.length; i++) {
             expect(screen.getAllByTestId("comment-content")[i]).toHaveTextContent(post.comments.at(i).content);
         };
     });
 
     it("deletes comment on onDeleteClickHandler trigger with confirm true", async () => {
+        setup();
         vi.spyOn(window, "confirm").mockReturnValue(true);
 
         fireEvent.click(screen.getAllByTestId("delete-button")[TEST_COMMENT]);
@@ -113,12 +112,29 @@ describe("CommentItemsList", () => {
         });
     });
 
-    it("does not delete comment on onDeleteClickHandler trigger with confirm false", () => {
+    it("does not delete comment on onDeleteClickHandler trigger with confirm false", async () => {
+        setup();
         vi.spyOn(window, "confirm").mockReturnValue(false);
 
         fireEvent.click(screen.getAllByTestId("delete-button")[TEST_COMMENT]);
 
-        expect(deleteCommentMock).not.toHaveBeenCalledWith();
-        expect(setPost).not.toHaveBeenCalled();
+        await waitFor(() => {
+            expect(deleteCommentMock).not.toHaveBeenCalledWith();
+            expect(setPost).not.toHaveBeenCalled();
+        })
+    });
+
+    it("triggers setAlert on deleteComment rejectred call", async () => {
+        setup({
+            deleteCommentSuccess: false,
+        });
+        vi.spyOn(window, "confirm").mockReturnValue(true);
+
+        fireEvent.click(screen.getAllByTestId("delete-button")[TEST_COMMENT]);
+
+        await waitFor(() => {
+            expect(deleteCommentMock).toHaveBeenCalledWith(TEST_COMMENT);
+            expect(setAlert).toHaveBeenCalled();
+        });
     });
 });
