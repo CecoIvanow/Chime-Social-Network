@@ -80,7 +80,7 @@ export default function CommentItemsList() {
 
     useEffect(() => {
         return () => {
-            abortAll
+            abortAll();
         }
     }, [abortAll])
 

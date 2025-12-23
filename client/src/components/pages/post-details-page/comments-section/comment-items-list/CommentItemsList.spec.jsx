@@ -84,13 +84,15 @@ function setup(options = {
         deleteCommentMock.mockResolvedValue(TEST_COMMENT) :
         deleteCommentMock.mockRejectedValue(new Error("Successfully rejected delete comment!"));
 
-    render(
+    const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
             <PostContext.Provider value={{ post, setPost }}>
                 <CommentItemsList />
             </PostContext.Provider>
         </AlertContext.Provider>
     );
+
+    return unmount;
 };
 
 describe("CommentItemsList", () => {
@@ -224,4 +226,12 @@ describe("CommentItemsList", () => {
             expect(setAlert).toHaveBeenCalled();
         });
     });
+
+    it("triggers abortAll on unmount", () => {
+        const unmount = setup();
+
+        unmount();
+
+        expect(abortAllMock).toHaveBeenCalled();
+    })
 });
