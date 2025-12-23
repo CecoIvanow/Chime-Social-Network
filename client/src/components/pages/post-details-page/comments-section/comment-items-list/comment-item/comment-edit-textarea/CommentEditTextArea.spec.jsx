@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import CommentEditTextArea from "./CommentEditTextArea";
@@ -26,5 +26,11 @@ describe("CommentEditTextArea component", () => {
     it("renders component with context values", () => {
         expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", PLACEHOLDER_TEXT);
         expect(screen.getByRole("textbox")).toHaveValue(onEditCommentText);
-    })
+    });
+
+    it("triggers onTextChangeHandler on value change", () => {
+        fireEvent.change(screen.getByRole("textbox"), {target: {value: "a"}});
+
+        expect(onTextChangeHandler).toHaveBeenCalled();
+    });
 });
