@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, getAllByTestId, getAllByText, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import CommentItemsList from "./CommentItemsList";
@@ -187,4 +187,22 @@ describe("CommentItemsList", () => {
 
         expect(screen.getByTestId("comment-content")).toHaveValue(post.comments.at(0).content);
     });
+
+    it("saves new content on successfull save button click ", async () => {
+        setup();
+
+        const NEW_VALUE = "The comment content has changed";
+
+        fireEvent.click(screen.getByTestId("edit-button"));
+        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_VALUE } });
+
+        expect(screen.getByTestId("comment-content")).toHaveValue(NEW_VALUE);
+
+        fireEvent.click(screen.getByTestId("save-button"));
+
+        await waitFor(() => {
+            expect(updateCommentMock).toHaveBeenCalledWith(TEST_COMMENT, NEW_VALUE);
+            expect(screen.getByTestId("comment-content")).toHaveValue(NEW_VALUE);
+        })
+    })
 });
