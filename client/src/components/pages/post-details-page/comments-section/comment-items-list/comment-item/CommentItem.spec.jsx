@@ -51,4 +51,10 @@ describe("CommentItem component", () => {
 
         expect(screen.getByTestId("comment-item-header")).toHaveTextContent(comment.text);
     });
+
+    it("renders CommentButtons with passed props", () => {
+        setup();
+
+        expect(screen.getByTestId("comment-button")).toHaveTextContent(comment.text);
+    });
 });
