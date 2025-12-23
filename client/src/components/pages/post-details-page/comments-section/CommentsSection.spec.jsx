@@ -5,12 +5,14 @@ import CommentsSection from "./CommentsSection";
 
 const COMMENT_CONTENT = "First comment!";
 
+const SECTION_HEADER_CONTENT = "Comments:";
+
 vi.mock("./comment-items-list/CommentItemsList", () => ({
     default: () => <div data-testid="comment">{COMMENT_CONTENT}</div>
 }))
 
 vi.mock("./comments-section-header/CommentsSectionHeader", () => ({
-    default: () => <div data-testid="comments-section-header">Comments: </div>
+    default: () => <div data-testid="comments-section-header">{SECTION_HEADER_CONTENT}</div>
 }))
 
 function setup() {
@@ -25,6 +27,10 @@ describe("CommentsSection component", () => {
     })
 
     it("renders CommentItemsList", () => {
-        expect(screen.getByTestId("comment")).toHaveTextContent("First comment!");
+        expect(screen.getByTestId("comment")).toHaveTextContent(COMMENT_CONTENT);
+    });
+
+    it("renders CommentsSectionHeader", () => {
+        expect(screen.getByTestId("comments-section-header")).toHaveTextContent(SECTION_HEADER_CONTENT);
     });
 });
