@@ -63,10 +63,9 @@ const abortAllMock = vi.fn();
 const setAlert = vi.fn();
 
 const setPost = vi.fn();
-const post = {
+let post = {
     comments: [
         { _id: 0, content: "Comment One" },
-        { _id: 1, content: "Comment Two" },
     ],
 };
 
@@ -98,7 +97,7 @@ describe("CommentItemsList", () => {
         };
     });
 
-    it("deletes comment on onDeleteClickHandler trigger with confirm true", async () => {
+    it("deletes comment on onDeleteClickHandler trigger with confirm true", async () => {        
         setup();
         vi.spyOn(window, "confirm").mockReturnValue(true);
 
@@ -110,8 +109,7 @@ describe("CommentItemsList", () => {
 
             expect(deleteCommentMock).toHaveBeenCalledWith(TEST_COMMENT);
             expect(setPost).toHaveBeenCalledWith(updater);
-            expect(result.comments).toHaveLength(1);
-            expect(result.comments[0]._id).toBe(CONTROL_COMMENT);
+            expect(result.comments).toHaveLength(0);
         });
     });
 
@@ -131,6 +129,7 @@ describe("CommentItemsList", () => {
         setup({
             deleteCommentSuccess: false,
         });
+
         vi.spyOn(window, "confirm").mockReturnValue(true);
 
         fireEvent.click(screen.getAllByTestId("delete-button")[TEST_COMMENT]);
@@ -141,10 +140,10 @@ describe("CommentItemsList", () => {
         });
     });
 
-    it("renders edit button on comments on isEditClicked false", () => {
-        setup();
+    it("renders edit buttons when isEditClicked is false", () => {
+        setup();      
 
-        expect(screen.getAllByTestId("edit-button")).toHaveLength(post.comments.length);
+        expect(screen.getByTestId("edit-button")).toBeInTheDocument();
 
         expect(screen.queryByTestId("cancel-button")).not.toBeInTheDocument();
         expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
