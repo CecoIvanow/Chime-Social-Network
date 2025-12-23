@@ -1,4 +1,4 @@
-import { fireEvent, getAllByTestId, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, getAllByTestId, getByTestId, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import CommentItemsList from "./CommentItemsList";
@@ -70,7 +70,6 @@ let post = {
 };
 
 const TEST_COMMENT = 0;
-const CONTROL_COMMENT = 1;
 
 function setup(options = {
     deleteCommentSuccess: true,
@@ -148,4 +147,15 @@ describe("CommentItemsList", () => {
         expect(screen.queryByTestId("cancel-button")).not.toBeInTheDocument();
         expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
     });
+
+    it("on edit button click sets isEditClicked to false and renders cancel and save buttons", () => {
+        setup();
+
+        fireEvent.click(screen.getByTestId("edit-button"));
+
+        expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
+
+        expect(screen.getByTestId("save-button")).toBeInTheDocument();
+        expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
+    })
 });
