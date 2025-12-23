@@ -1,5 +1,5 @@
-import { fireEvent, getAllByTestId, getByTestId, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import CommentItemsList from "./CommentItemsList";
 
@@ -11,13 +11,12 @@ vi.mock("./comment-item/CommentItem", () => ({
     default: ({ comment }) =>
         <ActionsContext.Consumer>
             {actions => <>
-                <p
-                    onChange={(e) => actions.onTextChangeHandler(e)}
-                    data-testid="comment-content"
-                >
-                    {comment.content}
-                </p>
                 {actions.isEditClicked ? <>
+                    <input
+                        onChange={(e) => actions.onTextChangeHandler(e)}
+                        data-testid="input-field-comment-content"
+                        defaultValue={comment.content}
+                    />
                     <button
                         onClick={() => actions.onSaveEditClickHandler(comment._id)}
                         data-testid="save-button"
@@ -30,14 +29,20 @@ vi.mock("./comment-item/CommentItem", () => ({
                     >
                         Cancel
                     </button>
-                </> : (
+                </> : <>
+                    <p
+                        data-testid="comment-content"
+                    >
+                        {comment.content}
+                    </p>
                     <button
                         onClick={() => actions.onEditClickHandler()}
                         data-testid="edit-button"
                     >
                         Edit
                     </button>
-                )}
+                </>
+                }
                 <button
                     onClick={() => actions.onDeleteClickHandler(comment._id)}
                     data-testid="delete-button"
@@ -96,7 +101,7 @@ describe("CommentItemsList", () => {
         };
     });
 
-    it("deletes comment on onDeleteClickHandler trigger with confirm true", async () => {        
+    it("deletes comment on onDeleteClickHandler trigger with confirm true", async () => {
         setup();
         vi.spyOn(window, "confirm").mockReturnValue(true);
 
@@ -140,7 +145,7 @@ describe("CommentItemsList", () => {
     });
 
     it("renders edit buttons when isEditClicked is false", () => {
-        setup();      
+        setup();
 
         expect(screen.getByTestId("edit-button")).toBeInTheDocument();
 
@@ -154,8 +159,20 @@ describe("CommentItemsList", () => {
         fireEvent.click(screen.getByTestId("edit-button"));
 
         expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
-
+        
+        expect(screen.getByTestId("input-field-comment-content")).toHaveValue(post.comments.at(0).content);
         expect(screen.getByTestId("save-button")).toBeInTheDocument();
         expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
-    })
+    });
+
+    it("on input field change triggers onTextChangeHandler", () => {
+        setup();
+
+        const NEW_VALUE = "The comment content has changed";
+
+        fireEvent.click(screen.getByTestId("edit-button"));
+        fireEvent.change(screen.getByTestId("input-field-comment-content"), {target: {value: NEW_VALUE}});
+
+        expect(screen.getByTestId("input-field-comment-content")).toHaveValue(NEW_VALUE);
+    });
 });
