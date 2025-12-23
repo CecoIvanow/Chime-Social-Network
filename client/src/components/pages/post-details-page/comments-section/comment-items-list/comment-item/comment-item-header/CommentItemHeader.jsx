@@ -5,7 +5,11 @@ export default function CommentItemHeader({
 }) {
     return <div className='comment-header'>
         <div>
-            <img className='owner-picture' src={comment.owner.imageUrl} />
+            <img
+                className='owner-picture'
+                src={comment.owner.imageUrl}
+                alt={`${comment.owner.firstName} ${comment.owner.lastName} avatar`}
+            />
             <p className='post-owner'>
                 <Link to={`/profile/${comment.owner._id}`}>
                     {comment.owner.firstName} {comment.owner.lastName}

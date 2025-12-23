@@ -38,7 +38,7 @@ export default function ImageUpload({
                 <img src={tempImageUrl || imageUrl} className="profile-avatar" alt="Profile picture" />
                 <label className="avatar-upload">
                     📷
-                    <input type="file" accept="image/*" onChange={onImageUpload}/>
+                    <input data-testid="image-input" type="file" accept="image/*" onChange={onImageUpload}/>
                 </label>
             </div>
         </div>
