@@ -112,4 +112,13 @@ describe("CommentItemsList", () => {
             expect(result.comments[0]._id).toBe(CONTROL_COMMENT);
         });
     });
+
+    it("does not delete comment on onDeleteClickHandler trigger with confirm false", () => {
+        vi.spyOn(window, "confirm").mockReturnValue(false);
+
+        fireEvent.click(screen.getAllByTestId("delete-button")[TEST_COMMENT]);
+
+        expect(deleteCommentMock).not.toHaveBeenCalledWith();
+        expect(setPost).not.toHaveBeenCalled();
+    });
 });
