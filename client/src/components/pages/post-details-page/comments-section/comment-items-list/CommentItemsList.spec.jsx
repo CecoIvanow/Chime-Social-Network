@@ -1,4 +1,4 @@
-import { fireEvent, getAllByTestId, getAllByText, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import CommentItemsList from "./CommentItemsList";
@@ -206,6 +206,9 @@ describe("CommentItemsList", () => {
         await waitFor(() => {
             expect(updateCommentMock).toHaveBeenCalledWith(TEST_COMMENT, NEW_COMMENT_CONTENT);
             expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
+            expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("cancel-button")).not.toBeInTheDocument();
+            expect(screen.getByTestId("edit-button")).toBeInTheDocument();
         });
     });
 
