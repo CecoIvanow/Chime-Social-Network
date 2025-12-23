@@ -70,10 +70,16 @@ let post = {
 };
 
 const TEST_COMMENT = 0;
+const NEW_COMMENT_CONTENT = "The comment content has changed";
 
 function setup(options = {
     deleteCommentSuccess: true,
+    updateCommentSuccess: true,
 }) {
+    options.updateCommentSuccess ?
+        updateCommentMock.mockResolvedValue(NEW_COMMENT_CONTENT) :
+        updateCommentMock.mockRejectedValue(new Error("Successfully rejected comment update!"));
+
     options.deleteCommentSuccess ?
         deleteCommentMock.mockResolvedValue(TEST_COMMENT) :
         deleteCommentMock.mockRejectedValue(new Error("Successfully rejected delete comment!"));
@@ -127,6 +133,7 @@ describe("CommentItemsList", () => {
     it("triggers setAlert on deleteComment rejectred call", async () => {
         setup({
             deleteCommentSuccess: false,
+            updateCommentSuccess: true,
         });
 
         vi.spyOn(window, "confirm").mockReturnValue(true);
@@ -163,46 +170,58 @@ describe("CommentItemsList", () => {
     it("on input field change triggers onTextChangeHandler", async () => {
         setup();
 
-        const NEW_VALUE = "The comment content has changed";
-
         fireEvent.click(screen.getByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_VALUE } });
+        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_COMMENT_CONTENT } });
 
         await waitFor(() => {
-            expect(screen.getByTestId("comment-content")).toHaveValue(NEW_VALUE);
+            expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
         })
     });
 
     it("on cancel button click sets back original content", () => {
         setup();
 
-        const NEW_VALUE = "The comment content has changed";
-
         fireEvent.click(screen.getByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_VALUE } });
+        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_COMMENT_CONTENT } });
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(NEW_VALUE);
+        expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
 
         fireEvent.click(screen.getByTestId("cancel-button"));
 
         expect(screen.getByTestId("comment-content")).toHaveValue(post.comments.at(0).content);
     });
 
-    it("saves new content on successfull save button click ", async () => {
+    it("saves new content on successfull save button click", async () => {
         setup();
 
-        const NEW_VALUE = "The comment content has changed";
-
         fireEvent.click(screen.getByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_VALUE } });
+        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_COMMENT_CONTENT } });
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(NEW_VALUE);
+        expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
 
         fireEvent.click(screen.getByTestId("save-button"));
 
         await waitFor(() => {
-            expect(updateCommentMock).toHaveBeenCalledWith(TEST_COMMENT, NEW_VALUE);
-            expect(screen.getByTestId("comment-content")).toHaveValue(NEW_VALUE);
-        })
-    })
+            expect(updateCommentMock).toHaveBeenCalledWith(TEST_COMMENT, NEW_COMMENT_CONTENT);
+            expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
+        });
+    });
+
+    it("triggers setAlert on rejected updateComment call", async () => {
+        setup({
+            deleteCommentSuccess: true,
+            updateCommentSuccess: false,
+        });
+
+        fireEvent.click(screen.getByTestId("edit-button"));
+        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_COMMENT_CONTENT } });
+
+        expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
+
+        fireEvent.click(screen.getByTestId("save-button"));
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalled();
+        });
+    });
 });
