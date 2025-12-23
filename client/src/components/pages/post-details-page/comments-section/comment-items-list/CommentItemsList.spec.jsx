@@ -11,11 +11,11 @@ vi.mock("./comment-item/CommentItem", () => ({
     default: ({ comment }) =>
         <ActionsContext.Consumer>
             {actions => <>
-                    <input
-                        onChange={(e) => actions.onTextChangeHandler(e)}
-                        data-testid="comment-content"
-                        defaultValue={comment.content}
-                    />
+                <input
+                    onChange={(e) => actions.onTextChangeHandler(e)}
+                    data-testid="comment-content"
+                    value={actions.onEditCommentText || comment.content}
+                />
                 {actions.isEditClicked ? <>
                     <button
                         onClick={() => actions.onSaveEditClickHandler(comment._id)}
@@ -154,20 +154,37 @@ describe("CommentItemsList", () => {
         fireEvent.click(screen.getByTestId("edit-button"));
 
         expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
-        
+
         expect(screen.getByTestId("comment-content")).toHaveValue(post.comments.at(0).content);
         expect(screen.getByTestId("save-button")).toBeInTheDocument();
         expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
     });
 
-    it("on input field change triggers onTextChangeHandler", () => {
+    it("on input field change triggers onTextChangeHandler", async () => {
         setup();
 
         const NEW_VALUE = "The comment content has changed";
 
         fireEvent.click(screen.getByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("comment-content"), {target: {value: NEW_VALUE}});
+        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_VALUE } });
+
+        await waitFor(() => {
+            expect(screen.getByTestId("comment-content")).toHaveValue(NEW_VALUE);
+        })
+    });
+
+    it("on cancel button click sets back original content", () => {
+        setup();
+
+        const NEW_VALUE = "The comment content has changed";
+
+        fireEvent.click(screen.getByTestId("edit-button"));
+        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_VALUE } });
 
         expect(screen.getByTestId("comment-content")).toHaveValue(NEW_VALUE);
+
+        fireEvent.click(screen.getByTestId("cancel-button"));
+
+        expect(screen.getByTestId("comment-content")).toHaveValue(post.comments.at(0).content);
     });
 });
