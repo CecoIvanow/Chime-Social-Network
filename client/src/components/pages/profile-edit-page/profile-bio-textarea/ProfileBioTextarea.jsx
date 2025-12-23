@@ -1,6 +1,6 @@
 import TextAreaInput from "../../../ui/inputs/textarea-input-field/TextAreaInput";
 
-export default function ProfileBioTextarea({
+export default function ProfileBioTextArea({
     userData
 }) {
     return <TextAreaInput

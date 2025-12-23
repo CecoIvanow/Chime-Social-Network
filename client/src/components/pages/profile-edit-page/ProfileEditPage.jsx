@@ -7,7 +7,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import GenderDetails from "../../shared/user-details/gender-details/GenderDetails"
 import SectionHeading from "../../ui/headings/SectionHeading"
 import ImageUpload from "./image-upload/ImageUpload"
-import ProfileBioTextarea from "./profile-bio-textarea/ProfileBioTextarea"
+import ProfileBioTextArea from "./profile-bio-textarea/ProfileBioTextArea"
 import ProfileEditButtons from "./profile-edit-buttons/ProfileEditButtons"
 import InputFieldsList from "../../shared/input-fields/input-fields-list/InputFieldsList"
 
@@ -112,7 +112,7 @@ export default function ProfileEditPage() {
                     inputFields={formProfileInputs}
                 />
 
-                <ProfileBioTextarea
+                <ProfileBioTextArea
                     userData={userData}
                 />
 
