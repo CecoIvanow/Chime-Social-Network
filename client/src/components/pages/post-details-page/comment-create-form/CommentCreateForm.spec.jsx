@@ -84,4 +84,16 @@ describe("CommentCreateForm component", () => {
         expect(screen.getByTestId("button")).toHaveTextContent(BUTTON_TEXT);
         expect(screen.getByTestId("input")).toHaveValue(INITIAL_INPUT_VALUE);
     });
+
+    it("on value change triggers onTextChangeHandler", () => {
+        setup();
+
+        const newValue = "test";
+
+        const inputEl = screen.getByTestId("input");
+
+        fireEvent.change(inputEl, {target: {value: newValue}});
+
+        expect(inputEl).toHaveValue(newValue);
+    });
 });
