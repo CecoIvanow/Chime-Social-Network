@@ -122,6 +122,23 @@ describe("CommentCreateForm component", () => {
         })
     });
 
+    it("exits on empty createComment return value", async () => {
+        setup({
+            createCommentTruthyReturn: false
+        });
+
+        const newValue = "test";
+
+        const inputEl = screen.getByTestId("input");
+
+        fireEvent.change(inputEl, { target: { value: newValue } });
+        fireEvent.click(screen.getByTestId("button"));
+
+        await waitFor(() => {
+            expect(setPost).not.toHaveBeenCalled();
+        })
+    })
+
     it("on rejected createComment call triggers setAlert", async () => {
         setup({
             createCommentSuccess: false
