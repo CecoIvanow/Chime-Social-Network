@@ -103,6 +103,25 @@ describe("CommentCreateForm component", () => {
         expect(inputEl).toHaveValue(newValue);
     });
 
+    it("on successfull createComment call updates post comments array", async () => {
+        setup();
+
+        const initialCommentsLen = post.comments.length;
+
+        const newValue = "test";
+
+        const inputEl = screen.getByTestId("input");
+
+        fireEvent.change(inputEl, { target: { value: newValue } });
+        fireEvent.click(screen.getByTestId("button"));
+
+        await waitFor(() => {
+            const updatedPost = setPost.mock.calls[0][0];            
+
+            expect(updatedPost.comments).toHaveLength(initialCommentsLen + 1);
+        })
+    });
+
     it("on rejected createComment call triggers setAlert", async () => {
         setup({
             createCommentSuccess: false
