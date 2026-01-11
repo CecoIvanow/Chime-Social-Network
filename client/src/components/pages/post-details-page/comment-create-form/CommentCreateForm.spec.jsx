@@ -119,11 +119,14 @@ describe("CommentCreateForm component", () => {
             const updatedPost = setPost.mock.calls[0][0];            
 
             expect(updatedPost.comments).toHaveLength(initialCommentsLen + 1);
-        })
+        });
+
+        expect(setAlert).not.toHaveBeenCalled();
     });
 
     it("exits on empty createComment return value", async () => {
         setup({
+            createCommentSuccess: true,
             createCommentTruthyReturn: false
         });
 
@@ -135,8 +138,12 @@ describe("CommentCreateForm component", () => {
         fireEvent.click(screen.getByTestId("button"));
 
         await waitFor(() => {
-            expect(setPost).not.toHaveBeenCalled();
-        })
+            expect(createCommentMock).toHaveBeenCalled();
+        });
+
+        expect(inputEl).toHaveValue(newValue);
+        expect(setPost).not.toHaveBeenCalled();
+        expect(setAlert).not.toHaveBeenCalled();
     })
 
     it("on rejected createComment call triggers setAlert", async () => {
