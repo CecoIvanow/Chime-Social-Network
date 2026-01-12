@@ -77,6 +77,14 @@ vi.mock("react-router", () => ({
     useNavigate: () => navigateToMock(),
 }));
 
+const ERR_MSG = {
+    EDIT: "Successfully rejected editPost call!",
+    DELETE: "Successfully rejected deletePost call!",
+    LIKE: "Successfully rejected likePost call!",
+    UNLIKE: "Successfully rejected unlikePost call!",
+    GET_POST: "Successfully rejected getPostWithComments call!"
+}
+
 const POST_ID = "postId435";
 
 const NEW_POST_CONTENT = "Updated Content!";
@@ -127,24 +135,24 @@ function setup(options = {
     } else if (options.editPostEmptyReturnValue) {
         editPostMock.mockResolvedValue(undefined);
     } else {
-        editPostMock.mockRejectedValue("Successfully rejected editPost call!")
+        editPostMock.mockRejectedValue(new Error(ERR_MSG.EDIT))
     };
 
     if (!options.deletePostSuccess) {
-        deletePostMock.mockRejectedValue(new Error("Successfully rejected deletePost call!"));
+        deletePostMock.mockRejectedValue(new Error(ERR_MSG.DELETE));
     };
 
     if (!options.likePostSuccess) {
-        deletePostMock.mockRejectedValue(new Error("Successfully rejected likePost call!"));
+        likePostMock.mockRejectedValue(new Error(ERR_MSG.LIKE));
     };
 
     if (!options.unlikePostSuccess) {
-        deletePostMock.mockRejectedValue(new Error("Successfully rejected unlikePost call!"));
+        unlikePostMock.mockRejectedValue(new Error(ERR_MSG.UNLIKE));
     };
 
     options.getPostWithCommentsSuccess ?
         getPostWithCommentsMock.mockResolvedValue(post) :
-        getPostWithCommentsMock.mockRejectedValue(new Error("Successfully rejected getPostWithComments call!"));
+        getPostWithCommentsMock.mockRejectedValue(new Error(ERR_MSG.GET_POST));
 
     render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -182,6 +190,20 @@ describe("PostDetailsPage component", () => {
             expect(screen.queryByTestId("post-header")).not.toBeInTheDocument();
             expect(screen.queryByTestId("post-text")).not.toBeInTheDocument();
             expect(screen.queryByTestId("post-interactions")).not.toBeInTheDocument();
+        });
+    });
+
+    it("triggers setAlert on rejected getPostWithComments call", async () => {
+        setup({
+            getPostWithCommentsSuccess: false,
+            deletePostSuccess: true,
+            editPostSuccess: true,
+            editPostEmptyReturnValue: false,
+            likePostSuccess: true,
+            unlikePostSuccess: true,
+        });
+
+        await waitFor(() => {
         });
     });
 });
