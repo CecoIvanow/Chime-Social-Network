@@ -167,7 +167,21 @@ describe("PostDetailsPage component", () => {
         });
     });
    
-    it("name", () => {
-        
-    })
+    it("does not render components on rejected getPostWithComments call", async () => {
+        setup({
+            getPostWithCommentsSuccess: false,
+            deletePostSuccess: true,
+            editPostSuccess: true,
+            editPostEmptyReturnValue: false,
+            likePostSuccess: true,
+            unlikePostSuccess: true,
+        });
+
+        await waitFor(() => {
+            expect(screen.queryByTestId("comments-section")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("post-header")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("post-text")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("post-interactions")).not.toBeInTheDocument();
+        });
+    });
 });
