@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import PostDetailsPage from "./PostDetailsPage";
 
@@ -44,14 +44,14 @@ vi.mock("../../shared/post/post-header/PostHeader", () => ({
 
 vi.mock("../../shared/post/post-interactions/PostInteractions", () => ({
     default: () => <PostContext.Consumer>
-        {post => <ActionsContext.Consumer>
-            {actions => <div data-testid="post-interactions">
-                <button data-testid="like-button" onClick={actions.onLikeClickHandler}>Like</button>
-                <button data-testid="unlike-button" onClick={actions.onUnlikeClickHandler}>Unlike</button>
-                <button data-testid="edit-button" onClick={actions.onEditPostClickHandler}>Edit</button>
-                <button data-testid="save-button" onClick={() => actions.onSaveEditClickHandler(post._id)}>Save</button>
-                <button data-testid="cancel-button" onClick={actions.onCancelEditClickHandler}>Cancel</button>
-                <button data-testid="delete-button" onClick={() => actions.onDeleteClickHandler(post._id)}>Delete</button>
+        {postContext => <ActionsContext.Consumer>
+            {actionsContext => <div data-testid="post-interactions">
+                <button data-testid="like-button" onClick={actionsContext.onLikeClickHandler}>Like</button>
+                <button data-testid="unlike-button" onClick={actionsContext.onUnlikeClickHandler}>Unlike</button>
+                <button data-testid="edit-button" onClick={actionsContext.onEditPostClickHandler}>Edit</button>
+                <button data-testid="save-button" onClick={() => actionsContext.onSaveEditClickHandler(postContext.post._id)}>Save</button>
+                <button data-testid="cancel-button" onClick={actionsContext.onCancelEditClickHandler}>Cancel</button>
+                <button data-testid="delete-button" onClick={() => actionsContext.onDeleteClickHandler(postContext.post._id)}>Delete</button>
             </div>}
         </ActionsContext.Consumer>}
     </PostContext.Consumer>
@@ -74,7 +74,7 @@ vi.mock("../../../hooks/usePostServices", () => ({
 
 vi.mock("react-router", () => ({
     useLocation: () => location,
-    useNavigate: () => navigateToMock(),
+    useNavigate: () => navigateToMock,
 }));
 
 const ERR_MSG = {
@@ -99,7 +99,7 @@ const location = {
     state: {
         shouldEdit,
     },
-    pathname:`/posts/${POST_ID}`,
+    pathname: `/posts/${POST_ID}`,
 };
 
 const post = {
@@ -138,17 +138,17 @@ function setup(options = {
         editPostMock.mockRejectedValue(new Error(ERR_MSG.EDIT))
     };
 
-    if (!options.deletePostSuccess) {
+    options.deletePostSuccess ?
+        deletePostMock.mockResolvedValue() :
         deletePostMock.mockRejectedValue(new Error(ERR_MSG.DELETE));
-    };
 
-    if (!options.likePostSuccess) {
+    options.likePostSuccess ?
+        likePostMock.mockResolvedValue() :
         likePostMock.mockRejectedValue(new Error(ERR_MSG.LIKE));
-    };
 
-    if (!options.unlikePostSuccess) {
+    options.unlikePostSuccess ?
+        unlikePostMock.mockResolvedValue() :
         unlikePostMock.mockRejectedValue(new Error(ERR_MSG.UNLIKE));
-    };
 
     options.getPostWithCommentsSuccess ?
         getPostWithCommentsMock.mockResolvedValue(post) :
@@ -174,7 +174,7 @@ describe("PostDetailsPage component", () => {
             expect(screen.getByTestId("post-interactions")).toBeInTheDocument();
         });
     });
-   
+
     it("does not render components on rejected getPostWithComments call", async () => {
         setup({
             getPostWithCommentsSuccess: false,
