@@ -224,7 +224,7 @@ describe("PostDetailsPage component", () => {
             });
 
             expect(navigateToMock).toHaveBeenCalledWith('/catalog');
-            
+
         } else {
             await waitFor(() => {
                 expect(deletePostMock).not.toHaveBeenCalled();
@@ -233,4 +233,23 @@ describe("PostDetailsPage component", () => {
             expect(navigateToMock).not.toHaveBeenCalled();
         }
     });
+
+    it("triggers setAlert on rejected deletePost call", async () => {
+        setup({
+            getPostWithCommentsSuccess: true,
+            deletePostSuccess: false,
+            editPostSuccess: true,
+            editPostEmptyReturnValue: false,
+            likePostSuccess: true,
+            unlikePostSuccess: true,
+        });
+
+        vi.spyOn(window, "confirm").mockReturnValue(true);
+
+        fireEvent.click(await screen.findByTestId("delete-button"));
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.DELETE);
+        });
+    })
 });

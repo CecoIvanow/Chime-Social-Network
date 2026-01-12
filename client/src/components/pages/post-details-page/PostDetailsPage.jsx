@@ -145,7 +145,7 @@ export default function PostDetailsPage() {
                 {isEditClicked ? (
                     <PostEditContent
                         postText={postText}
-                        textChangeHandler={textChangeHandler}
+                        textChangeHandler={textChangeHandler}trigge
                     />
                 ) : (
                     <PostText
