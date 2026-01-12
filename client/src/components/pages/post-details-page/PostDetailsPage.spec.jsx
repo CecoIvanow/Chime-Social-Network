@@ -207,4 +207,30 @@ describe("PostDetailsPage component", () => {
             expect(setAlert).toHaveBeenCalledWith(ERR_MSG.GET_POST);
         });
     });
+
+    it.each([
+        { action: "triggers", confirm: "accepted", accepted: true },
+        { action: "does not trigger", confirm: "cancelled", accepted: false },
+    ])("triggers $action on $confirmState deletePost call", async ({ accepted }) => {
+        setup();
+
+        vi.spyOn(window, "confirm").mockReturnValue(accepted);
+
+        fireEvent.click(await screen.findByTestId("delete-button"));
+
+        if(accepted){
+            await waitFor(() => {
+                expect(deletePostMock).toHaveBeenCalledWith(post._id);
+            });
+
+            expect(navigateToMock).toHaveBeenCalledWith('/catalog');
+            
+        } else {
+            await waitFor(() => {
+                expect(deletePostMock).not.toHaveBeenCalled();
+            });
+
+            expect(navigateToMock).not.toHaveBeenCalled();
+        }
+    });
 });
