@@ -204,6 +204,7 @@ describe("PostDetailsPage component", () => {
         });
 
         await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.GET_POST);
         });
     });
 });
