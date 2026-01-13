@@ -218,7 +218,7 @@ describe("PostDetailsPage component", () => {
 
         fireEvent.click(await screen.findByTestId("delete-button"));
 
-        if(accepted){
+        if (accepted) {
             await waitFor(() => {
                 expect(deletePostMock).toHaveBeenCalledWith(post._id);
             });
@@ -251,5 +251,16 @@ describe("PostDetailsPage component", () => {
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(ERR_MSG.DELETE);
         });
-    })
+    });
+
+    it("calls likePost with currenrUser and post id", async () => {
+        setup();
+
+        fireEvent.click(await screen.findByTestId("like-button"));
+
+        await waitFor(() => {
+            expect(likePostMock).toHaveBeenCalledWith(isUser, post._id);
+            expect(setAlert).not.toHaveBeenCalled();
+        });
+    });
 });
