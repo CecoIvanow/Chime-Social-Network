@@ -293,4 +293,23 @@ describe("PostDetailsPage component", () => {
             expect(setAlert).not.toHaveBeenCalled();
         });
     });
+
+    it("triggers setAlert on rejected unlikePost call", async () => {
+        setup({
+            getPostWithCommentsSuccess: true,
+            deletePostSuccess: true,
+            editPostSuccess: true,
+            editPostEmptyReturnValue: false,
+            likePostSuccess: true,
+            unlikePostSuccess: false,
+        });
+
+        fireEvent.click(await screen.findByTestId("unlike-button"));
+
+        await waitFor(() => {
+            expect(unlikePostMock).toHaveBeenCalledWith(isUser, post._id);
+        });
+
+        expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UNLIKE);
+    });
 });
