@@ -94,8 +94,6 @@ const UPDATED_POST_CONTENT = "Updated Content!";
 
 const isUser = "user123";
 
-let ownerId = "ownerId123";
-
 let location = {
     state: {
         shouldEdit: false,
@@ -103,12 +101,12 @@ let location = {
     pathname: `/posts/${POST_ID}`,
 };
 
-const post = {
+let post = {
     _id: POST_ID,
     text: "This is a post!",
     owner: {
         firstName: "Ivan",
-        _id: ownerId,
+        _id: "ownerId123",
     },
 };
 
@@ -440,6 +438,23 @@ describe("PostDetailsPage component", () => {
     });
 
     it("does not trigger navigateTo on isEditClicked false", async () => {
+
+        setup();
+
+        await waitFor(() => {
+            expect(navigateToMock).not.toHaveBeenCalled();
+        })
+    });
+
+    it("does not trigger navigateTo on isEditClicked true and matching isUser and post owner id", async () => {
+        post = {
+            _id: POST_ID,
+            text: "This is a post!",
+            owner: {
+                firstName: "Ivan",
+                _id: isUser,
+            },
+        };
 
         setup();
 
