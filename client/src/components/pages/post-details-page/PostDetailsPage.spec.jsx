@@ -134,11 +134,11 @@ function setup(options = {
     unlikePostSuccess: true,
 }) {
     if (!options.editPostSuccess) {
-        editPostMock.mockResolvedValue(NEW_POST_CONTENT);
+        editPostMock.mockRejectedValue(new Error(ERR_MSG.EDIT));
     } else if (options.editPostEmptyReturnValue) {
         editPostMock.mockResolvedValue(undefined);
     } else {
-        editPostMock.mockRejectedValue(new Error(ERR_MSG.EDIT))
+        editPostMock.mockResolvedValue(NEW_POST_CONTENT);
     };
 
     options.deletePostSuccess ?
@@ -335,11 +335,11 @@ describe("PostDetailsPage component", () => {
         const updatedContent = "Changed text"
         setup();
 
-        
+
         fireEvent.click(await screen.findByTestId("edit-button"));
         expect(screen.getByTestId("post-text-edit")).toHaveValue(post.text);
 
-        fireEvent.change(screen.getByTestId("post-text-edit"), {target: {value: updatedContent}});
+        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: updatedContent } });
         expect(screen.getByTestId("post-text-edit")).toHaveValue(updatedContent);
     });
 
@@ -354,4 +354,5 @@ describe("PostDetailsPage component", () => {
         expect(screen.getByTestId("post-text")).toHaveTextContent(post.text);
         expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
     });
+
 });
