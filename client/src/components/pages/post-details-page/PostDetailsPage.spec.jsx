@@ -27,8 +27,8 @@ vi.mock("./post-edit-content/PostEditContent", () => ({
     default: ({ postText, textChangeHandler }) => <textarea
         data-testid="post-text-edit"
         onChange={(e) => textChangeHandler(e)}
+        value={postText}
     >
-        {postText}
     </textarea>
 }));
 
@@ -329,5 +329,17 @@ describe("PostDetailsPage component", () => {
 
         expect(screen.queryByTestId("post-text")).not.toBeInTheDocument();
         expect(screen.getByTestId("post-text-edit")).toBeInTheDocument();
+    });
+
+    it("textChangeHandler updates post text content on trigger", async () => {
+        const updatedContent = "Changed text"
+        setup();
+
+        
+        fireEvent.click(await screen.findByTestId("edit-button"));
+        expect(screen.getByTestId("post-text-edit")).toHaveValue(post.text);
+
+        fireEvent.change(screen.getByTestId("post-text-edit"), {target: {value: updatedContent}});
+        expect(screen.getByTestId("post-text-edit")).toHaveValue(updatedContent);
     });
 });
