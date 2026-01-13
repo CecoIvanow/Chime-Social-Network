@@ -49,9 +49,12 @@ vi.mock("../../shared/post/post-interactions/PostInteractions", () => ({
                 <button data-testid="like-button" onClick={actionsContext.onLikeClickHandler}>Like</button>
                 <button data-testid="unlike-button" onClick={actionsContext.onUnlikeClickHandler}>Unlike</button>
                 <button data-testid="edit-button" onClick={actionsContext.onEditPostClickHandler}>Edit</button>
-                <button data-testid="save-button" onClick={() => actionsContext.onSaveEditClickHandler(postContext.post._id)}>Save</button>
-                <button data-testid="cancel-button" onClick={actionsContext.onCancelEditClickHandler}>Cancel</button>
                 <button data-testid="delete-button" onClick={() => actionsContext.onDeleteClickHandler(postContext.post._id)}>Delete</button>
+
+                {actionsContext.isEditClicked && <>
+                    <button data-testid="save-button" onClick={() => actionsContext.onSaveEditClickHandler(postContext.post._id)}>Save</button>
+                    <button data-testid="cancel-button" onClick={actionsContext.onCancelEditClickHandler}>Cancel</button>
+                </>}
             </div>}
         </ActionsContext.Consumer>}
     </PostContext.Consumer>
@@ -279,7 +282,7 @@ describe("PostDetailsPage component", () => {
         await waitFor(() => {
             expect(likePostMock).toHaveBeenCalledWith(isUser, post._id);
         });
-        
+
         expect(setAlert).toHaveBeenCalledWith(ERR_MSG.LIKE);
     });
 
@@ -311,5 +314,20 @@ describe("PostDetailsPage component", () => {
         });
 
         expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UNLIKE);
+    });
+
+    it("triggers onEditPostClickHandler and sets isEditClicked to true", async () => {
+        setup();
+
+        expect(await screen.findByTestId("post-text")).toBeInTheDocument();
+        expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
+
+        fireEvent.click(screen.getByTestId("edit-button"));
+
+        expect(await screen.findByTestId("save-button")).toBeInTheDocument();
+        expect(await screen.findByTestId("cancel-button")).toBeInTheDocument();
+
+        expect(screen.queryByTestId("post-text")).not.toBeInTheDocument();
+        expect(screen.getByTestId("post-text-edit")).toBeInTheDocument();
     });
 });
