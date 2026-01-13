@@ -391,4 +391,27 @@ describe("PostDetailsPage component", () => {
 
         expect(screen.getByTestId("post-text-edit")).toBeInTheDocument();
     });
+
+    it("triggers setAlert on rejected editPost call", async () => {
+        setup({
+            getPostWithCommentsSuccess: true,
+            deletePostSuccess: true,
+            editPostSuccess: false,
+            editPostEmptyReturnValue: false,
+            likePostSuccess: true,
+            unlikePostSuccess: true,
+        });
+
+        fireEvent.click(await screen.findByTestId("edit-button"));
+        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: UPDATED_POST_CONTENT } });
+        expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
+
+        fireEvent.click(screen.getByTestId("save-button"));
+
+        await waitFor(() => {
+            expect(editPostMock).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
+        });
+
+        expect(setAlert).toHaveBeenCalledWith(ERR_MSG.EDIT);
+    });
 });
