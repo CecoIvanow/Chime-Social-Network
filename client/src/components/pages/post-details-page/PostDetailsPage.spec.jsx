@@ -352,5 +352,20 @@ describe("PostDetailsPage component", () => {
         expect(screen.getByTestId("post-text")).toHaveTextContent(post.text);
         expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
     });
-    
+
+    it("calls editPost and sets isEditClicked false on successfull call", async () => {
+        setup();
+
+        fireEvent.click(await screen.findByTestId("edit-button"));
+        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: UPDATED_POST_CONTENT} });
+        expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
+
+        fireEvent.click(screen.getByTestId("save-button"));
+
+        await waitFor(() => {
+            expect(editPostMock).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
+        });
+
+        expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
+    });
 });
