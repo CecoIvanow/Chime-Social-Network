@@ -157,13 +157,15 @@ function setup(options = {
         getPostWithCommentsMock.mockResolvedValue(post) :
         getPostWithCommentsMock.mockRejectedValue(new Error(ERR_MSG.GET_POST));
 
-    render(
+    const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
                 <PostDetailsPage />
             </UserContext.Provider>
         </AlertContext.Provider>
     );
+
+    return unmount;
 };
 
 describe("PostDetailsPage component", () => {
@@ -194,6 +196,14 @@ describe("PostDetailsPage component", () => {
             expect(screen.queryByTestId("post-text")).not.toBeInTheDocument();
             expect(screen.queryByTestId("post-interactions")).not.toBeInTheDocument();
         });
+    });
+
+    it("triggers abortAll on unmount", () => {
+        const unmount = setup();
+
+        unmount();
+
+        expect(abortAllMock).toHaveBeenCalled();
     });
 
     it("triggers setAlert on rejected getPostWithComments call", async () => {
