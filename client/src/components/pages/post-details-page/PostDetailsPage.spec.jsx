@@ -263,4 +263,23 @@ describe("PostDetailsPage component", () => {
             expect(setAlert).not.toHaveBeenCalled();
         });
     });
+
+    it("triggers setAlert on rejected likePost call", async () => {
+        setup({
+            getPostWithCommentsSuccess: true,
+            deletePostSuccess: true,
+            editPostSuccess: true,
+            editPostEmptyReturnValue: false,
+            likePostSuccess: false,
+            unlikePostSuccess: true,
+        });
+
+        fireEvent.click(await screen.findByTestId("like-button"));
+
+        await waitFor(() => {
+            expect(likePostMock).toHaveBeenCalledWith(isUser, post._id);
+        });
+        
+        expect(setAlert).toHaveBeenCalledWith(ERR_MSG.LIKE);
+    });
 });
