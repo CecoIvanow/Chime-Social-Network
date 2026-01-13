@@ -357,7 +357,7 @@ describe("PostDetailsPage component", () => {
         setup();
 
         fireEvent.click(await screen.findByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: UPDATED_POST_CONTENT} });
+        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: UPDATED_POST_CONTENT } });
         expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
 
         fireEvent.click(screen.getByTestId("save-button"));
@@ -367,5 +367,28 @@ describe("PostDetailsPage component", () => {
         });
 
         expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
+    });
+
+    it("calls editPost and does not set isEditClicked to false on empty return", async () => {
+        setup({
+            getPostWithCommentsSuccess: true,
+            deletePostSuccess: true,
+            editPostSuccess: true,
+            editPostEmptyReturnValue: true,
+            likePostSuccess: true,
+            unlikePostSuccess: true,
+        });
+
+        fireEvent.click(await screen.findByTestId("edit-button"));
+        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: UPDATED_POST_CONTENT } });
+        expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
+
+        fireEvent.click(screen.getByTestId("save-button"));
+
+        await waitFor(() => {
+            expect(editPostMock).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
+        });
+
+        expect(screen.getByTestId("post-text-edit")).toBeInTheDocument();
     });
 });
