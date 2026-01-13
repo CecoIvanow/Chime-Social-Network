@@ -96,11 +96,9 @@ const isUser = "user123";
 
 let ownerId = "ownerId123";
 
-let shouldEdit = false;
-
-const location = {
+let location = {
     state: {
-        shouldEdit,
+        shouldEdit: false,
     },
     pathname: `/posts/${POST_ID}`,
 };
@@ -423,5 +421,30 @@ describe("PostDetailsPage component", () => {
         });
 
         expect(setAlert).toHaveBeenCalledWith(ERR_MSG.EDIT);
+    });
+
+    it("triggers navigateTo on isEditClicked true and differing isUser and post owner id", async () => {
+
+        location = {
+            state: {
+                shouldEdit: true,
+            },
+            pathname: `/posts/${POST_ID}`,
+        };
+
+        setup();
+
+        await waitFor(() => {
+            expect(navigateToMock).toHaveBeenCalledWith("/404");
+        });
+    });
+
+    it("does not trigger navigateTo on isEditClicked false", async () => {
+
+        setup();
+
+        await waitFor(() => {
+            expect(navigateToMock).not.toHaveBeenCalled();
+        })
     });
 });
