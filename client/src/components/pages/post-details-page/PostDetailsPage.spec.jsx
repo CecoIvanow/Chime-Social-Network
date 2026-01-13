@@ -90,7 +90,7 @@ const ERR_MSG = {
 
 const POST_ID = "postId435";
 
-const NEW_POST_CONTENT = "Updated Content!";
+const UPDATED_POST_CONTENT = "Updated Content!";
 
 const isUser = "user123";
 
@@ -138,7 +138,7 @@ function setup(options = {
     } else if (options.editPostEmptyReturnValue) {
         editPostMock.mockResolvedValue(undefined);
     } else {
-        editPostMock.mockResolvedValue(NEW_POST_CONTENT);
+        editPostMock.mockResolvedValue(UPDATED_POST_CONTENT);
     };
 
     options.deletePostSuccess ?
@@ -332,27 +332,25 @@ describe("PostDetailsPage component", () => {
     });
 
     it("textChangeHandler updates post text content on trigger", async () => {
-        const updatedContent = "Changed text"
         setup();
-
 
         fireEvent.click(await screen.findByTestId("edit-button"));
         expect(screen.getByTestId("post-text-edit")).toHaveValue(post.text);
 
-        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: updatedContent } });
-        expect(screen.getByTestId("post-text-edit")).toHaveValue(updatedContent);
+        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: UPDATED_POST_CONTENT } });
+        expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
     });
 
     it("onCancelEditHandler sets isEditClicked to false and postEditContent to default post text", async () => {
         setup();
 
         fireEvent.click(await screen.findByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: "test" } });
+        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: UPDATED_POST_CONTENT } });
 
         fireEvent.click(screen.getByTestId("cancel-button"));
 
         expect(screen.getByTestId("post-text")).toHaveTextContent(post.text);
         expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
     });
-
+    
 });
