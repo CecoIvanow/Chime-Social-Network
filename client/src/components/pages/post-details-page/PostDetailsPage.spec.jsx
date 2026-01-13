@@ -342,4 +342,16 @@ describe("PostDetailsPage component", () => {
         fireEvent.change(screen.getByTestId("post-text-edit"), {target: {value: updatedContent}});
         expect(screen.getByTestId("post-text-edit")).toHaveValue(updatedContent);
     });
+
+    it("onCancelEditHandler sets isEditClicked to false and postEditContent to default post text", async () => {
+        setup();
+
+        fireEvent.click(await screen.findByTestId("edit-button"));
+        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: "test" } });
+
+        fireEvent.click(screen.getByTestId("cancel-button"));
+
+        expect(screen.getByTestId("post-text")).toHaveTextContent(post.text);
+        expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
+    });
 });
