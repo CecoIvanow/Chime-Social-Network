@@ -282,4 +282,15 @@ describe("PostDetailsPage component", () => {
         
         expect(setAlert).toHaveBeenCalledWith(ERR_MSG.LIKE);
     });
+
+    it("calls unlikePost with currenrUser and post id", async () => {
+        setup();
+
+        fireEvent.click(await screen.findByTestId("unlike-button"));
+
+        await waitFor(() => {
+            expect(unlikePostMock).toHaveBeenCalledWith(isUser, post._id);
+            expect(setAlert).not.toHaveBeenCalled();
+        });
+    });
 });
