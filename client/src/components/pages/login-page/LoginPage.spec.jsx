@@ -99,7 +99,7 @@ describe("LoginPage component", () => {
 
         const authFormsLabels = screen.getAllByTestId("auth-forms-label");
         const authFormsInputs = screen.getAllByTestId("auth-forms-input");
-        
+
         for (let i = 0; i < loginFields.length; i++) {
             expect(authFormsLabels[i]).toHaveAttribute("for", loginFields[i].inputName);
             expect(authFormsInputs[i]).toHaveAttribute("id", loginFields[i].inputName);
@@ -107,5 +107,11 @@ describe("LoginPage component", () => {
             expect(authFormsInputs[i]).toHaveAttribute("type", loginFields[i].inputType);
             expect(authFormsInputs[i]).toHaveAttribute("placeholder", loginFields[i].placeholderText);
         }
+    });
+
+    it("authButton is not disabled on initial render", () => {
+        setup();
+
+        expect(screen.getByTestId("auth-button")).not.toBeDisabled();
     });
 });
