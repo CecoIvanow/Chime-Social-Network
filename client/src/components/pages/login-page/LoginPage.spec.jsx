@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { AlertContext } from "../../../contexts/alert-context";
@@ -113,5 +113,13 @@ describe("LoginPage component", () => {
         setup();
 
         expect(screen.getByTestId("auth-button")).not.toBeDisabled();
+    });
+
+    it("authButton is disabled after form submit", async () => {
+        setup();
+
+        fireEvent.click(screen.getByTestId("auth-button"));
+
+        await waitFor(() => expect(screen.getByTestId("auth-button")).toBeDisabled());
     });
 });
