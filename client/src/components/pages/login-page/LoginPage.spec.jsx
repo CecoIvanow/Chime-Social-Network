@@ -144,4 +144,14 @@ describe("LoginPage component", () => {
             password: PASSWORD_VALUE,
         }));
     });
+
+    it("tiggers setAlert on rejected login call", async () => {
+        setup({
+            loginRejectedReturnValue: true
+        });
+
+        fireEvent.click(screen.getByTestId("auth-button"))
+
+        await waitFor(() => expect(setAlert).toHaveBeenCalledWith(LOGIN_ERR_MSG));
+    });
 });
