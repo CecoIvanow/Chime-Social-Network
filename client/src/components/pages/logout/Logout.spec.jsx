@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import Logout from "./Logout";
@@ -22,8 +22,8 @@ function setup(options = {
 }) {
 
     options.logoutRejectedCall ?
-    logoutMock.mockResolvedValue() :
-    logoutMock.mockRejectedValue(new Error(LOGOUT_ERR_MSG));
+    logoutMock.mockRejectedValue(new Error(LOGOUT_ERR_MSG)) :
+    logoutMock.mockResolvedValue();
 
     render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -37,5 +37,15 @@ describe("Logout component", () => {
         setup();
 
         expect(logoutMock).toHaveBeenCalled();
+    });
+
+    it("triggers setAlert on rejected call", async () => {
+        setup({
+            logoutRejectedCall: true
+        });
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledWith(LOGOUT_ERR_MSG);
+        })
     });
 });
