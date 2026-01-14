@@ -76,13 +76,15 @@ function setup(options = {
         loginMock.mockRejectedValue(new Error(LOGIN_ERR_MSG)) :
         loginMock.mockResolvedValue();
 
-    render(
+    const { unmount } = render(
         <MemoryRouter>
             <AlertContext.Provider value={{ setAlert }}>
                 <LoginPage />
             </AlertContext.Provider>
         </MemoryRouter>
-    )
+    );
+
+    return { unmount };
 }
 
 describe("LoginPage component", () => {
@@ -134,8 +136,8 @@ describe("LoginPage component", () => {
         const emailInput = inputs.find(input => input.getAttribute("name") === "email");
         const passwordInput = inputs.find(input => input.getAttribute("name") === "password");
 
-        fireEvent.change(emailInput, {target: {value: EMAIL_VALUE}});
-        fireEvent.change(passwordInput, {target: {value: PASSWORD_VALUE}});
+        fireEvent.change(emailInput, { target: { value: EMAIL_VALUE } });
+        fireEvent.change(passwordInput, { target: { value: PASSWORD_VALUE } });
 
         fireEvent.click(screen.getByTestId("auth-button"));
 
@@ -153,5 +155,15 @@ describe("LoginPage component", () => {
         fireEvent.click(screen.getByTestId("auth-button"))
 
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(LOGIN_ERR_MSG));
+    });
+
+    it("triggers abortAll on unmount", async () => {
+        const { unmount } = setup();
+
+        expect(abortAllMock).not.toHaveBeenCalled();
+        
+        unmount();
+
+        await waitFor(() => expect(abortAllMock).toHaveBeenCalled());
     });
 });
