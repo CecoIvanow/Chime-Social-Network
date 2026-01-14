@@ -122,4 +122,26 @@ describe("LoginPage component", () => {
 
         await waitFor(() => expect(screen.getByTestId("auth-button")).toBeDisabled());
     });
+
+    it("triggers login with form data on submit", async () => {
+        setup();
+
+        const PASSWORD_VALUE = "MySecretPassword!";
+        const EMAIL_VALUE = "example@email.com";
+
+        const inputs = screen.getAllByTestId("auth-forms-input");
+
+        const emailInput = inputs.find(input => input.getAttribute("name") === "email");
+        const passwordInput = inputs.find(input => input.getAttribute("name") === "password");
+
+        fireEvent.change(emailInput, {target: {value: EMAIL_VALUE}});
+        fireEvent.change(passwordInput, {target: {value: PASSWORD_VALUE}});
+
+        fireEvent.click(screen.getByTestId("auth-button"));
+
+        await waitFor(() => expect(loginMock).toHaveBeenCalledWith({
+            email: EMAIL_VALUE,
+            password: PASSWORD_VALUE,
+        }));
+    });
 });
