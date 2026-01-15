@@ -15,7 +15,7 @@ vi.mock("../../../../../../ui/buttons/button/Button", () => ({
 }));
 
 const handleAddFriendClickMock = vi.fn();
-const handleUnFriendClickMock = vi.fn();
+const handleUnfriendClickMock = vi.fn();
 
 function setup(options = {
     isAddedAsFriend: false
@@ -25,7 +25,7 @@ function setup(options = {
         <AddFriendButton
             isAddedAsFriend={options.isAddedAsFriend}
             handleAddFriendClick={handleAddFriendClickMock}
-            handleUnfriendClick={handleUnFriendClickMock}
+            handleUnfriendClick={handleUnfriendClickMock}
         />
     );
 };
@@ -34,7 +34,7 @@ describe("AddFriendButton component", () => {
     it.each([
         { button: "Add", isAdded: false },
         { button: "Unfriend", isAdded: true },
-    ])("renders $button on isAddedAsFriend $isAdded", ({ isAdded }) => {
+    ])("renders $button button on isAddedAsFriend $isAdded", ({ isAdded }) => {
         setup({
             isAddedAsFriend: isAdded
         });
@@ -44,5 +44,22 @@ describe("AddFriendButton component", () => {
         } else {
             expect(screen.getByTestId("button")).toHaveTextContent("Add");
         }
-    })
+    });
+
+    it.each([
+        { button: "Add", handler: "handleAddFriendClick", isAdded: false },
+        { button: "Unfriend", handler: "handleUnfriendClick", isAdded: true },
+    ])("on $button button triggers $handler on click", ({ isAdded }) => {
+        setup({
+            isAddedAsFriend: isAdded
+        });
+
+        fireEvent.click(screen.getByTestId("button"));
+
+        if(isAdded) {
+            expect(handleUnfriendClickMock).toHaveBeenCalled();
+        }else{
+            expect(handleAddFriendClickMock).toHaveBeenCalled();
+        };
+    });
 });
