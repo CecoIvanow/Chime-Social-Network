@@ -17,6 +17,11 @@ beforeEach(() => render(
 ));
 
 describe("HeroSection component", () => {
+    it("renders component with correct headings", () => {
+        expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(HERO_HEADING_TEXT);
+        expect(screen.getByRole("paragraph")).toHaveTextContent(HERO_SUBHEADING_TEXT);
+    });
+
     it("renders buttons with correct attributes", () => {
         expect(screen.getByText(REGISTER_TEXT)).toHaveAttribute("href", "/register");
         expect(screen.getByText(LOGIN_TEXT)).toHaveAttribute("href", "/login");
