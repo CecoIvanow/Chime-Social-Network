@@ -1,4 +1,4 @@
-import { fireEvent, prettyDOM, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, prettyDOM, render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { UserContext } from "../../../../../../contexts/user-context";
@@ -12,9 +12,9 @@ vi.mock("./user-item-details/UserItemDetails", () => ({
 vi.mock("./add-friend-button/AddFriendButton", () => ({
     default: ({ isAddedAsFriend, handleAddFriendClick, handleUnfriendClick }) => <div data-testid="add-friend-button-comp">
         {isAddedAsFriend ? (
-            <button data-testid="add-friend" onClick={handleAddFriendClick}></button>
-        ) : (
             <button data-testid="unfriend" onClick={handleUnfriendClick}></button>
+        ) : (
+            <button data-testid="add-friend" onClick={handleAddFriendClick}></button>
         )}
     </div>
 }));
@@ -27,8 +27,8 @@ const user = {
     age: "28",
 };
 
-const handleAddFriendMock = vi.fn();
-const handleRemoveFriend = vi.fn();
+const handleAddFriendMock = vi.fn().mockResolvedValue(true);
+const handleRemoveFriend = vi.fn().mockResolvedValue(true);
 
 function setup(options = {
     isAddedAsFriend: false,
@@ -71,6 +71,24 @@ describe("UserItem component", () => {
             expect(screen.getByTestId("add-friend-button-comp")).toBeInTheDocument();
         } else {
             expect(screen.queryByTestId("add-friend-button-comp")).not.toBeInTheDocument();
+        }
+    });
+
+    it.each([
+        { name: "passes props and renders add-friend button inside AddFriendButton on isAddedAsFriend true", isAddedAsFriend: true },
+        { name: "passes props and renders unfriend button inside AddFriendButton on isAddedAsFriend false", isAddedAsFriend: false },
+    ])("$name", ({ isAddedAsFriend }) => {
+        setup({
+            isAddedAsFriend,
+            isUserValue: isUser,
+        });
+
+        if(isAddedAsFriend) {
+            expect(screen.queryByTestId("add-friend")).not.toBeInTheDocument();
+            expect(screen.getByTestId("unfriend")).toBeInTheDocument();
+        } else {
+            expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
+            expect(screen.getByTestId("add-friend")).toBeInTheDocument();
         }
     });
 });
