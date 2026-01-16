@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { UserContext } from "../../../../../../contexts/user-context";
@@ -10,9 +10,9 @@ vi.mock("./user-item-details/UserItemDetails", () => ({
 }));
 
 vi.mock("./add-friend-button/AddFriendButton", () => ({
-    default: ({ isAddedAsFriend, handleAddFriendClick, handleRemoveFriend }) => <div data-testid="add-friend-button-comp">
+    default: ({ isAddedAsFriend, handleAddFriendClick, handleUnfriendClick }) => <div data-testid="add-friend-button-comp">
         {isAddedAsFriend ? (
-            <button data-testid="unfriend" onClick={handleRemoveFriend}></button>
+            <button data-testid="unfriend" onClick={handleUnfriendClick}></button>
         ) : (
             <button data-testid="add-friend" onClick={handleAddFriendClick}></button>
         )}
@@ -27,8 +27,8 @@ const user = {
     age: "28",
 };
 
-    const handleAddFriendMock = vi.fn();
-    const handleRemoveFriendMock = vi.fn();
+const handleAddFriendMock = vi.fn();
+const handleRemoveFriendMock = vi.fn();
 
 function setup(options = {
     isAddedAsFriend: false,
@@ -88,7 +88,7 @@ describe("UserItem component", () => {
             isUserValue: isUser,
         });
 
-        if(isAddedAsFriend) {
+        if (isAddedAsFriend) {
             expect(screen.queryByTestId("add-friend")).not.toBeInTheDocument();
             expect(screen.getByTestId("unfriend")).toBeInTheDocument();
         } else {
@@ -101,7 +101,6 @@ describe("UserItem component", () => {
         setup();
 
         fireEvent.click(screen.getByTestId("add-friend"));
-        screen.debug()
 
         await waitFor(() => {
             expect(handleAddFriendMock).toHaveBeenCalledWith(user);
@@ -109,5 +108,26 @@ describe("UserItem component", () => {
 
         expect(screen.queryByTestId("add-friend")).not.toBeInTheDocument();
         expect(screen.getByTestId("unfriend")).toBeInTheDocument();
+    });
+
+    it("triggers handleRemoveFriend and changes setIsAddedAsFriend to false on successfull call", async () => {
+        setup({
+            isAddedAsFriend: true,
+            isUserValue: isUser
+        });
+
+        const userWithFriends = {
+            ...user,
+            friends: [...user.friends, isUser]
+        }
+
+        fireEvent.click(screen.getByTestId("unfriend"));
+
+        await waitFor(() => {
+            expect(handleRemoveFriendMock).toHaveBeenCalledWith(userWithFriends);
+        });
+
+        expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
+        expect(screen.getByTestId("add-friend")).toBeInTheDocument();
     });
 });
