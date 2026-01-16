@@ -22,7 +22,7 @@ vi.mock("../../../../../hooks/useUserServices", () => ({
 }));
 
 const ERR_MSG = {
-    ADD_FRIEND: "Successfully rejcted addFriend call",
+    ADD_FRIEND: "Successfully rejected addFriend call",
     REMOVE_FRIEND: "Successfully rejected removeFriend call",
 };
 
@@ -49,7 +49,7 @@ function setup(options = {
 
     options.removeFriendCallSuccess ?
         removeFriendMock.mockResolvedValue(true) :
-        removeFriendMock.mockRejectedValue(new Error(ERR_MSG.ADD_FRIEND));
+        removeFriendMock.mockRejectedValue(new Error(ERR_MSG.REMOVE_FRIEND));
 
     render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -107,5 +107,18 @@ describe("UsersList component", () => {
                 expect(removeFriendMock).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
             });
         };
+    });
+
+    it("triggers setAlert on rejected removeFriend call", async () => {
+        setup({
+            addFriendCallSuccess: true,
+            removeFriendCallSuccess: false,
+        });
+
+        const removeFriendEls = screen.getAllByTestId("remove-friend");
+
+        fireEvent.click(removeFriendEls[0]);
+
+        await waitFor(() => expect(setAlert).toHaveBeenCalledWith(ERR_MSG.REMOVE_FRIEND));
     });
 });
