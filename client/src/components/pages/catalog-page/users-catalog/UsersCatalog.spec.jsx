@@ -19,7 +19,11 @@ vi.mock("../../../ui/search-field/SearchField", () => ({
 }));
 
 vi.mock("./users-list/UsersList", () => ({
-    default: ({ matchcingUsers }) => matchcingUsers.map(user => <div key={user._id} data-testid="user">{user.firstName} {user.lastName}</div>)
+    default: ({ matchingUsers }) => <div data-testid="users-list">
+        {matchingUsers.map(user => (
+            <div key={user._id} data-testid="user">{user.firstName} {user.lastName}</div>
+        ))}
+    </div>
 }));
 
 vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
@@ -51,4 +55,21 @@ describe("UsersCatalog component", () => {
         expect(screen.getByTestId("search-field-label")).toHaveTextContent("name");
         expect(screen.getByTestId("search-field-input")).toBeInTheDocument();
     });
+
+    it.each([
+        { name: "renders LoadingSpinner on isLoading true", isLoading: true },
+        { name: "renders UsersList on isLoading false", isLoading: false },
+    ])("$name", ({ isLoading }) => {
+        setup({
+            isLoading,
+        });
+
+        if(isLoading) {
+            expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
+            expect(screen.queryByTestId("users-list")).not.toBeInTheDocument();
+        } else {
+            expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
+            expect(screen.getByTestId("users-list")).toBeInTheDocument();
+        }
+    })
 });
