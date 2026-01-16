@@ -119,7 +119,7 @@ describe("UserItem component", () => {
         expect(screen.getByTestId("unfriend")).toBeInTheDocument();
     });
 
-    it("triggers handleAddFriend and does not change setIsAddedAsFriend on rejected call", async () => {
+    it("triggers handleAddFriend and does not change setIsAddedAsFriend on empty call", async () => {
         setup({
             isAddedAsFriend: false,
             isUserValue: isUser,
@@ -135,8 +135,6 @@ describe("UserItem component", () => {
 
         expect(screen.getByTestId("add-friend")).toBeInTheDocument();
         expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
-
-        screen.debug()
     });
 
     it("triggers handleRemoveFriend and changes setIsAddedAsFriend to false on successfull call", async () => {
@@ -160,5 +158,28 @@ describe("UserItem component", () => {
 
         expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
         expect(screen.getByTestId("add-friend")).toBeInTheDocument();
+    });
+
+    it("triggers handleRemoveFriend and does not change setIsAddedAsFriend on empty call", async () => {
+        setup({
+            isAddedAsFriend: true,
+            isUserValue: isUser,
+            handleAddFriendReturn: true,
+            handleRemoveFriendReturn: false,
+        });
+
+        const userWithFriends = {
+            ...user,
+            friends: [...user.friends, isUser]
+        }
+
+        fireEvent.click(screen.getByTestId("unfriend"));
+
+        await waitFor(() => {
+            expect(handleRemoveFriendMock).toHaveBeenCalledWith(userWithFriends);
+        });
+
+        expect(screen.getByTestId("unfriend")).toBeInTheDocument();
+        expect(screen.queryByTestId("add-friend")).not.toBeInTheDocument();
     });
 });
