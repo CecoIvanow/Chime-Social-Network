@@ -94,4 +94,18 @@ describe("UsersList component", () => {
 
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(ERR_MSG.ADD_FRIEND));
     });
+
+    it("triggers removeFriend with passed isUser and passed user._id prop", async () => {
+        setup();
+
+        const removeFriendEls = screen.getAllByTestId("remove-friend");
+
+        for (let i = 0; i < removeFriendEls.length; i++) {
+            fireEvent.click(removeFriendEls[i]);
+
+            await waitFor(() => {
+                expect(removeFriendMock).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
+            });
+        };
+    });
 });
