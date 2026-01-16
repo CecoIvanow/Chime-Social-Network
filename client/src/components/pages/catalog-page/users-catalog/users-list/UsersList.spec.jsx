@@ -8,8 +8,8 @@ import UsersList from "./UsersList";
 
 vi.mock("./user-item/UserItem", () => ({
     default: ({ user, handleAddFriend, handleRemoveFriend }) => <>
-        <button data-testid="add-friend" onClick={(user) => handleAddFriend(user._id)}></button>
-        <button data-testid="remove-friend"></button>
+        <button data-testid="add-friend" onClick={() => handleAddFriend(user)}></button>
+        <button data-testid="remove-friend" onClick={() => handleRemoveFriend(user)}></button>
     </>
 }));
 
@@ -66,5 +66,19 @@ describe("UsersList component", () => {
 
         expect(screen.getAllByTestId("add-friend")).toHaveLength(matchingUsers.length);
         expect(screen.getAllByTestId("remove-friend")).toHaveLength(matchingUsers.length);
+    });
+
+    it("triggers addFriend with passed isUser and passed user._id prop", async () => {
+        setup();
+
+        const addFriendEls = screen.getAllByTestId("add-friend");
+
+        for (let i = 0; i < addFriendEls.length; i++) {
+            fireEvent.click(addFriendEls[i]);
+
+            await waitFor(() => {
+                expect(addFriendMock).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
+            });
+        };
     });
 });
