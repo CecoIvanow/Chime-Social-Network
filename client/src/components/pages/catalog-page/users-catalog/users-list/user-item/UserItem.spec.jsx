@@ -10,13 +10,13 @@ vi.mock("./user-item-details/UserItemDetails", () => ({
 }));
 
 vi.mock("./add-friend-button/AddFriendButton", () => ({
-    default: ({ isAddedAsFriend, handleAddFriendClick, handleUnfriendClick }) => <>
+    default: ({ isAddedAsFriend, handleAddFriendClick, handleUnfriendClick }) => <div data-testid="add-friend-button-comp">
         {isAddedAsFriend ? (
-            <button data-testid="add-friend-button" onClick={handleAddFriendClick}></button>
+            <button data-testid="add-friend" onClick={handleAddFriendClick}></button>
         ) : (
-            <button data-testid="unfriend-button" onClick={handleUnfriendClick}></button>
+            <button data-testid="unfriend" onClick={handleUnfriendClick}></button>
         )}
-    </>
+    </div>
 }));
 
 const isUser = "userId111";
@@ -31,7 +31,8 @@ const handleAddFriendMock = vi.fn();
 const handleRemoveFriend = vi.fn();
 
 function setup(options = {
-    isAddedAsFriend: false
+    isAddedAsFriend: false,
+    isUserValue: isUser,
 }) {
     const userWithFriends = {
         ...user,
@@ -39,7 +40,7 @@ function setup(options = {
     };
 
     render(
-        <UserContext.Provider value={{ isUser }}>
+        <UserContext.Provider value={{ isUser: options.isUserValue }}>
             <UserItem
                 handleAddFriend={handleAddFriendMock}
                 handleRemoveFriend={handleRemoveFriend}
@@ -54,5 +55,22 @@ describe("UserItem component", () => {
         setup();
 
         expect(screen.getByTestId("user-item-details")).toHaveTextContent(user.age);
+    });
+
+    it.each([
+        { name: "renders AddFriendButton when isUser exists and is different from user._id", isUserValue: isUser, shouldRender: true },
+        { name: "does not render AddFriendButton when isUser exists and matches user._id", isUserValue: user._id, shouldRender: false },
+        { name: "does not render AddFriendButton when isUser is empty", isUserValue: "", shouldRender: false },
+    ])("$name", ({ isUserValue, shouldRender }) => {
+        setup({
+            isAddedAsFriend: false,
+            isUserValue,
+        });
+
+        if (shouldRender) {
+            expect(screen.getByTestId("add-friend-button-comp")).toBeInTheDocument();
+        } else {
+            expect(screen.queryByTestId("add-friend-button-comp")).not.toBeInTheDocument();
+        }
     });
 });
