@@ -33,11 +33,21 @@ const handleRemoveFriendMock = vi.fn();
 function setup(options = {
     isAddedAsFriend: false,
     isUserValue: isUser,
+    handleAddFriendReturn: true,
+    handleRemoveFriendReturn: true,
 }) {
     const userWithFriends = {
         ...user,
         friends: options.isAddedAsFriend ? [...user.friends, isUser] : [...user.friends]
     };
+
+    options.handleAddFriendReturn ?
+        handleAddFriendMock.mockResolvedValue(true) :
+        handleAddFriendMock.mockResolvedValue("");
+
+    options.handleRemoveFriendReturn ?
+        handleRemoveFriendMock.mockResolvedValue(true) :
+        handleRemoveFriendMock.mockResolvedValue("");
 
     render(
         <UserContext.Provider value={{ isUser: options.isUserValue }}>
@@ -49,11 +59,6 @@ function setup(options = {
         </UserContext.Provider>
     );
 };
-
-beforeEach(() => {
-    handleAddFriendMock.mockResolvedValue(true);
-    handleRemoveFriendMock.mockResolvedValue(true);
-})
 
 describe("UserItem component", () => {
     it("renders UserItenDeails with passed props", () => {
@@ -70,6 +75,8 @@ describe("UserItem component", () => {
         setup({
             isAddedAsFriend: false,
             isUserValue,
+            handleAddFriendReturn: true,
+            handleRemoveFriendReturn: true,
         });
 
         if (shouldRender) {
@@ -86,6 +93,8 @@ describe("UserItem component", () => {
         setup({
             isAddedAsFriend,
             isUserValue: isUser,
+            handleAddFriendReturn: true,
+            handleRemoveFriendReturn: true,
         });
 
         if (isAddedAsFriend) {
@@ -110,10 +119,32 @@ describe("UserItem component", () => {
         expect(screen.getByTestId("unfriend")).toBeInTheDocument();
     });
 
+    it("triggers handleAddFriend and does not change setIsAddedAsFriend on rejected call", async () => {
+        setup({
+            isAddedAsFriend: false,
+            isUserValue: isUser,
+            handleAddFriendReturn: false,
+            handleRemoveFriendReturn: true,
+        });
+
+        fireEvent.click(screen.getByTestId("add-friend"));
+
+        await waitFor(() => {
+            expect(handleAddFriendMock).toHaveBeenCalledWith(user);
+        });
+
+        expect(screen.getByTestId("add-friend")).toBeInTheDocument();
+        expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
+
+        screen.debug()
+    });
+
     it("triggers handleRemoveFriend and changes setIsAddedAsFriend to false on successfull call", async () => {
         setup({
             isAddedAsFriend: true,
-            isUserValue: isUser
+            isUserValue: isUser,
+            handleAddFriendReturn: true,
+            handleRemoveFriendReturn: true,
         });
 
         const userWithFriends = {
