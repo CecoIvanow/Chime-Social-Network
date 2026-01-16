@@ -51,13 +51,15 @@ function setup(options = {
         removeFriendMock.mockResolvedValue(true) :
         removeFriendMock.mockRejectedValue(new Error(ERR_MSG.REMOVE_FRIEND));
 
-    render(
+    const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
                 <UsersList matchingUsers={matchingUsers} />
             </UserContext.Provider>
         </AlertContext.Provider>
     );
+
+    return { unmount };
 }
 
 describe("UsersList component", () => {
@@ -121,4 +123,12 @@ describe("UsersList component", () => {
 
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(ERR_MSG.REMOVE_FRIEND));
     });
+
+    it("triggers setAlert on component unmount", () => {
+        const { unmount } = setup();
+
+        unmount();
+
+        expect(abortAllMock).toHaveBeenCalled();
+    })
 });
