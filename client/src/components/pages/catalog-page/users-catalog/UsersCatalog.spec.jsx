@@ -64,12 +64,32 @@ describe("UsersCatalog component", () => {
             isLoading,
         });
 
-        if(isLoading) {
+        if (isLoading) {
             expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
             expect(screen.queryByTestId("users-list")).not.toBeInTheDocument();
         } else {
             expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
             expect(screen.getByTestId("users-list")).toBeInTheDocument();
         }
-    })
+    });
+
+    it.each([
+        { search: "John", resultLen: 1 },
+        { search: "Petrov", resultLen: 1 },
+        { search: "", resultLen: totalUsers.length },
+        { search: "e", resultLen: totalUsers.length },
+        { search: "William", resultLen: "0" },
+    ])("renders $resultLen user elements with SearchField value $search", async ({ search, resultLen }) => {
+        setup({
+            isLoading: false,
+        });
+
+        fireEvent.change(screen.getByTestId("search-field-input"), { target: { value: search } });
+
+        if (resultLen > 0) {
+            expect(await screen.findAllByTestId("user")).toHaveLength(resultLen);
+        } else {
+            expect(screen.queryAllByTestId("user")).toHaveLength(Number(resultLen));
+        };
+    });
 });
