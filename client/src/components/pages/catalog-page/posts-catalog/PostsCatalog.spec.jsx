@@ -20,12 +20,22 @@ vi.mock("../../../ui/search-field/SearchField", () => ({
     </>
 }));
 
-vi.mock("./users-list/PostsList", () => ({
-    default: ({ matchingUsers }) => <div data-testid="users-list">
-        {matchingUsers.map(user => (
-            <div key={user._id} data-testid="user">{user.firstName} {user.lastName}</div>
-        ))}
-    </div>
+vi.mock("../../../shared/post/posts-list/PostsList", () => ({
+    default: () =>
+        <TotalPostsContext.Consumer>
+            {ctx => (
+                <div data-testid="posts-list" onClick={ctx.setTotalPosts}>
+                    {ctx.totalPosts.map(post => (
+                        <div
+                            key={post._id}
+                            data-testid="post"
+                        >
+                            {post.content}
+                        </div>)
+                    )}
+                </div>
+            )}
+        </TotalPostsContext.Consumer>
 }));
 
 vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
@@ -33,8 +43,8 @@ vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
 }));
 
 const totalPosts = [
-    { firstName: "John", lastName: "Doe", _id: "userOne" },
-    { firstName: "Ivan", lastName: "Petrov", _id: "userTwo" },
+    { _id: "postOne", content: "First post!" },
+    { _id: "postTwo", content: "Second post!" },
 ];
 
 const setTotalPostsMock = vi.fn();
@@ -59,5 +69,22 @@ describe("PostsCatalog component", () => {
 
         expect(screen.getByTestId("search-field-label")).toHaveTextContent("content");
         expect(screen.getByTestId("search-field-input")).toBeInTheDocument();
+    });
+
+    it.each([
+        { name: "renders LoadingSpinner on isLoading true", isLoading: true },
+        { name: "renders PostsList on isLoading false", isLoading: false },
+    ])("$name", ({ isLoading }) => {
+        setup({
+            isLoading,
+        });
+
+        if (isLoading) {
+            expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
+            expect(screen.queryByTestId("posts-list")).not.toBeInTheDocument();
+        } else {
+            expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
+            expect(screen.getByTestId("posts-list")).toBeInTheDocument();
+        }
     });
 });
