@@ -30,7 +30,7 @@ vi.mock("../../../shared/post/posts-list/PostsList", () => ({
                             key={post._id}
                             data-testid="post"
                         >
-                            {post.content}
+                            {post.text}
                         </div>)
                     )}
                 </div>
@@ -43,8 +43,8 @@ vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
 }));
 
 const totalPosts = [
-    { _id: "postOne", content: "First post!" },
-    { _id: "postTwo", content: "Second post!" },
+    { _id: "postOne", text: "First post!" },
+    { _id: "postTwo", text: "Second post!" },
 ];
 
 const setTotalPostsMock = vi.fn();
@@ -86,5 +86,25 @@ describe("PostsCatalog component", () => {
             expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
             expect(screen.getByTestId("posts-list")).toBeInTheDocument();
         }
+    });
+
+    it.each([
+        { search: "First", resultLen: 1 },
+        { search: "Second", resultLen: 1 },
+        { search: "", resultLen: totalPosts.length },
+        { search: "post", resultLen: totalPosts.length },
+        { search: "Third post!", resultLen: "0" },
+    ])("renders $resultLen post elements with SearchField value $search", async ({ search, resultLen }) => {
+        setup({
+            isLoading: false,
+        });
+
+        fireEvent.change(screen.getByTestId("search-field-input"), { target: { value: search } });
+
+        if (resultLen > 0) {
+            expect(await screen.findAllByTestId("post")).toHaveLength(resultLen);
+        } else {
+            expect(screen.queryAllByTestId("post")).toHaveLength(Number(resultLen));
+        };
     });
 });
