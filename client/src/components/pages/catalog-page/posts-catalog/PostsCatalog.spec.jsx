@@ -107,4 +107,15 @@ describe("PostsCatalog component", () => {
             expect(screen.queryAllByTestId("post")).toHaveLength(Number(resultLen));
         };
     });
+
+    it("passes setTotalPosts to TotalPostsContext", () => {
+        setup({
+            isLoading: false
+        });
+        
+        fireEvent.click(screen.getByTestId("posts-list"));
+
+        expect(setTotalPostsMock).toHaveBeenCalled();
+    });
+
 });
