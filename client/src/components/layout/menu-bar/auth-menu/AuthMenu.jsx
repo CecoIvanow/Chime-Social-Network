@@ -1,7 +1,7 @@
-import { Link } from "react-router";
 import { UserContext } from "../../../../contexts/user-context";
 import { useContext } from "react";
 import UserAuthMenu from "./user-auth-menu/UserAuthMenu";
+import GuestAuthMenu from "./guest-auth-menu/GuestAuthMenu";
 
 export default function AuthMenu() {
     const { isUser } = useContext(UserContext);
@@ -13,10 +13,7 @@ export default function AuthMenu() {
             )}
 
             {!isUser && (
-                <div className="guest-auth-menu">
-                    <li><Link to="/login" title="Login">Login</Link></li>
-                    <li><Link to="/register" title="Register">Register</Link></li>
-                </div>
+                <GuestAuthMenu />
             )}
         </ul>
     );
