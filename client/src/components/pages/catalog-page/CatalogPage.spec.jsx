@@ -123,4 +123,22 @@ describe("CatalogPage component", () => {
             expect(screen.getByTestId("users-catalog")).toBeInTheDocument();
         };
     });
+
+    it.each([
+        { name: "does not render PostsCatalog on getAllPosts isLoading true", isLoading: true },
+        { name: "renders PostsCatalog on getAllPosts isLoading false", isLoading: false },
+    ])("$name", ({ isLoading }) => {
+        setup({
+            getAllPostsSuccess: true,
+            getAllUsersSuccess: true,
+            getAllPostsIsLoading: isLoading,
+            getAllUsersIsLoading: false,
+        });
+
+        if (isLoading) {
+            expect(screen.queryByTestId("posts-catalog")).not.toBeInTheDocument();
+        } else {
+            expect(screen.getByTestId("posts-catalog")).toBeInTheDocument();
+        };
+    });
 });
