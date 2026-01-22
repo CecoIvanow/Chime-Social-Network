@@ -20,7 +20,7 @@ vi.mock("../../../hooks/useUserServices", () => ({
 vi.mock("./posts-catalog/PostsCatalog", () => ({
     default: ({ setTotalPosts, totalPosts, isLoading }) => (
         !isLoading && (
-            <div data-testid="posts-catalog">
+            <div data-testid="posts-catalog" onClick={() => setTotalPosts([totalPosts[0]])}>
                 {totalPosts.map(post => <div key={post._id} data-testid="post">{post.content}</div>)}
             </div>
         )
@@ -37,10 +37,12 @@ vi.mock("./users-catalog/UsersCatalog", () => ({
     )
 }));
 
+const UPDATED_POSTS_AMOUNT = 1;
+
 const ERR_MSG = {
     GET_ALL_USERS: "Successfully rejected getAllUsers call",
     GET_ALL_POSTS: "Successfully rejected getAllPosts call",
-}
+};
 
 const totalPosts = [
     { _id: 1, content: "First post!" },
@@ -104,6 +106,16 @@ describe("CatalogPage component", () => {
 
         expect(posts).toHaveLength(totalPosts.length);
         expect(users).toHaveLength(totalUsers.length);
+    });
+
+    it("setTotalPosts updates posts amount on click", async () => {
+        setup();
+
+        const postsCatalog = await screen.findByTestId("posts-catalog");
+
+        fireEvent.click(postsCatalog);
+
+        expect(await screen.findAllByTestId("post")).toHaveLength(UPDATED_POSTS_AMOUNT);
     });
 
     it.each([
