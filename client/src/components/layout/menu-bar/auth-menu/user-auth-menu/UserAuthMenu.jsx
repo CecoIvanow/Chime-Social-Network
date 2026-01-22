@@ -1,11 +1,22 @@
-import { Link } from "react-router";
+import MenuLink from "../../menu-link/MenuLink";
 
 export default function UserAuthMenu() {
     
     return (
         <div className="user-auth-menu">
-            <li><Link to={`/settings`} title='Settings'><img src="\images\settings-icon.png" alt="Catalog" /></Link></li>
-            <li><Link to="/logout" title='Logout'><img src="\images\logout-icon.png" alt="Notifications" /></Link></li>
+            <MenuLink
+                linkImageAlt="Catalog"
+                linkImageUri="\images\settings-icon.png"
+                linkTitle="Settings"
+                linkUrl="/settings"
+            />
+
+            <MenuLink
+                linkImageAlt="Notifications"
+                linkImageUri="\images\logout-icon.png"
+                linkTitle="Logout"
+                linkUrl="/logout"
+            />
         </div>
     );
 }

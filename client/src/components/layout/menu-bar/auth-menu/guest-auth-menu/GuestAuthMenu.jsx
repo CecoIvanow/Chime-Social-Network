@@ -1,11 +1,20 @@
-import { Link } from "react-router";
+import MenuLink from "../../menu-link/MenuLink";
 
 export default function GuestAuthMenu() {
-    
+
     return (
         <div className="guest-auth-menu">
-            <li><Link to="/login" title="Login">Login</Link></li>
-            <li><Link to="/register" title="Register">Register</Link></li>
+            <MenuLink
+                linkText="Login"
+                linkTitle="Login"
+                linkUrl="/login"
+            />
+
+            <MenuLink
+                linkText="Register"
+                linkTitle="Register"
+                linkUrl="/register"
+            />
         </div>
     );
 }
