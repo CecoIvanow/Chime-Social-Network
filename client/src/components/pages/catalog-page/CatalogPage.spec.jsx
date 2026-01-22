@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, getSuggestedQuery, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { AlertContext } from "../../../contexts/alert-context";
@@ -140,5 +140,27 @@ describe("CatalogPage component", () => {
         } else {
             expect(screen.getByTestId("posts-catalog")).toBeInTheDocument();
         };
+    });
+
+    it.each([
+        { name: "triggers setAlert on rejected getAllPosts call", getAllPostsSuccess: false, getAllUsersSuccess: true },
+        { name: "triggers setAlert on rejected getAllUsers call", getAllPostsSuccess: true, getAllUsersSuccess: false },
+    ])("$name", async ({ getAllPostsSuccess, getAllUsersSuccess }) => {
+        setup({
+            getAllPostsIsLoading: false,
+            getAllPostsSuccess,
+            getAllUsersIsLoading: false,
+            getAllUsersSuccess,
+        });
+
+        await waitFor(() => {
+            if (!getAllPostsSuccess) {
+                expect(setAlert).toHaveBeenCalledWith(ERR_MSG.GET_ALL_POSTS);
+            };
+
+            if (!getAllUsersSuccess) {
+                expect(setAlert).toHaveBeenCalledWith(ERR_MSG.GET_ALL_USERS);
+            };
+        });
     });
 });
