@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import ErrorMessage from "./ErrorMessage";
+import { MemoryRouter } from "react-router";
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ onClickHandler, buttonName }) => (
@@ -19,9 +20,21 @@ vi.mock("./header-message/HeaderMessage", () => ({
 
 vi.mock("./paragraph-message/ParagraphMessage", () => ({
     default: () => <p data-testid="paragraph-message"></p>
-}))
+}));
 
-beforeEach(() => render(<ErrorMessage />));
+beforeEach(() => {
+    Object.defineProperty(window, "location", {
+        value: {
+            reload: vi.fn(),
+        }
+    })
+
+    render(
+        <MemoryRouter>
+            <ErrorMessage />
+        </MemoryRouter>
+    );
+});
 
 describe("ErrorMessage component", () => {
     it("renders compnen with inner children", () => {
@@ -32,5 +45,9 @@ describe("ErrorMessage component", () => {
         expect(screen.getByTestId("paragraph-message")).toBeInTheDocument();
     });
 
+    it("on button click calls window.location.reload", async () => {
+        fireEvent.click(screen.getByTestId("error-message-button"));
 
+        await waitFor(() => expect(window.location.reload).toHaveBeenCalled());
+    });
 });
