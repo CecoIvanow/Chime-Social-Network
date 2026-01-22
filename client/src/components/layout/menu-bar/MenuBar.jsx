@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Link } from "react-router";
 
 import { UserContext } from "../../../contexts/user-context";
+import Logo from "./logo/Logo";
 
 export default function MenuBar() {
     const { isUser } = useContext(UserContext);
@@ -9,7 +10,7 @@ export default function MenuBar() {
     return <>
         <nav>
             <div className="navbar">
-                <div className="logo"><Link to="/">Chime</Link></div>
+                <Logo />
                 <ul className="menu">
                     <li><Link to="/" title='Home'><img src="\images\home-icon.png" alt="Home" /></Link></li>
                     {isUser && (
