@@ -7,17 +7,13 @@ import CatalogPage from "./CatalogPage";
 
 vi.mock("../../../hooks/usePostServices", () => ({
     default: () => ({
-        getAllPosts: usePostMocks.getAllPosts,
-        isLoading: usePostMocks.isLoading,
-        abortAll: usePostMocks.abortAll,
+        ...usePostMocks
     })
 }));
 
 vi.mock("../../../hooks/useUserServices", () => ({
     default: () => ({
-        getAllUsers: useUserMocks.getAllUsers,
-        isLoading: useUserMocks.isLoading,
-        abortAll: useUserMocks.abortAll,
+        ...useUserMocks
     })
 }));
 
@@ -71,8 +67,10 @@ const useUserMocks = {
 const setAlert = vi.fn();
 
 function setup(options = {
-    getAllUsersSuccess: true,
     getAllPostsSuccess: true,
+    getAllUsersSuccess: true,
+    getAllPostsIsLoading: false,
+    getAllUsersIsLoading: false,
 }) {
     options.getAllPostsSuccess ?
         usePostMocks.getAllPosts.mockResolvedValue(totalPosts) :
@@ -82,12 +80,15 @@ function setup(options = {
         useUserMocks.getAllUsers.mockResolvedValue(totalUsers) :
         useUserMocks.getAllUsers.mockRejectedValue(new Error(ERR_MSG.GET_ALL_USERS));
 
+    usePostMocks.isLoading = options.getAllPostsIsLoading;
+    useUserMocks.isLoading = options.getAllUsersIsLoading;
+
     render(
         <AlertContext.Provider value={{ setAlert }}>
             <CatalogPage />
         </AlertContext.Provider>
     );
-}
+};
 
 describe("CatalogPage component", () => {
     it("renders component with passed props", async () => {
@@ -103,5 +104,23 @@ describe("CatalogPage component", () => {
 
         expect(posts).toHaveLength(totalPosts.length);
         expect(users).toHaveLength(totalUsers.length);
+    });
+
+    it.each([
+        { name: "does not render UsersCatalog on getAllUsers isLoading true", isLoading: true },
+        { name: "renders UsersCatalog on getAllUsers isLoading false", isLoading: false },
+    ])("$name", ({ isLoading }) => {
+        setup({
+            getAllPostsSuccess: true,
+            getAllUsersSuccess: true,
+            getAllPostsIsLoading: false,
+            getAllUsersIsLoading: isLoading,
+        });
+
+        if (isLoading) {
+            expect(screen.queryByTestId("users-catalog")).not.toBeInTheDocument();
+        } else {
+            expect(screen.getByTestId("users-catalog")).toBeInTheDocument();
+        };
     });
 });
