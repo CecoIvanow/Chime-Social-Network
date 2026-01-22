@@ -8,8 +8,8 @@ export default function UserItemDetails({
         <div className="user-info">
             <Link to={`/profile/${user._id}`}><div className="user-name">{user.firstName} {user.lastName}</div></Link>
             <div className="user-details">
-                <div>Member since: {user.memberSince}</div>
-                <div>Posts: {user.createdPosts.length}</div>
+                <p>Member since: {user.memberSince}</p>
+                <p>Posts: {user.createdPosts.length}</p>
             </div>
         </div>
     </>
