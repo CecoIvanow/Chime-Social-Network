@@ -21,4 +21,14 @@ describe("ErrorBoundary component", () => {
 
         expect(screen.getByTestId("error-message")).toBeInTheDocument();
     });
+
+    it("renders children when there is no error", () => {
+        render(
+            <ErrorBoundary>
+                <div data-testid="child-component">Child</div>
+            </ErrorBoundary>
+        );
+
+        expect(screen.getByTestId("child-component")).toBeInTheDocument();
+    });
 });
