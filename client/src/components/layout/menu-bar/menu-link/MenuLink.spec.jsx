@@ -41,4 +41,18 @@ describe("MenuLink component", () => {
 
         expect(screen.getByRole("link")).not.toHaveTextContent(LINK_TEXT);
     });
+
+    it("renders with text on passed linkText", () => {
+        render(
+            <MemoryRouter>
+                <MenuLink
+                    linkText={LINK_TEXT}
+                />
+            </MemoryRouter>
+        );
+
+        expect(screen.queryByRole("img")).not.toBeInTheDocument();
+
+        expect(screen.getByRole("link")).toHaveTextContent(LINK_TEXT);
+    });
 });
