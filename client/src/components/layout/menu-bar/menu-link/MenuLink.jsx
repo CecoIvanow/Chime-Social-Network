@@ -11,10 +11,10 @@ export default function MenuLink({
     return (
         <li>
             <Link to={linkUrl} title={linkTitle}>
-                {linkText ? (
-                    linkText
-                ) : (
+                {linkImageUri ? (
                     <img src={linkImageUri} alt={linkImageAlt} />
+                ) : (
+                    linkText
                 )}
             </Link>
         </li>
