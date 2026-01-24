@@ -145,4 +145,22 @@ describe("App component", () => {
             expect(screen.queryByTestId("profile-edit-page")).not.toBeInTheDocument();
         };
     });
+
+    it.each([
+        { name: "renders PostEditRedirect on valid isUser with route /post/:userId/edit", isUserIsValid: true, shouldRender: true },
+        { name: "does not render PostEditRedirect and redirects to /login on null isUser", isUserIsValid: false, shouldRender: false },
+    ])("$name", ({ isUserIsValid, shouldRender }) => {
+        setup({
+            initialEntries: `/post/${USER_ID}/edit`,
+            isUserIsValid,
+        });
+
+        if (shouldRender) {
+            expect(screen.getByTestId("post-edit-redirect")).toBeInTheDocument();
+            expect(screen.queryByTestId("login-page")).not.toBeInTheDocument();
+        } else {
+            expect(screen.getByTestId("login-page")).toBeInTheDocument();
+            expect(screen.queryByTestId("post-edit-redirect")).not.toBeInTheDocument();
+        };
+    });
 });
