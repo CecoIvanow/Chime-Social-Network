@@ -8,7 +8,8 @@ export default defineConfig({
         coverage: {
             all: true,
             provider: 'istanbul',
-            extension: ['.js', '.jsx']
+            extension: ['.js', '.jsx'],
+            exclude: ['src/main.jsx']
         },
         setupFiles: ['./src/tests/setup.js'],
         environment: 'jsdom',
