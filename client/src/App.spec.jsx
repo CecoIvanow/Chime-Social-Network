@@ -199,4 +199,22 @@ describe("App component", () => {
             expect(screen.queryByTestId("logout")).not.toBeInTheDocument();
         };
     });
+
+    it.each([
+        { name: "renders RegisterPage on null isUser with route /register", isUserIsValid: true, shouldRender: true },
+        { name: "does not render RegisterPage and redirects to '/' on valid isUser", isUserIsValid: false, shouldRender: false },
+    ])("$name", ({ isUserIsValid, shouldRender }) => {
+        setup({
+            initialEntries: `/register`,
+            isUserIsValid,
+        });
+
+        if (shouldRender) {
+            expect(screen.getByTestId("user-home-page")).toBeInTheDocument();
+            expect(screen.queryByTestId("register-page")).not.toBeInTheDocument();
+        } else {
+            expect(screen.getByTestId("register-page")).toBeInTheDocument();
+            expect(screen.queryByTestId("user-home-page")).not.toBeInTheDocument();
+        };
+    });
 });
