@@ -72,6 +72,7 @@ vi.mock("./components/layout/error-boundary/ErrorBoundary.jsx", () => ({
 }));
 
 const USER_ID = "userId";
+const POST_ID = "postId";
 
 const userPersistedStateMock = [
     USER_ID,
@@ -151,7 +152,7 @@ describe("App component", () => {
         { name: "does not render PostEditRedirect and redirects to /login on null isUser", isUserIsValid: false, shouldRender: false },
     ])("$name", ({ isUserIsValid, shouldRender }) => {
         setup({
-            initialEntries: `/post/${USER_ID}/edit`,
+            initialEntries: `/post/${POST_ID}/edit`,
             isUserIsValid,
         });
 
@@ -234,5 +235,14 @@ describe("App component", () => {
             expect(screen.getByTestId("login-page")).toBeInTheDocument();
             expect(screen.queryByTestId("user-home-page")).not.toBeInTheDocument();
         };
+    });
+
+    it("renders PostDetailsPage with route /post/:postId/details", () => {
+        setup({
+            initialEntries: `/post/${POST_ID}/details`,
+            isUserIsValid: true,
+        });
+
+        expect(screen.getByTestId("post-details-page")).toBeInTheDocument();
     });
 });
