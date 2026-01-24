@@ -71,8 +71,10 @@ vi.mock("./components/layout/error-boundary/ErrorBoundary.jsx", () => ({
     default: ({ children }) => <div data-testid="error-boundary">{children}</div>
 }));
 
+const USER_ID = "userId";
+
 const userPersistedStateMock = [
-    "userId",
+    USER_ID,
     vi.fn(),
 ];
 
@@ -81,7 +83,7 @@ function setup(options = {
     initialEntries: "/",
 }) {
 
-    userPersistedStateMock[0] = options.isUserIsValid ? "userId" : null;
+    userPersistedStateMock[0] = options.isUserIsValid ? USER_ID : null;
 
     render(
         <MemoryRouter initialEntries={[options.initialEntries]}>
@@ -123,6 +125,24 @@ describe("App component", () => {
         } else {
             expect(screen.getByTestId("landing-page")).toBeInTheDocument();
             expect(screen.queryByTestId("user-home-page")).not.toBeInTheDocument();
+        };
+    });
+
+    it.each([
+        { name: "renders ProfileEditPage on valid isUser with route /profile/:userId/edit", isUserIsValid: true, shouldRender: true },
+        { name: "does not render ProfileEditPage and redirects to /login on null isUser", isUserIsValid: false, shouldRender: false },
+    ])("$name", ({ isUserIsValid, shouldRender }) => {
+        setup({
+            initialEntries: `/profile/${USER_ID}/edit`,
+            isUserIsValid,
+        });
+
+        if (shouldRender) {
+            expect(screen.getByTestId("profile-edit-page")).toBeInTheDocument();
+            expect(screen.queryByTestId("login-page")).not.toBeInTheDocument();
+        } else {
+            expect(screen.getByTestId("login-page")).toBeInTheDocument();
+            expect(screen.queryByTestId("profile-edit-page")).not.toBeInTheDocument();
         };
     });
 });
