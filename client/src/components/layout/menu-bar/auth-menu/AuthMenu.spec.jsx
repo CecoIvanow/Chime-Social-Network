@@ -33,4 +33,13 @@ describe("AuthMenu component", () => {
         expect(screen.getByTestId("user-auth-menu")).toBeInTheDocument();
         expect(screen.queryByTestId("guest-auth-menu")).not.toBeInTheDocument();
     });
+
+    it("renders UserAuthMenu on logged user and not GuestAuthMenu", () => {
+        setup({
+            isLogged: false,
+        });
+
+        expect(screen.getByTestId("guest-auth-menu")).toBeInTheDocument();
+        expect(screen.queryByTestId("user-auth-menu")).not.toBeInTheDocument();
+    });
 });
