@@ -12,7 +12,13 @@ vi.mock("./hooks/usePersistedState.js", () => ({
 }));
 
 vi.mock("./components/layout/menu-bar/MenuBar.jsx", () => ({
-    default: () => <div data-testid="menu-bar"></div>
+    default: () => (
+        <AlertContext.Consumer>
+            {({ setAlert }) => (
+                <div onClick={() => setAlert(true)} data-testid="menu-bar"></div>
+            )}
+        </AlertContext.Consumer>
+    )
 }));
 
 vi.mock("./components/pages/landing-page/LandingPage.jsx", () => ({
@@ -272,4 +278,19 @@ describe("App component", () => {
 
         expect(screen.getByTestId("not-found-page")).toBeInTheDocument();
     });
+
+    it.each([
+        { name: "does not render AlertNotification on null alert state", shouldRender: false },
+        { name: "renders AlertNotification on valid alert state", shouldRender: true },
+    ])("$name", async ({ shouldRender }) => {
+        setup();
+
+        if (shouldRender) {
+            fireEvent.click(screen.getByTestId("menu-bar"));
+
+            expect(await screen.findByTestId("alert-notification")).toBeInTheDocument();
+        } else {
+            expect(screen.queryByTestId("alert-notification")).not.toBeInTheDocument();
+        }
+    })
 });
