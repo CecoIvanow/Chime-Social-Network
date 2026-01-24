@@ -5,14 +5,14 @@ export default function UserAuthMenu() {
     return (
         <div className="user-auth-menu">
             <MenuLink
-                linkImageAlt="Catalog"
+                linkImageAlt="Settings"
                 linkImageUri="\images\settings-icon.png"
                 linkTitle="Settings"
                 linkUrl="/settings"
             />
 
             <MenuLink
-                linkImageAlt="Notifications"
+                linkImageAlt="Logout"
                 linkImageUri="\images\logout-icon.png"
                 linkTitle="Logout"
                 linkUrl="/logout"
