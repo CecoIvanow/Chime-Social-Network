@@ -78,19 +78,14 @@ const userPersistedStateMock = [
 
 function setup(options = {
     isUserIsValid: true,
-    shouldThrowError: false,
     initialEntries: "/",
 }) {
-
-    function ThrowError() {
-        throw new Error("Successfully throw error on render!");
-    }
 
     userPersistedStateMock[0] = options.isUserIsValid ? "userId" : null;
 
     render(
         <MemoryRouter initialEntries={[options.initialEntries]}>
-            {options.shouldThrowError ? <ThrowError /> : <App />}
+            <App />
         </MemoryRouter>
     );
 };
@@ -103,7 +98,6 @@ describe("App component", () => {
     ])("$name", ({ isUserIsValid, initialEntries, shouldRender }) => {
         setup({
             isUserIsValid,
-            shouldThrowError: false,
             initialEntries,
         });
 
@@ -111,6 +105,24 @@ describe("App component", () => {
             expect(screen.getByTestId("menu-bar")).toBeInTheDocument();
         } else {
             expect(screen.queryByTestId("menu-bar")).not.toBeInTheDocument();
+        };
+    });
+
+    it.each([
+        { name: "renders UserHomePage and not LandingPage on valid isUser and route '/'", isUserIsValid: true },
+        { name: "renders LandingPage and not UserHomePage on null isUser and route '/'", isUserIsValid: false },
+    ])("$name", ({ isUserIsValid }) => {
+        setup({
+            initialEntries: "/",
+            isUserIsValid,
+        });
+
+        if (isUserIsValid) {
+            expect(screen.getByTestId("user-home-page")).toBeInTheDocument();
+            expect(screen.queryByTestId("landing-page")).not.toBeInTheDocument();
+        } else {
+            expect(screen.getByTestId("landing-page")).toBeInTheDocument();
+            expect(screen.queryByTestId("user-home-page")).not.toBeInTheDocument();
         };
     });
 });
