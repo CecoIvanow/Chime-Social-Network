@@ -10,11 +10,9 @@ export default function AuthMenu() {
 
     return (
         <ul className='auth-menu'>
-            {isUser && (
+            {isUser ? (
                 <UserAuthMenu />
-            )}
-
-            {!isUser && (
+            ) : (
                 <GuestAuthMenu />
             )}
         </ul>
