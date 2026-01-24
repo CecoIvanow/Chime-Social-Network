@@ -293,6 +293,8 @@ describe("App component", () => {
         setup();
 
         if (shouldRender) {
+            expect(screen.queryByTestId("alert-notification")).not.toBeInTheDocument();
+            
             fireEvent.click(screen.getByTestId("menu-bar"));
 
             expect(await screen.findByTestId("alert-notification")).toBeInTheDocument();
