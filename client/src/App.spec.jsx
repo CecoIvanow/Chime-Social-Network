@@ -170,7 +170,7 @@ describe("App component", () => {
         { name: "does not render SettingsPage and redirects to /login on null isUser", isUserIsValid: false, shouldRender: false },
     ])("$name", ({ isUserIsValid, shouldRender }) => {
         setup({
-            initialEntries: `/settings`,
+            initialEntries: "/settings",
             isUserIsValid,
         });
 
@@ -188,7 +188,7 @@ describe("App component", () => {
         { name: "does not render Logout and redirects to '/' on null isUser", isUserIsValid: false, shouldRender: false },
     ])("$name", ({ isUserIsValid, shouldRender }) => {
         setup({
-            initialEntries: `/logout`,
+            initialEntries: "/logout",
             isUserIsValid,
         });
 
@@ -206,7 +206,7 @@ describe("App component", () => {
         { name: "does not render RegisterPage and redirects to '/' on valid isUser", isUserIsValid: false, shouldRender: false },
     ])("$name", ({ isUserIsValid, shouldRender }) => {
         setup({
-            initialEntries: `/register`,
+            initialEntries: "/register",
             isUserIsValid,
         });
 
@@ -224,7 +224,7 @@ describe("App component", () => {
         { name: "does not render LoginPage and redirects to '/' on valid isUser", isUserIsValid: false, shouldRender: false },
     ])("$name", ({ isUserIsValid, shouldRender }) => {
         setup({
-            initialEntries: `/login`,
+            initialEntries: "/login",
             isUserIsValid,
         });
 
@@ -253,5 +253,14 @@ describe("App component", () => {
         });
 
         expect(screen.getByTestId("profile-page")).toBeInTheDocument();
+    });
+
+    it("renders CatalogPage with route /catalog", () => {
+        setup({
+            initialEntries: "/catalog",
+            isUserIsValid: true,
+        });
+
+        expect(screen.getByTestId("catalog-page")).toBeInTheDocument();
     });
 });
