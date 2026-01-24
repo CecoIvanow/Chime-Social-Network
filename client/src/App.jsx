@@ -11,6 +11,8 @@ import {
 import { AlertContext } from './contexts/alert-context.js';
 import { UserContext } from './contexts/user-context.js';
 
+import usePersistedState from './hooks/usePersistedState.js';
+
 import MenuBar from './components/layout/menu-bar/MenuBar.jsx';
 import LandingPage from './components/pages/landing-page/LandingPage.jsx';
 import UserHomePage from './components/pages/user-home-page/UserHomePage.jsx';
@@ -23,7 +25,6 @@ import ProfilePage from './components/pages/profile-page/ProfilePage.jsx';
 import Logout from './components/pages/logout/Logout.jsx';
 import PostDetailsPage from './components/pages/post-details-page/PostDetailsPage.jsx';
 import ProfileEditPage from './components/pages/profile-edit-page/ProfileEditPage.jsx';
-import usePersistedState from './hooks/usePersistedState.js';
 import PostEditRedirect from './components/pages/post-edit-redirect/PostEditRedirect.jsx';
 import AlertNotification from './components/ui/alert-notification/AlertNotification.jsx';
 import ErrorBoundary from './components/layout/error-boundary/ErrorBoundary.jsx';
