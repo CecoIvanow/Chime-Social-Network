@@ -163,4 +163,22 @@ describe("App component", () => {
             expect(screen.queryByTestId("post-edit-redirect")).not.toBeInTheDocument();
         };
     });
+
+    it.each([
+        { name: "renders SettingsPage on valid isUser with route /settings", isUserIsValid: true, shouldRender: true },
+        { name: "does not render SettingsPage and redirects to /login on null isUser", isUserIsValid: false, shouldRender: false },
+    ])("$name", ({ isUserIsValid, shouldRender }) => {
+        setup({
+            initialEntries: `/settings`,
+            isUserIsValid,
+        });
+
+        if (shouldRender) {
+            expect(screen.getByTestId("settings-page")).toBeInTheDocument();
+            expect(screen.queryByTestId("login-page")).not.toBeInTheDocument();
+        } else {
+            expect(screen.getByTestId("login-page")).toBeInTheDocument();
+            expect(screen.queryByTestId("settings-page")).not.toBeInTheDocument();
+        };
+    });
 });
