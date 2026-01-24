@@ -1,5 +1,5 @@
 export default function ErrorIcon() {
     return <>
-        <div className="error-icon"></div>
+        <div data-testid="error-icon" className="error-icon"></div>
     </>
 }
