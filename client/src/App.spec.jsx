@@ -263,4 +263,13 @@ describe("App component", () => {
 
         expect(screen.getByTestId("catalog-page")).toBeInTheDocument();
     });
+
+    it("renders NotFoundPage with unknown route", () => {
+        setup({
+            initialEntries: "/tires",
+            isUserIsValid: true,
+        });
+
+        expect(screen.getByTestId("not-found-page")).toBeInTheDocument();
+    });
 });
