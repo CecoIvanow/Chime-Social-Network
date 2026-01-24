@@ -100,6 +100,13 @@ function setup(options = {
 };
 
 describe("App component", () => {
+    it("renders ErrorBoundary and its children", () => {
+        setup();
+
+        expect(screen.getByTestId("error-boundary")).toBeInTheDocument();
+        expect(screen.getByTestId("menu-bar")).toBeInTheDocument();
+    })
+
     it.each([
         { name: "renders MenuBar on valid isUser", isUserIsValid: true, initialEntries: "/login", shouldRender: true },
         { name: "renders MenuBar on empty isUser and location.pathname not equal to '/'", isUserIsValid: false, initialEntries: "/login", shouldRender: true },
@@ -292,5 +299,5 @@ describe("App component", () => {
         } else {
             expect(screen.queryByTestId("alert-notification")).not.toBeInTheDocument();
         }
-    })
+    });
 });
