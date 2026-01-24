@@ -181,4 +181,22 @@ describe("App component", () => {
             expect(screen.queryByTestId("settings-page")).not.toBeInTheDocument();
         };
     });
+
+    it.each([
+        { name: "renders Logout on valid isUser with route /logout", isUserIsValid: true, shouldRender: true },
+        { name: "does not render Logout and redirects to '/' on null isUser", isUserIsValid: false, shouldRender: false },
+    ])("$name", ({ isUserIsValid, shouldRender }) => {
+        setup({
+            initialEntries: `/logout`,
+            isUserIsValid,
+        });
+
+        if (shouldRender) {
+            expect(screen.getByTestId("logout")).toBeInTheDocument();
+            expect(screen.queryByTestId("landing-page")).not.toBeInTheDocument();
+        } else {
+            expect(screen.getByTestId("landing-page")).toBeInTheDocument();
+            expect(screen.queryByTestId("logout")).not.toBeInTheDocument();
+        };
+    });
 });
