@@ -245,4 +245,13 @@ describe("App component", () => {
 
         expect(screen.getByTestId("post-details-page")).toBeInTheDocument();
     });
+
+    it("renders ProfilePage with route /profile/:userId", () => {
+        setup({
+            initialEntries: `/profile/${USER_ID}`,
+            isUserIsValid: true,
+        });
+
+        expect(screen.getByTestId("profile-page")).toBeInTheDocument();
+    });
 });
