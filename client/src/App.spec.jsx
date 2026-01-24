@@ -1,0 +1,116 @@
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach, should } from "vitest";
+
+import { AlertContext } from "./contexts/alert-context";
+import { UserContext } from "./contexts/user-context";
+
+import App from "./App";
+import { MemoryRouter } from "react-router";
+
+vi.mock("./hooks/usePersistedState.js", () => ({
+    default: () => userPersistedStateMock
+}));
+
+vi.mock("./components/layout/menu-bar/MenuBar.jsx", () => ({
+    default: () => <div data-testid="menu-bar"></div>
+}));
+
+vi.mock("./components/pages/landing-page/LandingPage.jsx", () => ({
+    default: () => <div data-testid="landing-page"></div>
+}));
+
+vi.mock("./components/pages/user-home-page/UserHomePage.jsx", () => ({
+    default: () => <div data-testid="user-home-page"></div>
+}));
+
+vi.mock("./components/pages/login-page/LoginPage.jsx", () => ({
+    default: () => <div data-testid="login-page"></div>
+}));
+
+vi.mock("./components/pages/register-page/RegisterPage.jsx", () => ({
+    default: () => <div data-testid="register-page"></div>
+}));
+
+vi.mock("./components/pages/not-found-page/NotFoundPage.jsx", () => ({
+    default: () => <div data-testid="not-found-page"></div>
+}));
+
+vi.mock("./components/pages/catalog-page/CatalogPage.jsx", () => ({
+    default: () => <div data-testid="catalog-page"></div>
+}));
+
+vi.mock("./components/pages/settings-page/SettingsPage.jsx", () => ({
+    default: () => <div data-testid="settings-page"></div>
+}));
+
+vi.mock("./components/pages/profile-page/ProfilePage.jsx", () => ({
+    default: () => <div data-testid="profile-page"></div>
+}));
+
+vi.mock("./components/pages/logout/Logout.jsx", () => ({
+    default: () => <div data-testid="logout"></div>
+}));
+
+vi.mock("./components/pages/post-details-page/PostDetailsPage.jsx", () => ({
+    default: () => <div data-testid="post-details-page"></div>
+}));
+
+vi.mock("./components/pages/profile-edit-page/ProfileEditPage.jsx", () => ({
+    default: () => <div data-testid="profile-edit-page"></div>
+}));
+
+vi.mock("./components/pages/post-edit-redirect/PostEditRedirect.jsx", () => ({
+    default: () => <div data-testid="post-edit-redirect"></div>
+}));
+
+vi.mock("./components/ui/alert-notification/AlertNotification.jsx", () => ({
+    default: () => <div data-testid="alert-notification"></div>
+}));
+
+vi.mock("./components/layout/error-boundary/ErrorBoundary.jsx", () => ({
+    default: ({ children }) => <div data-testid="error-boundary">{children}</div>
+}));
+
+const userPersistedStateMock = [
+    "userId",
+    vi.fn(),
+];
+
+function setup(options = {
+    isUserIsValid: true,
+    shouldThrowError: false,
+    initialEntries: "/",
+}) {
+
+    function ThrowError() {
+        throw new Error("Successfully throw error on render!");
+    }
+
+    userPersistedStateMock[0] = options.isUserIsValid ? "userId" : null;
+
+    render(
+        <MemoryRouter initialEntries={[options.initialEntries]}>
+            {options.shouldThrowError ? <ThrowError /> : <App />}
+        </MemoryRouter>
+    );
+};
+
+describe("App component", () => {
+    it.each([
+        { name: "renders MenuBar on valid isUser", isUserIsValid: true, initialEntries: "/login", shouldRender: true },
+        { name: "renders MenuBar on empty isUser and location.pathname not equal to '/'", isUserIsValid: false, initialEntries: "/login", shouldRender: true },
+        { name: "does not render MenuBar on empty isUser and location.pathname equal to '/'", isUserIsValid: false, initialEntries: "/", shouldRender: false },
+    ])("$name", ({ isUserIsValid, initialEntries, shouldRender }) => {
+        setup({
+            isUserIsValid,
+            shouldThrowError: false,
+            initialEntries,
+        });
+
+        if (shouldRender) {
+            expect(screen.getByTestId("menu-bar")).toBeInTheDocument();
+        } else {
+            expect(screen.queryByTestId("menu-bar")).not.toBeInTheDocument();
+        };
+    });
+});
