@@ -1,6 +1,6 @@
 import { MemoryRouter } from "react-router";
-import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
 
 import LinkButton from "./LinkButton";
 
@@ -26,6 +26,14 @@ describe('LinkButton component', () => {
         setup();
 
         expect(screen.getByRole('button')).toHaveTextContent(linkButtonProps.label);
+    });
+
+    it("renders button with no text label on missing prop", () => {
+        setup({
+            includeButtonName: false
+        });
+
+        expect(screen.getByRole('button')).toHaveTextContent('');
     });
 
     it('renders link with correct href attribute value', () => {
