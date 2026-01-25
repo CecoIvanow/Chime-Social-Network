@@ -9,24 +9,27 @@ const linkButtonProps = {
     urlLink: "/test"
 }
 
-describe('LinkButton component', () => {
+function setup(options = {
+    includeButtonName: true,
+}) {
+    const label = options.includeButtonName ? linkButtonProps.label : null;
 
+    render(
+        <MemoryRouter>
+            <LinkButton urlLink={linkButtonProps.urlLink} buttonName={label} />
+        </MemoryRouter>
+    );
+};
+
+describe('LinkButton component', () => {
     it('Should render buttonName text', () => {
-        render(
-            <MemoryRouter>
-                <LinkButton buttonName={linkButtonProps.label} />
-            </MemoryRouter>
-        );
+        setup();
 
         expect(screen.getByRole('button')).toHaveTextContent(linkButtonProps.label);
     });
 
     it('Should have passed urlLink', () => {
-        render(
-            <MemoryRouter>
-                <LinkButton urlLink={linkButtonProps.urlLink}/>
-            </MemoryRouter>
-        )
+        setup();
 
         expect(screen.getByRole('link')).toHaveAttribute('href', linkButtonProps.urlLink);
     })
