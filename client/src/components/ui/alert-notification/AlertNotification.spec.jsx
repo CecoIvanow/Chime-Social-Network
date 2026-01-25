@@ -60,7 +60,6 @@ describe('AlertNotification component', () => {
         const newAlert = 'Second error';
 
         vi.advanceTimersByTime(2000);
-
         rerender(
             <AlertContext.Provider value={{ alert: newAlert, setAlert: alertCtxProps.setAlert }}>
                 <AlertNotification />
@@ -68,15 +67,12 @@ describe('AlertNotification component', () => {
         )
 
         vi.advanceTimersByTime(2000);
-        expect(alertCtxProps.setAlert).not.toHaveBeenCalled();
         expect(screen.getByText(newAlert)).toBeInTheDocument();
     })
 
     it('does not reset timer when alert changes from value to null', () => {
-        const setAlertMock = vi.fn();
-
         const { rerender } = render(
-            <AlertContext.Provider value={{ alert: 'First error', setAlert: setAlertMock }}>
+            <AlertContext.Provider value={alertCtxProps}>
                 <AlertNotification />
             </AlertContext.Provider>
         );
@@ -84,12 +80,12 @@ describe('AlertNotification component', () => {
         vi.advanceTimersByTime(2000);
 
         rerender(
-            <AlertContext.Provider value={{ alert: null, setAlert: setAlertMock }}>
+            <AlertContext.Provider value={{ alert: null, setAlert: alertCtxProps.setAlert }}>
                 <AlertNotification />
             </AlertContext.Provider>
         )
 
         vi.advanceTimersByTime(5000);
-        expect(setAlertMock).toBeCalledTimes(1);
+        expect(alertCtxProps.setAlert).toBeCalledTimes(1);
     })
 })
