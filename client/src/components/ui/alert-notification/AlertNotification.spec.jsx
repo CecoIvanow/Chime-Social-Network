@@ -15,6 +15,8 @@ function setup(options = {
 }) {
     const alertMessage = options.includeAlertMessage ? alertCtxProps.alert : null;
 
+    vi.useFakeTimers();
+
     const { rerender } = render(
         <AlertContext.Provider value={{ alert: alertMessage, setAlert: alertCtxProps.setAlert }}>
             <AlertNotification />
@@ -41,21 +43,18 @@ describe('AlertNotification component', () => {
     });
 
     it('triggers setAlert with null and clears the alert after 5000ms', () => {
-        vi.useFakeTimers();
         setup();
 
         vi.advanceTimersByTime(4999);
-        expect(alertCtxProps.setAlert).toBeCalledTimes(0);
+        expect(alertCtxProps.setAlert).not.toHaveBeenCalled();
         expect(screen.getByText(alertCtxProps.alert)).toBeInTheDocument();
 
         vi.advanceTimersByTime(1);
-        expect(alertCtxProps.setAlert).toBeCalledTimes(1);
-        expect(alertCtxProps.setAlert).toBeCalledWith(null);
+        expect(alertCtxProps.setAlert).toHaveBeenCalledTimes(1);
+        expect(alertCtxProps.setAlert).toHaveBeenCalled(null);
     });
 
     it('updates alert with correct value when new alert is set', () => {
-        vi.useFakeTimers();
-
         const { rerender } = setup();
 
         vi.advanceTimersByTime(2000);
@@ -73,7 +72,6 @@ describe('AlertNotification component', () => {
 
     it("does not reset timer when alert changes from value to null", () => {
         const setAlertMock = vi.fn();
-        vi.useFakeTimers();
 
         const { rerender } = render(
             <AlertContext.Provider value={{ alert: 'First error', setAlert: setAlertMock }}>
