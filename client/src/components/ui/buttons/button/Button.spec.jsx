@@ -1,5 +1,7 @@
-import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+
+import userEvent from '@testing-library/user-event'
 
 import Button from "./Button";
 
@@ -15,11 +17,13 @@ describe('LinkrButton component', () => {
         expect(screen.getByRole('button')).toHaveTextContent(buttonProps.content);
     });
 
-    it('Should react on clicks', () => {
+    it('Should react on clicks', async () => {
+        const user = userEvent.setup();
+
         const buttonElement = screen.getByRole('button');
 
-        fireEvent.click(buttonElement)
+        user.click(buttonElement);
 
-        expect(buttonProps.onClick).toBeCalled();
+        await waitFor(() => expect(buttonProps.onClick).toHaveBeenCalled());
     });
 })
