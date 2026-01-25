@@ -6,12 +6,12 @@ export default function Button({
     const label = buttonName ?? "";
     const style = btnStyle ?? "";
 
-    return <>
+    return (
         <button
             onClick={onClickHandler}
             className={style}
         >
             {label}
         </button>
-    </>
+    )
 }
