@@ -10,35 +10,32 @@ const alertCtxProps = {
     setAlert: vi.fn(),
 }
 
+function setup() {
+    const { rerender } = render(
+        <AlertContext.Provider value={alertCtxProps}>
+            <AlertNotification />
+        </AlertContext.Provider>
+    );
+
+    return { rerender };
+}
+
 describe('AlertNotification component', () => {
     it('Component should render with truthy value', () => {
-        render(
-            <AlertContext.Provider value={alertCtxProps}>
-                <AlertNotification />
-            </AlertContext.Provider>
-        );
+        setup();
 
         expect(screen.getByText(alertCtxProps.alert)).toBeInTheDocument();
     });
 
     it('setAlert should not be called with a falsy value', () => {
-        render(
-            <AlertContext.Provider value={alertCtxProps}>
-                <AlertNotification />
-            </AlertContext.Provider>
-        )
+        setup();
 
         expect(alertCtxProps.setAlert).not.toHaveBeenCalled();
     })
 
     it('Alert context should be set to false after 5000 ms', () => {
         vi.useFakeTimers();
-
-        render(
-            <AlertContext.Provider value={alertCtxProps}>
-                <AlertNotification />
-            </AlertContext.Provider>
-        );
+        setup();
 
         vi.advanceTimersByTime(4999);
         expect(alertCtxProps.setAlert).toBeCalledTimes(0);
@@ -52,11 +49,7 @@ describe('AlertNotification component', () => {
     it('Alert message should change with different passed props', () => {
         vi.useFakeTimers();
 
-        const { rerender } = render(
-            <AlertContext.Provider value={alertCtxProps}>
-                <AlertNotification />
-            </AlertContext.Provider>
-        );
+        const { rerender } = setup();
 
         vi.advanceTimersByTime(2000);
 
