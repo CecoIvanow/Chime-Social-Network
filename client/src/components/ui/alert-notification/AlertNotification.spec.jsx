@@ -5,10 +5,15 @@ import AlertNotification from "./AlertNotification";
 
 import { AlertContext } from "../../../contexts/alert-context";
 
+const alertCtxProps = {
+    alert: "Alert message!",
+    setAlert: vi.fn(),
+}
+
 describe('AlertNotification component', () => {
     it('Component should render with truthy value', () => {
         render(
-            <AlertContext.Provider value={{ alert: 'Something broke!', setAlert: vi.fn() }}>
+            <AlertContext.Provider value={alertCtxProps}>
                 <AlertNotification />
             </AlertContext.Provider>
         );
@@ -16,46 +21,42 @@ describe('AlertNotification component', () => {
         expect(screen.getByTestId('error-notification')).toBeInTheDocument();
         expect(screen.getByTestId('error-icon')).toBeInTheDocument();
         expect(screen.getByTestId('error-content')).toBeInTheDocument();
-        expect(screen.getByText('Something broke!')).toBeInTheDocument();
+        expect(screen.getByText(alertCtxProps.alert)).toBeInTheDocument();
     });
 
     it('setAlert should not be called with a falsy value', () => {
-        const setAlertMock = vi.fn();
-
         render(
-            <AlertContext.Provider value={{ alert: false, setAlert: setAlertMock }}>
+            <AlertContext.Provider value={alertCtxProps}>
                 <AlertNotification />
             </AlertContext.Provider>
         )
 
-        expect(setAlertMock).not.toHaveBeenCalled();
+        expect(alertCtxProps.setAlert).not.toHaveBeenCalled();
     })
 
     it('Alert context should be set to false after 5000 ms', () => {
-        const setAlertMock = vi.fn();
         vi.useFakeTimers();
 
         render(
-            <AlertContext.Provider value={{ alert: 'Something broke!', setAlert: setAlertMock }}>
+            <AlertContext.Provider value={alertCtxProps}>
                 <AlertNotification />
             </AlertContext.Provider>
         );
 
         vi.advanceTimersByTime(4999);
-        expect(setAlertMock).toBeCalledTimes(0);
-        expect(screen.getByText('Something broke!')).toBeInTheDocument();
+        expect(alertCtxProps.setAlert).toBeCalledTimes(0);
+        expect(screen.getByText(alertCtxProps.alert)).toBeInTheDocument();
 
         vi.advanceTimersByTime(1);
-        expect(setAlertMock).toBeCalledTimes(1);
-        expect(setAlertMock).toBeCalledWith(false);
+        expect(alertCtxProps.setAlert).toBeCalledTimes(1);
+        expect(alertCtxProps.setAlert).toBeCalledWith(false);
     });
 
     it('Alert message should change with different passed props', () => {
-        const setAlertMock = vi.fn();
         vi.useFakeTimers();
 
         const { rerender } = render(
-            <AlertContext.Provider value={{ alert: 'First error', setAlert: setAlertMock }}>
+            <AlertContext.Provider value={alertCtxProps}>
                 <AlertNotification />
             </AlertContext.Provider>
         );
@@ -63,13 +64,13 @@ describe('AlertNotification component', () => {
         vi.advanceTimersByTime(2000);
 
         rerender(
-            <AlertContext.Provider value={{ alert: 'Second error', setAlert: setAlertMock }}>
+            <AlertContext.Provider value={{ alert: 'Second error', setAlert: alertCtxProps.setAlert }}>
                 <AlertNotification />
             </AlertContext.Provider>
         )
 
         vi.advanceTimersByTime(2000);
-        expect(setAlertMock).not.toHaveBeenCalled();
+        expect(alertCtxProps.setAlert).not.toHaveBeenCalled();
         expect(screen.getByText('Second error')).toBeInTheDocument();
     })
 
