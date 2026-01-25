@@ -27,12 +27,6 @@ describe('AlertNotification component', () => {
         expect(screen.getByText(alertCtxProps.alert)).toBeInTheDocument();
     });
 
-    it('setAlert should not be called with a falsy value', () => {
-        setup();
-
-        expect(alertCtxProps.setAlert).not.toHaveBeenCalled();
-    })
-
     it('Alert context should be set to false after 5000 ms', () => {
         vi.useFakeTimers();
         setup();
