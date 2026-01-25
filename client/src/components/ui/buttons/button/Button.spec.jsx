@@ -29,6 +29,15 @@ describe('Button component', () => {
         expect(screen.getByRole('button')).toHaveTextContent(buttonProps.content);
     });
 
+    it("renders button with empty text label on missing prop", () => {
+        setup({
+            hasTextContent: false
+        });
+
+        expect(screen.getByRole('button')).not.toHaveTextContent();
+
+    });
+
     it('triggers click handler on click', async () => {
         setup();
         
