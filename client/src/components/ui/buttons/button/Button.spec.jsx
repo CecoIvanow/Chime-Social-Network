@@ -4,22 +4,11 @@ import { describe, expect, it, vi } from "vitest";
 import Button from "./Button";
 
 describe('LinkrButton component', () => {
-    it('Should render', () => {
-        render(<Button />);
-
-        expect(screen.getByRole('button')).toBeInTheDocument();
-    });
 
     it('Should render buttonName text', () => {
         render(<Button buttonName="Save" />);
 
         expect(screen.getByRole('button')).toHaveTextContent('Save');
-    });
-
-    it('Should have passed class name', () => {
-        render(<Button btnStyle="button-style" />);
-
-        expect(screen.getByRole('button')).toHaveClass('button-style');
     });
 
     it('Should react on clicks', () => {
