@@ -10,9 +10,13 @@ const alertCtxProps = {
     setAlert: vi.fn(),
 }
 
-function setup() {
+function setup(options = {
+    includeAlertMessage: true
+}) {
+    const alertMessage = options.includeAlertMessage ? alertCtxProps.alert : null;
+
     const { rerender } = render(
-        <AlertContext.Provider value={alertCtxProps}>
+        <AlertContext.Provider value={{ alert: alertMessage, setAlert: alertCtxProps.setAlert }}>
             <AlertNotification />
         </AlertContext.Provider>
     );
@@ -21,10 +25,19 @@ function setup() {
 }
 
 describe('AlertNotification component', () => {
-    it('Component should render with truthy value', () => {
-        setup();
+    it.each([
+        { name: "renders alert message on set alert", shouldRender: true },
+        { name: "does not render alert message on not set alert", shouldRender: false }
+    ])("$name", ({ shouldRender }) => {
+        setup({
+            includeAlertMessage: shouldRender,
+        });
 
-        expect(screen.getByText(alertCtxProps.alert)).toBeInTheDocument();
+        if (shouldRender) {
+            expect(screen.getByText(alertCtxProps.alert)).toBeInTheDocument();
+        } else {
+            expect(screen.queryByText(alertCtxProps.alert)).not.toBeInTheDocument();
+        }
     });
 
     it('Alert context should be set to false after 5000 ms', () => {
