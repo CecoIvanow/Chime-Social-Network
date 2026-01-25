@@ -3,23 +3,25 @@ import { describe, expect, it, vi } from "vitest";
 
 import Button from "./Button";
 
+const buttonProps = {
+    content: "Save",
+    onClick: vi.fn(),
+}
+
 describe('LinkrButton component', () => {
-
     it('Should render buttonName text', () => {
-        render(<Button buttonName="Save" />);
+        render(<Button buttonName={buttonProps.content} />);
 
-        expect(screen.getByRole('button')).toHaveTextContent('Save');
+        expect(screen.getByRole('button')).toHaveTextContent(buttonProps.content);
     });
 
     it('Should react on clicks', () => {
-        const onClick = vi.fn();
-
-        render(<Button onClickHandler={onClick} />);
+        render(<Button onClickHandler={buttonProps.onClick} />);
 
         const buttonElement = screen.getByRole('button');
 
         fireEvent.click(buttonElement)
 
-        expect(onClick).toBeCalled();
+        expect(buttonProps.onClick).toBeCalled();
     });
 })
