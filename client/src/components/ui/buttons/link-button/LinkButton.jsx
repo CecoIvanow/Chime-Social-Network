@@ -2,17 +2,20 @@ import { Link } from "react-router";
 
 export default function LinkButton({
     urlLink,
-    btnStyle = '',
-    buttonName = '',
+    btnStyle,
+    buttonName,
 }) {
+    const label = buttonName ?? "";
+    const style = btnStyle ?? "";
+
     return <>
         <Link
             to={urlLink}
         >
             <button
-                className={btnStyle}
+                className={style}
             >
-                {buttonName}
+                {label}
             </button>
         </Link >
     </>
