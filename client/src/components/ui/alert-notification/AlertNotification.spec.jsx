@@ -6,7 +6,7 @@ import AlertNotification from "./AlertNotification";
 import { AlertContext } from "../../../contexts/alert-context";
 
 const alertCtxProps = {
-    alert: "Alert message!",
+    alert: 'Alert message!',
     setAlert: vi.fn(),
 }
 
@@ -28,9 +28,9 @@ function setup(options = {
 
 describe('AlertNotification component', () => {
     it.each([
-        { name: "renders alert message on set alert", shouldRender: true },
-        { name: "does not render alert message on not set alert", shouldRender: false }
-    ])("$name", ({ shouldRender }) => {
+        { name: 'renders alert message on set alert', shouldRender: true },
+        { name: 'does not render alert message on not set alert', shouldRender: false }
+    ])('$name', ({ shouldRender }) => {
         setup({
             includeAlertMessage: shouldRender,
         });
@@ -57,20 +57,22 @@ describe('AlertNotification component', () => {
     it('updates alert with correct value when new alert is set', () => {
         const { rerender } = setup();
 
+        const newAlert = 'Second error';
+
         vi.advanceTimersByTime(2000);
 
         rerender(
-            <AlertContext.Provider value={{ alert: 'Second error', setAlert: alertCtxProps.setAlert }}>
+            <AlertContext.Provider value={{ alert: newAlert, setAlert: alertCtxProps.setAlert }}>
                 <AlertNotification />
             </AlertContext.Provider>
         )
 
         vi.advanceTimersByTime(2000);
         expect(alertCtxProps.setAlert).not.toHaveBeenCalled();
-        expect(screen.getByText('Second error')).toBeInTheDocument();
+        expect(screen.getByText(newAlert)).toBeInTheDocument();
     })
 
-    it("does not reset timer when alert changes from value to null", () => {
+    it('does not reset timer when alert changes from value to null', () => {
         const setAlertMock = vi.fn();
 
         const { rerender } = render(
