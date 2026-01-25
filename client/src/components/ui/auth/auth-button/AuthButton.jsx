@@ -3,9 +3,9 @@ export default function AuthButton({
     isPending = false
 }) {
     
-   return <>
+   return (
        <div className="button-auth">
            <input type="submit" value={buttonText} disabled={isPending}/>
        </div>
-   </>
+   )
 }
