@@ -16,7 +16,7 @@ function setup(options={
 };
 
 describe("AuthButton component", () => {
-    it("renders a submit button with the correct text and container", () => {
+    it("renders button with text label", () => {
         setup();
 
         expect(screen.getByRole("button")).toHaveValue(buttonText);
