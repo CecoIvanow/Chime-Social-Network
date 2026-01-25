@@ -1,9 +1,9 @@
-import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-
-import AlertNotification from "./AlertNotification";
+import { render, screen } from "@testing-library/react";
 
 import { AlertContext } from "../../../contexts/alert-context";
+
+import AlertNotification from "./AlertNotification";
 
 const alertCtxProps = {
     alert: 'Alert message!',
