@@ -8,7 +8,7 @@ export default function LinkButton({
     const label = buttonName ?? "";
     const style = btnStyle ?? "";
 
-    return <>
+    return (
         <Link
             to={urlLink}
         >
@@ -18,5 +18,5 @@ export default function LinkButton({
                 {label}
             </button>
         </Link >
-    </>
+    )
 }
