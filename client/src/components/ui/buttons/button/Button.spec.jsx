@@ -7,23 +7,22 @@ import Button from "./Button";
 
 const buttonProps = {
     content: "Save",
-    onClick: vi.fn(),
+    clickHandler: vi.fn(),
 }
 
-beforeEach(() => render(<Button onClickHandler={buttonProps.onClick} buttonName={buttonProps.content} />));
+beforeEach(() => render(<Button onClickHandler={buttonProps.clickHandler} buttonName={buttonProps.content} />));
 
-describe('LinkrButton component', () => {
-    it('Should render buttonName text', () => {
+describe('Button component', () => {
+    it('renders button with passed text label', () => {
         expect(screen.getByRole('button')).toHaveTextContent(buttonProps.content);
     });
 
-    it('Should react on clicks', async () => {
-        const user = userEvent.setup();
-
+    it('triggers click handler on click', async () => {
         const buttonElement = screen.getByRole('button');
-
+        const user = userEvent.setup();
+        
         user.click(buttonElement);
 
-        await waitFor(() => expect(buttonProps.onClick).toHaveBeenCalled());
+        await waitFor(() => expect(buttonProps.clickHandler).toHaveBeenCalled());
     });
-})
+});
