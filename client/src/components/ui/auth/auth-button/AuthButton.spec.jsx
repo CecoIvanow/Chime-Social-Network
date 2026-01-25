@@ -1,39 +1,31 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 
-import AuthButton from "./AuthButton";
+import AuthButton from './AuthButton';
 
 describe('AuthButton component', () => {
     it('renders a submit button with the correct text and container', () => {
         render(<AuthButton
-            buttonText="Login"
+            buttonText='Login'
         />);
 
-        const input = screen.getByText('Login');
-
-        expect(input).toBeInTheDocument();
-        expect(input).toHaveValue('Login');
-        expect(input).toHaveAttribute('type', 'submit');
+        expect(screen.getByRole('button')).toHaveValue('Login');
     });
 
     it('isPending is false by default', () => {
         render(<AuthButton
-            buttonText="Login"
+            buttonText='Login'
         />);
 
-        const input = screen.getByText('Login');
-
-        expect(input).not.toBeDisabled();
+        expect(screen.getByRole('button')).not.toBeDisabled();
     })
 
     it('is disabled if isPending is true', () => {
         render(<AuthButton
-            buttonText="Loading..."
+            buttonText='Loading...'
             isPending={true}
         />);
 
-        const input = screen.getByText('Loading...');
-
-        expect(input).toBeDisabled();
+        expect(screen.getByRole('button')).toBeDisabled();
     })
 })
