@@ -5,4 +5,5 @@ import "@testing-library/jest-dom/vitest"
 beforeEach(() => {
     cleanup();
     vi.resetAllMocks();
+    vi.clearAllTimers();
 })
