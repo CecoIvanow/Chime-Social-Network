@@ -6,19 +6,19 @@ import userEvent from '@testing-library/user-event'
 import Button from "./Button";
 
 const buttonProps = {
-    content: "Save",
+    label: "Save",
     clickHandler: vi.fn(),
 }
 
 function setup(options={
     hasTextContent: true
 }) {
-    const content = options.hasTextContent ?
-    buttonProps.content :
+    const label = options.hasTextContent ?
+    buttonProps.label :
     null;
 
     render(
-        <Button onClickHandler={buttonProps.clickHandler} buttonName={content} />
+        <Button onClickHandler={buttonProps.clickHandler} buttonName={label} />
     );
 }
 
@@ -26,7 +26,7 @@ describe('Button component', () => {
     it('renders button with passed text label', () => {
         setup();
 
-        expect(screen.getByRole('button')).toHaveTextContent(buttonProps.content);
+        expect(screen.getByRole('button')).toHaveTextContent(buttonProps.label);
     });
 
     it("renders button with empty text label on missing prop", () => {
@@ -34,7 +34,7 @@ describe('Button component', () => {
             hasTextContent: false
         });
 
-        expect(screen.getByRole('button')).not.toHaveTextContent();
+        expect(screen.getByRole('button')).toHaveTextContent("");
 
     });
 
