@@ -4,6 +4,11 @@ import { describe, expect, it } from "vitest";
 
 import LinkButton from "./LinkButton";
 
+const linkButtonProps = {
+    label: "Save",
+    urlLink: "/test"
+}
+
 describe('LinkButton component', () => {
     it('Should render', () => {
         render(
@@ -18,11 +23,11 @@ describe('LinkButton component', () => {
     it('Should render buttonName text', () => {
         render(
             <MemoryRouter>
-                <LinkButton buttonName="Save" />
+                <LinkButton buttonName={linkButtonProps.label} />
             </MemoryRouter>
         );
 
-        expect(screen.getByRole('button')).toHaveTextContent('Save');
+        expect(screen.getByRole('button')).toHaveTextContent(linkButtonProps.label);
     });
 
     it('Should have passed class name', () => {
@@ -38,10 +43,10 @@ describe('LinkButton component', () => {
     it('Should have passed urlLink', () => {
         render(
             <MemoryRouter>
-                <LinkButton urlLink={'/test'}/>
+                <LinkButton urlLink={linkButtonProps.urlLink}/>
             </MemoryRouter>
         )
 
-        expect(screen.getByRole('link')).toHaveAttribute('href', '/test');
+        expect(screen.getByRole('link')).toHaveAttribute('href', linkButtonProps.urlLink);
     })
 })
