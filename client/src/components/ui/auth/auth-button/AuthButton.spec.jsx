@@ -9,10 +9,8 @@ describe('AuthButton component', () => {
             buttonText="Login"
         />);
 
-        const container = screen.getByTestId('button-auth');
         const input = screen.getByText('Login');
 
-        expect(container).toBeInTheDocument();
         expect(input).toBeInTheDocument();
         expect(input).toHaveValue('Login');
         expect(input).toHaveAttribute('type', 'submit');
