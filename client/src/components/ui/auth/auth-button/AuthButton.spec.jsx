@@ -20,17 +20,18 @@ describe("AuthButton component", () => {
         expect(screen.getByRole("button")).toHaveValue(buttonText);
     });
 
-    it("isPending is false by default", () => {
-        setup();
-
-        expect(screen.getByRole("button")).not.toBeDisabled();
-    });
-
-    it("is disabled if isPending is true", () => {
+    it.each([
+        {name: "button is not disabled on isPending false", isPending: false},
+        {name: "button is disabled on isPending true", isPending: true},
+    ])("$name", ({isPending}) => {
         setup({
-            isPending: true
+            isPending,
         });
 
-        expect(screen.getByRole("button")).toBeDisabled();
+        if (isPending) {
+            expect(screen.getByRole("button")).toBeDisabled();
+        } else {
+            expect(screen.getByRole("button")).not.toBeDisabled();
+        };
     });
 });
