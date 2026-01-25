@@ -22,15 +22,15 @@ function setup(options = {
 };
 
 describe('LinkButton component', () => {
-    it('Should render buttonName text', () => {
+    it('renders button with passed label text', () => {
         setup();
 
         expect(screen.getByRole('button')).toHaveTextContent(linkButtonProps.label);
     });
 
-    it('Should have passed urlLink', () => {
+    it('renders link with correct href attribute value', () => {
         setup();
 
         expect(screen.getByRole('link')).toHaveAttribute('href', linkButtonProps.urlLink);
-    })
-})
+    });
+});
