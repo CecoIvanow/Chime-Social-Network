@@ -8,8 +8,10 @@ const buttonText = "Login";
 function setup(options={
     isPending: false,
 }) {
+    const isPendingState = options.isPending ? options.isPending : null;
+
     render(
-        <AuthButton buttonText={buttonText} isPending={options.isPending} />
+        <AuthButton buttonText={buttonText} isPending={isPendingState} />
     );
 };
 
@@ -18,6 +20,12 @@ describe("AuthButton component", () => {
         setup();
 
         expect(screen.getByRole("button")).toHaveValue(buttonText);
+    });
+
+    it("isPending defaults to false on missing prop", () => {
+        setup();
+
+        expect(screen.getByRole("button")).toBeEnabled();
     });
 
     it.each([
@@ -31,7 +39,7 @@ describe("AuthButton component", () => {
         if (isPending) {
             expect(screen.getByRole("button")).toBeDisabled();
         } else {
-            expect(screen.getByRole("button")).not.toBeDisabled();
+            expect(screen.getByRole("button")).toBeEnabled();
         };
     });
 });
