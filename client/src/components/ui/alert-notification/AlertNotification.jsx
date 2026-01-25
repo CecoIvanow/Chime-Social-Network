@@ -12,7 +12,7 @@ export default function AlertNotification() {
             }
 
             curTimeoutIdRef.current = setTimeout(() => {
-                setAlert(false);
+                setAlert(null);
             }, 5000);
         }
     }, [alert, setAlert])

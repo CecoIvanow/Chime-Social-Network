@@ -40,7 +40,7 @@ describe('AlertNotification component', () => {
         }
     });
 
-    it('Alert context should be set to false after 5000 ms', () => {
+    it('triggers setAlert with null and clears the alert after 5000ms', () => {
         vi.useFakeTimers();
         setup();
 
@@ -50,10 +50,10 @@ describe('AlertNotification component', () => {
 
         vi.advanceTimersByTime(1);
         expect(alertCtxProps.setAlert).toBeCalledTimes(1);
-        expect(alertCtxProps.setAlert).toBeCalledWith(false);
+        expect(alertCtxProps.setAlert).toBeCalledWith(null);
     });
 
-    it('Alert message should change with different passed props', () => {
+    it('updates alert with correct value when new alert is set', () => {
         vi.useFakeTimers();
 
         const { rerender } = setup();
@@ -71,7 +71,7 @@ describe('AlertNotification component', () => {
         expect(screen.getByText('Second error')).toBeInTheDocument();
     })
 
-    it("Alert timer should't change on falsy alert value", () => {
+    it("does not reset timer when alert changes from value to null", () => {
         const setAlertMock = vi.fn();
         vi.useFakeTimers();
 
@@ -84,7 +84,7 @@ describe('AlertNotification component', () => {
         vi.advanceTimersByTime(2000);
 
         rerender(
-            <AlertContext.Provider value={{ alert: false, setAlert: setAlertMock }}>
+            <AlertContext.Provider value={{ alert: null, setAlert: setAlertMock }}>
                 <AlertNotification />
             </AlertContext.Provider>
         )
