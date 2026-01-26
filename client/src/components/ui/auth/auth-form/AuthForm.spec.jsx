@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import userEvent from "@testing-library/user-event";
+
 import AuthForm from "./AuthForm";
 
 const authFormProps = {
@@ -29,36 +31,38 @@ describe('AuthForm component', () => {
 
         const inputEl = screen.getByRole("textbox");
 
-        expect(screen.getByText(authFormProps.fieldName)).toBeInTheDocument(); 
+        expect(screen.getByText(authFormProps.fieldName)).toBeInTheDocument();
 
         expect(inputEl).toHaveAttribute("type", authFormProps.inputType);
         expect(inputEl).toHaveAttribute("placeholder", `Enter your ${authFormProps.placeholderText}`);
         expect(inputEl).toHaveAttribute("name", authFormProps.inputName);
     });
 
-    it('renders with correct input value on change', () => {
+    it('renders with correct input value on change', async () => {
         setup();
+
+        const user = userEvent.setup();
 
         const input = screen.getByPlaceholderText(`Enter your ${authFormProps.placeholderText}`);
 
-
-        fireEvent.change(input, { target: { value: '123' } });
+        await user.type(input, '123');
         expect(input).toHaveValue('123');
 
-        fireEvent.change(input, { target: { value: '123456' } });
+        await user.type(input, '456');
         expect(input).toHaveValue('123456');
     });
 
-    it('rerenders with default input value', () => {
+    it('rerenders with default input value', async () => {
         const { rerender } = setup();
+
+        const user = userEvent.setup();
 
         const input = screen.getByPlaceholderText(`Enter your ${authFormProps.placeholderText}`);
 
-
-        fireEvent.change(input, { target: { value: '123' } });
+        await user.type(input, '123');
         expect(input).toHaveValue('123');
 
-        fireEvent.change(input, { target: { value: '123456' } });
+        await user.type(input, '456');
         expect(input).toHaveValue('123456');
 
         rerender(
