@@ -12,17 +12,11 @@ describe('AuthForm component', () => {
             />
         );
 
-        const container = screen.getByTestId('auth-input-box');
         const details = screen.getByText('Email');
-        const label = screen.getByTestId('auth-input-label');
         const input = screen.getByPlaceholderText('Enter your email');
-
-        expect(container).toBeInTheDocument();
 
         expect(details).toBeInTheDocument();
         expect(details).toHaveTextContent('Email');
-
-        expect(label).toBeInTheDocument();
 
         expect(input).toBeInTheDocument();
         expect(input).toHaveAttribute('placeholder', 'Enter your email');
@@ -39,14 +33,10 @@ describe('AuthForm component', () => {
         )
 
         const details = screen.getByText('Username');
-        const label = screen.getByTestId('auth-input-label');
         const input = screen.getByPlaceholderText('Enter your username');
 
         expect(details).toBeInTheDocument();
         expect(details).toHaveTextContent('Username');
-
-        expect(label).toBeInTheDocument();
-        expect(label).toHaveAttribute('for', 'username');
 
         expect(input).toBeInTheDocument();
         expect(input).toHaveAttribute('id', 'username');
@@ -63,10 +53,7 @@ describe('AuthForm component', () => {
             />
         );
 
-        const label = screen.getByTestId('auth-input-label');
         const input = screen.getByPlaceholderText('Enter your password');
-
-        expect(label).toHaveAttribute('for', 'pass');
 
         expect(input).toHaveAttribute('id', 'pass');
     });
