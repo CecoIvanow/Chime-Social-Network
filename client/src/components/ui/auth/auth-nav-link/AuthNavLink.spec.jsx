@@ -22,7 +22,7 @@ beforeEach(() => {
 
 describe('AuthNavLink component', () => {
     it('renders link with path and buttonText props', () => {
-        const link = screen.getByText(authNavLinkProps.buttonLabel);
+        const link = screen.getByRole("link");
 
         expect(link).toHaveTextContent(authNavLinkProps.buttonLabel);
         expect(link).toHaveAttribute('href', authNavLinkProps.path);
