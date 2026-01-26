@@ -4,7 +4,7 @@ export default function CreateContentInput({
     text,
 }) {
     return (
-        <div className="entry-header" data-testid="entry-header">
+        <div className="entry-header">
             <label htmlFor="entry" data-testid="entry-label"></label>
             <input
                 type="text"
@@ -15,5 +15,5 @@ export default function CreateContentInput({
                 placeholder={placeholderText || "Share your thoughts..."}
             />
         </div>
-    )
-}
+    );
+};

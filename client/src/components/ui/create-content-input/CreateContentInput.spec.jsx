@@ -3,19 +3,11 @@ import { describe, expect, it, vi } from "vitest";
 
 import CreateContentInput from "./CreateContentInput";
 
+const createContentInputProps = {
+    text: "Testing text!"
+}
+
 describe('CreateContentInput', () => {
-    it('renders with entry-header container, label and input', () => {
-        render(<CreateContentInput />);
-
-        const entryHeader = screen.getByTestId('entry-header');
-        const label = screen.getByTestId('entry-label');
-        const input = screen.getByPlaceholderText('Share your thoughts...');
-
-        expect(entryHeader).toBeInTheDocument();
-        expect(label).toBeInTheDocument();
-        expect(input).toBeInTheDocument();
-    });
-
     it("links label and input correctly via htmlFor and id", () => {
         render(<CreateContentInput />)
 
@@ -24,7 +16,7 @@ describe('CreateContentInput', () => {
 
         expect(label).toHaveAttribute('for', 'entry');
         expect(textarea).toHaveAttribute('id', 'entry');
-    })
+    });
 
     it('renders input with correct default value and place holder text', () => {
         render(<CreateContentInput
@@ -45,7 +37,7 @@ describe('CreateContentInput', () => {
 
         expect(input).toHaveAttribute('name', 'text');
         expect(input).toHaveAttribute('type', 'text');
-    })
+    });
 
     it('on text change handler gets called on change', () => {
         const onTextChangeMock = vi.fn();
@@ -60,5 +52,5 @@ describe('CreateContentInput', () => {
 
         fireEvent.change(input, { target: {value: 'Unit test'} });
         expect(onTextChangeMock).toHaveBeenCalledTimes(1);
-    })
+    });
 });
