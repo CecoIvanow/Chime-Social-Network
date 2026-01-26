@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, beforeEach } from "vitest";
+import { MemoryRouter } from "react-router";
 
 import AuthNavLink from "./AuthNavLink";
-import { MemoryRouter } from "react-router";
 
 const authNavLinkProps = {
     buttonLabel: "Don't have an account?",
