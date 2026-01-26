@@ -26,20 +26,20 @@ function setup(options = {
     );
 };
 
-describe('CreateContentInput', () => {
+describe("CreateContentInput component", () => {
     it("links label and input correctly via htmlFor and id", () => {
         setup({
             hasPlaceholderTextProp: false
         });
 
-        const label = screen.getByTestId('entry-label');
+        const label = screen.getByTestId("entry-label");
         const textarea = screen.getByPlaceholderText(DEFAULT_PLACEHOLDER_TEXT);
 
-        expect(label).toHaveAttribute('for', 'entry');
-        expect(textarea).toHaveAttribute('id', 'entry');
+        expect(label).toHaveAttribute("for", "entry");
+        expect(textarea).toHaveAttribute("id", "entry");
     });
 
-    it('renders input with correct default value and place holder text', () => {
+    it("renders input with correct default value and place holder text", () => {
         setup();
 
         const input = screen.getByPlaceholderText(createContentInputProps.placeholderText);
@@ -48,18 +48,18 @@ describe('CreateContentInput', () => {
         expect(input).toBeInTheDocument();
     });
 
-    it('renders input with default name and type attributes', () => {
+    it("renders input with default name and type attributes", () => {
         setup({
             hasPlaceholderTextProp: false
         });
 
         const input = screen.getByPlaceholderText(DEFAULT_PLACEHOLDER_TEXT);
 
-        expect(input).toHaveAttribute('name', 'text');
-        expect(input).toHaveAttribute('type', 'text');
+        expect(input).toHaveAttribute("name", "text");
+        expect(input).toHaveAttribute("type", "text");
     });
 
-    it('on text change handler gets called on change', () => {
+    it("on text change handler gets called on change", () => {
         setup({
             hasPlaceholderTextProp: false
         });
@@ -68,7 +68,7 @@ describe('CreateContentInput', () => {
 
         expect(onTextChangeMock).not.toHaveBeenCalled();
 
-        fireEvent.change(input, { target: { value: 'Unit test' } });
+        fireEvent.change(input, { target: { value: "Unit test" } });
         expect(onTextChangeMock).toHaveBeenCalledTimes(1);
     });
 });
