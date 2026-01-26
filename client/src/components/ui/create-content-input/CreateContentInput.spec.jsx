@@ -3,18 +3,25 @@ import { describe, expect, it, vi } from "vitest";
 
 import CreateContentInput from "./CreateContentInput";
 
+const DEFAULT_PLACEHOLDER_TEXT = "Share your thoughts...";
+
+const createContentInputProps = {
+    placeholderText: "Post your comment...",
+    text: "This is a test!"
+};
+
 const onTextChangeMock = vi.fn();
 
 function setup(options = {
     hasPlaceholderTextProp: true,
 }) {
-    const placeholderText = options.hasPlaceholderTextProp ? "Post your comment..." : null;
+    const placeholderText = options.hasPlaceholderTextProp ? createContentInputProps.placeholderText : null;
 
     render(
         <CreateContentInput
             onTextChangeHandler={onTextChangeMock}
             placeholderText={placeholderText}
-            text={'Testing text!'}
+            text={createContentInputProps.text}
         />
     );
 };
@@ -26,7 +33,7 @@ describe('CreateContentInput', () => {
         });
 
         const label = screen.getByTestId('entry-label');
-        const textarea = screen.getByPlaceholderText('Share your thoughts...');
+        const textarea = screen.getByPlaceholderText(DEFAULT_PLACEHOLDER_TEXT);
 
         expect(label).toHaveAttribute('for', 'entry');
         expect(textarea).toHaveAttribute('id', 'entry');
@@ -35,9 +42,9 @@ describe('CreateContentInput', () => {
     it('renders input with correct default value and place holder text', () => {
         setup();
 
-        const input = screen.getByPlaceholderText('Post your comment...');
+        const input = screen.getByPlaceholderText(createContentInputProps.placeholderText);
 
-        expect(input).toHaveValue('Testing text!');
+        expect(input).toHaveValue(createContentInputProps.text);
         expect(input).toBeInTheDocument();
     });
 
@@ -46,7 +53,7 @@ describe('CreateContentInput', () => {
             hasPlaceholderTextProp: false
         });
 
-        const input = screen.getByPlaceholderText('Share your thoughts...');
+        const input = screen.getByPlaceholderText(DEFAULT_PLACEHOLDER_TEXT);
 
         expect(input).toHaveAttribute('name', 'text');
         expect(input).toHaveAttribute('type', 'text');
@@ -57,7 +64,7 @@ describe('CreateContentInput', () => {
             hasPlaceholderTextProp: false
         });
 
-        const input = screen.getByPlaceholderText("Share your thoughts...");
+        const input = screen.getByPlaceholderText(DEFAULT_PLACEHOLDER_TEXT);
 
         expect(onTextChangeMock).not.toHaveBeenCalled();
 
