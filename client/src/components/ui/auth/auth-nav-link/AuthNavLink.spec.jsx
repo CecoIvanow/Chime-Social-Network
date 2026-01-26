@@ -4,36 +4,41 @@ import { describe, expect, it } from "vitest";
 import AuthNavLink from "./AuthNavLink";
 import { MemoryRouter } from "react-router";
 
+const authNavLinkProps = {
+    buttonLabel: "Don't have an account?",
+    path: "/register",
+}
+
 describe('AuthNavLink component', () => {
     it('renders with container and Link', () => {
         render(
             <MemoryRouter>
                 <AuthNavLink
-                    buttonText="Don't have an account?"
+                    buttonText={authNavLinkProps.buttonLabel}
                 />
             </MemoryRouter>
         );
 
         const container = screen.getByTestId('to-auth-container');
-        const link = screen.getByText("Don't have an account?");
+        const link = screen.getByText(authNavLinkProps.buttonLabel);
 
         expect(container).toBeInTheDocument();
 
         expect(link).toBeInTheDocument();
-        expect(link).toHaveTextContent("Don't have an account?");
+        expect(link).toHaveTextContent(authNavLinkProps.buttonLabel);
     })
 
     it('ensures Link is a child of the container', () => {
         render(
             <MemoryRouter>
                 <AuthNavLink
-                    buttonText="Don't have an account?"
+                    buttonText={authNavLinkProps.buttonLabel}
                 />
             </MemoryRouter>
         );
 
         const container = screen.getByTestId('to-auth-container');
-        const link = screen.getByText("Don't have an account?");
+        const link = screen.getByText(authNavLinkProps.buttonLabel);
 
         expect(container).toBeInTheDocument();
         expect(link).toBeInTheDocument();
@@ -45,15 +50,15 @@ describe('AuthNavLink component', () => {
         render(
             <MemoryRouter>
                 <AuthNavLink
-                    path='login'
-                    buttonText='Already registered?'
+                    path={authNavLinkProps.path}
+                    buttonText={authNavLinkProps.buttonLabel}
                 />
             </MemoryRouter>
         );
 
-        const link = screen.getByText('Already registered?');
+        const link = screen.getByText(authNavLinkProps.buttonLabel);
 
-        expect(link).toHaveTextContent('Already registered?');
-        expect(link).toHaveAttribute('href', '/login');
+        expect(link).toHaveTextContent(authNavLinkProps.buttonLabel);
+        expect(link).toHaveAttribute('href', authNavLinkProps.path);
     })
 })
