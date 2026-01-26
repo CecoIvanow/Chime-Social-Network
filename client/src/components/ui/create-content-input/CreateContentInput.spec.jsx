@@ -51,9 +51,7 @@ describe("CreateContentInput component", () => {
     });
 
     it("links label and input correctly via hardcoded htmlFor and id attributes", () => {
-        setup({
-            hasPlaceholderTextProp: false
-        });
+        setup();
 
         const defaultLinkingValue = "entry";
 
@@ -65,9 +63,7 @@ describe("CreateContentInput component", () => {
     });
 
     it("renders input with hardcoded name and type attributes", () => {
-        setup({
-            hasPlaceholderTextProp: false
-        });
+        setup();
 
         const defaultTypeValue = "text";
 
@@ -79,9 +75,7 @@ describe("CreateContentInput component", () => {
 
     it("triggers onTextChangeHandler on user input", async () => {
         const user = userEvent.setup();
-        setup({
-            hasPlaceholderTextProp: false
-        });
+        setup();
 
         await user.type(screen.getByRole("textbox"), "Unit Test");
         expect(onTextChangeMock).toHaveBeenCalled();
