@@ -27,6 +27,12 @@ function setup(options = {
 };
 
 describe("CreateContentInput component", () => {
+    it("renders input with text prop", () => {
+        setup();
+
+        expect(screen.getByRole("textbox")).toHaveValue(createContentInputProps.text);
+    });
+
     it.each([
         { name: "renders input with default placeholder text on empty placeholderText prop", hasPlaceholderTextProp: true },
         { name: "renders input with passed placeholder text prop", hasPlaceholderTextProp: false },
