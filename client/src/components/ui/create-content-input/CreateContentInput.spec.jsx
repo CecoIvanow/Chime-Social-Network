@@ -27,7 +27,7 @@ function setup(options = {
 };
 
 describe("CreateContentInput component", () => {
-    it("links label and input correctly via default htmlFor and id attributes", () => {
+    it("links label and input correctly via hardcoded htmlFor and id attributes", () => {
         setup({
             hasPlaceholderTextProp: false
         });
@@ -35,29 +35,30 @@ describe("CreateContentInput component", () => {
         const defaultLinkingValue = "entry";
 
         const label = screen.getByTestId("entry-label");
-        const textarea = screen.getByPlaceholderText(DEFAULT_PLACEHOLDER_TEXT);
+        const input = screen.getByRole("textbox");
 
         expect(label).toHaveAttribute("for", defaultLinkingValue);
-        expect(textarea).toHaveAttribute("id", defaultLinkingValue);
+        expect(input).toHaveAttribute("id", defaultLinkingValue);
     });
 
     it("renders input with correct default value and place holder text", () => {
         setup();
 
-        const input = screen.getByPlaceholderText(createContentInputProps.placeholderText);
+        const input = screen.getByRole("textbox");
+
 
         expect(input).toHaveValue(createContentInputProps.text);
         expect(input).toBeInTheDocument();
     });
 
-    it("renders input with default name and type attributes", () => {
+    it("renders input with hardcoded name and type attributes", () => {
         setup({
             hasPlaceholderTextProp: false
         });
 
         const defaultTypeValue = "text";
 
-        const input = screen.getByPlaceholderText(DEFAULT_PLACEHOLDER_TEXT);
+        const input = screen.getByRole("textbox");
 
         expect(input).toHaveAttribute("name", defaultTypeValue);
         expect(input).toHaveAttribute("type", defaultTypeValue);
@@ -68,7 +69,7 @@ describe("CreateContentInput component", () => {
             hasPlaceholderTextProp: false
         });
 
-        const input = screen.getByPlaceholderText(DEFAULT_PLACEHOLDER_TEXT);
+        const input = screen.getByRole("textbox");
 
         expect(onTextChangeMock).not.toHaveBeenCalled();
 
