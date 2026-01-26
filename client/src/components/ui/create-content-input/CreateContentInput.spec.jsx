@@ -32,11 +32,13 @@ describe("CreateContentInput component", () => {
             hasPlaceholderTextProp: false
         });
 
+        const defaultLinkingValue = "entry";
+
         const label = screen.getByTestId("entry-label");
         const textarea = screen.getByPlaceholderText(DEFAULT_PLACEHOLDER_TEXT);
 
-        expect(label).toHaveAttribute("for", "entry");
-        expect(textarea).toHaveAttribute("id", "entry");
+        expect(label).toHaveAttribute("for", defaultLinkingValue);
+        expect(textarea).toHaveAttribute("id", defaultLinkingValue);
     });
 
     it("renders input with correct default value and place holder text", () => {
@@ -53,10 +55,12 @@ describe("CreateContentInput component", () => {
             hasPlaceholderTextProp: false
         });
 
+        const defaultTypeValue = "text";
+
         const input = screen.getByPlaceholderText(DEFAULT_PLACEHOLDER_TEXT);
 
-        expect(input).toHaveAttribute("name", "text");
-        expect(input).toHaveAttribute("type", "text");
+        expect(input).toHaveAttribute("name", defaultTypeValue);
+        expect(input).toHaveAttribute("type", defaultTypeValue);
     });
 
     it("triggers onTextChangeHandler on user input", () => {
