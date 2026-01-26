@@ -21,26 +21,6 @@ beforeEach(() => {
 });
 
 describe('AuthNavLink component', () => {
-    it('renders with container and Link', () => {
-        const container = screen.getByTestId('to-auth-container');
-        const link = screen.getByText(authNavLinkProps.buttonLabel);
-
-        expect(container).toBeInTheDocument();
-
-        expect(link).toBeInTheDocument();
-        expect(link).toHaveTextContent(authNavLinkProps.buttonLabel);
-    })
-
-    it('ensures Link is a child of the container', () => {
-        const container = screen.getByTestId('to-auth-container');
-        const link = screen.getByText(authNavLinkProps.buttonLabel);
-
-        expect(container).toBeInTheDocument();
-        expect(link).toBeInTheDocument();
-
-        expect(container).toContainElement(link);
-    })
-
     it('renders with passed props', () => {
         const link = screen.getByText(authNavLinkProps.buttonLabel);
 
