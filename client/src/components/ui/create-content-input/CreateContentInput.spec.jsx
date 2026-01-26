@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import userEvent from "@testing-library/user-event";
@@ -29,15 +29,15 @@ function setup(options = {
 };
 
 describe("CreateContentInput component", () => {
-    it("renders input with text prop", () => {
+    it("renders the input with the passed text value", () => {
         setup();
 
         expect(screen.getByRole("textbox")).toHaveValue(createContentInputProps.text);
     });
 
     it.each([
-        { name: "renders input with default placeholder text on empty placeholderText prop", hasPlaceholderTextProp: true },
-        { name: "renders input with passed placeholder text prop", hasPlaceholderTextProp: false },
+        { name: "renders the input with the passed placeholderText when provided", hasPlaceholderTextProp: true },
+        { name: "renders the input with the default placeholder text when placeholderText is missing", hasPlaceholderTextProp: false },
     ])("$name", ({ hasPlaceholderTextProp }) => {
         setup({
             hasPlaceholderTextProp,
@@ -50,7 +50,7 @@ describe("CreateContentInput component", () => {
         };
     });
 
-    it("links label and input correctly via hardcoded htmlFor and id attributes", () => {
+    it("links the label and input correctly via htmlFor and id attributes", () => {
         setup();
 
         const defaultLinkingValue = "entry";
@@ -62,7 +62,7 @@ describe("CreateContentInput component", () => {
         expect(input).toHaveAttribute("id", defaultLinkingValue);
     });
 
-    it("renders input with hardcoded name and type attributes", () => {
+    it("renders the input with correct name and type attributes", () => {
         setup();
 
         const defaultTypeValue = "text";
@@ -73,7 +73,7 @@ describe("CreateContentInput component", () => {
         expect(input).toHaveAttribute("type", defaultTypeValue);
     });
 
-    it("triggers onTextChangeHandler on user input", async () => {
+    it("calls onTextChangeHandler when user types in the input", async () => {
         const user = userEvent.setup();
         setup();
 
