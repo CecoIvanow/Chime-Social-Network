@@ -10,16 +10,22 @@ const authFormProps = {
     placeholderText: "username",
 };
 
+function setup() {
+    const { rerender } = render(
+        <AuthForm
+            fieldName={authFormProps.fieldName}
+            inputName={authFormProps.inputName}
+            inputType={authFormProps.inputType}
+            placeholderText={authFormProps.placeholderText}
+        />
+    );
+
+    return { rerender };
+}
+
 describe('AuthForm component', () => {
     it('renders with passed props', () => {
-        render(
-            <AuthForm
-                fieldName={authFormProps.fieldName}
-                inputName={authFormProps.inputName}
-                inputType={authFormProps.inputType}
-                placeholderText={authFormProps.placeholderText}
-            />
-        )
+        setup();
 
         const details = screen.getByText('Username');
         const input = screen.getByPlaceholderText('Enter your username');
@@ -30,11 +36,7 @@ describe('AuthForm component', () => {
     });
 
     it('renders with correct input value on change', () => {
-        render(
-            <AuthForm
-                placeholderText={authFormProps.placeholderText}
-            />
-        );
+        setup();
 
         const input = screen.getByPlaceholderText('Enter your username');
 
@@ -46,11 +48,7 @@ describe('AuthForm component', () => {
     });
 
     it('rerenders with default input value', () => {
-        const { rerender } = render(
-            <AuthForm
-                placeholderText={authFormProps.placeholderText}
-            />
-        );
+        const { rerender } = setup();
 
         const input = screen.getByPlaceholderText('Enter your username');
 
@@ -62,7 +60,10 @@ describe('AuthForm component', () => {
 
         rerender(
             <AuthForm
-                placeholderText='username'
+                fieldName={authFormProps.fieldName}
+                inputName={authFormProps.inputName}
+                inputType={authFormProps.inputType}
+                placeholderText={authFormProps.placeholderText}
             />
         );
 
