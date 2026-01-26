@@ -12,7 +12,7 @@ export default function AuthForm({
         setValue(e.currentTarget.value);
     }
 
-    return <>
+    return (
         <div className="input-box">
             <span className="details">{fieldName}</span>
             <label htmlFor={inputName} data-testid="label-el"></label>
@@ -26,5 +26,5 @@ export default function AuthForm({
                 required
             />
         </div>
-    </>
-}
+    );
+};

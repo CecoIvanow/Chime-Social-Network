@@ -43,6 +43,7 @@ describe('AuthForm component', () => {
         expect(inputEl).toHaveAttribute("type", authFormProps.inputType);
         expect(inputEl).toHaveAttribute("placeholder", `${INPUT_PLACEHOLDER_TEXT}`);
         expect(inputEl).toHaveAttribute("name", authFormProps.inputName);
+        expect(inputEl).toBeRequired();
 
         expect(screen.getByText(authFormProps.fieldName)).toBeInTheDocument();
     });
