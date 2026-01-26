@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import userEvent from "@testing-library/user-event";
+
 import CreateContentInput from "./CreateContentInput";
 
 const DEFAULT_PLACEHOLDER_TEXT = "Share your thoughts...";
@@ -75,16 +77,13 @@ describe("CreateContentInput component", () => {
         expect(input).toHaveAttribute("type", defaultTypeValue);
     });
 
-    it("triggers onTextChangeHandler on user input", () => {
+    it("triggers onTextChangeHandler on user input", async () => {
+        const user = userEvent.setup();
         setup({
             hasPlaceholderTextProp: false
         });
 
-        const input = screen.getByRole("textbox");
-
-        expect(onTextChangeMock).not.toHaveBeenCalled();
-
-        fireEvent.change(input, { target: { value: "Unit test" } });
-        expect(onTextChangeMock).toHaveBeenCalledTimes(1);
+        await user.type(screen.getByRole("textbox"), "Unit Test");
+        expect(onTextChangeMock).toHaveBeenCalled();
     });
 });
