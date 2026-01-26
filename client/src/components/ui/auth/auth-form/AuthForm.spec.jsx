@@ -14,6 +14,11 @@ const authFormProps = {
 
 const PLACEHOLDER_START_TEXT = "Enter your ";
 
+const USER_INPUTS = {
+    firstChange: "123",
+    secondChange: "456"
+}
+
 function setup() {
     const { rerender } = render(
         <AuthForm
@@ -40,32 +45,31 @@ describe('AuthForm component', () => {
         expect(inputEl).toHaveAttribute("name", authFormProps.inputName);
     });
 
-    it('renders with correct input value on change', async () => {
+    it('input updates value on user text typing', async () => {
+        const user = userEvent.setup();
         setup();
 
-        const user = userEvent.setup();
+        const input = screen.getByRole("textbox");
 
-        const input = screen.getByPlaceholderText(`${PLACEHOLDER_START_TEXT}${authFormProps.placeholderText}`);
+        await user.type(input, USER_INPUTS.firstChange);
+        expect(input).toHaveValue(USER_INPUTS.firstChange);
 
-        await user.type(input, '123');
-        expect(input).toHaveValue('123');
-
-        await user.type(input, '456');
-        expect(input).toHaveValue('123456');
+        await user.type(input, USER_INPUTS.secondChange);
+        expect(input).toHaveValue(`${USER_INPUTS.firstChange}${USER_INPUTS.secondChange}`);
     });
 
     it('rerenders with default input value', async () => {
-        const { rerender } = setup();
-
         const user = userEvent.setup();
+        const { rerender } = setup();
 
         const input = screen.getByPlaceholderText(`${PLACEHOLDER_START_TEXT}${authFormProps.placeholderText}`);
 
-        await user.type(input, '123');
-        expect(input).toHaveValue('123');
+        await user.type(input, USER_INPUTS.firstChange);
+        expect(input).toHaveValue(USER_INPUTS.firstChange);
 
-        await user.type(input, '456');
-        expect(input).toHaveValue('123456');
+        await user.type(input, USER_INPUTS.secondChange);
+        expect(input).toHaveValue(`${USER_INPUTS.firstChange}${USER_INPUTS.secondChange}`);
+
 
         rerender(
             <AuthForm
@@ -76,6 +80,6 @@ describe('AuthForm component', () => {
             />
         );
 
-        expect(input).toHaveValue('123456');
+        expect(input).toHaveValue(`${USER_INPUTS.firstChange}${USER_INPUTS.secondChange}`);
     });
 });
