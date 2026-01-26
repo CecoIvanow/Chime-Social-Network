@@ -27,7 +27,7 @@ function setup(options = {
 };
 
 describe("CreateContentInput component", () => {
-    it("links label and input correctly via htmlFor and id", () => {
+    it("links label and input correctly via default htmlFor and id attributes", () => {
         setup({
             hasPlaceholderTextProp: false
         });
@@ -59,7 +59,7 @@ describe("CreateContentInput component", () => {
         expect(input).toHaveAttribute("type", "text");
     });
 
-    it("on text change handler gets called on change", () => {
+    it("triggers onTextChangeHandler on user input", () => {
         setup({
             hasPlaceholderTextProp: false
         });
