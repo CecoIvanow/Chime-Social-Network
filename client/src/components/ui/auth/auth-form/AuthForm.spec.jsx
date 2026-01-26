@@ -24,15 +24,16 @@ function setup() {
 }
 
 describe('AuthForm component', () => {
-    it('renders with passed props', () => {
+    it('renders auth form with correct attributes', () => {
         setup();
 
-        const details = screen.getByText(authFormProps.fieldName);
-        const input = screen.getByPlaceholderText(`Enter your ${authFormProps.placeholderText}`);
+        const inputEl = screen.getByRole("textbox");
 
-        expect(details).toHaveTextContent(authFormProps.fieldName);
+        expect(screen.getByText(authFormProps.fieldName)).toBeInTheDocument(); 
 
-        expect(input).toHaveAttribute('type', authFormProps.inputType);
+        expect(inputEl).toHaveAttribute("type", authFormProps.inputType);
+        expect(inputEl).toHaveAttribute("placeholder", `Enter your ${authFormProps.placeholderText}`);
+        expect(inputEl).toHaveAttribute("name", authFormProps.inputName);
     });
 
     it('renders with correct input value on change', () => {
