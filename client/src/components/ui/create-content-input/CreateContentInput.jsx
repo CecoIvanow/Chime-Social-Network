@@ -3,6 +3,8 @@ export default function CreateContentInput({
     placeholderText,
     text,
 }) {
+    const placeholderLabel = placeholderText ?? "Share your thoughts...";
+    
     return (
         <div className="entry-header">
             <label htmlFor="entry" data-testid="entry-label"></label>
@@ -12,7 +14,7 @@ export default function CreateContentInput({
                 id="entry"
                 defaultValue={text}
                 onChange={onTextChangeHandler}
-                placeholder={placeholderText || "Share your thoughts..."}
+                placeholder={placeholderLabel}
             />
         </div>
     );
