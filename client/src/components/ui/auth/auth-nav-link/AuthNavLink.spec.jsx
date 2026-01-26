@@ -21,7 +21,7 @@ beforeEach(() => {
 });
 
 describe('AuthNavLink component', () => {
-    it('renders with passed props', () => {
+    it('renders link with path and buttonText props', () => {
         const link = screen.getByText(authNavLinkProps.buttonLabel);
 
         expect(link).toHaveTextContent(authNavLinkProps.buttonLabel);
