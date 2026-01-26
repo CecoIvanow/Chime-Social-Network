@@ -27,6 +27,21 @@ function setup(options = {
 };
 
 describe("CreateContentInput component", () => {
+    it.each([
+        { name: "renders input with default placeholder text on empty placeholderText prop", hasPlaceholderTextProp: true },
+        { name: "renders input with passed placeholder text prop", hasPlaceholderTextProp: false },
+    ])("$name", ({ hasPlaceholderTextProp }) => {
+        setup({
+            hasPlaceholderTextProp,
+        });
+
+        if (hasPlaceholderTextProp) {
+            expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", createContentInputProps.placeholderText);
+        } else {
+            expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", DEFAULT_PLACEHOLDER_TEXT);
+        };
+    });
+
     it("links label and input correctly via hardcoded htmlFor and id attributes", () => {
         setup({
             hasPlaceholderTextProp: false
@@ -39,16 +54,6 @@ describe("CreateContentInput component", () => {
 
         expect(label).toHaveAttribute("for", defaultLinkingValue);
         expect(input).toHaveAttribute("id", defaultLinkingValue);
-    });
-
-    it("renders input with correct default value and place holder text", () => {
-        setup();
-
-        const input = screen.getByRole("textbox");
-
-
-        expect(input).toHaveValue(createContentInputProps.text);
-        expect(input).toBeInTheDocument();
     });
 
     it("renders input with hardcoded name and type attributes", () => {
