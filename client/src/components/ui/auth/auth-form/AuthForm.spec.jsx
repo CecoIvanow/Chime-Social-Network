@@ -3,14 +3,21 @@ import { describe, expect, it } from "vitest";
 
 import AuthForm from "./AuthForm";
 
+const authFormProps = {
+    fieldName: "Username",
+    inputName: "username",
+    inputType: "text",
+    placeholderText: "username",
+};
+
 describe('AuthForm component', () => {
     it('renders with passed props', () => {
         render(
             <AuthForm
-                fieldName='Username'
-                inputName='username'
-                inputType='text'
-                placeholderText='username'
+                fieldName={authFormProps.fieldName}
+                inputName={authFormProps.inputName}
+                inputType={authFormProps.inputType}
+                placeholderText={authFormProps.placeholderText}
             />
         )
 
@@ -25,11 +32,11 @@ describe('AuthForm component', () => {
     it('renders with correct input value on change', () => {
         render(
             <AuthForm
-                placeholderText='password'
+                placeholderText={authFormProps.placeholderText}
             />
         );
 
-        const input = screen.getByPlaceholderText('Enter your password');
+        const input = screen.getByPlaceholderText('Enter your username');
 
         fireEvent.change(input, { target: { value: '123' } });
         expect(input).toHaveValue('123');
@@ -41,11 +48,11 @@ describe('AuthForm component', () => {
     it('rerenders with default input value', () => {
         const { rerender } = render(
             <AuthForm
-                placeholderText='password'
+                placeholderText={authFormProps.placeholderText}
             />
         );
 
-        const input = screen.getByPlaceholderText('Enter your password');
+        const input = screen.getByPlaceholderText('Enter your username');
 
         fireEvent.change(input, { target: { value: '123' } });
         expect(input).toHaveValue('123');
@@ -55,7 +62,7 @@ describe('AuthForm component', () => {
 
         rerender(
             <AuthForm
-                placeholderText='password'
+                placeholderText='username'
             />
         );
 
