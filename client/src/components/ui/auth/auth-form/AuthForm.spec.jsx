@@ -16,8 +16,11 @@ const INPUT_PLACEHOLDER_TEXT = `Enter your ${authFormProps.placeholderText}`;
 
 const USER_INPUTS = {
     firstChange: "123",
-    secondChange: "456"
-}
+    secondChange: "456",
+    get finalValue() {
+        return this.firstChange + this.secondChange
+    }
+};
 
 function setup() {
     const { rerender } = render(
@@ -55,7 +58,7 @@ describe('AuthForm component', () => {
         expect(input).toHaveValue(USER_INPUTS.firstChange);
 
         await user.type(input, USER_INPUTS.secondChange);
-        expect(input).toHaveValue(`${USER_INPUTS.firstChange}${USER_INPUTS.secondChange}`);
+        expect(input).toHaveValue(USER_INPUTS.finalValue);
     });
 
     it('rerenders with default input value', async () => {
@@ -68,7 +71,7 @@ describe('AuthForm component', () => {
         expect(input).toHaveValue(USER_INPUTS.firstChange);
 
         await user.type(input, USER_INPUTS.secondChange);
-        expect(input).toHaveValue(`${USER_INPUTS.firstChange}${USER_INPUTS.secondChange}`);
+        expect(input).toHaveValue(USER_INPUTS.finalValue);
 
 
         rerender(
@@ -80,6 +83,6 @@ describe('AuthForm component', () => {
             />
         );
 
-        expect(input).toHaveValue(`${USER_INPUTS.firstChange}${USER_INPUTS.secondChange}`);
+        expect(input).toHaveValue(USER_INPUTS.finalValue);
     });
 });
