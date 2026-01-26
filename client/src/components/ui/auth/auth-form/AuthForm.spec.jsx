@@ -27,18 +27,19 @@ describe('AuthForm component', () => {
     it('renders with passed props', () => {
         setup();
 
-        const details = screen.getByText('Username');
-        const input = screen.getByPlaceholderText('Enter your username');
+        const details = screen.getByText(authFormProps.fieldName);
+        const input = screen.getByPlaceholderText(`Enter your ${authFormProps.placeholderText}`);
 
-        expect(details).toHaveTextContent('Username');
+        expect(details).toHaveTextContent(authFormProps.fieldName);
 
-        expect(input).toHaveAttribute('type', 'text');
+        expect(input).toHaveAttribute('type', authFormProps.inputType);
     });
 
     it('renders with correct input value on change', () => {
         setup();
 
-        const input = screen.getByPlaceholderText('Enter your username');
+        const input = screen.getByPlaceholderText(`Enter your ${authFormProps.placeholderText}`);
+
 
         fireEvent.change(input, { target: { value: '123' } });
         expect(input).toHaveValue('123');
@@ -50,7 +51,8 @@ describe('AuthForm component', () => {
     it('rerenders with default input value', () => {
         const { rerender } = setup();
 
-        const input = screen.getByPlaceholderText('Enter your username');
+        const input = screen.getByPlaceholderText(`Enter your ${authFormProps.placeholderText}`);
+
 
         fireEvent.change(input, { target: { value: '123' } });
         expect(input).toHaveValue('123');
