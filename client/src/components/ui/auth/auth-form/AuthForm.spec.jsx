@@ -12,7 +12,7 @@ const authFormProps = {
     placeholderText: "username",
 };
 
-const PLACEHOLDER_START_TEXT = "Enter your ";
+const INPUT_PLACEHOLDER_TEXT = `Enter your ${authFormProps.placeholderText}`;
 
 const USER_INPUTS = {
     firstChange: "123",
@@ -41,7 +41,7 @@ describe('AuthForm component', () => {
         expect(screen.getByText(authFormProps.fieldName)).toBeInTheDocument();
 
         expect(inputEl).toHaveAttribute("type", authFormProps.inputType);
-        expect(inputEl).toHaveAttribute("placeholder", `${PLACEHOLDER_START_TEXT}${authFormProps.placeholderText}`);
+        expect(inputEl).toHaveAttribute("placeholder", `${INPUT_PLACEHOLDER_TEXT}`);
         expect(inputEl).toHaveAttribute("name", authFormProps.inputName);
     });
 
@@ -62,7 +62,7 @@ describe('AuthForm component', () => {
         const user = userEvent.setup();
         const { rerender } = setup();
 
-        const input = screen.getByPlaceholderText(`${PLACEHOLDER_START_TEXT}${authFormProps.placeholderText}`);
+        const input = screen.getByPlaceholderText(`${INPUT_PLACEHOLDER_TEXT}`);
 
         await user.type(input, USER_INPUTS.firstChange);
         expect(input).toHaveValue(USER_INPUTS.firstChange);
