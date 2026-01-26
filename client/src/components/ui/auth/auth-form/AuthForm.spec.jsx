@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import userEvent from "@testing-library/user-event";
@@ -40,12 +40,18 @@ describe('AuthForm component', () => {
         setup();
 
         const inputEl = screen.getByRole("textbox");
-
-        expect(screen.getByText(authFormProps.fieldName)).toBeInTheDocument();
-
         expect(inputEl).toHaveAttribute("type", authFormProps.inputType);
         expect(inputEl).toHaveAttribute("placeholder", `${INPUT_PLACEHOLDER_TEXT}`);
         expect(inputEl).toHaveAttribute("name", authFormProps.inputName);
+
+        expect(screen.getByText(authFormProps.fieldName)).toBeInTheDocument();
+    });
+
+    it("links label and input via htmlFor and id attributes", () => {
+        setup();
+
+        expect(screen.getByTestId("label-el")).toHaveAttribute("for", authFormProps.inputName);
+        expect(screen.getByRole("textbox")).toHaveAttribute("id", authFormProps.inputName);
     });
 
     it('input updates value on user text typing', async () => {

@@ -15,7 +15,7 @@ export default function AuthForm({
     return <>
         <div className="input-box">
             <span className="details">{fieldName}</span>
-            <label htmlFor={inputName}></label>
+            <label htmlFor={inputName} data-testid="label-el"></label>
             <input
                 id={inputName}
                 type={inputType}
