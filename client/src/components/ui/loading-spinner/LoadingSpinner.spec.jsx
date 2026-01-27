@@ -5,12 +5,8 @@ import LoadingSpinner from "./LoadingSpinner";
 
 beforeEach(() => render(<LoadingSpinner />));
 
-describe('LoadingSpinner component', () => {
-    it('renders the loading spinner', () => {
-        const outerDiv = screen.getByTestId('loading-container');
-        const innerDiv = screen.getByTestId('loading-spinner')
-
-        expect(outerDiv).toBeInTheDocument();
-        expect(innerDiv).toBeInTheDocument();
-    })
-})
+describe("LoadingSpinner component", () => {
+    it("renders the loading spinner", () => {
+        expect(screen.getByRole("status")).toBeInTheDocument();;
+    });
+});
