@@ -22,16 +22,15 @@ beforeEach(() => {
 });
 
 describe("InputField component", () => {
-    it("links label and input correctly via htmlFor, id, and name attributes", () => {
+    it("links the label and input correctly via htmlFor and id attributes", () => {
         const label = screen.getByText(inputFieldProps.fieldName);
         const textarea = screen.getByLabelText(inputFieldProps.fieldName);
 
         expect(label).toHaveAttribute("for", inputFieldProps.inputName);
         expect(textarea).toHaveAttribute("id", inputFieldProps.inputName);
-        expect(textarea).toHaveAttribute("name", inputFieldProps.inputName);
     });
 
-    it("renders textarea with default value and type", () => {
+    it("renders the input with correct value, name and type attributes", () => {
         const textarea = screen.getByLabelText(inputFieldProps.fieldName);
 
         expect(textarea).toHaveValue(inputFieldProps.initialValue);
