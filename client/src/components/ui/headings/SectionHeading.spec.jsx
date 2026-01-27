@@ -3,10 +3,10 @@ import { describe, expect, it, beforeEach } from "vitest";
 
 import SectionHeading from "./SectionHeading";
 
-beforeEach(() => render(<SectionHeading sectionName={'Friends'} />))
+beforeEach(() => render(<SectionHeading sectionName={"Friends"} />))
 
-describe('SectionHeading component', () => {
-    it('Should render sectionName text', () => {
-        expect(screen.getByRole('heading')).toHaveTextContent('Friends');
+describe("SectionHeading component", () => {
+    it("Should render sectionName text", () => {
+        expect(screen.getByRole("heading")).toHaveTextContent("Friends");
     });
 });
