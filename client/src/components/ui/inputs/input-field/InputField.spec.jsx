@@ -1,4 +1,4 @@
-import { getByLabelText, getByRole, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, beforeEach } from "vitest";
 
 import InputField from "./InputField";
@@ -31,5 +31,6 @@ describe("InputField component", () => {
 
         expect(input).toHaveValue(inputFieldProps.initialValue);
         expect(input).toHaveAttribute("type", inputFieldProps.inputType);
+        expect(input).toHaveAttribute("name", inputFieldProps.inputName);
     });
 });
