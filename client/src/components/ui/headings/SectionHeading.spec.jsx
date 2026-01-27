@@ -8,7 +8,7 @@ const headerLabel = "Friends";
 beforeEach(() => render(<SectionHeading sectionName={headerLabel} />))
 
 describe("SectionHeading component", () => {
-    it("Should render sectionName text", () => {
+    it("renders heading with text value", () => {
         expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(headerLabel);
     });
 });
