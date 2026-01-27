@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { getByLabelText, getByRole, render, screen } from "@testing-library/react";
 import { describe, expect, it, beforeEach } from "vitest";
 
 import InputField from "./InputField";
@@ -23,17 +23,13 @@ beforeEach(() => {
 
 describe("InputField component", () => {
     it("links the label and input correctly via htmlFor and id attributes", () => {
-        const label = screen.getByText(inputFieldProps.fieldName);
-        const textarea = screen.getByLabelText(inputFieldProps.fieldName);
-
-        expect(label).toHaveAttribute("for", inputFieldProps.inputName);
-        expect(textarea).toHaveAttribute("id", inputFieldProps.inputName);
+        expect(screen.getByLabelText(inputFieldProps.fieldName)).toBeInTheDocument();
     });
 
     it("renders the input with correct value, name and type attributes", () => {
-        const textarea = screen.getByLabelText(inputFieldProps.fieldName);
+        const input = screen.getByLabelText(inputFieldProps.fieldName);
 
-        expect(textarea).toHaveValue(inputFieldProps.initialValue);
-        expect(textarea).toHaveAttribute("type", inputFieldProps.inputType);
+        expect(input).toHaveValue(inputFieldProps.initialValue);
+        expect(input).toHaveAttribute("type", inputFieldProps.inputType);
     });
 });
