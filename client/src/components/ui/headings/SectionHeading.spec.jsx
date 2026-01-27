@@ -7,6 +7,6 @@ beforeEach(() => render(<SectionHeading sectionName={"Friends"} />))
 
 describe("SectionHeading component", () => {
     it("Should render sectionName text", () => {
-        expect(screen.getByRole("heading")).toHaveTextContent("Friends");
+        expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent("Friends");
     });
 });
