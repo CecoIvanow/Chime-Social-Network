@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router";
 
 import AuthNavLink from "./AuthNavLink";
 
-const authNavLinkProps = {
+const props = {
     buttonLabel: "Don't have an account?",
     path: "/register",
 };
@@ -13,8 +13,8 @@ beforeEach(() => {
     render(
         <MemoryRouter>
             <AuthNavLink
-                path={authNavLinkProps.path}
-                buttonText={authNavLinkProps.buttonLabel}
+                path={props.path}
+                buttonText={props.buttonLabel}
             />
         </MemoryRouter>
     );
@@ -24,7 +24,7 @@ describe('AuthNavLink component', () => {
     it('renders link with path and buttonText props', () => {
         const link = screen.getByRole("link");
 
-        expect(link).toHaveTextContent(authNavLinkProps.buttonLabel);
-        expect(link).toHaveAttribute('href', authNavLinkProps.path);
+        expect(link).toHaveTextContent(props.buttonLabel);
+        expect(link).toHaveAttribute('href', props.path);
     })
 })

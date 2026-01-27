@@ -7,7 +7,7 @@ import CreateContentInput from "./CreateContentInput";
 
 const DEFAULT_PLACEHOLDER_TEXT = "Share your thoughts...";
 
-const createContentInputProps = {
+const props = {
     placeholderText: "Post your comment...",
     text: "This is a test!"
 };
@@ -17,13 +17,13 @@ const onTextChangeMock = vi.fn();
 function setup(options = {
     hasPlaceholderTextProp: true,
 }) {
-    const placeholderText = options.hasPlaceholderTextProp ? createContentInputProps.placeholderText : null;
+    const placeholderText = options.hasPlaceholderTextProp ? props.placeholderText : null;
 
     render(
         <CreateContentInput
             onTextChangeHandler={onTextChangeMock}
             placeholderText={placeholderText}
-            text={createContentInputProps.text}
+            text={props.text}
         />
     );
 };
@@ -32,7 +32,7 @@ describe("CreateContentInput component", () => {
     it("renders the input with the passed text value", () => {
         setup();
 
-        expect(screen.getByRole("textbox")).toHaveValue(createContentInputProps.text);
+        expect(screen.getByRole("textbox")).toHaveValue(props.text);
     });
 
     it.each([
@@ -44,7 +44,7 @@ describe("CreateContentInput component", () => {
         });
 
         if (hasPlaceholderTextProp) {
-            expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", createContentInputProps.placeholderText);
+            expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", props.placeholderText);
         } else {
             expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", DEFAULT_PLACEHOLDER_TEXT);
         };

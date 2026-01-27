@@ -5,14 +5,14 @@ import userEvent from "@testing-library/user-event";
 
 import AuthForm from "./AuthForm";
 
-const authFormProps = {
+const props = {
     fieldName: "Username",
     inputName: "username",
     inputType: "text",
     placeholderText: "username",
 };
 
-const INPUT_PLACEHOLDER_TEXT = `Enter your ${authFormProps.placeholderText}`;
+const INPUT_PLACEHOLDER_TEXT = `Enter your ${props.placeholderText}`;
 
 const USER_INPUTS = {
     firstChange: "123",
@@ -25,10 +25,10 @@ const USER_INPUTS = {
 function setup() {
     const { rerender } = render(
         <AuthForm
-            fieldName={authFormProps.fieldName}
-            inputName={authFormProps.inputName}
-            inputType={authFormProps.inputType}
-            placeholderText={authFormProps.placeholderText}
+            fieldName={props.fieldName}
+            inputName={props.inputName}
+            inputType={props.inputType}
+            placeholderText={props.placeholderText}
         />
     );
 
@@ -40,19 +40,19 @@ describe('AuthForm component', () => {
         setup();
 
         const inputEl = screen.getByRole("textbox");
-        expect(inputEl).toHaveAttribute("type", authFormProps.inputType);
+        expect(inputEl).toHaveAttribute("type", props.inputType);
         expect(inputEl).toHaveAttribute("placeholder", `${INPUT_PLACEHOLDER_TEXT}`);
-        expect(inputEl).toHaveAttribute("name", authFormProps.inputName);
+        expect(inputEl).toHaveAttribute("name", props.inputName);
         expect(inputEl).toBeRequired();
 
-        expect(screen.getByText(authFormProps.fieldName)).toBeInTheDocument();
+        expect(screen.getByText(props.fieldName)).toBeInTheDocument();
     });
 
     it("links label and input via htmlFor and id attributes", () => {
         setup();
 
-        expect(screen.getByTestId("label-el")).toHaveAttribute("for", authFormProps.inputName);
-        expect(screen.getByRole("textbox")).toHaveAttribute("id", authFormProps.inputName);
+        expect(screen.getByTestId("label-el")).toHaveAttribute("for", props.inputName);
+        expect(screen.getByRole("textbox")).toHaveAttribute("id", props.inputName);
     });
 
     it('input updates value on user text typing', async () => {
@@ -83,10 +83,10 @@ describe('AuthForm component', () => {
 
         rerender(
             <AuthForm
-                fieldName={authFormProps.fieldName}
-                inputName={authFormProps.inputName}
-                inputType={authFormProps.inputType}
-                placeholderText={authFormProps.placeholderText}
+                fieldName={props.fieldName}
+                inputName={props.inputName}
+                inputType={props.inputType}
+                placeholderText={props.placeholderText}
             />
         );
 
