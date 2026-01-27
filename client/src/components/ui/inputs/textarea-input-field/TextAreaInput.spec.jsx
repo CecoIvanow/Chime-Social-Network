@@ -26,6 +26,8 @@ describe("TextAreaInput component", () => {
 
     it("renders textarea with correct value and name attributes", () => {
         const textarea = screen.getByLabelText(props.fieldName);
+
         expect(textarea).toHaveValue(props.initialValue);
+        expect(textarea).toHaveAttribute("name", props.inputName);
     });
 });
