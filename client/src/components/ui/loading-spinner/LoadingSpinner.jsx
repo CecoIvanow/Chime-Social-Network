@@ -3,11 +3,9 @@ export default function LoadingSpinner() {
         <div
             className="loading-container"
             role="status"
-            data-testid="loading-container"
         >
             <div
                 className="loading-spinner primary"
-                data-testid="loading-spinner"
             ></div>
         </div>
     </>
