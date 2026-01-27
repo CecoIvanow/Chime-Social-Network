@@ -6,7 +6,7 @@ export default function InputField({
 }) {
 
     return <>
-        <div className="form-group" data-testid="form-group">
+        <div className="form-group">
             <label className="form-label" htmlFor={inputName}>{fieldName}</label>
             <input
                 id={inputName}

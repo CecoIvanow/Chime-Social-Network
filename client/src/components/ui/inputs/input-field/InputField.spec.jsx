@@ -4,21 +4,6 @@ import { describe, expect, it } from "vitest";
 import InputField from "./InputField";
 
 describe("InputField component", () => {
-    it("renders with form-group container, label and input", () => {
-        render(<InputField
-            fieldName="Age"
-            inputName="age"
-        />)
-
-        const formGroup = screen.getByTestId("form-group");
-        const label = screen.getByText("Age");
-        const textarea = screen.getByLabelText("Age");
-
-        expect(formGroup).toBeInTheDocument();
-        expect(label).toBeInTheDocument();
-        expect(textarea).toBeInTheDocument();
-    });
-
     it("links label and input correctly via htmlFor, id, and name attributes", () => {
         render(<InputField
             fieldName="Age"
