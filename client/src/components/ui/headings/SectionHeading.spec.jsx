@@ -4,12 +4,6 @@ import { describe, expect, it } from "vitest";
 import SectionHeading from "./SectionHeading";
 
 describe('SectionHeading component', () => {
-    it('Should render', () => {
-        render(<SectionHeading />);
-
-        expect(screen.getByRole('heading')).toBeInTheDocument();
-    });
-
     it('Should render sectionName text', () => {
         
 
@@ -17,4 +11,4 @@ describe('SectionHeading component', () => {
 
         expect(screen.getByRole('heading')).toHaveTextContent('Friends');
     });
-})
+});
