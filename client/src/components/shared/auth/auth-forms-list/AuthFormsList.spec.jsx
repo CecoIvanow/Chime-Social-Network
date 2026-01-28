@@ -36,10 +36,8 @@ beforeEach(() => {
 })
 
 describe("AuthFormslist component", () => {
-    it("renders with correct number of AuthForm components", () => {
-        const authForms = screen.getAllByTestId("auth-form");
-        
-        expect(authForms).toHaveLength(mockFields.length);
+    it("renders with correct number of AuthForm components", () => {      
+        expect(screen.getAllByTestId("auth-form")).toHaveLength(mockFields.length);
     })
 
     it("renders Authform component with passed props", () => {
