@@ -6,19 +6,19 @@ import AuthHeaderTitle from "./AuthHeaderTitle";
 beforeEach(() => {
     render(
         <AuthHeaderTitle
-            title='Password'
+            title="Password"
         />
     )
 });
 
-describe('AuthHeaderTitle component', () => {
-    it('renders on screen', () => {
+describe("AuthHeaderTitle component", () => {
+    it("renders on screen", () => {
 
-        expect(screen.getByTestId('auth-header-title')).toBeInTheDocument();
+        expect(screen.getByTestId("auth-header-title")).toBeInTheDocument();
     });
 
-    it('renders with passed text content', () => {
+    it("renders with passed text content", () => {
 
-        expect(screen.getByText('Password')).toHaveTextContent('Password');
+        expect(screen.getByText("Password")).toHaveTextContent("Password");
     });
 });
