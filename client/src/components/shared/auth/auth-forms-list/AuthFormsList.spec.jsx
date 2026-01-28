@@ -30,22 +30,24 @@ const mockFields = [
 ];
 
 beforeEach(() => {
-    render(<AuthFormsList
-        authFieldsList={mockFields}
-    />)
-})
+    render(
+        <AuthFormsList
+            authFieldsList={mockFields}
+        />
+    );
+});
 
-describe("AuthFormslist component", () => {
-    it("renders with correct number of AuthForm components", () => {      
+describe("AuthFormsList component", () => {
+    it("renders with correct number of AuthForm components", () => {
         expect(screen.getAllByTestId("auth-form")).toHaveLength(mockFields.length);
-    })
+    });
 
-    it("renders Authform component with passed props", () => {
+    it("renders AuthForm component with correct props", () => {
         for (const field of mockFields) {
             expect(screen.getByText(field.fieldName)).toBeInTheDocument();
             expect(screen.getByText(field.inputName)).toBeInTheDocument();
             expect(screen.getByText(field.inputType)).toBeInTheDocument();
             expect(screen.getByText(field.placeholderText)).toBeInTheDocument();
-        }
-    })
+        };
+    });
 });
