@@ -3,8 +3,6 @@ import AuthForm from "../../../ui/auth/auth-form/AuthForm";
 export default function AuthFormsList({
     authFieldsList
 }) {
-
-
     return (
         <div className="user-details">
             {authFieldsList.map(field =>
@@ -17,5 +15,5 @@ export default function AuthFormsList({
                 />
             )}
         </div>
-    )
-}
+    );
+};

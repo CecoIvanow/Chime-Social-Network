@@ -3,15 +3,15 @@ import { describe, expect, it, beforeEach } from "vitest";
 
 import AuthHeaderTitle from "./AuthHeaderTitle";
 
-describe('AuthHeaderTitle component', () => {
-    beforeEach(() => {
-        render(
-            <AuthHeaderTitle
-                title='Password'
-            />
-        )
-    })
+beforeEach(() => {
+    render(
+        <AuthHeaderTitle
+            title='Password'
+        />
+    )
+});
 
+describe('AuthHeaderTitle component', () => {
     it('renders on screen', () => {
 
         expect(screen.getByTestId('auth-header-title')).toBeInTheDocument();
@@ -20,5 +20,5 @@ describe('AuthHeaderTitle component', () => {
     it('renders with passed text content', () => {
 
         expect(screen.getByText('Password')).toHaveTextContent('Password');
-    })
-})
+    });
+});
