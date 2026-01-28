@@ -1,27 +1,31 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import SearchField from "./SearchField";
 
+const mockSearchParams = vi.fn();
+
+beforeEach(() => {
+    render(
+        <SearchField
+            setSearchParams={mockSearchParams}
+            searchBy="content"
+        />
+    );
+});
+
 describe("SearchField component", () => {
     it("Should render search field container with input", () => {
-        render(<SearchField />);
-
         expect(screen.getByTestId("search-field-container")).toBeInTheDocument();
         expect(screen.getByTestId("search-field-input")).toBeInTheDocument();
     });
 
     it("Should render search field input with passed searchBy placeholder text", () => {
-        render(<SearchField searchBy={"content"} />);
-
         expect(screen.getByPlaceholderText("Search by content...")).toBeInTheDocument();
     });
 
     it("Should set correct search params after 1250 ms on change", () => {
-        const mockSearchParams = vi.fn();
         vi.useFakeTimers();
-
-        render(<SearchField setSearchParams={mockSearchParams} />);
 
         const input = screen.getByTestId("search-field-input");
 
@@ -35,10 +39,7 @@ describe("SearchField component", () => {
     });
 
     it("Should set correct search params after multiple changes", () => {
-        const mockSearchParams = vi.fn();
         vi.useFakeTimers();
-
-        render(<SearchField setSearchParams={mockSearchParams} />);
 
         const input = screen.getByTestId("search-field-input");
 
