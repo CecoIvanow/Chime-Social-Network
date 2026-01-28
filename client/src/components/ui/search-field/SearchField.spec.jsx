@@ -27,19 +27,19 @@ describe("SearchField component", () => {
         expect(screen.getByRole("textbox")).toHaveAttribute("type", "text");
     });
 
-    it("Should set correct search params after 1250 ms on change", () => {
-        const input = screen.getByRole("textbox");
+    it("calls setSearchParams after 1250 ms have passed on value change", () => {
+        const newValue = "React";
 
-        fireEvent.change(input, { target: { value: "React" } });
+        fireEvent.change(screen.getByRole("textbox"), { target: { value: newValue } });
 
         vi.advanceTimersByTime(1249);
-        expect(mockProps.setSearchParams).toBeCalledTimes(0);
+        expect(mockProps.setSearchParams).not.toHaveBeenCalled();
 
         vi.advanceTimersByTime(1);
-        expect(mockProps.setSearchParams).toBeCalledWith("React");
+        expect(mockProps.setSearchParams).toHaveBeenCalledWith(newValue);
     });
 
-    it("Should set correct search params after multiple changes", () => {
+    it("resets timer and does not call setSearchParams after multiple value changes below 1250ms", () => {
         const input = screen.getByRole("textbox");
 
         fireEvent.change(input, { target: { value: "R" } });
