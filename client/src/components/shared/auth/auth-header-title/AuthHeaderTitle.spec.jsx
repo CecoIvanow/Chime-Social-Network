@@ -3,17 +3,20 @@ import { describe, expect, it, beforeEach } from "vitest";
 
 import AuthHeaderTitle from "./AuthHeaderTitle";
 
+const mockProps = {
+    title: "Password",
+}
+
 beforeEach(() => {
     render(
         <AuthHeaderTitle
-            title="Password"
+            {...mockProps}
         />
     )
 });
 
 describe("AuthHeaderTitle component", () => {
     it("renders with passed text content", () => {
-
-        expect(screen.getByText("Password")).toHaveTextContent("Password");
+        expect(screen.getByText(mockProps.title)).toHaveTextContent(mockProps.title);
     });
 });
