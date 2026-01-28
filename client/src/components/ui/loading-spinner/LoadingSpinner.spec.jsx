@@ -1,16 +1,12 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeEach } from "vitest";
 
 import LoadingSpinner from "./LoadingSpinner";
 
-describe('LoadingSpinner component', () => {
-    it('Should render a loading spinner', () => {
-        render(<LoadingSpinner/>);
-        
-        const outerDiv = screen.getByTestId('loading-container');
-        const innerDiv = screen.getByTestId('loading-spinner')
+beforeEach(() => render(<LoadingSpinner />));
 
-        expect(outerDiv).toBeInTheDocument();
-        expect(innerDiv).toBeInTheDocument();
-    })
-})
+describe("LoadingSpinner component", () => {
+    it("renders the loading spinner", () => {
+        expect(screen.getByRole("status")).toBeInTheDocument();;
+    });
+});

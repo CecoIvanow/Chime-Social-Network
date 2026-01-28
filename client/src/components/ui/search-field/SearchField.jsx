@@ -7,7 +7,7 @@ export default function SearchField({
 
     const [curTimeOutId, setCurTimeOutId] = useState(null);
 
-    async function onValueChangeHandler(e) {
+    function onValueChangeHandler(e) {
         const value = e.target.value;
 
         if (curTimeOutId) {
@@ -24,14 +24,12 @@ export default function SearchField({
     return (
         <div
             className="search-filter"
-            data-testid="search-field-container"
         >
             <input
                 type="text"
                 className="search-input"
                 placeholder={`Search by ${searchBy}...`}
                 onChange={onValueChangeHandler}
-                data-testid="search-field-input"
             />
         </div>
     )

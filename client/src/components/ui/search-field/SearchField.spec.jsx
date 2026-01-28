@@ -1,60 +1,56 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import SearchField from "./SearchField";
 
-describe('SearchField component', () => {
-    it('Should render search field container with input', () => {
-        render(<SearchField />);
+const mockProps = {
+    setSearchParams: vi.fn(),
+    searchBy: "content",
+};
 
-        expect(screen.getByTestId('search-field-container')).toBeInTheDocument();
-        expect(screen.getByTestId('search-field-input')).toBeInTheDocument();
+beforeEach(() => {
+    vi.useFakeTimers();
+
+    render(
+        <SearchField
+            {...mockProps}
+        />
+    );
+});
+
+// * fireEvent is used here due to vi.useFakeTimers and userEvent Issue #1115 in testing-library/user-event github repo
+// * https://github.com/testing-library/user-event/issues/1115
+
+describe("SearchField component", () => {
+    it("renders input with the placeholder and type attributes", () => {
+        expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", `Search by ${mockProps.searchBy}...`);
+        expect(screen.getByRole("textbox")).toHaveAttribute("type", "text");
     });
 
-    it('Should render search field input with passed searchBy placeholder text', () => {
-        render(<SearchField searchBy={'content'} />);
+    it("calls setSearchParams after 1250 ms have passed on value change", () => {
+        const newValue = "React";
 
-        expect(screen.getByPlaceholderText('Search by content...')).toBeInTheDocument();
-    });
-
-    it('Should set correct search params after 1250 ms on change', () => {
-        const mockSearchParams = vi.fn();
-        vi.useFakeTimers();
-
-        render(<SearchField setSearchParams={mockSearchParams} />);
-
-        const input = screen.getByTestId('search-field-input');
-
-        fireEvent.change(input, { target: { value: 'React' } });
+        fireEvent.change(screen.getByRole("textbox"), { target: { value: newValue } });
 
         vi.advanceTimersByTime(1249);
-        expect(mockSearchParams).toBeCalledTimes(0);
+        expect(mockProps.setSearchParams).not.toHaveBeenCalled();
 
         vi.advanceTimersByTime(1);
-        expect(mockSearchParams).toBeCalledWith('React');
+        expect(mockProps.setSearchParams).toHaveBeenCalledWith(newValue);
     });
 
-    it('Should set correct search params after multiple changes', () => {
-        const mockSearchParams = vi.fn();
-        vi.useFakeTimers();
+    it("resets timer and does not call setSearchParams after value changes before 1250ms have passed", () => {
+        const input = screen.getByRole("textbox");
 
-        render(<SearchField setSearchParams={mockSearchParams} />);
-
-        const input = screen.getByTestId('search-field-input');
-
-        fireEvent.change(input, { target: { value: 'R' } });
+        fireEvent.change(input, { target: { value: "Test" } });
         vi.advanceTimersByTime(1000);
 
-        fireEvent.change(input, { target: { value: 'Rea' } });
-        vi.advanceTimersByTime(1200);
-
-        fireEvent.change(input, { target: { value: 'React' } });
+        fireEvent.change(input, { target: { value: "Test123" } });
         vi.advanceTimersByTime(1249);
-        expect(mockSearchParams).not.toBeCalledWith('React');
+        expect(mockProps.setSearchParams).not.toHaveBeenCalled();
 
-        fireEvent.change(input, { target: { value: 'Re' } });
+        fireEvent.change(input, { target: { value: "Surprise!" } });
         vi.advanceTimersByTime(1250);
-        expect(mockSearchParams).toBeCalledTimes(1);
-        expect(mockSearchParams).toBeCalledWith('Re');
-    })
-})
+        expect(mockProps.setSearchParams).toHaveBeenCalledWith("Surprise!");
+    });
+});

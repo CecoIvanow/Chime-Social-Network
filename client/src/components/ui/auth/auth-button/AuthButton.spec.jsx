@@ -3,39 +3,45 @@ import { describe, expect, it } from "vitest";
 
 import AuthButton from "./AuthButton";
 
-describe('AuthButton component', () => {
-    it('renders a submit button with the correct text and container', () => {
-        render(<AuthButton
-            buttonText="Login"
-        />);
+const mockProps = {
+    buttonText: "Login",
+};
 
-        const container = screen.getByTestId('button-auth');
-        const input = screen.getByText('Login');
+function setup(options={
+    isPending: false,
+}) {
+    const isPendingState = options.isPending ? options.isPending : null;
 
-        expect(container).toBeInTheDocument();
-        expect(input).toBeInTheDocument();
-        expect(input).toHaveValue('Login');
-        expect(input).toHaveAttribute('type', 'submit');
+    render(
+        <AuthButton buttonText={mockProps.buttonText} isPending={isPendingState} />
+    );
+};
+
+describe("AuthButton component", () => {
+    it("renders button with text label", () => {
+        setup();
+
+        expect(screen.getByRole("button")).toHaveValue(mockProps.buttonText);
     });
 
-    it('isPending is false by default', () => {
-        render(<AuthButton
-            buttonText="Login"
-        />);
+    it("isPending defaults to false on missing prop", () => {
+        setup();
 
-        const input = screen.getByText('Login');
+        expect(screen.getByRole("button")).toBeEnabled();
+    });
 
-        expect(input).not.toBeDisabled();
-    })
+    it.each([
+        {name: "button is not disabled on isPending false", isPending: false},
+        {name: "button is disabled on isPending true", isPending: true},
+    ])("$name", ({isPending}) => {
+        setup({
+            isPending,
+        });
 
-    it('is disabled if isPending is true', () => {
-        render(<AuthButton
-            buttonText="Loading..."
-            isPending={true}
-        />);
-
-        const input = screen.getByText('Loading...');
-
-        expect(input).toBeDisabled();
-    })
-})
+        if (isPending) {
+            expect(screen.getByRole("button")).toBeDisabled();
+        } else {
+            expect(screen.getByRole("button")).toBeEnabled();
+        };
+    });
+});

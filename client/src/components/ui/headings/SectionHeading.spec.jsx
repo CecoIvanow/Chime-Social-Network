@@ -1,20 +1,16 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeEach } from "vitest";
 
 import SectionHeading from "./SectionHeading";
 
-describe('SectionHeading component', () => {
-    it('Should render', () => {
-        render(<SectionHeading />);
+const mockProps = {
+    sectionName: "Friends",
+};
 
-        expect(screen.getByRole('heading')).toBeInTheDocument();
+beforeEach(() => render(<SectionHeading {...mockProps} />))
+
+describe("SectionHeading component", () => {
+    it("renders heading with text value", () => {
+        expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(mockProps.sectionName);
     });
-
-    it('Should render sectionName text', () => {
-        
-
-        render(<SectionHeading sectionName={'Friends'}/>);
-
-        expect(screen.getByRole('heading')).toHaveTextContent('Friends');
-    });
-})
+});

@@ -4,7 +4,7 @@ export default function TextAreaInput({
     inputName
 }) {
     return <>
-        <div className="form-group" data-testid="form-group">
+        <div className="form-group">
             <label className="form-label" htmlFor={inputName}>{fieldName}</label>
             <textarea
                 id={inputName}

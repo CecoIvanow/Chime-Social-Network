@@ -1,14 +1,17 @@
 export default function Button({
     onClickHandler,
-    btnStyle = '',
-    buttonName = '',
+    btnStyle,
+    buttonName,
 }) {
-    return <>
+    const label = buttonName ?? "";
+    const style = btnStyle ?? "";
+
+    return (
         <button
             onClick={onClickHandler}
-            className={btnStyle}
+            className={style}
         >
-            {buttonName}
+            {label}
         </button>
-    </>
+    )
 }

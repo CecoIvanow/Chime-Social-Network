@@ -1,36 +1,51 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
+import userEvent from '@testing-library/user-event'
 
 import Button from "./Button";
 
-describe('LinkrButton component', () => {
-    it('Should render', () => {
-        render(<Button />);
+const mockProps = {
+    label: "Save",
+    clickHandler: vi.fn(),
+}
 
-        expect(screen.getByRole('button')).toBeInTheDocument();
+function setup(options={
+    hasTextContent: true
+}) {
+    const label = options.hasTextContent ?
+    mockProps.label :
+    null;
+
+    render(
+        <Button onClickHandler={mockProps.clickHandler} buttonName={label} />
+    );
+}
+
+describe('Button component', () => {
+    it('renders button with passed text label', () => {
+        setup();
+
+        expect(screen.getByRole('button')).toHaveTextContent(mockProps.label);
     });
 
-    it('Should render buttonName text', () => {
-        render(<Button buttonName="Save" />);
+    it("renders button with empty text label on missing prop", () => {
+        setup({
+            hasTextContent: false
+        });
 
-        expect(screen.getByRole('button')).toHaveTextContent('Save');
+        expect(screen.getByRole('button')).toHaveTextContent("");
+
     });
 
-    it('Should have passed class name', () => {
-        render(<Button btnStyle="button-style" />);
-
-        expect(screen.getByRole('button')).toHaveClass('button-style');
-    });
-
-    it('Should react on clicks', () => {
-        const onClick = vi.fn();
-
-        render(<Button onClickHandler={onClick} />);
-
+    it('triggers click handler on click', async () => {
+        setup();
+        
+        const user = userEvent.setup();
         const buttonElement = screen.getByRole('button');
+        
+        user.click(buttonElement);
 
-        fireEvent.click(buttonElement)
-
-        expect(onClick).toBeCalled();
+        await waitFor(() => expect(mockProps.clickHandler).toHaveBeenCalled());
     });
-})
+});

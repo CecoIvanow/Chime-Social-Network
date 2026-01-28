@@ -12,18 +12,15 @@ export default function AlertNotification() {
             }
 
             curTimeoutIdRef.current = setTimeout(() => {
-                setAlert(false);
+                setAlert(null);
             }, 5000);
         }
     }, [alert, setAlert])
 
     return <>
-        <div
-            className="error-notification"
-            data-testid="error-notification"
-        >
-            <div className="error-icon" data-testid="error-icon" />
-            <div className="error-content" data-testid="error-content">
+        <div className="error-notification">
+            <div className="error-icon" />
+            <div className="error-content">
                 <p>{alert}</p>
             </div>
         </div>

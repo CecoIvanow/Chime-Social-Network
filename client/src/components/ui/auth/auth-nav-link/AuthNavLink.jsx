@@ -5,7 +5,7 @@ export default function AuthNavLink({
     buttonText,
 }) {
     return <>
-        <div className='to-auth' data-testid='to-auth-container'>
+        <div className='to-auth'>
             <Link to={path}>{buttonText}</Link>
         </div>
     </>

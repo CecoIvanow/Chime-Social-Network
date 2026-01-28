@@ -1,126 +1,92 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+
+import userEvent from "@testing-library/user-event";
 
 import AuthForm from "./AuthForm";
 
+const mockProps = {
+    fieldName: "Username",
+    inputName: "username",
+    inputType: "text",
+    placeholderText: "username",
+};
+
+const INPUT_PLACEHOLDER_TEXT = `Enter your ${mockProps.placeholderText}`;
+
+const USER_INPUTS = {
+    firstChange: "123",
+    secondChange: "456",
+    get finalValue() {
+        return this.firstChange + this.secondChange
+    }
+};
+
+function setup() {
+    const { rerender } = render(
+        <AuthForm
+            {...mockProps}
+        />
+    );
+
+    return { rerender };
+}
+
 describe('AuthForm component', () => {
-    it('renders with input-box container, details, label and input', () => {
-        render(
-            <AuthForm
-                fieldName='Email'
-                placeholderText='email'
-            />
-        );
+    it('renders auth form with correct attributes', () => {
+        setup();
 
-        const container = screen.getByTestId('auth-input-box');
-        const details = screen.getByText('Email');
-        const label = screen.getByTestId('auth-input-label');
-        const input = screen.getByPlaceholderText('Enter your email');
+        const inputEl = screen.getByRole("textbox");
+        expect(inputEl).toHaveAttribute("type", mockProps.inputType);
+        expect(inputEl).toHaveAttribute("placeholder", `${INPUT_PLACEHOLDER_TEXT}`);
+        expect(inputEl).toHaveAttribute("name", mockProps.inputName);
+        expect(inputEl).toBeRequired();
 
-        expect(container).toBeInTheDocument();
-
-        expect(details).toBeInTheDocument();
-        expect(details).toHaveTextContent('Email');
-
-        expect(label).toBeInTheDocument();
-
-        expect(input).toBeInTheDocument();
-        expect(input).toHaveAttribute('placeholder', 'Enter your email');
+        expect(screen.getByText(mockProps.fieldName)).toBeInTheDocument();
     });
 
-    it('renders with passed props', () => {
-        render(
-            <AuthForm
-                fieldName='Username'
-                inputName='username'
-                inputType='text'
-                placeholderText='username'
-            />
-        )
+    it("links label and input via htmlFor and id attributes", () => {
+        setup();
 
-        const details = screen.getByText('Username');
-        const label = screen.getByTestId('auth-input-label');
-        const input = screen.getByPlaceholderText('Enter your username');
-
-        expect(details).toBeInTheDocument();
-        expect(details).toHaveTextContent('Username');
-
-        expect(label).toBeInTheDocument();
-        expect(label).toHaveAttribute('for', 'username');
-
-        expect(input).toBeInTheDocument();
-        expect(input).toHaveAttribute('id', 'username');
-        expect(input).toHaveAttribute('name', 'username');
-        expect(input).toHaveAttribute('type', 'text');
-        expect(input).toHaveAttribute('placeholder', 'Enter your username');
+        expect(screen.getByTestId("label-el")).toHaveAttribute("for", mockProps.inputName);
+        expect(screen.getByRole("textbox")).toHaveAttribute("id", mockProps.inputName);
     });
 
-    it('links label and input correctly via htmlFor and id', () => {
-        render(
-            <AuthForm
-                inputName='pass'
-                placeholderText='password'
-            />
-        );
+    it('input updates value on user text typing', async () => {
+        const user = userEvent.setup();
+        setup();
 
-        const label = screen.getByTestId('auth-input-label');
-        const input = screen.getByPlaceholderText('Enter your password');
+        const input = screen.getByRole("textbox");
 
-        expect(label).toHaveAttribute('for', 'pass');
+        await user.type(input, USER_INPUTS.firstChange);
+        expect(input).toHaveValue(USER_INPUTS.firstChange);
 
-        expect(input).toHaveAttribute('id', 'pass');
+        await user.type(input, USER_INPUTS.secondChange);
+        expect(input).toHaveValue(USER_INPUTS.finalValue);
     });
 
-    it("renders input with 'required' attribute", () => {
-        render(
-            <AuthForm
-                placeholderText='email'
-            />
-        );
+    it('rerenders with default input value', async () => {
+        const user = userEvent.setup();
+        const { rerender } = setup();
 
-        const input = screen.getByPlaceholderText('Enter your email');
+        const input = screen.getByPlaceholderText(`${INPUT_PLACEHOLDER_TEXT}`);
 
-        expect(input).toBeInTheDocument();
-        expect(input).toBeRequired();;
-    });
+        await user.type(input, USER_INPUTS.firstChange);
+        expect(input).toHaveValue(USER_INPUTS.firstChange);
 
-    it('renders with correct input value on change', () => {
-        render(
-            <AuthForm
-                placeholderText='password'
-            />
-        );
+        await user.type(input, USER_INPUTS.secondChange);
+        expect(input).toHaveValue(USER_INPUTS.finalValue);
 
-        const input = screen.getByPlaceholderText('Enter your password');
-
-        fireEvent.change(input, { target: { value: '123' } });
-        expect(input).toHaveValue('123');
-
-        fireEvent.change(input, { target: { value: '123456' } });
-        expect(input).toHaveValue('123456');
-    });
-
-    it('rerenders with default input value', () => {
-        const { rerender } = render(
-            <AuthForm
-                placeholderText='password'
-            />
-        );
-
-        const input = screen.getByPlaceholderText('Enter your password');
-
-        fireEvent.change(input, { target: { value: '123' } });
-        expect(input).toHaveValue('123');
-
-        fireEvent.change(input, { target: { value: '123456' } });
-        expect(input).toHaveValue('123456');
 
         rerender(
             <AuthForm
-                placeholderText='password'
+                fieldName={mockProps.fieldName}
+                inputName={mockProps.inputName}
+                inputType={mockProps.inputType}
+                placeholderText={mockProps.placeholderText}
             />
-        )
+        );
 
-        expect(input).toHaveValue('123456');
+        expect(input).toHaveValue(USER_INPUTS.finalValue);
     });
 });
