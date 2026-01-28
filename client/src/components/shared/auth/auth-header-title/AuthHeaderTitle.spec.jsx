@@ -5,18 +5,18 @@ import AuthHeaderTitle from "./AuthHeaderTitle";
 
 const mockProps = {
     title: "Password",
-}
+};
 
 beforeEach(() => {
     render(
         <AuthHeaderTitle
             {...mockProps}
         />
-    )
+    );
 });
 
 describe("AuthHeaderTitle component", () => {
-    it("renders with passed text content", () => {
-        expect(screen.getByText(mockProps.title)).toHaveTextContent(mockProps.title);
+    it("renders with with correct text value", () => {
+        expect(screen.getByText(mockProps.title)).toBeInTheDocument();
     });
 });
