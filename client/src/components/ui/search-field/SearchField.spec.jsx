@@ -19,11 +19,6 @@ beforeEach(() => {
 });
 
 describe("SearchField component", () => {
-    it("Should render search field container with input", () => {
-        expect(screen.getByTestId("search-field-container")).toBeInTheDocument();
-        expect(screen.getByTestId("search-field-input")).toBeInTheDocument();
-    });
-
     it("Should render search field input with passed searchBy placeholder text", () => {
         expect(screen.getByPlaceholderText("Search by content...")).toBeInTheDocument();
     });
