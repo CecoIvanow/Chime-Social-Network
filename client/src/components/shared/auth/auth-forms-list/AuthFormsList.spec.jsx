@@ -6,10 +6,10 @@ import AuthFormsList from "./AuthFormsList";
 vi.mock("../../../ui/auth/auth-form/AuthForm", () => ({
     default: ({ fieldName, inputName, inputType, placeholderText }) => (
         <div data-testid="auth-form">
-            <span>{fieldName}</span>
-            <span>{inputName}</span>
-            <span>{inputType}</span>
-            <span>{placeholderText}</span>
+            <div>{fieldName}</div>
+            <div>{inputName}</div>
+            <div>{inputType}</div>
+            <div>{placeholderText}</div>
         </div>
     ),
 }));
