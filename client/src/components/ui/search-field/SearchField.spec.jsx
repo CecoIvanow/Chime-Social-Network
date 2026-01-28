@@ -29,7 +29,7 @@ describe("SearchField component", () => {
     });
 
     it("Should set correct search params after 1250 ms on change", () => {
-        const input = screen.getByTestId("search-field-input");
+        const input = screen.getByRole("textbox");
 
         fireEvent.change(input, { target: { value: "React" } });
 
@@ -41,7 +41,7 @@ describe("SearchField component", () => {
     });
 
     it("Should set correct search params after multiple changes", () => {
-        const input = screen.getByTestId("search-field-input");
+        const input = screen.getByRole("textbox");
 
         fireEvent.change(input, { target: { value: "R" } });
         vi.advanceTimersByTime(1000);
