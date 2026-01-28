@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router";
 
 import LinkButton from "./LinkButton";
 
-const props = {
+const mockProps = {
     label: "Save",
     urlLink: "/test"
 }
@@ -12,11 +12,11 @@ const props = {
 function setup(options = {
     includeButtonName: true,
 }) {
-    const label = options.includeButtonName ? props.label : null;
+    const label = options.includeButtonName ? mockProps.label : null;
 
     render(
         <MemoryRouter>
-            <LinkButton urlLink={props.urlLink} buttonName={label} />
+            <LinkButton urlLink={mockProps.urlLink} buttonName={label} />
         </MemoryRouter>
     );
 };
@@ -25,7 +25,7 @@ describe('LinkButton component', () => {
     it('renders button with passed label text', () => {
         setup();
 
-        expect(screen.getByRole('button')).toHaveTextContent(props.label);
+        expect(screen.getByRole('button')).toHaveTextContent(mockProps.label);
     });
 
     it("renders button with no text label on missing prop", () => {
@@ -39,6 +39,6 @@ describe('LinkButton component', () => {
     it('renders link with correct href attribute value', () => {
         setup();
 
-        expect(screen.getByRole('link')).toHaveAttribute('href', props.urlLink);
+        expect(screen.getByRole('link')).toHaveAttribute('href', mockProps.urlLink);
     });
 });

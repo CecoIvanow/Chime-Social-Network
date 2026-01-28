@@ -3,12 +3,14 @@ import { describe, expect, it, beforeEach } from "vitest";
 
 import SectionHeading from "./SectionHeading";
 
-const headerLabel = "Friends";
+const mockProps = {
+    sectionName: "Friends",
+};
 
-beforeEach(() => render(<SectionHeading sectionName={headerLabel} />))
+beforeEach(() => render(<SectionHeading {...mockProps} />))
 
 describe("SectionHeading component", () => {
     it("renders heading with text value", () => {
-        expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(headerLabel);
+        expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(mockProps.sectionName);
     });
 });

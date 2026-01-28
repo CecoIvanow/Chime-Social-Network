@@ -5,14 +5,14 @@ import userEvent from "@testing-library/user-event";
 
 import AuthForm from "./AuthForm";
 
-const props = {
+const mockProps = {
     fieldName: "Username",
     inputName: "username",
     inputType: "text",
     placeholderText: "username",
 };
 
-const INPUT_PLACEHOLDER_TEXT = `Enter your ${props.placeholderText}`;
+const INPUT_PLACEHOLDER_TEXT = `Enter your ${mockProps.placeholderText}`;
 
 const USER_INPUTS = {
     firstChange: "123",
@@ -25,10 +25,7 @@ const USER_INPUTS = {
 function setup() {
     const { rerender } = render(
         <AuthForm
-            fieldName={props.fieldName}
-            inputName={props.inputName}
-            inputType={props.inputType}
-            placeholderText={props.placeholderText}
+            {...mockProps}
         />
     );
 
@@ -40,19 +37,19 @@ describe('AuthForm component', () => {
         setup();
 
         const inputEl = screen.getByRole("textbox");
-        expect(inputEl).toHaveAttribute("type", props.inputType);
+        expect(inputEl).toHaveAttribute("type", mockProps.inputType);
         expect(inputEl).toHaveAttribute("placeholder", `${INPUT_PLACEHOLDER_TEXT}`);
-        expect(inputEl).toHaveAttribute("name", props.inputName);
+        expect(inputEl).toHaveAttribute("name", mockProps.inputName);
         expect(inputEl).toBeRequired();
 
-        expect(screen.getByText(props.fieldName)).toBeInTheDocument();
+        expect(screen.getByText(mockProps.fieldName)).toBeInTheDocument();
     });
 
     it("links label and input via htmlFor and id attributes", () => {
         setup();
 
-        expect(screen.getByTestId("label-el")).toHaveAttribute("for", props.inputName);
-        expect(screen.getByRole("textbox")).toHaveAttribute("id", props.inputName);
+        expect(screen.getByTestId("label-el")).toHaveAttribute("for", mockProps.inputName);
+        expect(screen.getByRole("textbox")).toHaveAttribute("id", mockProps.inputName);
     });
 
     it('input updates value on user text typing', async () => {
@@ -83,10 +80,10 @@ describe('AuthForm component', () => {
 
         rerender(
             <AuthForm
-                fieldName={props.fieldName}
-                inputName={props.inputName}
-                inputType={props.inputType}
-                placeholderText={props.placeholderText}
+                fieldName={mockProps.fieldName}
+                inputName={mockProps.inputName}
+                inputType={mockProps.inputType}
+                placeholderText={mockProps.placeholderText}
             />
         );
 

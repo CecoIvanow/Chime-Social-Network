@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 
 import Button from "./Button";
 
-const props = {
+const mockProps = {
     label: "Save",
     clickHandler: vi.fn(),
 }
@@ -14,11 +14,11 @@ function setup(options={
     hasTextContent: true
 }) {
     const label = options.hasTextContent ?
-    props.label :
+    mockProps.label :
     null;
 
     render(
-        <Button onClickHandler={props.clickHandler} buttonName={label} />
+        <Button onClickHandler={mockProps.clickHandler} buttonName={label} />
     );
 }
 
@@ -26,7 +26,7 @@ describe('Button component', () => {
     it('renders button with passed text label', () => {
         setup();
 
-        expect(screen.getByRole('button')).toHaveTextContent(props.label);
+        expect(screen.getByRole('button')).toHaveTextContent(mockProps.label);
     });
 
     it("renders button with empty text label on missing prop", () => {
@@ -46,6 +46,6 @@ describe('Button component', () => {
         
         user.click(buttonElement);
 
-        await waitFor(() => expect(props.clickHandler).toHaveBeenCalled());
+        await waitFor(() => expect(mockProps.clickHandler).toHaveBeenCalled());
     });
 });

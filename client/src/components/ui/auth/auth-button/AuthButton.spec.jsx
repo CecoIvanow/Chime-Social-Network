@@ -3,7 +3,9 @@ import { describe, expect, it } from "vitest";
 
 import AuthButton from "./AuthButton";
 
-const buttonText = "Login";
+const mockProps = {
+    buttonText: "Login",
+};
 
 function setup(options={
     isPending: false,
@@ -11,7 +13,7 @@ function setup(options={
     const isPendingState = options.isPending ? options.isPending : null;
 
     render(
-        <AuthButton buttonText={buttonText} isPending={isPendingState} />
+        <AuthButton buttonText={mockProps.buttonText} isPending={isPendingState} />
     );
 };
 
@@ -19,7 +21,7 @@ describe("AuthButton component", () => {
     it("renders button with text label", () => {
         setup();
 
-        expect(screen.getByRole("button")).toHaveValue(buttonText);
+        expect(screen.getByRole("button")).toHaveValue(mockProps.buttonText);
     });
 
     it("isPending defaults to false on missing prop", () => {
