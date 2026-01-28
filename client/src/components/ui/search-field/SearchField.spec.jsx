@@ -39,22 +39,18 @@ describe("SearchField component", () => {
         expect(mockProps.setSearchParams).toHaveBeenCalledWith(newValue);
     });
 
-    it("resets timer and does not call setSearchParams after multiple value changes below 1250ms", () => {
+    it("resets timer and does not call setSearchParams after value changes before 1250ms have passed", () => {
         const input = screen.getByRole("textbox");
 
-        fireEvent.change(input, { target: { value: "R" } });
+        fireEvent.change(input, { target: { value: "Test" } });
         vi.advanceTimersByTime(1000);
 
-        fireEvent.change(input, { target: { value: "Rea" } });
-        vi.advanceTimersByTime(1200);
-
-        fireEvent.change(input, { target: { value: "React" } });
+        fireEvent.change(input, { target: { value: "Test123" } });
         vi.advanceTimersByTime(1249);
-        expect(mockProps.setSearchParams).not.toBeCalledWith("React");
+        expect(mockProps.setSearchParams).not.toHaveBeenCalled();
 
-        fireEvent.change(input, { target: { value: "Re" } });
+        fireEvent.change(input, { target: { value: "Surprise!" } });
         vi.advanceTimersByTime(1250);
-        expect(mockProps.setSearchParams).toBeCalledTimes(1);
-        expect(mockProps.setSearchParams).toBeCalledWith("Re");
-    })
-})
+        expect(mockProps.setSearchParams).toHaveBeenCalledWith("Surprise!");
+    });
+});
