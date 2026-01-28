@@ -18,6 +18,9 @@ beforeEach(() => {
     );
 });
 
+// * fireEvent is used here due to vi.useFakeTimers and userEvent Issue #1115 in testing-library/user-event github repo
+// * https://github.com/testing-library/user-event/issues/1115
+
 describe("SearchField component", () => {
     it("renders input with the placeholder and type attributes", () => {
         expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", `Search by ${mockProps.searchBy}...`);

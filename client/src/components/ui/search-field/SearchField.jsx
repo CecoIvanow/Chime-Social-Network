@@ -7,7 +7,7 @@ export default function SearchField({
 
     const [curTimeOutId, setCurTimeOutId] = useState(null);
 
-    async function onValueChangeHandler(e) {
+    function onValueChangeHandler(e) {
         const value = e.target.value;
 
         if (curTimeOutId) {
