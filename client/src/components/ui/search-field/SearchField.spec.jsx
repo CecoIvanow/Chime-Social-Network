@@ -6,7 +6,7 @@ import SearchField from "./SearchField";
 const mockProps = {
     setSearchParams: vi.fn(),
     searchBy: "content",
-}
+};
 
 beforeEach(() => {
     vi.useFakeTimers();
@@ -19,8 +19,9 @@ beforeEach(() => {
 });
 
 describe("SearchField component", () => {
-    it("Should render search field input with passed searchBy placeholder text", () => {
-        expect(screen.getByPlaceholderText("Search by content...")).toBeInTheDocument();
+    it("renders input with the placeholder and type attributes", () => {
+        expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", `Search by ${mockProps.searchBy}...`);
+        expect(screen.getByRole("textbox")).toHaveAttribute("type", "text");
     });
 
     it("Should set correct search params after 1250 ms on change", () => {
