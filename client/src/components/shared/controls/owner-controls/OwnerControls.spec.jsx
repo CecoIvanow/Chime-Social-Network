@@ -1,3 +1,4 @@
+import { Link, MemoryRouter } from "react-router";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -6,11 +7,7 @@ import { ActionsContext } from "../../../../contexts/actions-context";
 import OwnerControls from "./OwnerControls";
 
 vi.mock("../../../ui/buttons/link-button/LinkButton", () => ({
-    default: ({ urlLink }) => (
-        <div data-testid="edit-link-button">
-            <span>{urlLink}</span>
-        </div>
-    )
+    default: ({ urlLink }) => <Link>{urlLink}</Link>
 }));
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
@@ -40,20 +37,22 @@ function setup(options = {
     const urlLinkProp = options.passUrlLink ? mockProps.urlLink : null;
 
     render(
-        <ActionsContext.Provider value={{ ...mockHandlers }}>
-            <OwnerControls
-                urlLink={urlLinkProp}
-                itemId={mockProps.itemId}
-            />
-        </ActionsContext.Provider>
+        <MemoryRouter>
+            <ActionsContext.Provider value={{ ...mockHandlers }}>
+                <OwnerControls
+                    urlLink={urlLinkProp}
+                    itemId={mockProps.itemId}
+                />
+            </ActionsContext.Provider>
+        </MemoryRouter>
     );
 };
 
 describe("OwnerControls component", () => {
     it.each([
-        {name: "renders Delete Button when urlLink is provided", passUrlLink: true},
-        {name: "renders Delete Button when urlLink is not provided", passUrlLink: false},
-    ])("$name", ({passUrlLink}) => {
+        { name: "renders Delete Button when urlLink is provided", passUrlLink: true },
+        { name: "renders Delete Button when urlLink is not provided", passUrlLink: false },
+    ])("$name", ({ passUrlLink }) => {
         setup({
             passUrlLink,
         });
@@ -64,7 +63,7 @@ describe("OwnerControls component", () => {
     it("renders Edit LinkButton when urlLink is provided", () => {
         setup();
 
-        expect(screen.getByTestId("edit-link-button")).toBeInTheDocument();
+        expect(screen.getByRole("link")).toBeInTheDocument();
         expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
 
         expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
@@ -77,7 +76,7 @@ describe("OwnerControls component", () => {
 
         expect(screen.getByTestId("edit-button")).toBeInTheDocument();
 
-        expect(screen.queryByTestId("edit-link-button")).not.toBeInTheDocument();
+        expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
 
     it("Cancel and Edit Buttons react on clicks", () => {
