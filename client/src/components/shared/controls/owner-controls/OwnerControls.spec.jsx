@@ -8,7 +8,7 @@ import { ActionsContext } from "../../../../contexts/actions-context";
 import OwnerControls from "./OwnerControls";
 
 vi.mock("../../../ui/buttons/link-button/LinkButton", () => ({
-    default: ({ urlLink }) => <Link>{urlLink}</Link>
+    default: ({ urlLink }) => <Link to={urlLink}></Link>
 }));
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
@@ -16,7 +16,7 @@ vi.mock("../../../ui/buttons/button/Button", () => ({
 }));
 
 const mockProps = {
-    urlLink: "Test Link",
+    urlLink: "/test-link",
     itemId: 5,
 };
 
@@ -57,7 +57,7 @@ describe("OwnerControls component", () => {
     it("renders Edit LinkButton and not Edit Button when urlLink is provided", () => {
         setup();
 
-        expect(screen.getByRole("link")).toHaveTextContent(mockProps.urlLink);
+        expect(screen.getByRole("link")).toHaveAttribute("href", mockProps.urlLink);
         expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     });
 
