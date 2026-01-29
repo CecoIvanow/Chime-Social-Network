@@ -34,16 +34,26 @@ const mockHandlers = {
     onEditClickHandler: vi.fn(),
 };
 
+function setup(options = {
+    hasUrlLink: true,
+}) {
+    const urlLinkProp = options.hasUrlLink ? mockProps.urlLink : null;
+
+    const { rerender } = render(
+        <ActionsContext.Provider value={{ ...mockHandlers }}>
+            <OwnerControls
+                urlLink={urlLinkProp}
+                itemId={mockProps.itemId}
+            />
+        </ActionsContext.Provider>
+    );
+
+    return { rerender };
+};
+
 describe("OwnerControls component", () => {
     it("renders Delete Button component always, regardless of props", () => {
-        const { rerender } = render(
-            <ActionsContext.Provider value={{ ...mockHandlers }}>
-                <OwnerControls
-                    urlLink={mockProps.urlLink}
-                    itemId={mockProps.itemId}
-                />
-            </ActionsContext.Provider>
-        );
+        const { rerender } = setup();
 
         expect(screen.getByTestId("delete-button")).toBeInTheDocument();
 
@@ -57,13 +67,7 @@ describe("OwnerControls component", () => {
     });
 
     it("renders Edit LinkButton when urlLink is provided", () => {
-        render(
-            <ActionsContext.Provider value={{ ...mockHandlers }}>
-                <OwnerControls
-                    urlLink={mockProps.urlLink}
-                />
-            </ActionsContext.Provider>
-        );
+        setup();
 
         expect(screen.getByTestId("edit-link-button")).toBeInTheDocument();
         expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
@@ -72,13 +76,9 @@ describe("OwnerControls component", () => {
     });
 
     it("renders Edit Button when urlLink is not provided", () => {
-        render(
-            <ActionsContext.Provider value={{ ...mockHandlers }}>
-                <OwnerControls
-                    itemId={mockProps.itemId}
-                />
-            </ActionsContext.Provider>
-        );
+        setup({
+            hasUrlLink: false,
+        });
 
         expect(screen.getByTestId("edit-button")).toBeInTheDocument();
 
@@ -86,13 +86,9 @@ describe("OwnerControls component", () => {
     });
 
     it("Cancel and Edit Buttons react on clicks", () => {
-        render(
-            <ActionsContext.Provider value={{ ...mockHandlers }}>
-                <OwnerControls
-                    itemId={mockProps.itemId}
-                />
-            </ActionsContext.Provider>
-        );
+        setup({
+            hasUrlLink: false,
+        })
 
         fireEvent.click(screen.getByTestId("delete-button"));
         expect(screen.getByTestId("delete-button")).toBeInTheDocument();
