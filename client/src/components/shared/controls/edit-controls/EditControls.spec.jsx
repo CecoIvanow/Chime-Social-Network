@@ -13,12 +13,7 @@ vi.mock("../../../ui/buttons/link-button/LinkButton", () => ({
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName, onClickHandler }) => (
-        <div
-            data-testid={buttonName === "Edit" ? "edit-button" : "cancel-button"}
-            onClick={onClickHandler}
-        >
-            {buttonName}
-        </div >
+        <button onClick={onClickHandler}>{buttonName}</button >
     )
 }));
 
@@ -55,7 +50,7 @@ describe("EditControls component", () => {
     it("renders Cancel Button component always, regardless of props", () => {
         const { rerender } = setup();
 
-        expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
 
         rerender(
             <ActionsContext.Provider value={{ ...mockedFunctions }}>
@@ -63,7 +58,7 @@ describe("EditControls component", () => {
             </ActionsContext.Provider>
         );
 
-        expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
     });
 
     it("renders Edit LinkButton when urlLink is provided", () => {
@@ -72,7 +67,7 @@ describe("EditControls component", () => {
         expect(screen.getByRole("link")).toBeInTheDocument();
         expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
 
-        expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     });
 
     it("renders Edit Button when urlLink is not provided", () => {
@@ -80,7 +75,7 @@ describe("EditControls component", () => {
             passUrlLink: false,
         });
 
-        expect(screen.getByTestId("edit-button")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
 
         expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
@@ -91,12 +86,12 @@ describe("EditControls component", () => {
             passUrlLink: false,
         });
 
-        await user.click(screen.getByTestId("cancel-button"));
-        expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
+        await user.click(screen.getByRole("button", { name: "Close" }));
+        expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
         expect(mockedFunctions.onCancelEditClickHandler).toBeCalledTimes(1);
 
-        await user.click(screen.getByTestId("edit-button"));
-        expect(screen.getByTestId("edit-button")).toBeInTheDocument();
+        await user.click(screen.getByRole("button", { name: "Edit" }));
+        expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
         expect(mockedFunctions.onSaveEditClickHandler).toBeCalledTimes(1);
         expect(mockedFunctions.onSaveEditClickHandler).toHaveBeenCalledWith(mockProps.itemId);
     });
