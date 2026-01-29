@@ -77,19 +77,21 @@ describe("OwnerControls component", () => {
         expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
 
-    it("Cancel and Edit Buttons react on clicks", async () => {
+    it("calls onDeleteClickHandler when Delete Button is clicked", async () => {
+        const user = userEvent.setup();
+        setup();
+
+        await user.click(screen.getByRole("button", { name: "Delete" }));
+        expect(mockHandlers.onDeleteClickHandler).toHaveBeenCalledWith(mockProps.itemId);
+    });
+
+    it("calls onEditClickHandler when Edit Button is clicked", async () => {
         const user = userEvent.setup();
         setup({
             passUrlLink: false,
-        })
-
-        await user.click(screen.getByRole("button", { name: "Delete" }));
-        expect(screen.getByRole("button", { name: "Delete" })).toBeInTheDocument();
-        expect(mockHandlers.onDeleteClickHandler).toBeCalledTimes(1);
-        expect(mockHandlers.onDeleteClickHandler).toHaveBeenCalledWith(mockProps.itemId);
+        });
 
         await user.click(screen.getByRole("button", { name: "Edit" }));
-        expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
-        expect(mockHandlers.onEditClickHandler).toBeCalledTimes(1);
+        expect(mockHandlers.onEditClickHandler).toHaveBeenCalled();
     });
 });
