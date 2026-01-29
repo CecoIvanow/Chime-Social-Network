@@ -1,14 +1,14 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
-
-import OwnerButtons from "./OwnerButtons";
+import { describe, expect, it, vi } from "vitest";
 
 import { ActionsContext } from "../../../../contexts/actions-context";
+
+import OwnerButtons from "./OwnerButtons";
 
 vi.mock("../edit-controls/EditControls", () => ({
     default: ({ itemId }) => (
         <div data-testid="edit-controls">
-            <span>{itemId}</span>
+            <div>{itemId}</div>
         </div>
     )
 }));
@@ -16,8 +16,8 @@ vi.mock("../edit-controls/EditControls", () => ({
 vi.mock("../owner-controls/OwnerControls", () => ({
     default: ({ itemId, urlLink }) => (
         <div data-testid="owner-controls">
-            <span>{urlLink}</span>
-            <span>{itemId}</span>
+            <div>{urlLink}</div>
+            <div>{itemId}</div>
         </div>
     )
 }));
@@ -40,22 +40,22 @@ function setup(options = {
 };
 
 describe("OwnerButtons component", () => {
-    it("renders only EditControls component with isEditClicked context true", () => {
+    it("renders EditControls and not OwnerControls when isEditClicked context is true", () => {
         setup();
 
         expect(screen.getByTestId("edit-controls")).toBeInTheDocument();
-        expect(screen.getByText(String(mockProps.itemId))).toBeInTheDocument();
+        expect(screen.getByText(mockProps.itemId)).toBeInTheDocument();
 
         expect(screen.queryByTestId("owner-controls")).not.toBeInTheDocument();
     });
 
-    it("renders only OwnerControls component with isEditClicked context false", () => {
+    it("renders OwnerControls and not EditControls when isEditClicked context is false", () => {
         setup({
             isEditClicked: false,
         });
 
         expect(screen.getByTestId("owner-controls")).toBeInTheDocument();
-        expect(screen.getByText(String(mockProps.itemId))).toBeInTheDocument();
+        expect(screen.getByText(mockProps.itemId)).toBeInTheDocument();
         expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
 
         expect(screen.queryByTestId("edit-controls")).not.toBeInTheDocument();
