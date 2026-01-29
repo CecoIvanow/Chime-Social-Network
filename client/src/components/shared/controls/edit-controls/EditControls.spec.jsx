@@ -32,16 +32,26 @@ const mockedFunctions = {
     onSaveEditClickHandler: vi.fn(),
 }
 
+function setup(options = {
+    passUrlLink: true,
+}) {
+    const urlLinkProp = options.passUrlLink ? mockProps.urlLink : null;
+
+    const { rerender } = render(
+        <ActionsContext.Provider value={{ ...mockedFunctions }}>
+            <EditControls
+                urlLink={urlLinkProp}
+                itemId={mockProps.itemId}
+            />
+        </ActionsContext.Provider>
+    );
+
+    return { rerender };
+};
+
 describe('EditControls component', () => {
     it('renders Cancel Button component always, regardless of props', () => {
-        const { rerender } = render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <EditControls
-                    urlLink={mockProps.urlLink}
-                    itemId={mockProps.itemId}
-                />
-            </ActionsContext.Provider>
-        );
+        const { rerender } = setup();
 
         expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
 
@@ -55,13 +65,7 @@ describe('EditControls component', () => {
     });
 
     it('renders Edit LinkButton when urlLink is provided', () => {
-        render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <EditControls
-                    urlLink={mockProps.urlLink}
-                />
-            </ActionsContext.Provider>
-        );
+        setup();
 
         expect(screen.getByTestId('edit-link-button')).toBeInTheDocument();
         expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
@@ -70,13 +74,9 @@ describe('EditControls component', () => {
     });
 
     it('renders Edit Button when urlLink is not provided', () => {
-        render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <EditControls
-                    itemId={mockProps.itemId}
-                />
-            </ActionsContext.Provider>
-        );
+        setup({
+            passUrlLink: false,
+        });
 
         expect(screen.getByTestId('edit-button')).toBeInTheDocument();
 
@@ -84,13 +84,9 @@ describe('EditControls component', () => {
     });
 
     it('Cancel and Edit Buttons react on clicks', () => {
-        render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <EditControls
-                    itemId={mockProps.itemId}
-                />
-            </ActionsContext.Provider>
-        );
+        setup({
+            passUrlLink: false,
+        });
 
         fireEvent.click(screen.getByTestId('cancel-button'));
         expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
