@@ -1,6 +1,6 @@
+import { MemoryRouter } from "react-router";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, beforeEach } from "vitest";
-import { MemoryRouter } from "react-router";
 
 import AuthNavLink from "./AuthNavLink";
 
