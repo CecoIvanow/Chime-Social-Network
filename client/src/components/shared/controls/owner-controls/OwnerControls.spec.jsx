@@ -60,7 +60,7 @@ describe("OwnerControls component", () => {
         expect(screen.getByTestId("delete-button")).toBeInTheDocument();
     });
 
-    it("renders Edit LinkButton when urlLink is provided", () => {
+    it("renders Edit LinkButton and not Edit Button when urlLink is provided", () => {
         setup();
 
         expect(screen.getByRole("link")).toBeInTheDocument();
@@ -69,7 +69,7 @@ describe("OwnerControls component", () => {
         expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     });
 
-    it("renders Edit Button when urlLink is not provided", () => {
+    it("renders Edit Button and not Edit LinkButton when urlLink is not provided", () => {
         setup({
             passUrlLink: false,
         });
@@ -90,7 +90,7 @@ describe("OwnerControls component", () => {
         expect(mockHandlers.onDeleteClickHandler).toHaveBeenCalledWith(mockProps.itemId);
 
         fireEvent.click(screen.getByRole("button", { name: "Edit" }));
-    expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
         expect(mockHandlers.onEditClickHandler).toBeCalledTimes(1);
     });
 });
