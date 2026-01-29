@@ -35,11 +35,11 @@ const mockHandlers = {
 };
 
 function setup(options = {
-    hasUrlLink: true,
+    passUrlLink: true,
 }) {
-    const urlLinkProp = options.hasUrlLink ? mockProps.urlLink : null;
+    const urlLinkProp = options.passUrlLink ? mockProps.urlLink : null;
 
-    const { rerender } = render(
+    render(
         <ActionsContext.Provider value={{ ...mockHandlers }}>
             <OwnerControls
                 urlLink={urlLinkProp}
@@ -47,21 +47,16 @@ function setup(options = {
             />
         </ActionsContext.Provider>
     );
-
-    return { rerender };
 };
 
 describe("OwnerControls component", () => {
-    it("renders Delete Button component always, regardless of props", () => {
-        const { rerender } = setup();
-
-        expect(screen.getByTestId("delete-button")).toBeInTheDocument();
-
-        rerender(
-            <ActionsContext.Provider value={{ ...mockHandlers }}>
-                <OwnerControls />
-            </ActionsContext.Provider>
-        );
+    it.each([
+        {name: "renders Delete Button when urlLink is provided", passUrlLink: true},
+        {name: "renders Delete Button when urlLink is not provided", passUrlLink: false},
+    ])("$name", ({passUrlLink}) => {
+        setup({
+            passUrlLink,
+        });
 
         expect(screen.getByTestId("delete-button")).toBeInTheDocument();
     });
@@ -77,7 +72,7 @@ describe("OwnerControls component", () => {
 
     it("renders Edit Button when urlLink is not provided", () => {
         setup({
-            hasUrlLink: false,
+            passUrlLink: false,
         });
 
         expect(screen.getByTestId("edit-button")).toBeInTheDocument();
@@ -87,7 +82,7 @@ describe("OwnerControls component", () => {
 
     it("Cancel and Edit Buttons react on clicks", () => {
         setup({
-            hasUrlLink: false,
+            passUrlLink: false,
         })
 
         fireEvent.click(screen.getByTestId("delete-button"));
