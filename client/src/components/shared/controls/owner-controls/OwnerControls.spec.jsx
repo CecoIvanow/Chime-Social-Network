@@ -1,6 +1,6 @@
 import { Link, MemoryRouter } from "react-router";
 import userEvent from "@testing-library/user-event";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { ActionsContext } from "../../../../contexts/actions-context";
@@ -12,14 +12,7 @@ vi.mock("../../../ui/buttons/link-button/LinkButton", () => ({
 }));
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
-    default: ({ buttonName, onClickHandler }) => (
-        <button
-            data-testid={buttonName === "Edit" ? "edit-button" : "delete-button"}
-            onClick={onClickHandler}
-        >
-            {buttonName}
-        </button >
-    )
+    default: ({ buttonName, onClickHandler }) => <button onClick={onClickHandler}>{buttonName}</button >
 }));
 
 const mockProps = {
@@ -58,7 +51,7 @@ describe("OwnerControls component", () => {
             passUrlLink,
         });
 
-        expect(screen.getByTestId("delete-button")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Delete" })).toBeInTheDocument();
     });
 
     it("renders Edit LinkButton and not Edit Button when urlLink is provided", () => {
