@@ -63,9 +63,7 @@ describe("OwnerControls component", () => {
     it("renders Edit LinkButton and not Edit Button when urlLink is provided", () => {
         setup();
 
-        expect(screen.getByRole("link")).toBeInTheDocument();
-        expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
-
+        expect(screen.getByRole("link")).toHaveTextContent(mockProps.urlLink);
         expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     });
 
@@ -75,7 +73,6 @@ describe("OwnerControls component", () => {
         });
 
         expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
-
         expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
 
