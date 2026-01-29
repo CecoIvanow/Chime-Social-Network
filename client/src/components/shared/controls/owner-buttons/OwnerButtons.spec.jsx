@@ -27,15 +27,21 @@ const mockProps = {
     urlLink: "testLink"
 };
 
+function setup(options = {
+    isEditClicked: true
+}) {
+    render(
+        <ActionsContext.Provider value={{ ...options }} >
+            <OwnerButtons
+                {...mockProps}
+            />
+        </ActionsContext.Provider >
+    );
+};
+
 describe('OwnerButtons component', () => {
     it('renders only EditControls component with isEditClicked context true', () => {
-        render(
-            <ActionsContext.Provider value={{ isEditClicked: true }} >
-                <OwnerButtons
-                    {...mockProps}
-                />
-            </ActionsContext.Provider >
-        )
+        setup();
 
         expect(screen.getByTestId('edit-controls')).toBeInTheDocument();
         expect(screen.getByText(String(mockProps.itemId))).toBeInTheDocument();
@@ -44,13 +50,9 @@ describe('OwnerButtons component', () => {
     });
 
     it('renders only OwnerControls component with isEditClicked context false', () => {
-        render(
-            <ActionsContext.Provider value={{ isEditClicked: false }} >
-                <OwnerButtons
-                    {...mockProps}
-                />
-            </ActionsContext.Provider >
-        )
+        setup({
+            isEditClicked: false,
+        });
 
         expect(screen.getByTestId('owner-controls')).toBeInTheDocument();
         expect(screen.getByText(String(mockProps.itemId))).toBeInTheDocument();
