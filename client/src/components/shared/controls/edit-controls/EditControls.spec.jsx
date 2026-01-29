@@ -64,12 +64,10 @@ describe("EditControls component", () => {
         expect(mockedFunctions.onCancelEditClickHandler).toHaveBeenCalled();
     });
 
-    it("renders Edit LinkButton when urlLink is provided", () => {
+    it("renders edit link-button when urlLink is provided and not edit button", () => {
         setup();
 
-        expect(screen.getByRole("link")).toBeInTheDocument();
-        expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
-
+        expect(screen.getByRole("link")).toHaveTextContent(mockProps.urlLink);
         expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     });
 
