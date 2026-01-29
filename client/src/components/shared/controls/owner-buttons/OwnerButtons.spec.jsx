@@ -39,25 +39,25 @@ function setup(options = {
     );
 };
 
-describe('OwnerButtons component', () => {
-    it('renders only EditControls component with isEditClicked context true', () => {
+describe("OwnerButtons component", () => {
+    it("renders only EditControls component with isEditClicked context true", () => {
         setup();
 
-        expect(screen.getByTestId('edit-controls')).toBeInTheDocument();
+        expect(screen.getByTestId("edit-controls")).toBeInTheDocument();
         expect(screen.getByText(String(mockProps.itemId))).toBeInTheDocument();
 
-        expect(screen.queryByTestId('owner-controls')).not.toBeInTheDocument();
+        expect(screen.queryByTestId("owner-controls")).not.toBeInTheDocument();
     });
 
-    it('renders only OwnerControls component with isEditClicked context false', () => {
+    it("renders only OwnerControls component with isEditClicked context false", () => {
         setup({
             isEditClicked: false,
         });
 
-        expect(screen.getByTestId('owner-controls')).toBeInTheDocument();
+        expect(screen.getByTestId("owner-controls")).toBeInTheDocument();
         expect(screen.getByText(String(mockProps.itemId))).toBeInTheDocument();
         expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
 
-        expect(screen.queryByTestId('edit-controls')).not.toBeInTheDocument();
+        expect(screen.queryByTestId("edit-controls")).not.toBeInTheDocument();
     });
 });
