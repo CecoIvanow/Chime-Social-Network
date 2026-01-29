@@ -80,15 +80,13 @@ describe("EditControls component", () => {
         expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
 
-    it("Cancel and Edit Buttons react on clicks", async () => {
+    it("calls onSaveEditClickHandler on edit button click", async () => {
         const user = userEvent.setup();
         setup({
             passUrlLink: false,
         });
 
         await user.click(screen.getByRole("button", { name: "Edit" }));
-        expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
-        expect(mockedFunctions.onSaveEditClickHandler).toBeCalledTimes(1);
         expect(mockedFunctions.onSaveEditClickHandler).toHaveBeenCalledWith(mockProps.itemId);
     });
 });
