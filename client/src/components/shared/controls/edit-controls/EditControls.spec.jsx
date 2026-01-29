@@ -22,7 +22,7 @@ vi.mock('../../../ui/buttons/button/Button', () => ({
     )
 }));
 
-const mockedParams = {
+const mockProps = {
     urlLink: "Test Link",
     itemId: 5,
 }
@@ -37,8 +37,8 @@ describe('EditControls component', () => {
         const { rerender } = render(
             <ActionsContext.Provider value={{ ...mockedFunctions }}>
                 <EditControls
-                    urlLink={mockedParams.urlLink}
-                    itemId={mockedParams.itemId}
+                    urlLink={mockProps.urlLink}
+                    itemId={mockProps.itemId}
                 />
             </ActionsContext.Provider>
         );
@@ -58,13 +58,13 @@ describe('EditControls component', () => {
         render(
             <ActionsContext.Provider value={{ ...mockedFunctions }}>
                 <EditControls
-                    urlLink={mockedParams.urlLink}
+                    urlLink={mockProps.urlLink}
                 />
             </ActionsContext.Provider>
         );
 
         expect(screen.getByTestId('edit-link-button')).toBeInTheDocument();
-        expect(screen.getByText(mockedParams.urlLink)).toBeInTheDocument();
+        expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
 
         expect(screen.queryByTestId('edit-button')).not.toBeInTheDocument();
     });
@@ -73,7 +73,7 @@ describe('EditControls component', () => {
         render(
             <ActionsContext.Provider value={{ ...mockedFunctions }}>
                 <EditControls
-                    itemId={mockedParams.itemId}
+                    itemId={mockProps.itemId}
                 />
             </ActionsContext.Provider>
         );
@@ -87,7 +87,7 @@ describe('EditControls component', () => {
         render(
             <ActionsContext.Provider value={{ ...mockedFunctions }}>
                 <EditControls
-                    itemId={mockedParams.itemId}
+                    itemId={mockProps.itemId}
                 />
             </ActionsContext.Provider>
         );
@@ -99,6 +99,6 @@ describe('EditControls component', () => {
         fireEvent.click(screen.getByTestId('edit-button'));
         expect(screen.getByTestId('edit-button')).toBeInTheDocument();
         expect(mockedFunctions.onSaveEditClickHandler).toBeCalledTimes(1);
-        expect(mockedFunctions.onSaveEditClickHandler).toHaveBeenCalledWith(mockedParams.itemId);
+        expect(mockedFunctions.onSaveEditClickHandler).toHaveBeenCalledWith(mockProps.itemId);
     });
 });
