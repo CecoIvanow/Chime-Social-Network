@@ -1,3 +1,4 @@
+import { Link, MemoryRouter } from "react-router";
 import userEvent from "@testing-library/user-event";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -7,11 +8,7 @@ import { ActionsContext } from "../../../../contexts/actions-context";
 import EditControls from "./EditControls";
 
 vi.mock("../../../ui/buttons/link-button/LinkButton", () => ({
-    default: ({ urlLink }) => (
-        <div data-testid="edit-link-button">
-            <span>{urlLink}</span>
-        </div>
-    )
+    default: ({ urlLink }) => <Link>{urlLink}</Link>
 }));
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
@@ -41,12 +38,14 @@ function setup(options = {
     const urlLinkProp = options.passUrlLink ? mockProps.urlLink : null;
 
     const { rerender } = render(
-        <ActionsContext.Provider value={{ ...mockedFunctions }}>
-            <EditControls
-                urlLink={urlLinkProp}
-                itemId={mockProps.itemId}
-            />
-        </ActionsContext.Provider>
+        <MemoryRouter>
+            <ActionsContext.Provider value={{ ...mockedFunctions }}>
+                <EditControls
+                    urlLink={urlLinkProp}
+                    itemId={mockProps.itemId}
+                />
+            </ActionsContext.Provider>
+        </MemoryRouter>
     );
 
     return { rerender };
@@ -70,7 +69,7 @@ describe("EditControls component", () => {
     it("renders Edit LinkButton when urlLink is provided", () => {
         setup();
 
-        expect(screen.getByTestId("edit-link-button")).toBeInTheDocument();
+        expect(screen.getByRole("link")).toBeInTheDocument();
         expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
 
         expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
@@ -83,7 +82,7 @@ describe("EditControls component", () => {
 
         expect(screen.getByTestId("edit-button")).toBeInTheDocument();
 
-        expect(screen.queryByTestId("edit-link-button")).not.toBeInTheDocument();
+        expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
 
     it("Cancel and Edit Buttons react on clicks", async () => {
