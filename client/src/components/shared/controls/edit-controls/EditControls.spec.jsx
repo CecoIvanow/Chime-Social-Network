@@ -46,8 +46,8 @@ function setup(options = {
 
 describe("EditControls component", () => {
     it.each([
-        { name: "renders cancel button on passed urlLink prop", passUrlLink: true },
-        { name: "renders cancel button on empty urlLink prop", passUrlLink: false },
+        { name: "renders close button on passed urlLink prop", passUrlLink: true },
+        { name: "renders close button on empty urlLink prop", passUrlLink: false },
     ])("$name", ({passUrlLink}) => {
         setup({
             passUrlLink,
@@ -56,7 +56,7 @@ describe("EditControls component", () => {
         expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
     });
 
-    it("calls onCancelEditClickHandler on cancel button click event", async () => {
+    it("calls onCancelEditClickHandler on close button click event", async () => {
         const user = userEvent.setup();
         setup();
 
