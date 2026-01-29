@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
 import { ActionsContext } from "../../../../contexts/actions-context";
+
 import OwnerControls from "./OwnerControls";
 
 vi.mock('../../../ui/buttons/link-button/LinkButton', () => ({
@@ -25,12 +27,12 @@ vi.mock('../../../ui/buttons/button/Button', () => ({
 const mockProps = {
     urlLink: "Test Link",
     itemId: 5,
-}
+};
 
 const mockedFunctions = {
     onDeleteClickHandler: vi.fn(),
     onEditClickHandler: vi.fn(),
-}
+};
 
 describe('OwnerControls component', () => {
     it('renders Delete Button component always, regardless of props', () => {
