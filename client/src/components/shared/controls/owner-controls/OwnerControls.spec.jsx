@@ -12,12 +12,12 @@ vi.mock("../../../ui/buttons/link-button/LinkButton", () => ({
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName, onClickHandler }) => (
-        <div
+        <button
             data-testid={buttonName === "Edit" ? "edit-button" : "delete-button"}
             onClick={onClickHandler}
         >
             {buttonName}
-        </div >
+        </button >
     )
 }));
 
@@ -66,7 +66,7 @@ describe("OwnerControls component", () => {
         expect(screen.getByRole("link")).toBeInTheDocument();
         expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
 
-        expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     });
 
     it("renders Edit Button when urlLink is not provided", () => {
@@ -74,7 +74,7 @@ describe("OwnerControls component", () => {
             passUrlLink: false,
         });
 
-        expect(screen.getByTestId("edit-button")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
 
         expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
@@ -84,13 +84,13 @@ describe("OwnerControls component", () => {
             passUrlLink: false,
         })
 
-        fireEvent.click(screen.getByTestId("delete-button"));
-        expect(screen.getByTestId("delete-button")).toBeInTheDocument();
+        fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+        expect(screen.getByRole("button", { name: "Delete" })).toBeInTheDocument();
         expect(mockHandlers.onDeleteClickHandler).toBeCalledTimes(1);
         expect(mockHandlers.onDeleteClickHandler).toHaveBeenCalledWith(mockProps.itemId);
 
-        fireEvent.click(screen.getByTestId("edit-button"));
-        expect(screen.getByTestId("edit-button")).toBeInTheDocument();
+        fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+    expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
         expect(mockHandlers.onEditClickHandler).toBeCalledTimes(1);
     });
 });
