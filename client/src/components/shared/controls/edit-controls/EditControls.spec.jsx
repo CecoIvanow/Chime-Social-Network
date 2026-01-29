@@ -22,7 +22,7 @@ const mockProps = {
     itemId: 5,
 };
 
-const mockedFunctions = {
+const mockHandlers = {
     onCancelEditClickHandler: vi.fn(),
     onSaveEditClickHandler: vi.fn(),
 };
@@ -34,7 +34,7 @@ function setup(options = {
 
     render(
         <MemoryRouter>
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
+            <ActionsContext.Provider value={{ ...mockHandlers }}>
                 <EditControls
                     urlLink={urlLinkProp}
                     itemId={mockProps.itemId}
@@ -61,7 +61,7 @@ describe("EditControls component", () => {
         setup();
 
         await user.click(screen.getByRole("button", { name: "Close" }));
-        expect(mockedFunctions.onCancelEditClickHandler).toHaveBeenCalled();
+        expect(mockHandlers.onCancelEditClickHandler).toHaveBeenCalled();
     });
 
     it("renders edit link-button when urlLink is provided and not edit button", () => {
@@ -87,6 +87,6 @@ describe("EditControls component", () => {
         });
 
         await user.click(screen.getByRole("button", { name: "Edit" }));
-        expect(mockedFunctions.onSaveEditClickHandler).toHaveBeenCalledWith(mockProps.itemId);
+        expect(mockHandlers.onSaveEditClickHandler).toHaveBeenCalledWith(mockProps.itemId);
     });
 });
