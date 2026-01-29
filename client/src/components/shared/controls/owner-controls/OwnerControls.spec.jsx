@@ -1,4 +1,5 @@
 import { Link, MemoryRouter } from "react-router";
+import userEvent from "@testing-library/user-event";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -76,17 +77,18 @@ describe("OwnerControls component", () => {
         expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
 
-    it("Cancel and Edit Buttons react on clicks", () => {
+    it("Cancel and Edit Buttons react on clicks", async () => {
+        const user = userEvent.setup();
         setup({
             passUrlLink: false,
         })
 
-        fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+        await user.click(screen.getByRole("button", { name: "Delete" }));
         expect(screen.getByRole("button", { name: "Delete" })).toBeInTheDocument();
         expect(mockHandlers.onDeleteClickHandler).toBeCalledTimes(1);
         expect(mockHandlers.onDeleteClickHandler).toHaveBeenCalledWith(mockProps.itemId);
 
-        fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+        await user.click(screen.getByRole("button", { name: "Edit" }));
         expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
         expect(mockHandlers.onEditClickHandler).toBeCalledTimes(1);
     });
