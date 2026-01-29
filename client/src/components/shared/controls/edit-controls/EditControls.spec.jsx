@@ -46,8 +46,8 @@ function setup(options = {
 
 describe("EditControls component", () => {
     it.each([
-        { name: "renders close button on passed urlLink prop", passUrlLink: true },
-        { name: "renders close button on empty urlLink prop", passUrlLink: false },
+        { name: "renders Close Button on passed urlLink prop", passUrlLink: true },
+        { name: "renders Close Button on empty urlLink prop", passUrlLink: false },
     ])("$name", ({passUrlLink}) => {
         setup({
             passUrlLink,
@@ -56,7 +56,7 @@ describe("EditControls component", () => {
         expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
     });
 
-    it("calls onCancelEditClickHandler on close button click", async () => {
+    it("calls onCancelEditClickHandler on Close Button click", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -64,14 +64,14 @@ describe("EditControls component", () => {
         expect(mockHandlers.onCancelEditClickHandler).toHaveBeenCalled();
     });
 
-    it("renders edit link-button when urlLink is provided and not edit button", () => {
+    it("renders Edit LinkButton  and not Edit Button when urlLink is provided", () => {
         setup();
 
         expect(screen.getByRole("link")).toHaveTextContent(mockProps.urlLink);
         expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     });
 
-    it("renders edit button when urlLink is empty and not edit link-button", () => {
+    it("renders Edit Button and not Edit LinkButton when urlLink is not provided", () => {
         setup({
             passUrlLink: false,
         });
@@ -80,7 +80,7 @@ describe("EditControls component", () => {
         expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
 
-    it("calls onSaveEditClickHandler on edit button click", async () => {
+    it("calls onSaveEditClickHandler on Edit Button click", async () => {
         const user = userEvent.setup();
         setup({
             passUrlLink: false,
