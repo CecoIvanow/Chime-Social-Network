@@ -29,7 +29,7 @@ const mockProps = {
     itemId: 5,
 };
 
-const mockedFunctions = {
+const mockHandlers = {
     onDeleteClickHandler: vi.fn(),
     onEditClickHandler: vi.fn(),
 };
@@ -37,7 +37,7 @@ const mockedFunctions = {
 describe("OwnerControls component", () => {
     it("renders Delete Button component always, regardless of props", () => {
         const { rerender } = render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
+            <ActionsContext.Provider value={{ ...mockHandlers }}>
                 <OwnerControls
                     urlLink={mockProps.urlLink}
                     itemId={mockProps.itemId}
@@ -48,7 +48,7 @@ describe("OwnerControls component", () => {
         expect(screen.getByTestId("delete-button")).toBeInTheDocument();
 
         rerender(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
+            <ActionsContext.Provider value={{ ...mockHandlers }}>
                 <OwnerControls />
             </ActionsContext.Provider>
         );
@@ -58,7 +58,7 @@ describe("OwnerControls component", () => {
 
     it("renders Edit LinkButton when urlLink is provided", () => {
         render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
+            <ActionsContext.Provider value={{ ...mockHandlers }}>
                 <OwnerControls
                     urlLink={mockProps.urlLink}
                 />
@@ -73,7 +73,7 @@ describe("OwnerControls component", () => {
 
     it("renders Edit Button when urlLink is not provided", () => {
         render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
+            <ActionsContext.Provider value={{ ...mockHandlers }}>
                 <OwnerControls
                     itemId={mockProps.itemId}
                 />
@@ -87,7 +87,7 @@ describe("OwnerControls component", () => {
 
     it("Cancel and Edit Buttons react on clicks", () => {
         render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
+            <ActionsContext.Provider value={{ ...mockHandlers }}>
                 <OwnerControls
                     itemId={mockProps.itemId}
                 />
@@ -96,11 +96,11 @@ describe("OwnerControls component", () => {
 
         fireEvent.click(screen.getByTestId("delete-button"));
         expect(screen.getByTestId("delete-button")).toBeInTheDocument();
-        expect(mockedFunctions.onDeleteClickHandler).toBeCalledTimes(1);
-        expect(mockedFunctions.onDeleteClickHandler).toHaveBeenCalledWith(mockProps.itemId);
+        expect(mockHandlers.onDeleteClickHandler).toBeCalledTimes(1);
+        expect(mockHandlers.onDeleteClickHandler).toHaveBeenCalledWith(mockProps.itemId);
 
         fireEvent.click(screen.getByTestId("edit-button"));
         expect(screen.getByTestId("edit-button")).toBeInTheDocument();
-        expect(mockedFunctions.onEditClickHandler).toBeCalledTimes(1);
+        expect(mockHandlers.onEditClickHandler).toBeCalledTimes(1);
     });
 });
