@@ -20,12 +20,12 @@ vi.mock("../../../ui/buttons/button/Button", () => ({
 const mockProps = {
     urlLink: "Test Link",
     itemId: 5,
-}
+};
 
 const mockedFunctions = {
     onCancelEditClickHandler: vi.fn(),
     onSaveEditClickHandler: vi.fn(),
-}
+};
 
 function setup(options = {
     passUrlLink: true,
@@ -56,6 +56,14 @@ describe("EditControls component", () => {
         expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
     });
 
+    it("calls onCancelEditClickHandler on cancel button click event", async () => {
+        const user = userEvent.setup();
+        setup();
+
+        await user.click(screen.getByRole("button", { name: "Close" }));
+        expect(mockedFunctions.onCancelEditClickHandler).toHaveBeenCalled();
+    });
+
     it("renders Edit LinkButton when urlLink is provided", () => {
         setup();
 
@@ -80,10 +88,6 @@ describe("EditControls component", () => {
         setup({
             passUrlLink: false,
         });
-
-        await user.click(screen.getByRole("button", { name: "Close" }));
-        expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
-        expect(mockedFunctions.onCancelEditClickHandler).toBeCalledTimes(1);
 
         await user.click(screen.getByRole("button", { name: "Edit" }));
         expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
