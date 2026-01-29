@@ -56,7 +56,7 @@ describe("EditControls component", () => {
         expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
     });
 
-    it("calls onCancelEditClickHandler on close button click event", async () => {
+    it("calls onCancelEditClickHandler on close button click", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -71,13 +71,12 @@ describe("EditControls component", () => {
         expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     });
 
-    it("renders Edit Button when urlLink is not provided", () => {
+    it("renders edit button when urlLink is empty and not edit link-button", () => {
         setup({
             passUrlLink: false,
         });
 
         expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
-
         expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
 
