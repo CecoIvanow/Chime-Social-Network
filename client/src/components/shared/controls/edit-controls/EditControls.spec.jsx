@@ -1,11 +1,13 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
+import userEvent from "@testing-library/user-event";
 
 import { ActionsContext } from "../../../../contexts/actions-context";
 
 import EditControls from "./EditControls";
 
-vi.mock('../../../ui/buttons/link-button/LinkButton', () => ({
+vi.mock("../../../ui/buttons/link-button/LinkButton", () => ({
     default: ({ urlLink }) => (
         <div data-testid="edit-link-button">
             <span>{urlLink}</span>
@@ -13,10 +15,10 @@ vi.mock('../../../ui/buttons/link-button/LinkButton', () => ({
     )
 }));
 
-vi.mock('../../../ui/buttons/button/Button', () => ({
+vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName, onClickHandler }) => (
         <div
-            data-testid={buttonName === 'Edit' ? 'edit-button' : 'cancel-button'}
+            data-testid={buttonName === "Edit" ? "edit-button" : "cancel-button"}
             onClick={onClickHandler}
         >
             {buttonName}
@@ -51,11 +53,11 @@ function setup(options = {
     return { rerender };
 };
 
-describe('EditControls component', () => {
-    it('renders Cancel Button component always, regardless of props', () => {
+describe("EditControls component", () => {
+    it("renders Cancel Button component always, regardless of props", () => {
         const { rerender } = setup();
 
-        expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
+        expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
 
         rerender(
             <ActionsContext.Provider value={{ ...mockedFunctions }}>
@@ -63,39 +65,40 @@ describe('EditControls component', () => {
             </ActionsContext.Provider>
         );
 
-        expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
+        expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
     });
 
-    it('renders Edit LinkButton when urlLink is provided', () => {
+    it("renders Edit LinkButton when urlLink is provided", () => {
         setup();
 
-        expect(screen.getByTestId('edit-link-button')).toBeInTheDocument();
+        expect(screen.getByTestId("edit-link-button")).toBeInTheDocument();
         expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
 
-        expect(screen.queryByTestId('edit-button')).not.toBeInTheDocument();
+        expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
     });
 
-    it('renders Edit Button when urlLink is not provided', () => {
+    it("renders Edit Button when urlLink is not provided", () => {
         setup({
             passUrlLink: false,
         });
 
-        expect(screen.getByTestId('edit-button')).toBeInTheDocument();
+        expect(screen.getByTestId("edit-button")).toBeInTheDocument();
 
-        expect(screen.queryByTestId('edit-link-button')).not.toBeInTheDocument();
+        expect(screen.queryByTestId("edit-link-button")).not.toBeInTheDocument();
     });
 
-    it('Cancel and Edit Buttons react on clicks', () => {
+    it("Cancel and Edit Buttons react on clicks", async () => {
+        const user = userEvent.setup();
         setup({
             passUrlLink: false,
         });
 
-        fireEvent.click(screen.getByTestId('cancel-button'));
-        expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
+        await user.click(screen.getByTestId("cancel-button"));
+        expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
         expect(mockedFunctions.onCancelEditClickHandler).toBeCalledTimes(1);
 
-        fireEvent.click(screen.getByTestId('edit-button'));
-        expect(screen.getByTestId('edit-button')).toBeInTheDocument();
+        await user.click(screen.getByTestId("edit-button"));
+        expect(screen.getByTestId("edit-button")).toBeInTheDocument();
         expect(mockedFunctions.onSaveEditClickHandler).toBeCalledTimes(1);
         expect(mockedFunctions.onSaveEditClickHandler).toHaveBeenCalledWith(mockProps.itemId);
     });
