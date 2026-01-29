@@ -32,7 +32,7 @@ function setup(options = {
 }) {
     const urlLinkProp = options.passUrlLink ? mockProps.urlLink : null;
 
-    const { rerender } = render(
+    render(
         <MemoryRouter>
             <ActionsContext.Provider value={{ ...mockedFunctions }}>
                 <EditControls
@@ -42,21 +42,16 @@ function setup(options = {
             </ActionsContext.Provider>
         </MemoryRouter>
     );
-
-    return { rerender };
 };
 
 describe("EditControls component", () => {
-    it("renders Cancel Button component always, regardless of props", () => {
-        const { rerender } = setup();
-
-        expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
-
-        rerender(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <EditControls />
-            </ActionsContext.Provider>
-        );
+    it.each([
+        { name: "renders cancel button on passed urlLink prop", passUrlLink: true },
+        { name: "renders cancel button on empty urlLink prop", passUrlLink: false },
+    ])("$name", ({passUrlLink}) => {
+        setup({
+            passUrlLink,
+        });
 
         expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
     });
