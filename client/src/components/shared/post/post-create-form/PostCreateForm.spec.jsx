@@ -84,7 +84,7 @@ describe("PostCreateForm component", () => {
         const user = userEvent.setup();
         setup();
 
-        const inputField = screen.getByTestId("create-content-input-field");
+        const inputField = screen.getByRole("textbox");
 
         expect(inputField).not.toHaveValue();
 
@@ -98,7 +98,7 @@ describe("PostCreateForm component", () => {
 
         usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
 
-        const input = screen.getByTestId("create-content-input-field");
+        const input = screen.getByRole("textbox");
 
         await user.type(input, newInputValue);
         expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
@@ -119,7 +119,7 @@ describe("PostCreateForm component", () => {
 
         usePostServicesMock.createPost.mockRejectedValue(new Error("Successful test failure!"))
 
-        const input = screen.getByTestId("create-content-input-field");
+        const input = screen.getByRole("textbox");
 
         await user.type(input, newInputValue);
         expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
@@ -139,7 +139,7 @@ describe("PostCreateForm component", () => {
 
         usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
 
-        const input = screen.getByTestId("create-content-input-field");
+        const input = screen.getByRole("textbox");
 
         await user.type(input, newInputValue);
         expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
@@ -159,7 +159,7 @@ describe("PostCreateForm component", () => {
 
         usePostServicesMock.createPost.mockResolvedValue(undefined);
 
-        const input = screen.getByTestId("create-content-input-field");
+        const input = screen.getByRole("textbox");
 
         await user.type(input, newInputValue);
         await user.click(screen.getByRole("button", { name: "Post" }));
@@ -181,7 +181,7 @@ describe("PostCreateForm component", () => {
 
         usePostServicesMock.createPost.mockResolvedValue(undefined);
 
-        const input = screen.getByTestId("create-content-input-field");
+        const input = screen.getByRole("textbox");
 
         await user.type(input, newInputValue);
         await user.click(screen.getByRole("button", { name: "Post" }));
