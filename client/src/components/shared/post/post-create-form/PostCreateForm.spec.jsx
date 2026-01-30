@@ -107,7 +107,7 @@ describe("PostCreateForm component", () => {
         expect(inputField).toHaveValue(newInputValue);
     });
 
-    it("calls createPost on form submit and returns a new post", async () => {
+    it("calls createPost on form submit", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -118,8 +118,8 @@ describe("PostCreateForm component", () => {
             expect(usePostServicesMock.createPost).toHaveBeenCalledWith({
                 text: newInputValue,
                 owner: isUser
-            })
-        })
+            });
+        });
     });
 
     it("calls setAlert on rejected createPost call", async () => {
@@ -134,7 +134,7 @@ describe("PostCreateForm component", () => {
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(ERR_MSG.CREATE_POST);
-        })
+        });
     });
 
     it("calls setTotalPosts and setPostText on resolved createPost", async () => {
