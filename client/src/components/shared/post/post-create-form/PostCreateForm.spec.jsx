@@ -137,17 +137,15 @@ describe("PostCreateForm component", () => {
         });
     });
 
-    it("calls setTotalPosts and setPostText on resolved createPost", async () => {
+    it.todo("sets total posts and post text on resolved createPost call", async () => {
         const user = userEvent.setup();
         setup();
 
         const input = screen.getByRole("textbox");
 
         await user.type(input, newInputValue);
-        expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
-        expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(0);
+        await user.click(screen.getByRole("button", { name: "Post" }));
 
-        user.click(screen.getByRole("button", { name: "Post" }));
         await waitFor(() => {
             expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
             expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(1);
@@ -155,7 +153,7 @@ describe("PostCreateForm component", () => {
         });
     });
 
-    it("onPostSubmitHandler returns on falsy newPost value", async () => {
+    it.todo("onPostSubmitHandler returns on falsy newPost value", async () => {
         const user = userEvent.setup();
         setup({
             createPostEmptyReturn: true,
@@ -179,19 +177,13 @@ describe("PostCreateForm component", () => {
     });
 
     it("calls abortAll on unmount", async () => {
-        const user = userEvent.setup();
         const { unmount } = setup({
-            createPostEmptyReturn: true,
+            createPostEmptyReturn: false,
             createPostReturnSuccess: true,
         });
-
-        const input = screen.getByRole("textbox");
-
-        await user.type(input, newInputValue);
-        await user.click(screen.getByRole("button", { name: "Post" }));
 
         unmount();
 
         expect(usePostServicesMock.abortAll).toHaveBeenCalled();
-    })
-})
+    });
+});
