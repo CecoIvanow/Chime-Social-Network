@@ -1,8 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import CreateContentInputField from "./CreateContentInputField";
-import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName }) => (
