@@ -5,21 +5,24 @@ import CreateContentInputField from "./CreateContentInputField";
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName }) => (
-        <button>
+        <button type="submit">
             {buttonName}
         </button>
     )
-}))
+}));
 
 vi.mock("../../../ui/create-content-input/CreateContentInput", () => ({
-    default: ({ text, placeholderText, onTextChangeHandler }) => (
+    default: ({ text, placeholderText, onTextChangeHandler }) => <>
+        <label htmlFor="input"></label>
         <input
+            id="input"
+            name="input"
             onChange={onTextChangeHandler}
             placeholder={placeholderText}
             value={text}
         />
-    )
-}))
+    </>
+}));
 
 const mockProps = {
     placeholderText: 'Share your thoughts...',
@@ -27,7 +30,7 @@ const mockProps = {
     text: 'Hello!',
     onTextChangeHandler: vi.fn(),
     onSubmitHandler: vi.fn(),
-}
+};
 
 beforeEach(() => {
     render(
@@ -35,7 +38,7 @@ beforeEach(() => {
             {...mockProps}
         />
     );
-})
+});
 
 describe('CreateContentInputField component', () => {
     it('renders Button and CreateContentInput with passed props', () => {
@@ -59,5 +62,5 @@ describe('CreateContentInputField component', () => {
 
         fireEvent.submit(screen.getByTestId('form-action-submit'));
         expect(mockProps.onSubmitHandler).toHaveBeenCalledTimes(1);
-    })
-})
+    });
+});
