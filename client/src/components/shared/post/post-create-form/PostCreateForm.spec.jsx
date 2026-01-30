@@ -1,30 +1,11 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
-import PostCreateForm from "./PostCreateForm";
-
 import { AlertContext } from "../../../../contexts/alert-context";
 import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 import { UserContext } from "../../../../contexts/user-context";
 
-const mockPosts = [
-    { postId: 1 },
-    { postId: 2 }
-]
-
-const mockIsUser = 42;
-
-const mockUsePostServices = {
-    abortAll: vi.fn(),
-    createPost: vi.fn(),
-}
-
-const mockTotalPostsCtxValue = {
-    totalPosts: mockPosts,
-    setTotalPosts: vi.fn(),
-}
-
-const mockSetAlert = vi.fn();
+import PostCreateForm from "./PostCreateForm";
 
 vi.mock("../../input-fields/create-content-input-field/CreateContentInputField", () => ({
     default: ({ text, buttonText, onTextChangeHandler, onSubmitHandler }) => (
@@ -56,8 +37,25 @@ vi.mock("../../../../hooks/usePostServices", () => ({
     })
 }));
 
+const isUser = 42;
+
+const mockUsePostServices = {
+    abortAll: vi.fn(),
+    createPost: vi.fn(),
+};
+
+const totalPostsCtxProps = {
+    setTotalPosts: vi.fn(),
+    totalPosts: [
+        { postId: 1 },
+        { postId: 2 },
+    ],
+};
+
+const mockSetAlert = vi.fn();
+
 beforeEach(() => {
-    mockTotalPostsCtxValue.setTotalPosts.mockClear();
+    totalPostsCtxProps.setTotalPosts.mockClear();
     mockUsePostServices.createPost.mockClear();
     mockSetAlert.mockClear();
 })
@@ -66,8 +64,8 @@ describe('PostCreateForm component', () => {
     it('renders CreateContentInputField with default buttonText prop', () => {
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
-                <UserContext.Provider value={{ isUser: mockIsUser }}>
-                    <TotalPostsContext.Provider value={mockTotalPostsCtxValue}>
+                <UserContext.Provider value={{ isUser: isUser }}>
+                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
                     </TotalPostsContext.Provider>
                 </UserContext.Provider>
@@ -85,8 +83,8 @@ describe('PostCreateForm component', () => {
     it('updates postText on input change', () => {
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
-                <UserContext.Provider value={{ isUser: mockIsUser }}>
-                    <TotalPostsContext.Provider value={mockTotalPostsCtxValue}>
+                <UserContext.Provider value={{ isUser: isUser }}>
+                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
                     </TotalPostsContext.Provider>
                 </UserContext.Provider>
@@ -106,8 +104,8 @@ describe('PostCreateForm component', () => {
 
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
-                <UserContext.Provider value={{ isUser: mockIsUser }}>
-                    <TotalPostsContext.Provider value={mockTotalPostsCtxValue}>
+                <UserContext.Provider value={{ isUser: isUser }}>
+                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
                     </TotalPostsContext.Provider>
                 </UserContext.Provider>
@@ -125,7 +123,7 @@ describe('PostCreateForm component', () => {
             expect(mockUsePostServices.createPost).toHaveBeenCalledTimes(1);
             expect(mockUsePostServices.createPost).toHaveBeenCalledWith({
                 text: 'Test Post',
-                owner: mockIsUser
+                owner: isUser
             })
         })
     });
@@ -135,8 +133,8 @@ describe('PostCreateForm component', () => {
 
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
-                <UserContext.Provider value={{ isUser: mockIsUser }}>
-                    <TotalPostsContext.Provider value={mockTotalPostsCtxValue}>
+                <UserContext.Provider value={{ isUser: isUser }}>
+                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
                     </TotalPostsContext.Provider>
                 </UserContext.Provider>
@@ -165,8 +163,8 @@ describe('PostCreateForm component', () => {
 
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
-                <UserContext.Provider value={{ isUser: mockIsUser }}>
-                    <TotalPostsContext.Provider value={mockTotalPostsCtxValue}>
+                <UserContext.Provider value={{ isUser: isUser }}>
+                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
                     </TotalPostsContext.Provider>
                 </UserContext.Provider>
@@ -178,12 +176,12 @@ describe('PostCreateForm component', () => {
 
         fireEvent.change(input, { target: { value: "Test Post" } });
         expect(mockUsePostServices.createPost).toHaveBeenCalledTimes(0);
-        expect(mockTotalPostsCtxValue.setTotalPosts).toHaveBeenCalledTimes(0);
+        expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(0);
 
         fireEvent.submit(form);
         await waitFor(() => {
             expect(mockUsePostServices.createPost).toHaveBeenCalledTimes(1);
-            expect(mockTotalPostsCtxValue.setTotalPosts).toHaveBeenCalledTimes(1);
+            expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(1);
             expect(input).toHaveValue('');
         });
     });
@@ -193,8 +191,8 @@ describe('PostCreateForm component', () => {
 
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
-                <UserContext.Provider value={{ isUser: mockIsUser }}>
-                    <TotalPostsContext.Provider value={mockTotalPostsCtxValue}>
+                <UserContext.Provider value={{ isUser: isUser }}>
+                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
                     </TotalPostsContext.Provider>
                 </UserContext.Provider>
@@ -211,9 +209,9 @@ describe('PostCreateForm component', () => {
             expect(mockUsePostServices.createPost).toHaveBeenCalledTimes(1);
             expect(mockUsePostServices.createPost).toHaveBeenCalledWith({
                 text: 'Test Post',
-                owner: mockIsUser
+                owner: isUser
             });
-            expect(mockTotalPostsCtxValue.setTotalPosts).toHaveBeenCalledTimes(0);
+            expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(0);
             expect(input).toHaveValue('Test Post');
         });
     });
@@ -223,8 +221,8 @@ describe('PostCreateForm component', () => {
 
         const { unmount } = render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
-                <UserContext.Provider value={{ isUser: mockIsUser }}>
-                    <TotalPostsContext.Provider value={mockTotalPostsCtxValue}>
+                <UserContext.Provider value={{ isUser: isUser }}>
+                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
                     </TotalPostsContext.Provider>
                 </UserContext.Provider>
