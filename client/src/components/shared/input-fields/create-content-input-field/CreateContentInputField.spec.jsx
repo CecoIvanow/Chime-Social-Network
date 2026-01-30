@@ -26,9 +26,9 @@ vi.mock("../../../ui/create-content-input/CreateContentInput", () => ({
 }));
 
 const mockProps = {
-    placeholderText: 'Share your thoughts...',
-    buttonText: 'Post',
-    text: 'Hello!',
+    placeholderText: "Share your thoughts...",
+    buttonText: "Post",
+    text: "Hello!",
     onTextChangeHandler: vi.fn(),
     onSubmitHandler: vi.fn(),
 };
@@ -41,21 +41,21 @@ beforeEach(() => {
     );
 });
 
-describe('CreateContentInputField component', () => {
-    it('renders Button and CreateContentInput with provided props', () => {
+describe("CreateContentInputField component", () => {
+    it("renders Button and CreateContentInput with provided props", () => {
         expect(screen.getByRole("button")).toHaveTextContent(mockProps.buttonText);
 
         expect(screen.getByPlaceholderText(mockProps.placeholderText)).toHaveValue(mockProps.text);
     });
 
-    it('calls onTextChangeHandler on input change', async () => {
+    it("calls onTextChangeHandler on input change", async () => {
         const user = userEvent.setup();
 
-        await user.type(screen.getByPlaceholderText(mockProps.placeholderText), 'Hello, there!');
+        await user.type(screen.getByPlaceholderText(mockProps.placeholderText), "Hello, there!");
         expect(mockProps.onTextChangeHandler).toHaveBeenCalled();
     });
 
-    it('onSubmitHandler gets called on submit', async () => {
+    it("onSubmitHandler gets called on submit", async () => {
         const user = userEvent.setup();
 
         await user.click(screen.getByRole("button"));
