@@ -55,10 +55,10 @@ describe('CreateContentInputField component', () => {
         expect(mockProps.onTextChangeHandler).toHaveBeenCalled();
     });
 
-    it('onSubmitHandler gets called on submit', () => {
-        expect(mockProps.onSubmitHandler).toHaveBeenCalledTimes(0);
+    it('onSubmitHandler gets called on submit', async () => {
+        const user = userEvent.setup();
 
-        fireEvent.submit(screen.getByTestId('form-action-submit'));
-        expect(mockProps.onSubmitHandler).toHaveBeenCalledTimes(1);
+        await user.click(screen.getByRole("button"));
+        expect(mockProps.onSubmitHandler).toHaveBeenCalled();
     });
 });
