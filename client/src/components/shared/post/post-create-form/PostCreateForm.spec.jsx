@@ -1,11 +1,18 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { AlertContext } from "../../../../contexts/alert-context";
 import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 import { UserContext } from "../../../../contexts/user-context";
 
 import PostCreateForm from "./PostCreateForm";
+
+vi.mock("../../../../hooks/usePostServices", () => ({
+    default: () => ({
+        abortAll: usePostServicesMock.abortAll,
+        createPost: usePostServicesMock.createPost,
+    })
+}));
 
 vi.mock("../../input-fields/create-content-input-field/CreateContentInputField", () => ({
     default: ({ text, buttonText, onTextChangeHandler, onSubmitHandler }) => (
@@ -23,18 +30,11 @@ vi.mock("../../input-fields/create-content-input-field/CreateContentInputField",
                 onChange={onTextChangeHandler}
                 data-testid="create-content-input-field"
             />
-            <button>
+            <button type="submit">
                 {buttonText}
             </button>
         </form>
     )
-}));
-
-vi.mock("../../../../hooks/usePostServices", () => ({
-    default: () => ({
-        abortAll: usePostServicesMock.abortAll,
-        createPost: usePostServicesMock.createPost,
-    })
 }));
 
 const isUser = 42;
