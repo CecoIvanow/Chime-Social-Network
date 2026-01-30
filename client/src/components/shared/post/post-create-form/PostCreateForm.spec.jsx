@@ -54,17 +54,23 @@ const totalPostsCtxProps = {
 
 const setAlert = vi.fn();
 
+function setup() {
+    const { unmount } = render(
+        <AlertContext.Provider value={{ setAlert, }}>
+            <UserContext.Provider value={{ isUser, }}>
+                <TotalPostsContext.Provider value={totalPostsCtxProps}>
+                    <PostCreateForm />
+                </TotalPostsContext.Provider>
+            </UserContext.Provider>
+        </AlertContext.Provider>
+    );
+
+    return { unmount }
+};
+
 describe("PostCreateForm component", () => {
     it("renders CreateContentInputField with default buttonText prop", () => {
-        render(
-            <AlertContext.Provider value={{ setAlert, }}>
-                <UserContext.Provider value={{ isUser, }}>
-                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
-                        <PostCreateForm />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
+        setup();
 
         const inputField = screen.getByTestId("create-content-input-field");
         const button = screen.getByText("Post");
@@ -75,15 +81,7 @@ describe("PostCreateForm component", () => {
     });
 
     it("updates postText on input change", () => {
-        render(
-            <AlertContext.Provider value={{ setAlert: setAlert }}>
-                <UserContext.Provider value={{ isUser: isUser }}>
-                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
-                        <PostCreateForm />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
+        setup();
 
         const inputField = screen.getByTestId("create-content-input-field");
 
@@ -94,17 +92,9 @@ describe("PostCreateForm component", () => {
     });
 
     it("calls createPost on submit and returns a new post", async () => {
-        usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
+        setup();
 
-        render(
-            <AlertContext.Provider value={{ setAlert: setAlert }}>
-                <UserContext.Provider value={{ isUser: isUser }}>
-                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
-                        <PostCreateForm />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
+        usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
 
         const input = screen.getByTestId("create-content-input-field");
         const form = screen.getByTestId("form");
@@ -123,17 +113,9 @@ describe("PostCreateForm component", () => {
     });
 
     it("sets setAlert on createPost rejection", async () => {
-        usePostServicesMock.createPost.mockRejectedValue(new Error("Successful test failure!"))
+        setup();
 
-        render(
-            <AlertContext.Provider value={{ setAlert: setAlert }}>
-                <UserContext.Provider value={{ isUser: isUser }}>
-                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
-                        <PostCreateForm />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
+        usePostServicesMock.createPost.mockRejectedValue(new Error("Successful test failure!"))
 
         const input = screen.getByTestId("create-content-input-field");
         const form = screen.getByTestId("form");
@@ -153,17 +135,9 @@ describe("PostCreateForm component", () => {
     });
 
     it("calls setTotalPosts and setPostText on resolved createPost", async () => {
-        usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
+        setup();
 
-        render(
-            <AlertContext.Provider value={{ setAlert: setAlert }}>
-                <UserContext.Provider value={{ isUser: isUser }}>
-                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
-                        <PostCreateForm />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
+        usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
 
         const input = screen.getByTestId("create-content-input-field");
         const form = screen.getByTestId("form");
@@ -181,17 +155,9 @@ describe("PostCreateForm component", () => {
     });
 
     it("onPostSubmitHandler returns on falsy newPost value", async () => {
-        usePostServicesMock.createPost.mockResolvedValue(undefined);
+        setup();
 
-        render(
-            <AlertContext.Provider value={{ setAlert: setAlert }}>
-                <UserContext.Provider value={{ isUser: isUser }}>
-                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
-                        <PostCreateForm />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
+        usePostServicesMock.createPost.mockResolvedValue(undefined);
 
         const input = screen.getByTestId("create-content-input-field");
         const form = screen.getByTestId("form");
@@ -211,17 +177,9 @@ describe("PostCreateForm component", () => {
     });
 
     it("calls abortAll on unmount", () => {
-        usePostServicesMock.createPost.mockResolvedValue(undefined);
+        const { unmount } = setup();
 
-        const { unmount } = render(
-            <AlertContext.Provider value={{ setAlert: setAlert }}>
-                <UserContext.Provider value={{ isUser: isUser }}>
-                    <TotalPostsContext.Provider value={totalPostsCtxProps}>
-                        <PostCreateForm />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
+        usePostServicesMock.createPost.mockResolvedValue(undefined);
 
         const input = screen.getByTestId("create-content-input-field");
         const form = screen.getByTestId("form");
