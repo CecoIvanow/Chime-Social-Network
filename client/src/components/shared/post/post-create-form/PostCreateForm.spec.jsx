@@ -52,19 +52,13 @@ const totalPostsCtxProps = {
     ],
 };
 
-const mockSetAlert = vi.fn();
-
-beforeEach(() => {
-    totalPostsCtxProps.setTotalPosts.mockClear();
-    usePostServicesMock.createPost.mockClear();
-    mockSetAlert.mockClear();
-})
+const setAlert = vi.fn();
 
 describe("PostCreateForm component", () => {
     it("renders CreateContentInputField with default buttonText prop", () => {
         render(
-            <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
-                <UserContext.Provider value={{ isUser: isUser }}>
+            <AlertContext.Provider value={{ setAlert, }}>
+                <UserContext.Provider value={{ isUser, }}>
                     <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
                     </TotalPostsContext.Provider>
@@ -82,7 +76,7 @@ describe("PostCreateForm component", () => {
 
     it("updates postText on input change", () => {
         render(
-            <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
+            <AlertContext.Provider value={{ setAlert: setAlert }}>
                 <UserContext.Provider value={{ isUser: isUser }}>
                     <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
@@ -103,7 +97,7 @@ describe("PostCreateForm component", () => {
         usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
 
         render(
-            <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
+            <AlertContext.Provider value={{ setAlert: setAlert }}>
                 <UserContext.Provider value={{ isUser: isUser }}>
                     <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
@@ -132,7 +126,7 @@ describe("PostCreateForm component", () => {
         usePostServicesMock.createPost.mockRejectedValue(new Error("Successful test failure!"))
 
         render(
-            <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
+            <AlertContext.Provider value={{ setAlert: setAlert }}>
                 <UserContext.Provider value={{ isUser: isUser }}>
                     <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
@@ -148,13 +142,13 @@ describe("PostCreateForm component", () => {
 
         fireEvent.change(input, { target: { value: "Test Post" } });
         expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
-        expect(mockSetAlert).toHaveBeenCalledTimes(0);
+        expect(setAlert).toHaveBeenCalledTimes(0);
 
         fireEvent.submit(form);
         await waitFor(() => {
             expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
-            expect(mockSetAlert).toHaveBeenCalledTimes(1);
-            expect(mockSetAlert).toHaveBeenCalledWith("Successful test failure!");
+            expect(setAlert).toHaveBeenCalledTimes(1);
+            expect(setAlert).toHaveBeenCalledWith("Successful test failure!");
         })
     });
 
@@ -162,7 +156,7 @@ describe("PostCreateForm component", () => {
         usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
 
         render(
-            <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
+            <AlertContext.Provider value={{ setAlert: setAlert }}>
                 <UserContext.Provider value={{ isUser: isUser }}>
                     <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
@@ -190,7 +184,7 @@ describe("PostCreateForm component", () => {
         usePostServicesMock.createPost.mockResolvedValue(undefined);
 
         render(
-            <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
+            <AlertContext.Provider value={{ setAlert: setAlert }}>
                 <UserContext.Provider value={{ isUser: isUser }}>
                     <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
@@ -220,7 +214,7 @@ describe("PostCreateForm component", () => {
         usePostServicesMock.createPost.mockResolvedValue(undefined);
 
         const { unmount } = render(
-            <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
+            <AlertContext.Provider value={{ setAlert: setAlert }}>
                 <UserContext.Provider value={{ isUser: isUser }}>
                     <TotalPostsContext.Provider value={totalPostsCtxProps}>
                         <PostCreateForm />
