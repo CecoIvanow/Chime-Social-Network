@@ -21,7 +21,7 @@ vi.mock("../../../ui/create-content-input/CreateContentInput", () => ({
     )
 }))
 
-const mockedProps = {
+const mockProps = {
     placeholderText: 'Share your thoughts...',
     buttonText: 'Post',
     text: 'Hello!',
@@ -32,11 +32,11 @@ const mockedProps = {
 beforeEach(() => {
     render(
         <CreateContentInputField
-            buttonText={mockedProps.buttonText}
-            placeholderText={mockedProps.placeholderText}
-            text={mockedProps.text}
-            onTextChangeHandler={mockedProps.onTextChangeHandler}
-            onSubmitHandler={mockedProps.onSubmitHandler}
+            buttonText={mockProps.buttonText}
+            placeholderText={mockProps.placeholderText}
+            text={mockProps.text}
+            onTextChangeHandler={mockProps.onTextChangeHandler}
+            onSubmitHandler={mockProps.onSubmitHandler}
         />
     );
 })
@@ -44,24 +44,24 @@ beforeEach(() => {
 describe('CreateContentInputField component', () => {
     it('renders Button and CreateContentInput with passed props', () => {
 
-        expect(screen.getByText(mockedProps.buttonText)).toBeInTheDocument();
-        expect(screen.getByDisplayValue(mockedProps.text)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText(mockedProps.placeholderText)).toBeInTheDocument();
+        expect(screen.getByText(mockProps.buttonText)).toBeInTheDocument();
+        expect(screen.getByDisplayValue(mockProps.text)).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(mockProps.placeholderText)).toBeInTheDocument();
     });
 
     it('onTextChangeHandler gets called on text change', () => {
-        const createContentInput = screen.getByDisplayValue(mockedProps.text);
+        const createContentInput = screen.getByDisplayValue(mockProps.text);
 
-        expect(mockedProps.onTextChangeHandler).toHaveBeenCalledTimes(0);
+        expect(mockProps.onTextChangeHandler).toHaveBeenCalledTimes(0);
 
         fireEvent.change(createContentInput, { target: { value: 'Hello, there!' } })
-        expect(mockedProps.onTextChangeHandler).toHaveBeenCalledTimes(1);
+        expect(mockProps.onTextChangeHandler).toHaveBeenCalledTimes(1);
     });
 
     it('onSubmitHandler gets called on submit', () => {
-        expect(mockedProps.onSubmitHandler).toHaveBeenCalledTimes(0);
+        expect(mockProps.onSubmitHandler).toHaveBeenCalledTimes(0);
 
         fireEvent.submit(screen.getByTestId('form-action-submit'));
-        expect(mockedProps.onSubmitHandler).toHaveBeenCalledTimes(1);
+        expect(mockProps.onSubmitHandler).toHaveBeenCalledTimes(1);
     })
 })
