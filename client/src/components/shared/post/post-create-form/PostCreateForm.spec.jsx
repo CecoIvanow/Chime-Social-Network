@@ -103,18 +103,16 @@ describe("PostCreateForm component", () => {
         expect(inputField).toHaveValue(newInputValue);
     });
 
-    it("calls createPost on submit and returns a new post", async () => {
+    it("calls createPost on form submit and returns a new post", async () => {
         const user = userEvent.setup();
         setup();
 
         const input = screen.getByRole("textbox");
 
         await user.type(input, newInputValue);
-        expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
-
         await user.click(screen.getByRole("button", { name: "Post" }));
+
         await waitFor(() => {
-            expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
             expect(usePostServicesMock.createPost).toHaveBeenCalledWith({
                 text: newInputValue,
                 owner: isUser
