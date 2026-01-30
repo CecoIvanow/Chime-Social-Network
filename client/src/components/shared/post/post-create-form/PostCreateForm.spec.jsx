@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { AlertContext } from "../../../../contexts/alert-context";
@@ -77,29 +78,30 @@ describe("PostCreateForm component", () => {
         expect(screen.getByRole("button", { name: "Post" })).toBeInTheDocument();
     });
 
-    it("updates postText on input change", () => {
+    it("updates postText on input change", async () => {
+        const user = userEvent.setup();
         setup();
 
         const inputField = screen.getByTestId("create-content-input-field");
 
         expect(inputField).not.toHaveValue();
 
-        fireEvent.change(inputField, { target: { value: "R" } });
+        await user.type(inputField, "R");
         expect(inputField).toHaveValue("R");
     });
 
     it("calls createPost on submit and returns a new post", async () => {
+        const user = userEvent.setup();
         setup();
 
         usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
 
         const input = screen.getByTestId("create-content-input-field");
-        const form = screen.getByTestId("form");
 
-        fireEvent.change(input, { target: { value: "Test Post" } });
+        await user.type(input, "Test Post");
         expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
 
-        fireEvent.submit(form);
+        await user.click(screen.getByRole("button", { name: "Post" }));
         await waitFor(() => {
             expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
             expect(usePostServicesMock.createPost).toHaveBeenCalledWith({
@@ -110,20 +112,18 @@ describe("PostCreateForm component", () => {
     });
 
     it("sets setAlert on createPost rejection", async () => {
+        const user = userEvent.setup();
         setup();
 
         usePostServicesMock.createPost.mockRejectedValue(new Error("Successful test failure!"))
 
         const input = screen.getByTestId("create-content-input-field");
-        const form = screen.getByTestId("form");
 
-        fireEvent.change(input, { target: { value: "Test Post" } });
-
-        fireEvent.change(input, { target: { value: "Test Post" } });
+        await user.type(input, "Test Post");
         expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
         expect(setAlert).toHaveBeenCalledTimes(0);
 
-        fireEvent.submit(form);
+        user.click(screen.getByRole("button", { name: "Post" }));
         await waitFor(() => {
             expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
             expect(setAlert).toHaveBeenCalledTimes(1);
@@ -132,18 +132,18 @@ describe("PostCreateForm component", () => {
     });
 
     it("calls setTotalPosts and setPostText on resolved createPost", async () => {
+        const user = userEvent.setup();
         setup();
 
         usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
 
         const input = screen.getByTestId("create-content-input-field");
-        const form = screen.getByTestId("form");
 
-        fireEvent.change(input, { target: { value: "Test Post" } });
+        await user.type(input, "Test Post");
         expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
         expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(0);
 
-        fireEvent.submit(form);
+        user.click(screen.getByRole("button", { name: "Post" }));
         await waitFor(() => {
             expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
             expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(1);
@@ -152,15 +152,15 @@ describe("PostCreateForm component", () => {
     });
 
     it("onPostSubmitHandler returns on falsy newPost value", async () => {
+        const user = userEvent.setup();
         setup();
 
         usePostServicesMock.createPost.mockResolvedValue(undefined);
 
         const input = screen.getByTestId("create-content-input-field");
-        const form = screen.getByTestId("form");
 
-        fireEvent.change(input, { target: { value: "Test Post" } });
-        fireEvent.submit(form);
+        await user.type(input, "Test Post");
+        await user.click(screen.getByRole("button", { name: "Post" }));
 
         await waitFor(() => {
             expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
@@ -173,7 +173,8 @@ describe("PostCreateForm component", () => {
         });
     });
 
-    it("calls abortAll on unmount", () => {
+    it("calls abortAll on unmount", async () => {
+        const user = userEvent.setup();
         const { unmount } = setup();
 
         usePostServicesMock.createPost.mockResolvedValue(undefined);
@@ -181,8 +182,8 @@ describe("PostCreateForm component", () => {
         const input = screen.getByTestId("create-content-input-field");
         const form = screen.getByTestId("form");
 
-        fireEvent.change(input, { target: { value: "Test Post" } });
-        fireEvent.submit(form);
+        await user.type(input, "Test Post");
+        await user.click(screen.getByRole("button", { name: "Post" }));
 
         unmount();
 
