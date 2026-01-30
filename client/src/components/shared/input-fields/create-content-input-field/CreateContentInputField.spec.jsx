@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import CreateContentInputField from "./CreateContentInputField";
+import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName }) => (
@@ -47,13 +48,11 @@ describe('CreateContentInputField component', () => {
         expect(screen.getByPlaceholderText(mockProps.placeholderText)).toHaveValue(mockProps.text);
     });
 
-    it('onTextChangeHandler gets called on text change', () => {
-        const createContentInput = screen.getByDisplayValue(mockProps.text);
+    it('calls onTextChangeHandler on input change', async () => {
+        const user = userEvent.setup();
 
-        expect(mockProps.onTextChangeHandler).toHaveBeenCalledTimes(0);
-
-        fireEvent.change(createContentInput, { target: { value: 'Hello, there!' } })
-        expect(mockProps.onTextChangeHandler).toHaveBeenCalledTimes(1);
+        await user.type(screen.getByPlaceholderText(mockProps.placeholderText), 'Hello, there!');
+        expect(mockProps.onTextChangeHandler).toHaveBeenCalled();
     });
 
     it('onSubmitHandler gets called on submit', () => {
