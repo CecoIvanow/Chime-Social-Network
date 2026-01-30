@@ -80,7 +80,7 @@ describe("PostCreateForm component", () => {
         expect(screen.getByRole("button", { name: "Post" })).toBeInTheDocument();
     });
 
-    it("updates postText on input change", async () => {
+    it("updates postText on input text change", async () => {
         const user = userEvent.setup();
         setup();
 
