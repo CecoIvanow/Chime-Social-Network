@@ -39,6 +39,8 @@ vi.mock("../../input-fields/create-content-input-field/CreateContentInputField",
     )
 }));
 
+const newInputValue = "This is a test!";
+
 const isUser = 42;
 
 const usePostServicesMock = {
@@ -86,8 +88,8 @@ describe("PostCreateForm component", () => {
 
         expect(inputField).not.toHaveValue();
 
-        await user.type(inputField, "R");
-        expect(inputField).toHaveValue("R");
+        await user.type(inputField, newInputValue);
+        expect(inputField).toHaveValue(newInputValue);
     });
 
     it("calls createPost on submit and returns a new post", async () => {
@@ -98,14 +100,14 @@ describe("PostCreateForm component", () => {
 
         const input = screen.getByTestId("create-content-input-field");
 
-        await user.type(input, "Test Post");
+        await user.type(input, newInputValue);
         expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
 
         await user.click(screen.getByRole("button", { name: "Post" }));
         await waitFor(() => {
             expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
             expect(usePostServicesMock.createPost).toHaveBeenCalledWith({
-                text: "Test Post",
+                text: newInputValue,
                 owner: isUser
             })
         })
@@ -119,7 +121,7 @@ describe("PostCreateForm component", () => {
 
         const input = screen.getByTestId("create-content-input-field");
 
-        await user.type(input, "Test Post");
+        await user.type(input, newInputValue);
         expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
         expect(setAlert).toHaveBeenCalledTimes(0);
 
@@ -139,7 +141,7 @@ describe("PostCreateForm component", () => {
 
         const input = screen.getByTestId("create-content-input-field");
 
-        await user.type(input, "Test Post");
+        await user.type(input, newInputValue);
         expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
         expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(0);
 
@@ -159,17 +161,17 @@ describe("PostCreateForm component", () => {
 
         const input = screen.getByTestId("create-content-input-field");
 
-        await user.type(input, "Test Post");
+        await user.type(input, newInputValue);
         await user.click(screen.getByRole("button", { name: "Post" }));
 
         await waitFor(() => {
             expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
             expect(usePostServicesMock.createPost).toHaveBeenCalledWith({
-                text: "Test Post",
+                text: newInputValue,
                 owner: isUser
             });
             expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(0);
-            expect(input).toHaveValue("Test Post");
+            expect(input).toHaveValue(newInputValue);
         });
     });
 
@@ -180,9 +182,8 @@ describe("PostCreateForm component", () => {
         usePostServicesMock.createPost.mockResolvedValue(undefined);
 
         const input = screen.getByTestId("create-content-input-field");
-        const form = screen.getByTestId("form");
 
-        await user.type(input, "Test Post");
+        await user.type(input, newInputValue);
         await user.click(screen.getByRole("button", { name: "Post" }));
 
         unmount();
