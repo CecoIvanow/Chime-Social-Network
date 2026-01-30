@@ -58,7 +58,18 @@ const totalPostsCtxProps = {
 
 const setAlert = vi.fn();
 
-function setup() {
+function setup(options = {
+    createPostReturnSuccess: true,
+    createPostEmptyReturn: false
+}) {
+    if (!options.createPostReturnSuccess) {
+        usePostServicesMock.createPost.mockRejectedValue(new Error("Successful test failure!"));
+    } else if (options.createPostEmptyReturn) {
+        usePostServicesMock.createPost.mockResolvedValue(undefined);
+    } else {
+        usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
+    }
+
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert, }}>
             <UserContext.Provider value={{ isUser, }}>
@@ -96,8 +107,6 @@ describe("PostCreateForm component", () => {
         const user = userEvent.setup();
         setup();
 
-        usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
-
         const input = screen.getByRole("textbox");
 
         await user.type(input, newInputValue);
@@ -115,9 +124,10 @@ describe("PostCreateForm component", () => {
 
     it("sets setAlert on createPost rejection", async () => {
         const user = userEvent.setup();
-        setup();
-
-        usePostServicesMock.createPost.mockRejectedValue(new Error("Successful test failure!"))
+        setup({
+            createPostEmptyReturn: false,
+            createPostReturnSuccess: false,
+        });
 
         const input = screen.getByRole("textbox");
 
@@ -137,8 +147,6 @@ describe("PostCreateForm component", () => {
         const user = userEvent.setup();
         setup();
 
-        usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
-
         const input = screen.getByRole("textbox");
 
         await user.type(input, newInputValue);
@@ -155,9 +163,10 @@ describe("PostCreateForm component", () => {
 
     it("onPostSubmitHandler returns on falsy newPost value", async () => {
         const user = userEvent.setup();
-        setup();
-
-        usePostServicesMock.createPost.mockResolvedValue(undefined);
+        setup({
+            createPostEmptyReturn: true,
+            createPostReturnSuccess: true,
+        });
 
         const input = screen.getByRole("textbox");
 
@@ -177,9 +186,10 @@ describe("PostCreateForm component", () => {
 
     it("calls abortAll on unmount", async () => {
         const user = userEvent.setup();
-        const { unmount } = setup();
-
-        usePostServicesMock.createPost.mockResolvedValue(undefined);
+        const { unmount } = setup({
+            createPostEmptyReturn: true,
+            createPostReturnSuccess: true,
+        });
 
         const input = screen.getByRole("textbox");
 
