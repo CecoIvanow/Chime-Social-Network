@@ -15,7 +15,7 @@ vi.mock("../../../ui/inputs/input-field/InputField", () => ({
     )
 }));
 
-const mockFields = [
+const mockProps = [
     {
         fieldName: "Username",
         inputName: "username",
@@ -32,7 +32,7 @@ const mockFields = [
 
 beforeEach(() => {
     render(<InputFieldsList
-        inputFields={mockFields}
+        inputFields={mockProps}
     />)
 });
 
@@ -40,11 +40,11 @@ describe('InputFieldsList component', () => {
     it('renders with correct number of InputField components', () => {
         const inputFields = screen.getAllByTestId('input-field');
 
-        expect(inputFields).toHaveLength(mockFields.length);
+        expect(inputFields).toHaveLength(mockProps.length);
     });
 
     it('renders inputField component with passed props', () => {
-        for (const field of mockFields) {
+        for (const field of mockProps) {
             expect(screen.getByText(field.fieldName)).toBeInTheDocument();
             expect(screen.getByText(field.inputName)).toBeInTheDocument();
             expect(screen.getByText(field.inputType)).toBeInTheDocument();
