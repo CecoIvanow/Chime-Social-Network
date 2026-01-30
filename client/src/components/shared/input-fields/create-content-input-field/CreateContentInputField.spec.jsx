@@ -41,11 +41,10 @@ beforeEach(() => {
 });
 
 describe('CreateContentInputField component', () => {
-    it('renders Button and CreateContentInput with passed props', () => {
+    it('renders Button and CreateContentInput with provided props', () => {
+        expect(screen.getByRole("button")).toHaveTextContent(mockProps.buttonText);
 
-        expect(screen.getByText(mockProps.buttonText)).toBeInTheDocument();
-        expect(screen.getByDisplayValue(mockProps.text)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText(mockProps.placeholderText)).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(mockProps.placeholderText)).toHaveValue(mockProps.text);
     });
 
     it('onTextChangeHandler gets called on text change', () => {
