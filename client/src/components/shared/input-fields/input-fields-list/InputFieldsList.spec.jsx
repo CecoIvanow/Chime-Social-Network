@@ -44,12 +44,10 @@ describe('InputFieldsList component', () => {
         };
     });
 
-    it.skip('renders inputField component with passed props', () => {
-        for (const field of mockProps) {
-            expect(screen.getByText(field.fieldName)).toBeInTheDocument();
-            expect(screen.getByText(field.inputName)).toBeInTheDocument();
-            expect(screen.getByText(field.inputType)).toBeInTheDocument();
-            expect(screen.getByText(field.value)).toBeInTheDocument();
-        }
+    it('renders InputField component with provided props', () => {
+        for (const inputField of mockProps) {
+            expect(screen.getByLabelText(inputField.fieldName)).toHaveAttribute("type", inputField.inputType);
+            expect(screen.getByLabelText(inputField.fieldName)).toHaveValue(inputField.value);
+        };
     });
 });
