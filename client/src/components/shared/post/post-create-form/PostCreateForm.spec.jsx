@@ -28,6 +28,7 @@ vi.mock("../../input-fields/create-content-input-field/CreateContentInputField",
             <input
                 value={text}
                 onChange={onTextChangeHandler}
+                type="text"
                 data-testid="create-content-input-field"
             />
             <button type="submit">
@@ -69,15 +70,11 @@ function setup() {
 };
 
 describe("PostCreateForm component", () => {
-    it("renders CreateContentInputField with default buttonText prop", () => {
+    it("renders post creation form", () => {
         setup();
 
-        const inputField = screen.getByTestId("create-content-input-field");
-        const button = screen.getByText("Post");
-
-        expect(inputField).toBeInTheDocument();
-
-        expect(button).toBeInTheDocument();
+        expect(screen.getByRole("textbox")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Post" })).toBeInTheDocument();
     });
 
     it("updates postText on input change", () => {
