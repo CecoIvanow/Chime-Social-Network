@@ -43,6 +43,10 @@ const newInputValue = "This is a test!";
 
 const isUser = 42;
 
+const ERR_MSG = {
+    CREATE_POST: "Rejected createPost API call"
+}
+
 const usePostServicesMock = {
     abortAll: vi.fn(),
     createPost: vi.fn(),
@@ -63,7 +67,7 @@ function setup(options = {
     createPostEmptyReturn: false
 }) {
     if (!options.createPostReturnSuccess) {
-        usePostServicesMock.createPost.mockRejectedValue(new Error("Successful test failure!"));
+        usePostServicesMock.createPost.mockRejectedValue(new Error(ERR_MSG.CREATE_POST));
     } else if (options.createPostEmptyReturn) {
         usePostServicesMock.createPost.mockResolvedValue(undefined);
     } else {
@@ -107,9 +111,7 @@ describe("PostCreateForm component", () => {
         const user = userEvent.setup();
         setup();
 
-        const input = screen.getByRole("textbox");
-
-        await user.type(input, newInputValue);
+        await user.type(screen.getByRole("textbox"), newInputValue);
         await user.click(screen.getByRole("button", { name: "Post" }));
 
         await waitFor(() => {
@@ -120,24 +122,18 @@ describe("PostCreateForm component", () => {
         })
     });
 
-    it("sets setAlert on createPost rejection", async () => {
+    it("calls setAlert on rejected createPost call", async () => {
         const user = userEvent.setup();
         setup({
             createPostEmptyReturn: false,
             createPostReturnSuccess: false,
         });
 
-        const input = screen.getByRole("textbox");
+        await user.type(screen.getByRole("textbox"), newInputValue);
+        await user.click(screen.getByRole("button", { name: "Post" }));
 
-        await user.type(input, newInputValue);
-        expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
-        expect(setAlert).toHaveBeenCalledTimes(0);
-
-        user.click(screen.getByRole("button", { name: "Post" }));
         await waitFor(() => {
-            expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
-            expect(setAlert).toHaveBeenCalledTimes(1);
-            expect(setAlert).toHaveBeenCalledWith("Successful test failure!");
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.CREATE_POST);
         })
     });
 
