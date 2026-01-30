@@ -32,11 +32,7 @@ const mockProps = {
 beforeEach(() => {
     render(
         <CreateContentInputField
-            buttonText={mockProps.buttonText}
-            placeholderText={mockProps.placeholderText}
-            text={mockProps.text}
-            onTextChangeHandler={mockProps.onTextChangeHandler}
-            onSubmitHandler={mockProps.onSubmitHandler}
+            {...mockProps}
         />
     );
 })
