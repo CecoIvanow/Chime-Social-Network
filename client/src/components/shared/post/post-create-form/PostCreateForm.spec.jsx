@@ -14,7 +14,7 @@ vi.mock("../../input-fields/create-content-input-field/CreateContentInputField",
             onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData();
-                formData.set('text', text);
+                formData.set("text", text);
                 onSubmitHandler(formData);
             }}
         >
@@ -32,14 +32,14 @@ vi.mock("../../input-fields/create-content-input-field/CreateContentInputField",
 
 vi.mock("../../../../hooks/usePostServices", () => ({
     default: () => ({
-        abortAll: mockUsePostServices.abortAll,
-        createPost: mockUsePostServices.createPost,
+        abortAll: usePostServicesMock.abortAll,
+        createPost: usePostServicesMock.createPost,
     })
 }));
 
 const isUser = 42;
 
-const mockUsePostServices = {
+const usePostServicesMock = {
     abortAll: vi.fn(),
     createPost: vi.fn(),
 };
@@ -56,12 +56,12 @@ const mockSetAlert = vi.fn();
 
 beforeEach(() => {
     totalPostsCtxProps.setTotalPosts.mockClear();
-    mockUsePostServices.createPost.mockClear();
+    usePostServicesMock.createPost.mockClear();
     mockSetAlert.mockClear();
 })
 
-describe('PostCreateForm component', () => {
-    it('renders CreateContentInputField with default buttonText prop', () => {
+describe("PostCreateForm component", () => {
+    it("renders CreateContentInputField with default buttonText prop", () => {
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
                 <UserContext.Provider value={{ isUser: isUser }}>
@@ -73,14 +73,14 @@ describe('PostCreateForm component', () => {
         );
 
         const inputField = screen.getByTestId("create-content-input-field");
-        const button = screen.getByText('Post');
+        const button = screen.getByText("Post");
 
         expect(inputField).toBeInTheDocument();
 
         expect(button).toBeInTheDocument();
     });
 
-    it('updates postText on input change', () => {
+    it("updates postText on input change", () => {
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
                 <UserContext.Provider value={{ isUser: isUser }}>
@@ -95,12 +95,12 @@ describe('PostCreateForm component', () => {
 
         expect(inputField).not.toHaveValue();
 
-        fireEvent.change(inputField, { target: { value: 'R' } });
-        expect(inputField).toHaveValue('R');
+        fireEvent.change(inputField, { target: { value: "R" } });
+        expect(inputField).toHaveValue("R");
     });
 
-    it('calls createPost on submit and returns a new post', async () => {
-        mockUsePostServices.createPost.mockResolvedValue({ postId: 3 });
+    it("calls createPost on submit and returns a new post", async () => {
+        usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
 
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
@@ -113,23 +113,23 @@ describe('PostCreateForm component', () => {
         );
 
         const input = screen.getByTestId("create-content-input-field");
-        const form = screen.getByTestId('form');
+        const form = screen.getByTestId("form");
 
         fireEvent.change(input, { target: { value: "Test Post" } });
-        expect(mockUsePostServices.createPost).toHaveBeenCalledTimes(0);
+        expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
 
         fireEvent.submit(form);
         await waitFor(() => {
-            expect(mockUsePostServices.createPost).toHaveBeenCalledTimes(1);
-            expect(mockUsePostServices.createPost).toHaveBeenCalledWith({
-                text: 'Test Post',
+            expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
+            expect(usePostServicesMock.createPost).toHaveBeenCalledWith({
+                text: "Test Post",
                 owner: isUser
             })
         })
     });
 
-    it('sets setAlert on createPost rejection', async () => {
-        mockUsePostServices.createPost.mockRejectedValue(new Error('Successful test failure!'))
+    it("sets setAlert on createPost rejection", async () => {
+        usePostServicesMock.createPost.mockRejectedValue(new Error("Successful test failure!"))
 
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
@@ -142,24 +142,24 @@ describe('PostCreateForm component', () => {
         );
 
         const input = screen.getByTestId("create-content-input-field");
-        const form = screen.getByTestId('form');
+        const form = screen.getByTestId("form");
 
         fireEvent.change(input, { target: { value: "Test Post" } });
 
         fireEvent.change(input, { target: { value: "Test Post" } });
-        expect(mockUsePostServices.createPost).toHaveBeenCalledTimes(0);
+        expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
         expect(mockSetAlert).toHaveBeenCalledTimes(0);
 
         fireEvent.submit(form);
         await waitFor(() => {
-            expect(mockUsePostServices.createPost).toHaveBeenCalledTimes(1);
+            expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
             expect(mockSetAlert).toHaveBeenCalledTimes(1);
-            expect(mockSetAlert).toHaveBeenCalledWith('Successful test failure!');
+            expect(mockSetAlert).toHaveBeenCalledWith("Successful test failure!");
         })
     });
 
-    it('calls setTotalPosts and setPostText on resolved createPost', async () => {
-        mockUsePostServices.createPost.mockResolvedValue({ postId: 3 });
+    it("calls setTotalPosts and setPostText on resolved createPost", async () => {
+        usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
 
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
@@ -172,22 +172,22 @@ describe('PostCreateForm component', () => {
         );
 
         const input = screen.getByTestId("create-content-input-field");
-        const form = screen.getByTestId('form');
+        const form = screen.getByTestId("form");
 
         fireEvent.change(input, { target: { value: "Test Post" } });
-        expect(mockUsePostServices.createPost).toHaveBeenCalledTimes(0);
+        expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(0);
         expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(0);
 
         fireEvent.submit(form);
         await waitFor(() => {
-            expect(mockUsePostServices.createPost).toHaveBeenCalledTimes(1);
+            expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
             expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(1);
-            expect(input).toHaveValue('');
+            expect(input).toHaveValue("");
         });
     });
 
-    it('onPostSubmitHandler returns on falsy newPost value', async () => {
-        mockUsePostServices.createPost.mockResolvedValue(undefined);
+    it("onPostSubmitHandler returns on falsy newPost value", async () => {
+        usePostServicesMock.createPost.mockResolvedValue(undefined);
 
         render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
@@ -200,24 +200,24 @@ describe('PostCreateForm component', () => {
         );
 
         const input = screen.getByTestId("create-content-input-field");
-        const form = screen.getByTestId('form');
+        const form = screen.getByTestId("form");
 
         fireEvent.change(input, { target: { value: "Test Post" } });
         fireEvent.submit(form);
 
         await waitFor(() => {
-            expect(mockUsePostServices.createPost).toHaveBeenCalledTimes(1);
-            expect(mockUsePostServices.createPost).toHaveBeenCalledWith({
-                text: 'Test Post',
+            expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
+            expect(usePostServicesMock.createPost).toHaveBeenCalledWith({
+                text: "Test Post",
                 owner: isUser
             });
             expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(0);
-            expect(input).toHaveValue('Test Post');
+            expect(input).toHaveValue("Test Post");
         });
     });
 
-    it('calls abortAll on unmount', () => {
-        mockUsePostServices.createPost.mockResolvedValue(undefined);
+    it("calls abortAll on unmount", () => {
+        usePostServicesMock.createPost.mockResolvedValue(undefined);
 
         const { unmount } = render(
             <AlertContext.Provider value={{ setAlert: mockSetAlert }}>
@@ -230,13 +230,13 @@ describe('PostCreateForm component', () => {
         );
 
         const input = screen.getByTestId("create-content-input-field");
-        const form = screen.getByTestId('form');
+        const form = screen.getByTestId("form");
 
         fireEvent.change(input, { target: { value: "Test Post" } });
         fireEvent.submit(form);
 
         unmount();
 
-        expect(mockUsePostServices.abortAll).toHaveBeenCalled();
+        expect(usePostServicesMock.abortAll).toHaveBeenCalled();
     })
 })
