@@ -37,14 +37,14 @@ beforeEach(() => {
     );
 });
 
-describe('InputFieldsList component', () => {
-    it('renders with correct number of InputField components', () => {
+describe("InputFieldsList component", () => {
+    it("renders with correct number of InputField components", () => {
         for (const inputField of mockProps) {
             expect(screen.getByLabelText(inputField.fieldName)).toBeInTheDocument();
         };
     });
 
-    it('renders InputField component with provided props', () => {
+    it("renders InputField component with provided props", () => {
         for (const inputField of mockProps) {
             expect(screen.getByLabelText(inputField.fieldName)).toHaveAttribute("type", inputField.inputType);
             expect(screen.getByLabelText(inputField.fieldName)).toHaveValue(inputField.value);
