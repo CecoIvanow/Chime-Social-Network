@@ -81,7 +81,7 @@ describe("PostLikeButtons component", () => {
         expect(setLikes).toHaveBeenCalled();
     });
 
-    it("calls setLikes to remove user when onUnlikeClickHandler resolves successfully", async () => {
+    it("calls setLikes to remove user id when onUnlikeClickHandler resolves successfully", async () => {
         const user = userEvent.setup();
         setup({
             isLikedByUser: true,
@@ -89,16 +89,12 @@ describe("PostLikeButtons component", () => {
             onUnlikeEmptyReturn: false,
         });
 
-        const unlikeButton = screen.getByText('Unlike');
-
-        expect(onUnlikeClickHandler).toHaveBeenCalledTimes(0);
-
-        await user.click(unlikeButton);
+        await user.click((screen.getByRole("button", { name: "Unlike" })));
 
         await waitFor(() => {
             expect(onUnlikeClickHandler).toHaveBeenCalledWith(post);
-            expect(setLikes).toHaveBeenCalled();
         });
+        expect(setLikes).toHaveBeenCalled();
     });
 
     it("does not call setLikes to add user when onLikeClickHandler does not resolves", async () => {
