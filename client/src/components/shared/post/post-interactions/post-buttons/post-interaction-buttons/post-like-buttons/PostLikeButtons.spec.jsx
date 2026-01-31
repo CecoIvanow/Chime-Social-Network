@@ -1,12 +1,12 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import PostLikeButtons from "./PostLikeButtons";
-
+import { ActionsContext } from "../../../../../../../contexts/actions-context";
+import { LikesContext } from "../../../../../../../contexts/likes-context";
 import { PostContext } from "../../../../../../../contexts/post-context";
 import { UserContext } from "../../../../../../../contexts/user-context";
-import { LikesContext } from "../../../../../../../contexts/likes-context";
-import { ActionsContext } from "../../../../../../../contexts/actions-context";
+
+import PostLikeButtons from "./PostLikeButtons";
 
 vi.mock("../../../../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName, onClickHandler }) => (
