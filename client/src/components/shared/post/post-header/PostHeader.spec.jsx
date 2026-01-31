@@ -1,7 +1,7 @@
 import { MemoryRouter } from "react-router";
 
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeEach } from "vitest";
 
 import { PostContext } from "../../../../contexts/post-context.js";
 
@@ -18,16 +18,18 @@ const post = {
     postedOn: "02.05.2025",
 };
 
+beforeEach(() => {
+    render(
+        <MemoryRouter>
+            <PostContext.Provider value={{ post }}>
+                <PostHeader />
+            </PostContext.Provider>
+        </MemoryRouter>
+    );
+});
+
 describe("PostHeader component", () => {
     it("renders with post data", () => {
-        render(
-            <MemoryRouter>
-                <PostContext.Provider value={{ post }}>
-                    <PostHeader />
-                </PostContext.Provider>
-            </MemoryRouter>
-        );
-
         expect(screen.getByRole("img")).toHaveAttribute("src", post.owner.imageUrl);
 
         expect(screen.getByRole("link", { name: `${post.owner.firstName} ${post.owner.lastName}` })).toHaveAttribute("href", `/profile/${post.owner._id}`);
