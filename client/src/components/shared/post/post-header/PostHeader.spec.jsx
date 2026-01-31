@@ -1,10 +1,11 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { MemoryRouter } from "react-router";
 
-import PostHeader from "./PostHeader.jsx";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import { PostContext } from "../../../../contexts/post-context.js";
-import { BrowserRouter, MemoryRouter } from "react-router";
+
+import PostHeader from "./PostHeader.jsx";
 
 const postMock = {
     owner: {
