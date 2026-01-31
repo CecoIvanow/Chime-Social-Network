@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -65,6 +66,7 @@ describe("PostLikeButtons component", () => {
     });
 
     it("calls setLikes to add user when onLikeClickHandler resolves successfully", async () => {
+        const user = userEvent.setup();
         setup({
             isLikedByUser: false,
             onLikeEmptyReturn: false,
@@ -75,7 +77,7 @@ describe("PostLikeButtons component", () => {
 
         expect(onLikeClickHandler).toHaveBeenCalledTimes(0);
 
-        fireEvent.click(likeButton);
+        await user.click(likeButton);
 
         await waitFor(() => {
             expect(onLikeClickHandler).toHaveBeenCalledWith(post);
@@ -84,6 +86,7 @@ describe("PostLikeButtons component", () => {
     });
 
     it("calls setLikes to remove user when onUnlikeClickHandler resolves successfully", async () => {
+        const user = userEvent.setup();
         setup({
             isLikedByUser: true,
             onLikeEmptyReturn: false,
@@ -94,7 +97,7 @@ describe("PostLikeButtons component", () => {
 
         expect(onUnlikeClickHandler).toHaveBeenCalledTimes(0);
 
-        fireEvent.click(unlikeButton);
+        await user.click(unlikeButton);
 
         await waitFor(() => {
             expect(onUnlikeClickHandler).toHaveBeenCalledWith(post);
@@ -103,6 +106,7 @@ describe("PostLikeButtons component", () => {
     });
 
     it("does not call setLikes to add user when onLikeClickHandler does not resolves", async () => {
+        const user = userEvent.setup();
         setup({
             isLikedByUser: false,
             onLikeEmptyReturn: true,
@@ -113,7 +117,7 @@ describe("PostLikeButtons component", () => {
 
         expect(onLikeClickHandler).toHaveBeenCalledTimes(0);
 
-        fireEvent.click(likeButton);
+        await user.click(likeButton);
 
         await waitFor(() => {
             expect(onLikeClickHandler).toHaveBeenCalledWith(post);
@@ -122,6 +126,7 @@ describe("PostLikeButtons component", () => {
     });
 
     it("does not call setLikes to remove user when onUnlikeClickHandler does not resolves", async () => {
+        const user = userEvent.setup();
         setup({
             isLikedByUser: true,
             onLikeEmptyReturn: true,
@@ -132,7 +137,7 @@ describe("PostLikeButtons component", () => {
 
         expect(onUnlikeClickHandler).toHaveBeenCalledTimes(0);
 
-        fireEvent.click(unlikeButton);
+        await user.click(unlikeButton);
 
         await waitFor(() => {
             expect(onUnlikeClickHandler).toHaveBeenCalledWith(post);
@@ -141,6 +146,7 @@ describe("PostLikeButtons component", () => {
     });
 
     it("updates likes array correctly when onLikeClickHandler resolves true", async () => {
+        const user = userEvent.setup();
         const likes = ["User2"];
 
         const onLikeClickHandler = vi.fn().mockResolvedValue(true);
@@ -163,12 +169,13 @@ describe("PostLikeButtons component", () => {
         );
 
         const likeButton = screen.getByText("Like");
-        await fireEvent.click(likeButton);
+        await user.click(likeButton);
 
         expect(onLikeClickHandler).toHaveBeenCalledWith(post);
         expect(setLikes).toHaveBeenCalled();
     });
     it("updates likes array correctly when onUnlikeClickHandler resolves true", async () => {
+        const user = userEvent.setup();
         const likes = [isUser, "User2"];
 
         const onUnlikeClickHandler = vi.fn().mockResolvedValue(true);
@@ -191,7 +198,7 @@ describe("PostLikeButtons component", () => {
         );
 
         const unlikeButton = screen.getByText("Unlike");
-        await fireEvent.click(unlikeButton);
+        await user.click(unlikeButton);
 
         expect(onUnlikeClickHandler).toHaveBeenCalledWith(post);
         expect(setLikes).toHaveBeenCalled();
