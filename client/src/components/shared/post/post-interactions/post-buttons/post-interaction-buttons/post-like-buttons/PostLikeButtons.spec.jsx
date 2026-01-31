@@ -65,7 +65,7 @@ describe("PostLikeButtons component", () => {
         expect(screen.getByRole("button")).toHaveTextContent('Like');
     });
 
-    it("calls setLikes to add user id when onLikeClickHandler resolves successfully", async () => {
+    it("calls setLikes when onLikeClickHandler resolves successfully", async () => {
         const user = userEvent.setup();
         setup({
             isLikedByUser: false,
@@ -81,7 +81,7 @@ describe("PostLikeButtons component", () => {
         expect(setLikes).toHaveBeenCalled();
     });
 
-    it("calls setLikes to remove user id when onUnlikeClickHandler resolves successfully", async () => {
+    it("calls setLikes when onUnlikeClickHandler resolves successfully", async () => {
         const user = userEvent.setup();
         setup({
             isLikedByUser: true,
