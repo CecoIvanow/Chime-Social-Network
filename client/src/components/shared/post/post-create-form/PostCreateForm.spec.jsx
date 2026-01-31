@@ -39,7 +39,7 @@ vi.mock("../../input-fields/create-content-input-field/CreateContentInputField",
     )
 }));
 
-const resolvedPostValue = { postId: 3};
+const resolvedPostValue = { postId: 3 };
 const newInputValue = "This is a test!";
 
 const isUser = 42;
@@ -154,10 +154,10 @@ describe("PostCreateForm component", () => {
             ]);
         });
 
-        expect(input).toHaveValue(""); 
+        expect(input).toHaveValue("");
     });
 
-    it.todo("onPostSubmitHandler returns on falsy newPost value", async () => {
+    it("submit handler returns on empty resolved createPost value", async () => {
         const user = userEvent.setup();
         setup({
             createPostEmptyReturn: true,
@@ -170,14 +170,14 @@ describe("PostCreateForm component", () => {
         await user.click(screen.getByRole("button", { name: "Post" }));
 
         await waitFor(() => {
-            expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
             expect(usePostServicesMock.createPost).toHaveBeenCalledWith({
                 text: newInputValue,
                 owner: isUser
             });
-            expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(0);
-            expect(input).toHaveValue(newInputValue);
         });
+
+        expect(totalPostsCtxProps.setTotalPosts).not.toHaveBeenCalled();
+        expect(input).toHaveValue(newInputValue);
     });
 
     it("calls abortAll on unmount", async () => {
