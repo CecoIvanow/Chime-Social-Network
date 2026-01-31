@@ -32,8 +32,8 @@ function setup(options = {
 }) {
     const likes = options.isLikedByUser ? [isUser, "User2"] : ["User2"];
 
-    options.onLikeEmptyReturn ? onLikeClickHandler.mockResolvedValue(false) : onLikeClickHandler.mockResolvedValue(true);
-    options.onUnlikeEmptyReturn ? onUnlikeClickHandler.mockResolvedValue(false) : onUnlikeClickHandler.mockResolvedValue(true);
+    options.onLikeEmptyReturn ? onLikeClickHandler.mockResolvedValue(null) : onLikeClickHandler.mockResolvedValue(true);
+    options.onUnlikeEmptyReturn ? onUnlikeClickHandler.mockResolvedValue(null) : onUnlikeClickHandler.mockResolvedValue(true);
 
     render(
         <UserContext.Provider value={{ isUser }}>
@@ -97,24 +97,20 @@ describe("PostLikeButtons component", () => {
         expect(setLikes).toHaveBeenCalled();
     });
 
-    it("does not call setLikes to add user when onLikeClickHandler does not resolves", async () => {
-        const user = userEvent.setup();
+    it("does not call setLikes when onLikeClickHandler resolves with empty value", async () => {
+        const user = userEvent.setup(); 
         setup({
             isLikedByUser: false,
             onLikeEmptyReturn: true,
             onUnlikeEmptyReturn: false,
         });
 
-        const likeButton = screen.getByText('Like');
-
-        expect(onLikeClickHandler).toHaveBeenCalledTimes(0);
-
-        await user.click(likeButton);
+        await user.click(screen.getByRole("button", { name: "Like" }));
 
         await waitFor(() => {
             expect(onLikeClickHandler).toHaveBeenCalledWith(post);
-            expect(setLikes).not.toHaveBeenCalled();
         });
+        expect(setLikes).not.toHaveBeenCalled();
     });
 
     it("does not call setLikes to remove user when onUnlikeClickHandler does not resolves", async () => {
