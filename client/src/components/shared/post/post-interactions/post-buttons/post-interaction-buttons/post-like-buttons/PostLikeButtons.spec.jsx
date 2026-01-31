@@ -10,7 +10,7 @@ import PostLikeButtons from "./PostLikeButtons";
 
 vi.mock("../../../../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName, onClickHandler }) => (
-        <div data-testid="button" onClick={onClickHandler}>{buttonName}</div>
+        <button onClick={onClickHandler}>{buttonName}</button>
     )
 }));
 
@@ -40,7 +40,7 @@ describe("PostLikeButtons component", () => {
             </UserContext.Provider>
         );
 
-        expect(screen.getByTestId('button')).toHaveTextContent('Unlike');
+        expect(screen.getByRole("button")).toHaveTextContent('Unlike');
     });
 
     it("post renders like button when not liked", () => {
@@ -58,7 +58,7 @@ describe("PostLikeButtons component", () => {
             </UserContext.Provider>
         );
 
-        expect(screen.getByTestId('button')).toHaveTextContent('Like');
+        expect(screen.getByRole("button")).toHaveTextContent('Like');
     });
 
     it("calls setLikes to add user when onLikeClickHandler resolves successfully", async () => {
