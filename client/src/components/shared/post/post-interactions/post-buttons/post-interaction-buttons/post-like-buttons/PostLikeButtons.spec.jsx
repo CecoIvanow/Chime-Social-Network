@@ -121,16 +121,12 @@ describe("PostLikeButtons component", () => {
             onUnlikeEmptyReturn: true,
         });
 
-        const unlikeButton = screen.getByText('Unlike');
-
-        expect(onUnlikeClickHandler).toHaveBeenCalledTimes(0);
-
-        await user.click(unlikeButton);
+        await user.click((screen.getByRole("button", { name: "Unlike" })));
 
         await waitFor(() => {
             expect(onUnlikeClickHandler).toHaveBeenCalledWith(post);
-            expect(setLikes).not.toHaveBeenCalled();
         });
+        expect(setLikes).not.toHaveBeenCalled();
     });
 
     it("updates likes array correctly when onLikeClickHandler resolves true", async () => {
