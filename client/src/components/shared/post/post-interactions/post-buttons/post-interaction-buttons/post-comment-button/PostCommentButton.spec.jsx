@@ -1,3 +1,5 @@
+import { Link, MemoryRouter } from "react-router";
+
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
@@ -10,21 +12,24 @@ const post = {
 };
 
 vi.mock("../../../../../../ui/buttons/link-button/LinkButton", () => ({
-    default: ({ urlLink }) => (
-        <div data-testid='urlLink'>{urlLink}</div>
+    default: ({ urlLink, buttonName }) => (
+        <Link to={urlLink}>{buttonName}</Link>
     )
 }));
 
 beforeEach(() => {
     render(
-        <PostContext.Provider value={{ post }}>
-            <PostCommentButton />
-        </PostContext.Provider >
+        <MemoryRouter>
+            <PostContext.Provider value={{ post }}>
+                <PostCommentButton />
+            </PostContext.Provider >
+        </MemoryRouter>
     );
 });
 
 describe("PostCommentButton component", () => {
     it("renders LinkButton with correct urlLink prop", () => {
-        expect(screen.getByTestId('urlLink')).toHaveTextContent(`/post/${post._id}/details`);
+        expect(screen.getByRole("link")).toHaveAttribute("href", `/post/${post._id}/details`);
+        expect(screen.getByRole("link")).toHaveTextContent("Comment");
     });
 });
