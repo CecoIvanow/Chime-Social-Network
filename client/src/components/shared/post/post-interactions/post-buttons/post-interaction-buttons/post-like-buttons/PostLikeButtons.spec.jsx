@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { ActionsContext } from "../../../../../../../contexts/actions-context";
@@ -49,13 +49,13 @@ function setup(options = {
 };
 
 describe("PostLikeButtons component", () => {
-    it("post renders unlike button when already liked", () => {
+    it("unlike button is rendered when user has liked the post", () => {
         setup();
 
         expect(screen.getByRole("button")).toHaveTextContent('Unlike');
     });
 
-    it("post renders like button when not liked", () => {
+    it("like button is rendered when user has not liked the post", () => {
         setup({
             isLikedByUser: false,
             onLikeEmptyReturn: true,
