@@ -39,6 +39,7 @@ vi.mock("../../input-fields/create-content-input-field/CreateContentInputField",
     )
 }));
 
+const resolvedPostValue = { postId: 3};
 const newInputValue = "This is a test!";
 
 const isUser = 42;
@@ -71,7 +72,7 @@ function setup(options = {
     } else if (options.createPostEmptyReturn) {
         usePostServicesMock.createPost.mockResolvedValue(undefined);
     } else {
-        usePostServicesMock.createPost.mockResolvedValue({ postId: 3 });
+        usePostServicesMock.createPost.mockResolvedValue(resolvedPostValue);
     }
 
     const { unmount } = render(
@@ -137,7 +138,7 @@ describe("PostCreateForm component", () => {
         });
     });
 
-    it.todo("sets total posts and post text on resolved createPost call", async () => {
+    it("calls createPost and sets totalPosts and postText on resolved value", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -147,10 +148,13 @@ describe("PostCreateForm component", () => {
         await user.click(screen.getByRole("button", { name: "Post" }));
 
         await waitFor(() => {
-            expect(usePostServicesMock.createPost).toHaveBeenCalledTimes(1);
-            expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledTimes(1);
-            expect(input).toHaveValue("");
+            expect(totalPostsCtxProps.setTotalPosts).toHaveBeenCalledWith([
+                resolvedPostValue,
+                ...totalPostsCtxProps.totalPosts
+            ]);
         });
+
+        expect(input).toHaveValue(""); 
     });
 
     it.todo("onPostSubmitHandler returns on falsy newPost value", async () => {
