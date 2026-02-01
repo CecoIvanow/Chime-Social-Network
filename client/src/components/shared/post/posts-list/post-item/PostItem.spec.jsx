@@ -36,7 +36,6 @@ describe("PostItem component", () => {
 
         expect(screen.getByTestId("post-header")).toBeInTheDocument();
         expect(screen.getByTestId("post-interactions")).toBeInTheDocument();
-        expect(screen.getByTestId("post-text")).toBeInTheDocument();
         expect(screen.getByTestId("post-text")).toHaveTextContent(postItemMock.text);
     });
 
