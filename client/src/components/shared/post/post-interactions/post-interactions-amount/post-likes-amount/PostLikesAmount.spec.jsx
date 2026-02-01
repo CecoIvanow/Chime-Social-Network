@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { LikesContext } from "../../../../../../contexts/likes-context";
 
 import PostLikesAmount from "./PostLikesAmount";
-import { LikesContext } from "../../../../../../contexts/likes-context";
 
 describe("PostLikesAmount component", () => {
     const likes = ["likeOne", "likeTwo"];
