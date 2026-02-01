@@ -1,13 +1,14 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
-import PostsList from "./PostsList";
+import usePostServices from "../../../../hooks/usePostServices";
 
+import { ActionsContext } from "../../../../contexts/actions-context";
 import { AlertContext } from "../../../../contexts/alert-context";
 import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 import { UserContext } from "../../../../contexts/user-context";
-import usePostServices from "../../../../hooks/usePostServices";
-import { ActionsContext } from "../../../../contexts/actions-context";
+
+import PostsList from "./PostsList";
 
 vi.mock("./post-item/PostItem", () => ({
     default: ({ postItem }) => (
