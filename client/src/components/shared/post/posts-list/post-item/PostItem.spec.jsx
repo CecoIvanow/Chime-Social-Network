@@ -12,32 +12,38 @@ vi.mock("../../post-interactions/PostInteractions", () => ({
 }));
 
 vi.mock("../../post-text/PostText", () => ({
-    default: ({ postText }) => <div data-testid="post-text">{ postText }</div>
+    default: ({ postText }) => <div data-testid="post-text">{postText}</div>
 }));
 
-describe("PostItem component", () => {
-    const postItem = {
-        _id: "postId",
-        text: "This is a post!"
-    }
+const postItemMock = {
+    _id: "postId",
+    text: "This is a post!"
+};
 
-    it("renders PostItem component on valid post id", () => {
-        render(
-            <PostItem postItem={ postItem } />
-        );
-        
-        expect(screen.getByTestId("post-header")).toBeInTheDocument();
-        expect(screen.getByTestId("post-interactions")).toBeInTheDocument();
-        expect(screen.getByTestId("post-text")).toBeInTheDocument();
-        expect(screen.getByTestId("post-text")).toHaveTextContent(postItem.text);
-    });
-
-    it("does not render PostItem on falsy post id", () => {
-        postItem._id="";
+function setup(options = {
+    emptyPostItem: false,
+}) {
+    const postItem = options.emptyPostItem ? null : postItemMock;
 
         render(
             <PostItem postItem={postItem} />
         );
+};
+
+describe("PostItem component", () => {
+    it("renders PostItem component on valid post id", () => {
+        setup();
+
+        expect(screen.getByTestId("post-header")).toBeInTheDocument();
+        expect(screen.getByTestId("post-interactions")).toBeInTheDocument();
+        expect(screen.getByTestId("post-text")).toBeInTheDocument();
+        expect(screen.getByTestId("post-text")).toHaveTextContent(postItemMock.text);
+    });
+
+    it("does not render PostItem on falsy post id", () => {
+        setup({
+            emptyPostItem: true,
+        });
 
         expect(screen.queryByTestId("post-header")).not.toBeInTheDocument();
         expect(screen.queryByTestId("post-interactions")).not.toBeInTheDocument();
