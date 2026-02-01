@@ -45,7 +45,7 @@ describe("PostButtons component", () => {
     it("renders PostInteractionButtons component", () => {
         setup();
 
-        expect(screen.getByRole("button")).toBeInTheDocument();
+        expect(screen.getByRole("button"), { name: "Comment" }).toBeInTheDocument();
     });
 
     it("renders owner buttons on matching isUser and post owner id", () => {
