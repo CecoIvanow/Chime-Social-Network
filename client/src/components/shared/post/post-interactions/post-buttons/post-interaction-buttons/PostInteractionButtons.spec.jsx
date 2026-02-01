@@ -1,12 +1,12 @@
+import { useParams } from "react-router";
+
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-
-import PostInteractionButtons from "./PostInteractionButtons";
 
 import { UserContext } from "../../../../../../contexts/user-context";
 import { PostContext } from "../../../../../../contexts/post-context";
 
-import { useParams } from "react-router";
+import PostInteractionButtons from "./PostInteractionButtons";
 
 vi.mock("./post-like-buttons/PostLikeButtons", () => ({
     default: () => <button data-testid="like-btn"></button>
