@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import PostButtons from "./PostButtons";
-
 import { UserContext } from '../../../../../contexts/user-context'
 import { PostContext } from '../../../../../contexts/post-context';
+
+import PostButtons from "./PostButtons";
 
 vi.mock("../../../controls/owner-buttons/OwnerButtons", () => ({
     default: ({ urlLink }) => <button data-testid="owner-button">{urlLink}</button>
@@ -12,14 +12,14 @@ vi.mock("../../../controls/owner-buttons/OwnerButtons", () => ({
 
 vi.mock("./post-interaction-buttons/PostInteractionButtons", () => ({
     default: () => <button data-testid="interaction-button"></button>
-}))
+}));
 
 const post = {
     _id: "postId",
     owner: {
         _id: "userId"
     }
-}
+};
 
 let isUser = "userId";
 
@@ -61,5 +61,5 @@ describe("PostButtons component", () => {
         );
 
         expect(screen.queryByTestId('owner-button')).not.toBeInTheDocument();
-    })
-})
+    });
+});
