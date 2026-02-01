@@ -1,8 +1,9 @@
-import { getByText, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+
+import { PostContext } from "../../../../../../contexts/post-context";
 
 import PostCommentsAmount from "./PostCommentsAmount";
-import { PostContext } from "../../../../../../contexts/post-context";
 
 describe("PostCommentsAmount component", () => {
     const post = {
