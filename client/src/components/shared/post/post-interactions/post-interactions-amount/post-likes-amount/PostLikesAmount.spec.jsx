@@ -16,7 +16,7 @@ beforeEach(() => {
 });
 
 describe("PostLikesAmount component", () => {
-    it("renders component with correct amount of likes", () => {
+    it("renders with correct amount of likes in its text content", () => {
         expect(screen.getByText(`Likes: ${likes.length}`)).toBeInTheDocument();
     });
 });
