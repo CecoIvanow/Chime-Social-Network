@@ -17,7 +17,7 @@ vi.mock("./post-interactions-amount/PostInteractionsAmount", () => ({
 }));
 
 vi.mock("./post-buttons/PostButtons", () => ({
-    default: () => <button data-testid="post-button"></button>
+    default: () => <div data-testid="post-button"></div>
 }));
 
 const postMock = {
@@ -56,7 +56,7 @@ describe("PostInteractions component", () => {
     it("provides likes array through LikesContext", () => {
         setup();
 
-        expect(screen.getByTestId("likes-count")).toHaveTextContent("2");
+        expect(screen.getByTestId("likes-count")).toHaveTextContent(postMock.likes.length);
     });
 
     it("renders without error when post.likes is undefined", () => {
