@@ -33,11 +33,11 @@ function LikesConsumer() {
 function setup(options = {
     renderPostWithoutLikes: false
 }) {
-    const post = options.renderPostWithoutLikes ? { likes: [] } : postMock;
+    const post = options.renderPostWithoutLikes ? null : postMock;
 
     render(
         <PostContext.Provider value={{ post }}>
-            <LikesContext.Provider value={{ likes: post.likes, setLikes: () => { } }}>
+            <LikesContext.Provider value={{ likes: post?.likes, setLikes: () => { } }}>
                 <PostInteractions />
             </LikesContext.Provider>
         </PostContext.Provider>
@@ -59,7 +59,7 @@ describe("PostInteractions component", () => {
         expect(screen.getByTestId("likes-count")).toHaveTextContent(postMock.likes.length);
     });
 
-    it("renders without error when post.likes is undefined", () => {
+    it("renders without error when post.likes is null", () => {
         setup({
             renderPostWithoutLikes: true,
         })
