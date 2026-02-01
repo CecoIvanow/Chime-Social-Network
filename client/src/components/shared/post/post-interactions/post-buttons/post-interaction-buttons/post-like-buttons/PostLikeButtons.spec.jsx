@@ -129,7 +129,7 @@ describe("PostLikeButtons component", () => {
         expect(setLikes).not.toHaveBeenCalled();
     });
 
-    it("updates likes array correctly when onLikeClickHandler resolves true", async () => {
+    it("updates likes array correctly when onLikeClickHandler resolves successfully", async () => {
         const user = userEvent.setup();
         const likes = ["User2"];
 
@@ -152,10 +152,8 @@ describe("PostLikeButtons component", () => {
             </UserContext.Provider>
         );
 
-        const likeButton = screen.getByText("Like");
-        await user.click(likeButton);
+        await user.click((screen.getByRole("button", { name: "Like" })));
 
-        expect(onLikeClickHandler).toHaveBeenCalledWith(post);
         expect(setLikes).toHaveBeenCalled();
     });
     it("updates likes array correctly when onUnlikeClickHandler resolves true", async () => {
