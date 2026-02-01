@@ -9,11 +9,11 @@ import { PostContext } from "../../../../../../contexts/post-context";
 import PostInteractionButtons from "./PostInteractionButtons";
 
 vi.mock("./post-like-buttons/PostLikeButtons", () => ({
-    default: () => <button data-testid="like-btn"></button>
+    default: () => <button>{"Like"}</button>
 }));
 
 vi.mock("./post-comment-button/PostCommentButton", () => ({
-    default: () => <button data-testid="comment-btn"></button>
+    default: () => <button>{"Comment"}</button>
 }));
 
 vi.mock("react-router", () => ({
@@ -52,7 +52,7 @@ describe("PostInteractionButtons component", () => {
             userIdEqualsPostOwnerId: false,
         });
 
-        expect(screen.getByTestId('like-btn')).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Like" })).toBeInTheDocument();
     });
 
     it("does not render like button on valid isUser and matching post owner id", () => {
@@ -61,7 +61,7 @@ describe("PostInteractionButtons component", () => {
             userIdEqualsPostOwnerId: true,
         });
 
-        expect(screen.queryByTestId('like-btn')).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Like" })).not.toBeInTheDocument();
     });
 
     it("renders comment button on falsey postId", () => {
@@ -70,12 +70,13 @@ describe("PostInteractionButtons component", () => {
             userIdEqualsPostOwnerId: false,
         });
 
-        expect(screen.getByTestId('comment-btn')).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Comment" })).toBeInTheDocument();
     });
 
     it("does not render comment button on truthy postId", () => {
         setup();
 
-        expect(screen.queryByTestId('comment-btn')).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Comment" })).not.toBeInTheDocument();
+
     });
 })
