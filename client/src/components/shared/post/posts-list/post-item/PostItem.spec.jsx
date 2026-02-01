@@ -3,8 +3,6 @@ import { describe, expect, it, vi } from "vitest";
 
 import PostItem from "./PostItem";
 
-import { PostContext } from "../../../../../contexts/post-context";
-
 vi.mock("../../post-header/PostHeader", () => ({
     default: () => <div data-testid="post-header"></div>
 }));
@@ -19,8 +17,8 @@ vi.mock("../../post-text/PostText", () => ({
 
 describe("PostItem component", () => {
     const postItem = {
-        _id: 'postId',
-        text: 'This is a post!'
+        _id: "postId",
+        text: "This is a post!"
     }
 
     it("renders PostItem component on valid post id", () => {
@@ -35,7 +33,7 @@ describe("PostItem component", () => {
     });
 
     it("does not render PostItem on falsy post id", () => {
-        postItem._id='';
+        postItem._id="";
 
         render(
             <PostItem postItem={postItem} />
