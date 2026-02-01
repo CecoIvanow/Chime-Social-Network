@@ -25,9 +25,9 @@ function setup(options = {
 }) {
     const postItem = options.emptyPostItem ? null : postItemMock;
 
-        render(
-            <PostItem postItem={postItem} />
-        );
+    render(
+        <PostItem postItem={postItem} />
+    );
 };
 
 describe("PostItem component", () => {
@@ -39,7 +39,7 @@ describe("PostItem component", () => {
         expect(screen.getByTestId("post-text")).toHaveTextContent(postItemMock.text);
     });
 
-    it("does not render PostItem on falsy post id", () => {
+    it("does not render PostItem on empty postItem", () => {
         setup({
             emptyPostItem: true,
         });
