@@ -48,13 +48,13 @@ describe("PostButtons component", () => {
         expect(screen.getByRole("button"), { name: "Comment" }).toBeInTheDocument();
     });
 
-    it("renders owner buttons on matching isUser and post owner id", () => {
+    it("renders OwberButtons on matching isUser and post owner id", () => {
         setup();
 
         expect(screen.getByRole("link")).toHaveAttribute("href", `/post/${post._id}/edit`);
     });
 
-    it("does not render owner buttons on falsy isUser", () => {
+    it("does not render OwberButtons on empty isUser", () => {
         setup({
             isUserValueIsEmpty: true,
         });

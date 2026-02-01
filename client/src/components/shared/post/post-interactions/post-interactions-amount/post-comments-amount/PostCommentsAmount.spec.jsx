@@ -1,21 +1,24 @@
-import { getByText, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, beforeEach } from "vitest";
 
-import PostCommentsAmount from "./PostCommentsAmount";
 import { PostContext } from "../../../../../../contexts/post-context";
 
-describe("PostCommentsAmount component", () => {
-    const post = {
-        comments: ["commentOne", "commentTwo"]
-    }
+import PostCommentsAmount from "./PostCommentsAmount";
 
-    it("renders component with correct amount of comments", () => {
-        render(
-            <PostContext.Provider value={{ post }}>
-                <PostCommentsAmount />
-            </PostContext.Provider>
-        );
-        
+const post = {
+    comments: ["commentOne", "commentTwo"]
+};
+
+beforeEach(() => {
+    render(
+        <PostContext.Provider value={{ post }}>
+            <PostCommentsAmount />
+        </PostContext.Provider>
+    );
+});
+
+describe("PostCommentsAmount component", () => {
+    it("renders with correct amount of comments in text content", () => {
         expect(screen.getByText(`Comments: ${post.comments.length}`)).toBeInTheDocument();
     });
 });
