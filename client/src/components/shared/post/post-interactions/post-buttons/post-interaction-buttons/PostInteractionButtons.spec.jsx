@@ -64,7 +64,7 @@ describe("PostInteractionButtons component", () => {
         expect(screen.queryByRole("button", { name: "Like" })).not.toBeInTheDocument();
     });
 
-    it("renders comment button on falsey postId", () => {
+    it("renders comment button on empty postId", () => {
         setup({
             useParamsEmptyPostId: true,
             userIdEqualsPostOwnerId: false,
@@ -73,7 +73,7 @@ describe("PostInteractionButtons component", () => {
         expect(screen.getByRole("button", { name: "Comment" })).toBeInTheDocument();
     });
 
-    it("does not render comment button on truthy postId", () => {
+    it("does not render comment button on valid postId", () => {
         setup();
 
         expect(screen.queryByRole("button", { name: "Comment" })).not.toBeInTheDocument();
