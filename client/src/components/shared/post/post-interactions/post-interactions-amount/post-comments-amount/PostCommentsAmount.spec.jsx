@@ -18,7 +18,7 @@ beforeEach(() => {
 });
 
 describe("PostCommentsAmount component", () => {
-    it("renders component with correct amount of comments", () => {
+    it("renders with correct amount of comments in text content", () => {
         expect(screen.getByText(`Comments: ${post.comments.length}`)).toBeInTheDocument();
     });
 });
