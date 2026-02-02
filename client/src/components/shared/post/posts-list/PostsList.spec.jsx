@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { ActionsContext } from "../../../../contexts/actions-context";
@@ -90,11 +91,12 @@ describe("PostsList component", () => {
     });
 
     it("triggers onDeletePostClickHandler after delete confirmation", async () => {
-        vi.spyOn(window, "confirm").mockReturnValue(true);
-
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getAllByText('Delete').at(0));
+        vi.spyOn(window, "confirm").mockReturnValue(true);
+
+        await user.click(screen.getAllByText('Delete').at(0));
 
         await vi.waitFor(() => {
             expect(usePostServicesMock.deletePost).toHaveBeenCalledOnce();
@@ -102,11 +104,12 @@ describe("PostsList component", () => {
     });
 
     it(" does not trigger onDeletePostClickHandler after cancelling delete confirmation", async () => {
-        vi.spyOn(window, "confirm").mockReturnValue(false);
-
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getAllByText('Delete').at(0));
+        vi.spyOn(window, "confirm").mockReturnValue(false);
+
+        await user.click(screen.getAllByText('Delete').at(0));
 
         await vi.waitFor(() => {
             expect(usePostServicesMock.deletePost).not.toHaveBeenCalled();
@@ -114,11 +117,12 @@ describe("PostsList component", () => {
     });
 
     it("triggers setTotalPosts on post deletion", async () => {
-        vi.spyOn(window, "confirm").mockReturnValue(true);
-
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getAllByText('Delete').at(0));
+        vi.spyOn(window, "confirm").mockReturnValue(true);
+
+        await user.click(screen.getAllByText('Delete').at(0));
 
         await vi.waitFor(() => {
             expect(usePostServicesMock.deletePost).toHaveBeenCalled();
@@ -131,9 +135,10 @@ describe("PostsList component", () => {
     });
 
     it("triggers onLikeClickHandler after click", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getAllByText('Like').at(0));
+        await user.click(screen.getAllByText('Like').at(0));
 
         await vi.waitFor(() => {
             expect(usePostServicesMock.likePost).toHaveBeenCalledOnce();
@@ -141,9 +146,10 @@ describe("PostsList component", () => {
     });
 
     it("triggers onUnlikeClickHandler on click", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getAllByText('Unlike').at(0));
+        await user.click(screen.getAllByText('Unlike').at(0));
 
         await vi.waitFor(() => {
             expect(usePostServicesMock.unlikePost).toHaveBeenCalledOnce();
@@ -151,8 +157,7 @@ describe("PostsList component", () => {
     });
 
     it("triggers setAlert on error", async () => {
-        vi.spyOn(window, "confirm").mockReturnValue(true);
-
+        const user = userEvent.setup();
         setup({
             deletePostEmptyReturn: false,
             deletePostSuccessfullResolve: false,
@@ -160,9 +165,11 @@ describe("PostsList component", () => {
             unlikePostSuccessfullResolve: false,
         });
 
-        fireEvent.click(screen.getAllByText('Delete').at(0));
-        fireEvent.click(screen.getAllByText('Like').at(0));
-        fireEvent.click(screen.getAllByText('Unlike').at(0));
+        vi.spyOn(window, "confirm").mockReturnValue(true);
+
+        await user.click(screen.getAllByText('Delete').at(0));
+        await user.click(screen.getAllByText('Like').at(0));
+        await user.click(screen.getAllByText('Unlike').at(0));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledTimes(3);
@@ -170,16 +177,17 @@ describe("PostsList component", () => {
     });
 
     it("triggers abortAll on unmount", async () => {
-        vi.spyOn(window, "confirm").mockReturnValue(true);
-
+        const user = userEvent.setup();
         const { unmount } = setup();
 
-        fireEvent.click(screen.getAllByText('Delete').at(0));
-        fireEvent.click(screen.getAllByText('Like').at(0));
-        fireEvent.click(screen.getAllByText('Unlike').at(0));
+        vi.spyOn(window, "confirm").mockReturnValue(true);
+
+        await user.click(screen.getAllByText('Delete').at(0));
+        await user.click(screen.getAllByText('Like').at(0));
+        await user.click(screen.getAllByText('Unlike').at(0));
 
         unmount();
 
         expect(usePostServicesMock.abortAll).toHaveBeenCalledOnce();
-    })
+    });
 });
