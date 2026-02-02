@@ -71,8 +71,8 @@ function setup(options = {
         usePostServicesMock.deletePost.mockResolvedValue(totalPostsCtxMock.totalPosts.at(0)._id);
     };
 
-    options.likePostSuccessfullResolve ? usePostServicesMock.likePost.mockResolvedValue(true) : usePostServicesMock.likePost.mockRejectedValue(ERR_MSG.LIKE_POST);
-    options.unlikePostSuccessfullResolve ? usePostServicesMock.unlikePost.mockResolvedValue(true) : usePostServicesMock.unlikePost.mockRejectedValue(ERR_MSG.UNLIKE_POST);
+    options.likePostSuccessfullResolve ? usePostServicesMock.likePost.mockResolvedValue(true) : usePostServicesMock.likePost.mockRejectedValue(new Error(ERR_MSG.LIKE_POST));
+    options.unlikePostSuccessfullResolve ? usePostServicesMock.unlikePost.mockResolvedValue(true) : usePostServicesMock.unlikePost.mockRejectedValue(new Error(ERR_MSG.UNLIKE_POST));
 
     vi.spyOn(window, "confirm").mockReturnValue(options.deleteConfirmation);
 
@@ -129,6 +129,23 @@ describe("PostsList component", () => {
 
         await vi.waitFor(() => {
             expect(usePostServicesMock.likePost).toHaveBeenCalledWith(isUser, totalPostsCtxMock.totalPosts.at(FIRST_POST)._id);
+        });
+    });
+
+    it("shows alert when like action is rejected", async () => {
+        const user = userEvent.setup();
+        setup({
+            deleteConfirmation: true,
+            deletePostEmptyReturn: false,
+            deletePostSuccessfullResolve: true,
+            likePostSuccessfullResolve: false,
+            unlikePostSuccessfullResolve: true
+        });
+
+        await user.click(screen.getAllByText('Like').at(FIRST_POST));
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.LIKE_POST);
         });
     });
 
