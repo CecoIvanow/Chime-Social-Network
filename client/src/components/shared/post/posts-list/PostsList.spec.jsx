@@ -38,11 +38,12 @@ const isUser = "userId";
 
 const setAlert = vi.fn();
 
-const totalPosts = [
-    { _id: "1" },
-    { _id: "2" },
-];
-const setTotalPosts = vi.fn();
+const totalPostsCtxMock = {
+    totalPosts: [
+        { _id: "1" },
+        { _id: "2" },
+    ], setTotalPosts: vi.fn(),
+}
 
 const usePostServicesMock = {
     deletePost: vi.fn(),
@@ -62,7 +63,7 @@ function setup(options = {
     } else if (!options.deletePostSuccessfullResolve) {
         usePostServicesMock.deletePost.mockRejectedValue(new Error(ERR_MSG.DELETE_POST));
     } else {
-        usePostServicesMock.deletePost.mockResolvedValue(totalPosts.at(0)._id);
+        usePostServicesMock.deletePost.mockResolvedValue(totalPostsCtxMock.totalPosts.at(0)._id);
     };
 
     options.likePostSuccessfullResolve ? usePostServicesMock.likePost.mockResolvedValue(true) : usePostServicesMock.likePost.mockRejectedValue(ERR_MSG.LIKE_POST);
@@ -71,7 +72,7 @@ function setup(options = {
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
-                <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
+                <TotalPostsContext.Provider value={{ ...totalPostsCtxMock }}>
                     <PostsList />
                 </TotalPostsContext.Provider>
             </UserContext.Provider>
@@ -121,12 +122,12 @@ describe("PostsList component", () => {
 
         await vi.waitFor(() => {
             expect(usePostServicesMock.deletePost).toHaveBeenCalled();
-            expect(setTotalPosts).toHaveBeenCalledOnce();
+            expect(totalPostsCtxMock.setTotalPosts).toHaveBeenCalledOnce();
         });
 
-        const updater = setTotalPosts.mock.calls[0][0];
-        const updatedPosts = updater(totalPosts);
-        expect(updatedPosts).toEqual([totalPosts.at(1)]);
+        const updater = totalPostsCtxMock.setTotalPosts.mock.calls[0][0];
+        const updatedPosts = updater(totalPostsCtxMock.totalPosts);
+        expect(updatedPosts).toEqual([totalPostsCtxMock.totalPosts.at(1)]);
     });
 
     it("triggers onLikeClickHandler after click", async () => {
