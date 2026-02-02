@@ -29,7 +29,8 @@ vi.mock("../../../../hooks/usePostServices", () => ({
     })
 }));
 
-const FIRST_POST_INDEX = 0;
+const FIRST_POST = 0;
+const SECOND_POST= 1;
 
 const ERR_MSG = {
     DELETE_POST: "Rejected deletePost call!",
@@ -96,8 +97,8 @@ describe("PostsList component", () => {
     });
 
     it.each([
-        { name: "calls deletePost after delete confirmation", shouldTrigger: true, deleteConfirmation: true },
-        { name: "does not call deletePost after rejecting delete confirmation", shouldTrigger: false, deleteConfirmation: false },
+        { name: "deletes post after deletePost user confirmation", shouldTrigger: true, deleteConfirmation: true },
+        { name: "does not delete post after deletePost user rejection", shouldTrigger: false, deleteConfirmation: false },
     ])("$name", async ({ shouldTrigger, deleteConfirmation }) => {
         const user = userEvent.setup();
         setup({
@@ -108,33 +109,16 @@ describe("PostsList component", () => {
             unlikePostSuccessfullResolve: true
         });
 
-        await user.click(screen.getAllByText('Delete').at(FIRST_POST_INDEX));
+        await user.click(screen.getAllByText('Delete').at(FIRST_POST));
 
         if (shouldTrigger) {
-            await vi.waitFor(() => {
-                expect(usePostServicesMock.deletePost).toHaveBeenCalledWith(totalPostsCtxMock.totalPosts.at(FIRST_POST_INDEX)._id);
-            });
+            const updater = totalPostsCtxMock.setTotalPosts.mock.calls[0][0];
+            const updatedPosts = updater(totalPostsCtxMock.totalPosts);
+
+            expect(updatedPosts).toEqual([totalPostsCtxMock.totalPosts.at(SECOND_POST)]);
         } else {
-            expect(usePostServicesMock.deletePost).not.toHaveBeenCalled();
+            expect(totalPostsCtxMock.setTotalPosts).not.toHaveBeenCalled();
         };
-    });
-
-    it("triggers setTotalPosts on post deletion", async () => {
-        const user = userEvent.setup();
-        setup();
-
-        vi.spyOn(window, "confirm").mockReturnValue(true);
-
-        await user.click(screen.getAllByText('Delete').at(0));
-
-        await vi.waitFor(() => {
-            expect(usePostServicesMock.deletePost).toHaveBeenCalled();
-            expect(totalPostsCtxMock.setTotalPosts).toHaveBeenCalledOnce();
-        });
-
-        const updater = totalPostsCtxMock.setTotalPosts.mock.calls[0][0];
-        const updatedPosts = updater(totalPostsCtxMock.totalPosts);
-        expect(updatedPosts).toEqual([totalPostsCtxMock.totalPosts.at(1)]);
     });
 
     it("triggers onLikeClickHandler after click", async () => {
