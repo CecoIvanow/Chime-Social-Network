@@ -176,24 +176,4 @@ describe("PostsList component", () => {
             expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UNLIKE_POST);
         });
     });
-
-    it("triggers setAlert on error", async () => {
-        const user = userEvent.setup();
-        setup({
-            deletePostEmptyReturn: false,
-            deletePostSuccessfullResolve: false,
-            likePostSuccessfullResolve: false,
-            unlikePostSuccessfullResolve: false,
-        });
-
-        vi.spyOn(window, "confirm").mockReturnValue(true);
-
-        await user.click(screen.getAllByText('Delete').at(0));
-        await user.click(screen.getAllByText('Like').at(0));
-        await user.click(screen.getAllByText('Unlike').at(0));
-
-        await waitFor(() => {
-            expect(setAlert).toHaveBeenCalledTimes(3);
-        })
-    });
 });
