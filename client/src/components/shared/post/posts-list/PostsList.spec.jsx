@@ -121,6 +121,23 @@ describe("PostsList component", () => {
         };
     });
 
+    it("shows alert when delete action is rejected", async () => {
+        const user = userEvent.setup();
+        setup({
+            deleteConfirmation: true,
+            deletePostEmptyReturn: false,
+            deletePostSuccessfullResolve: false,
+            likePostSuccessfullResolve: true,
+            unlikePostSuccessfullResolve: true,
+        });
+
+        await user.click(screen.getAllByText('Delete').at(FIRST_POST));
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.DELETE_POST);
+        });
+    });
+
     it("triggers like action when Like button is clicked", async () => {
         const user = userEvent.setup();
         setup();
