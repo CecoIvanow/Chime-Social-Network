@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event";
-import { render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
+import { describe, expect, it, should, vi } from "vitest";
 
 import { ActionsContext } from "../../../../contexts/actions-context";
 import { AlertContext } from "../../../../contexts/alert-context";
@@ -29,6 +29,8 @@ vi.mock("../../../../hooks/usePostServices", () => ({
     })
 }));
 
+const FIRST_POST_INDEX = 0;
+
 const ERR_MSG = {
     DELETE_POST: "Rejected deletePost call!",
     LIKE_POST: "Rejected likePost call!",
@@ -54,6 +56,7 @@ const usePostServicesMock = {
 }
 
 function setup(options = {
+    deleteConfirmation : true,
     deletePostSuccessfullResolve: true,
     deletePostEmptyReturn: false,
     likePostSuccessfullResolve: true,
@@ -69,6 +72,8 @@ function setup(options = {
 
     options.likePostSuccessfullResolve ? usePostServicesMock.likePost.mockResolvedValue(true) : usePostServicesMock.likePost.mockRejectedValue(ERR_MSG.LIKE_POST);
     options.unlikePostSuccessfullResolve ? usePostServicesMock.unlikePost.mockResolvedValue(true) : usePostServicesMock.unlikePost.mockRejectedValue(ERR_MSG.UNLIKE_POST);
+
+    vi.spyOn(window, "confirm").mockReturnValue(options.deleteConfirmation);
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -90,30 +95,28 @@ describe("PostsList component", () => {
         expect(screen.getAllByTestId("post-item")).toHaveLength(2);
     });
 
-    it("triggers onDeletePostClickHandler after delete confirmation", async () => {
+    it.each([
+        { name: "calls deletePost after delete confirmation", shouldTrigger: true, deleteConfirmation: true },
+        { name: "does not call deletePost after rejecting delete confirmation", shouldTrigger: false, deleteConfirmation: false },
+    ])("$name", async ({ shouldTrigger, deleteConfirmation }) => {
         const user = userEvent.setup();
-        setup();
-
-        vi.spyOn(window, "confirm").mockReturnValue(true);
-
-        await user.click(screen.getAllByText('Delete').at(0));
-
-        await vi.waitFor(() => {
-            expect(usePostServicesMock.deletePost).toHaveBeenCalledOnce();
+        setup({
+            deleteConfirmation,
+            deletePostEmptyReturn: false,
+            deletePostSuccessfullResolve: true,
+            likePostSuccessfullResolve: true,
+            unlikePostSuccessfullResolve: true
         });
-    });
 
-    it(" does not trigger onDeletePostClickHandler after cancelling delete confirmation", async () => {
-        const user = userEvent.setup();
-        setup();
+        await user.click(screen.getAllByText('Delete').at(FIRST_POST_INDEX));
 
-        vi.spyOn(window, "confirm").mockReturnValue(false);
-
-        await user.click(screen.getAllByText('Delete').at(0));
-
-        await vi.waitFor(() => {
+        if (shouldTrigger) {
+            await vi.waitFor(() => {
+                expect(usePostServicesMock.deletePost).toHaveBeenCalledWith(totalPostsCtxMock.totalPosts.at(FIRST_POST_INDEX)._id);
+            });
+        } else {
             expect(usePostServicesMock.deletePost).not.toHaveBeenCalled();
-        });
+        };
     });
 
     it("triggers setTotalPosts on post deletion", async () => {
