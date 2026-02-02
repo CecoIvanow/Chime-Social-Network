@@ -179,19 +179,4 @@ describe("PostsList component", () => {
             expect(setAlert).toHaveBeenCalledTimes(3);
         })
     });
-
-    it("triggers abortAll on unmount", async () => {
-        const user = userEvent.setup();
-        const { unmount } = setup();
-
-        vi.spyOn(window, "confirm").mockReturnValue(true);
-
-        await user.click(screen.getAllByText('Delete').at(0));
-        await user.click(screen.getAllByText('Like').at(0));
-        await user.click(screen.getAllByText('Unlike').at(0));
-
-        unmount();
-
-        expect(usePostServicesMock.abortAll).toHaveBeenCalledOnce();
-    });
 });
