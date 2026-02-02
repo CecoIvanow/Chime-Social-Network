@@ -149,14 +149,14 @@ describe("PostsList component", () => {
         });
     });
 
-    it("triggers onUnlikeClickHandler on click", async () => {
+    it("triggers unlike action when Unlike button is clicked", async () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(screen.getAllByText('Unlike').at(0));
+        await user.click(screen.getAllByText('Unlike').at(FIRST_POST));
 
         await vi.waitFor(() => {
-            expect(usePostServicesMock.unlikePost).toHaveBeenCalledOnce();
+            expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(isUser, totalPostsCtxMock.totalPosts.at(FIRST_POST)._id);
         });
     });
 
