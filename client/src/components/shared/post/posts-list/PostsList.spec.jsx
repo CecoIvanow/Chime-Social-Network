@@ -160,6 +160,23 @@ describe("PostsList component", () => {
         });
     });
 
+    it("shows alert when unlike action is rejected", async () => {
+        const user = userEvent.setup();
+        setup({
+            deleteConfirmation: true,
+            deletePostEmptyReturn: false,
+            deletePostSuccessfullResolve: true,
+            likePostSuccessfullResolve: true,
+            unlikePostSuccessfullResolve: false
+        });
+
+        await user.click(screen.getAllByText('Unlike').at(FIRST_POST));
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UNLIKE_POST);
+        });
+    });
+
     it("triggers setAlert on error", async () => {
         const user = userEvent.setup();
         setup({
