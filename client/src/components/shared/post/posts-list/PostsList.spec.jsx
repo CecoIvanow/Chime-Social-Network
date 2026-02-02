@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event";
-import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
-import { describe, expect, it, should, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { ActionsContext } from "../../../../contexts/actions-context";
 import { AlertContext } from "../../../../contexts/alert-context";
@@ -14,9 +14,9 @@ vi.mock("./post-item/PostItem", () => ({
         <ActionsContext.Consumer>
             {actions => (
                 <div data-testid="post-item">
-                    <button onClick={() => actions.onDeleteClickHandler(postItem._id)}>Delete</button>
-                    <button onClick={() => actions.onLikeClickHandler(postItem._id)}>Like</button>
-                    <button onClick={() => actions.onUnlikeClickHandler(postItem._id)}>Unlike</button>
+                    <button onClick={() => actions.onDeleteClickHandler(postItem)}>Delete</button>
+                    <button onClick={() => actions.onLikeClickHandler(postItem)}>Like</button>
+                    <button onClick={() => actions.onUnlikeClickHandler(postItem)}>Unlike</button>
                 </div>
             )}
         </ActionsContext.Consumer>
@@ -121,14 +121,14 @@ describe("PostsList component", () => {
         };
     });
 
-    it("triggers onLikeClickHandler after click", async () => {
+    it("triggers like action when Like button is clicked", async () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(screen.getAllByText('Like').at(0));
+        await user.click(screen.getAllByText('Like').at(FIRST_POST));
 
         await vi.waitFor(() => {
-            expect(usePostServicesMock.likePost).toHaveBeenCalledOnce();
+            expect(usePostServicesMock.likePost).toHaveBeenCalledWith(isUser, totalPostsCtxMock.totalPosts.at(FIRST_POST)._id);
         });
     });
 
