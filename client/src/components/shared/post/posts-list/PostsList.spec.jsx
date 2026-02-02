@@ -24,10 +24,7 @@ vi.mock("./post-item/PostItem", () => ({
 
 vi.mock("../../../../hooks/usePostServices", () => ({
     default: () => ({
-        deletePost,
-        likePost,
-        unlikePost,
-        abortAll,
+        ...usePostServicesMock
     })
 }));
 
@@ -47,10 +44,12 @@ const totalPosts = [
 ];
 const setTotalPosts = vi.fn();
 
-const deletePost = vi.fn();
-const likePost = vi.fn();
-const unlikePost = vi.fn();
-const abortAll = vi.fn();
+const usePostServicesMock = {
+    deletePost: vi.fn(),
+    likePost: vi.fn(),
+    unlikePost: vi.fn(),
+    abortAll: vi.fn(),
+}
 
 function setup(options = {
     deletePostSuccessfullResolve: true,
@@ -59,15 +58,15 @@ function setup(options = {
     unlikePostSuccessfullResolve: true,
 }) {
     if (options.deletePostEmptyReturn) {
-        deletePost.mockResolvedValue(null);
+        usePostServicesMock.deletePost.mockResolvedValue(null);
     } else if (!options.deletePostSuccessfullResolve) {
-        deletePost.mockRejectedValue(new Error(ERR_MSG.DELETE_POST));
+        usePostServicesMock.deletePost.mockRejectedValue(new Error(ERR_MSG.DELETE_POST));
     } else {
-        deletePost.mockResolvedValue(totalPosts.at(0)._id);
+        usePostServicesMock.deletePost.mockResolvedValue(totalPosts.at(0)._id);
     };
 
-    options.likePostSuccessfullResolve ? likePost.mockResolvedValue(true) : likePost.mockRejectedValue(ERR_MSG.LIKE_POST);
-    options.unlikePostSuccessfullResolve ? unlikePost.mockResolvedValue(true) : unlikePost.mockRejectedValue(ERR_MSG.UNLIKE_POST);
+    options.likePostSuccessfullResolve ? usePostServicesMock.likePost.mockResolvedValue(true) : usePostServicesMock.likePost.mockRejectedValue(ERR_MSG.LIKE_POST);
+    options.unlikePostSuccessfullResolve ? usePostServicesMock.unlikePost.mockResolvedValue(true) : usePostServicesMock.unlikePost.mockRejectedValue(ERR_MSG.UNLIKE_POST);
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -97,7 +96,7 @@ describe("PostsList component", () => {
         fireEvent.click(screen.getAllByText('Delete').at(0));
 
         await vi.waitFor(() => {
-            expect(deletePost).toHaveBeenCalledOnce();
+            expect(usePostServicesMock.deletePost).toHaveBeenCalledOnce();
         });
     });
 
@@ -109,7 +108,7 @@ describe("PostsList component", () => {
         fireEvent.click(screen.getAllByText('Delete').at(0));
 
         await vi.waitFor(() => {
-            expect(deletePost).not.toHaveBeenCalled();
+            expect(usePostServicesMock.deletePost).not.toHaveBeenCalled();
         });
     });
 
@@ -121,7 +120,7 @@ describe("PostsList component", () => {
         fireEvent.click(screen.getAllByText('Delete').at(0));
 
         await vi.waitFor(() => {
-            expect(deletePost).toHaveBeenCalled();
+            expect(usePostServicesMock.deletePost).toHaveBeenCalled();
             expect(setTotalPosts).toHaveBeenCalledOnce();
         });
 
@@ -136,7 +135,7 @@ describe("PostsList component", () => {
         fireEvent.click(screen.getAllByText('Like').at(0));
 
         await vi.waitFor(() => {
-            expect(likePost).toHaveBeenCalledOnce();
+            expect(usePostServicesMock.likePost).toHaveBeenCalledOnce();
         });
     });
 
@@ -146,7 +145,7 @@ describe("PostsList component", () => {
         fireEvent.click(screen.getAllByText('Unlike').at(0));
 
         await vi.waitFor(() => {
-            expect(unlikePost).toHaveBeenCalledOnce();
+            expect(usePostServicesMock.unlikePost).toHaveBeenCalledOnce();
         });
     });
 
@@ -180,6 +179,6 @@ describe("PostsList component", () => {
 
         unmount();
 
-        expect(abortAll).toHaveBeenCalledOnce();
+        expect(usePostServicesMock.abortAll).toHaveBeenCalledOnce();
     })
 });
