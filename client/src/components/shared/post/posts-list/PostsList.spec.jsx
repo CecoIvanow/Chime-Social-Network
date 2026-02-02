@@ -30,7 +30,7 @@ vi.mock("../../../../hooks/usePostServices", () => ({
 }));
 
 const FIRST_POST = 0;
-const SECOND_POST= 1;
+const SECOND_POST = 1;
 
 const ERR_MSG = {
     DELETE_POST: "Rejected deletePost call!",
@@ -57,7 +57,7 @@ const usePostServicesMock = {
 }
 
 function setup(options = {
-    deleteConfirmation : true,
+    deleteConfirmation: true,
     deletePostSuccessfullResolve: true,
     deletePostEmptyReturn: false,
     likePostSuccessfullResolve: true,
@@ -192,5 +192,18 @@ describe("PostsList component", () => {
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UNLIKE_POST);
         });
+    });
+
+    it("stops all actions when component is unmounted", async () => {
+        const user = userEvent.setup();
+        const { unmount } = setup();
+
+        await user.click(screen.getAllByText('Delete').at(FIRST_POST));
+        await user.click(screen.getAllByText('Like').at(FIRST_POST));
+        await user.click(screen.getAllByText('Unlike').at(FIRST_POST));
+
+        unmount();
+
+        expect(usePostServicesMock.abortAll).toHaveBeenCalled();
     });
 });
