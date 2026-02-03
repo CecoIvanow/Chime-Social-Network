@@ -1,3 +1,5 @@
+import { useContext } from "react";
+
 import userEvent from "@testing-library/user-event";
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -9,20 +11,18 @@ import { UserContext } from "../../../../contexts/user-context";
 
 import PostsList from "./PostsList";
 
-// TODO Update ActionsContext to use hook and not .Consumer
-
 vi.mock("./post-item/PostItem", () => ({
-    default: ({ postItem }) => (
-        <ActionsContext.Consumer>
-            {actions => (
-                <div data-testid="post-item">
-                    <button onClick={() => actions.onDeleteClickHandler(postItem)}>Delete</button>
-                    <button onClick={() => actions.onLikeClickHandler(postItem)}>Like</button>
-                    <button onClick={() => actions.onUnlikeClickHandler(postItem)}>Unlike</button>
-                </div>
-            )}
-        </ActionsContext.Consumer>
-    )
+    default: function PostItemMock({ postItem }) {
+        const actions = useContext(ActionsContext);
+
+        return (
+            <div data-testid="post-item">
+                <button onClick={() => actions.onDeleteClickHandler(postItem)}>Delete</button>
+                <button onClick={() => actions.onLikeClickHandler(postItem)}>Like</button>
+                <button onClick={() => actions.onUnlikeClickHandler(postItem)}>Unlike</button>
+            </div>
+        )
+    }
 }));
 
 vi.mock("../../../../hooks/usePostServices", () => ({
@@ -50,14 +50,14 @@ const totalPostsCtxMock = {
         { _id: "2" },
     ],
     setTotalPosts: vi.fn(),
-}
+};
 
 const usePostServicesMock = {
     deletePost: vi.fn(),
     likePost: vi.fn(),
     unlikePost: vi.fn(),
     abortAll: vi.fn(),
-}
+};
 
 function setup(options = {
     deleteConfirmation: true,
