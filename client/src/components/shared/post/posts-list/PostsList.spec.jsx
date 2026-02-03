@@ -9,6 +9,8 @@ import { UserContext } from "../../../../contexts/user-context";
 
 import PostsList from "./PostsList";
 
+// TODO Update ActionsContext to use hook and not .Consumer
+
 vi.mock("./post-item/PostItem", () => ({
     default: ({ postItem }) => (
         <ActionsContext.Consumer>
@@ -46,7 +48,8 @@ const totalPostsCtxMock = {
     totalPosts: [
         { _id: "1" },
         { _id: "2" },
-    ], setTotalPosts: vi.fn(),
+    ],
+    setTotalPosts: vi.fn(),
 }
 
 const usePostServicesMock = {
@@ -59,17 +62,12 @@ const usePostServicesMock = {
 function setup(options = {
     deleteConfirmation: true,
     deletePostSuccessfullResolve: true,
-    deletePostEmptyReturn: false,
     likePostSuccessfullResolve: true,
     unlikePostSuccessfullResolve: true,
 }) {
-    if (options.deletePostEmptyReturn) {
-        usePostServicesMock.deletePost.mockResolvedValue(null);
-    } else if (!options.deletePostSuccessfullResolve) {
+    options.deletePostSuccessfullResolve ?
+        usePostServicesMock.deletePost.mockResolvedValue(totalPostsCtxMock.totalPosts.at(0)._id) :
         usePostServicesMock.deletePost.mockRejectedValue(new Error(ERR_MSG.DELETE_POST));
-    } else {
-        usePostServicesMock.deletePost.mockResolvedValue(totalPostsCtxMock.totalPosts.at(0)._id);
-    };
 
     options.likePostSuccessfullResolve ? usePostServicesMock.likePost.mockResolvedValue(true) : usePostServicesMock.likePost.mockRejectedValue(new Error(ERR_MSG.LIKE_POST));
     options.unlikePostSuccessfullResolve ? usePostServicesMock.unlikePost.mockResolvedValue(true) : usePostServicesMock.unlikePost.mockRejectedValue(new Error(ERR_MSG.UNLIKE_POST));
@@ -103,7 +101,6 @@ describe("PostsList component", () => {
         const user = userEvent.setup();
         setup({
             deleteConfirmation,
-            deletePostEmptyReturn: false,
             deletePostSuccessfullResolve: true,
             likePostSuccessfullResolve: true,
             unlikePostSuccessfullResolve: true
@@ -125,7 +122,6 @@ describe("PostsList component", () => {
         const user = userEvent.setup();
         setup({
             deleteConfirmation: true,
-            deletePostEmptyReturn: false,
             deletePostSuccessfullResolve: false,
             likePostSuccessfullResolve: true,
             unlikePostSuccessfullResolve: true,
@@ -153,7 +149,6 @@ describe("PostsList component", () => {
         const user = userEvent.setup();
         setup({
             deleteConfirmation: true,
-            deletePostEmptyReturn: false,
             deletePostSuccessfullResolve: true,
             likePostSuccessfullResolve: false,
             unlikePostSuccessfullResolve: true
@@ -181,7 +176,6 @@ describe("PostsList component", () => {
         const user = userEvent.setup();
         setup({
             deleteConfirmation: true,
-            deletePostEmptyReturn: false,
             deletePostSuccessfullResolve: true,
             likePostSuccessfullResolve: true,
             unlikePostSuccessfullResolve: false
