@@ -1,14 +1,11 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
 import { useParams } from "react-router";
 
-import PostsSection from "./PostsSection.jsx";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { UserContext } from "../../../../contexts/user-context.js";
 
-vi.mock("react-router", () => ({
-    useParams: vi.fn()
-}));
+import PostsSection from "./PostsSection.jsx";
 
 vi.mock("../../../ui/headings/SectionHeading", () => ({
     default: ({ sectionName }) => <div data-testid="section-heading">{sectionName}</div>
@@ -24,6 +21,10 @@ vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
 
 vi.mock("../posts-list/PostsList", () => ({
     default: () => <div data-testid="posts-list"></div>
+}));
+
+vi.mock("react-router", () => ({
+    useParams: vi.fn()
 }));
 
 const mockProps = {
