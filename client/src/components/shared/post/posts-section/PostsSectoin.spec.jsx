@@ -8,7 +8,7 @@ import { UserContext } from "../../../../contexts/user-context.js";
 import PostsSection from "./PostsSection.jsx";
 
 vi.mock("../../../ui/headings/SectionHeading", () => ({
-    default: ({ sectionName }) => <div data-testid="section-heading">{sectionName}</div>
+    default: ({ sectionName }) => <h3>{sectionName}</h3>
 }));
 
 vi.mock("../post-create-form/PostCreateForm", () => ({
@@ -48,7 +48,7 @@ describe("PostsSection component", () => {
             </UserContext.Provider>
         );
 
-        expect(screen.getByTestId('section-heading')).toHaveTextContent(expected);
+        expect(screen.getByRole("heading", {level: 3})).toHaveTextContent(expected);
     })
 
     it.each([
