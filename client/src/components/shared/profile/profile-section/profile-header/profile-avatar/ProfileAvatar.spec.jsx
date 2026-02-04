@@ -10,12 +10,12 @@ const mockProps = {
 }
 
 describe("ProfileAvatar component", () => {
-    it("renders user image with correct alt and src", () => {
+    it("renders user image with correct alt and src attributes", () => {
         render(<ProfileAvatar userData={mockProps.userData} />)
 
         const img = screen.getByAltText("Profile picture");
 
         expect(img).toBeInTheDocument();
-        expect(img).toHaveAttribute('src', mockProps.userData.imageUrl);
+        expect(img).toHaveAttribute("src", mockProps.userData.imageUrl);
     })
 })
