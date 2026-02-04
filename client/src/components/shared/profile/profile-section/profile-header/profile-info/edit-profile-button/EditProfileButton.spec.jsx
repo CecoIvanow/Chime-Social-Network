@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import EditProfileButton from "./EditProfileButton.jsx";
-
 import { UserContext } from "../../../../../../../contexts/user-context.js";
+
+import EditProfileButton from "./EditProfileButton.jsx";
 
 vi.mock("../../../../../../ui/buttons/link-button/LinkButton", () => ({
     default: ({urlLink}) => (
