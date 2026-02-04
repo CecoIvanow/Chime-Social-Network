@@ -16,10 +16,10 @@ beforeEach(() => {
 });
 
 describe("ProfileAvatar component", () => {
-    it("renders user image with correct alt and src attributes", () => {
-        const img = screen.getByAltText("Profile picture");
+    it("renders profile avatar with correct alt and src attributes", () => {
+        const img = screen.getByRole("img");
 
-        expect(img).toBeInTheDocument();
+        expect(img).toHaveAttribute("alt", "Profile picture");
         expect(img).toHaveAttribute("src", mockProps.userData.imageUrl);
     });
 });
