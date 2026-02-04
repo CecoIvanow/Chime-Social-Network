@@ -24,47 +24,54 @@ vi.mock("../posts-list/PostsList", () => ({
 }));
 
 vi.mock("react-router", () => ({
-    useParams: vi.fn()
+    useParams: vi.fn(),
 }));
+
+const isUser = "loggedInUserId";
+const userId = "profileUserId";
 
 const mockProps = {
     userName: 'John',
+};
+
+function setup(options = {
+    userId: null,
+    isLoading: false,
+}) {
+    useParams.mockReturnValue({ userId: options.userId })
+
+    render(
+        <UserContext.Provider value={{ isUser }}>
+            <PostsSection
+                isLoading={options.isLoading}
+                {...mockProps}
+            />
+        </UserContext.Provider>
+    );
 }
 
 describe("PostsSection component", () => {
     it.each([
-        { expected: 'Friends Posts:', difference: 'invalid', isUser: '123', userId: null, target: 'userId' },
-        { expected: `${mockProps.userName}'s Posts:`, difference: 'differing', isUser: '123', userId: '222', target: 'isUser and userId' },
-        { expected: 'My Posts:', difference: 'matching', isUser: '123', userId: '123', target: 'isUser and userId' },
-    ])('renders SectionHeading with $expected text content on $difference $target', ({ expected, isUser, userId }) => {
-        useParams.mockReturnValue({ userId });
+        { name: "renders SectionHeading with Friends Posts: text content on invalid userProfileId", result: "Friends Posts:", userId: null },
+        { name: `renders SectionHeading with ${mockProps.userName}'s Posts: text content on not matching userProfileId and userId`, result: `${mockProps.userName}'s Posts:`, userId, },
+        { name: `renders SectionHeading with My Posts: text content on matching userProfileId and userId`, result: "My Posts:", userId: isUser },
+    ])("$name", ({ result, userId }) => {
+        setup({
+            userId,
+            isLoading: false,
+        });
 
-        render(
-            <UserContext.Provider value={{ isUser }}>
-                <PostsSection
-                    isLoading={false}
-                    userName={mockProps.userName}
-                />
-            </UserContext.Provider>
-        );
-
-        expect(screen.getByRole("heading", {level: 3})).toHaveTextContent(expected);
+        expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent(result);
     })
 
     it.each([
-        { action: 'renders', difference: 'matching', isUser: '123', userId: '123' },
-        { action: 'does not render', difference: 'differing', isUser: null, userId: '0' },
-    ])("$action PostCreateForm on $difference isUser and userId", ({ isUser, userId }) => {
-        useParams.mockReturnValue({ userId });
-
-        render(
-            <UserContext.Provider value={{ isUser }}>
-                <PostsSection
-                    isLoading={false}
-                    userName={mockProps.userName}
-                />
-            </UserContext.Provider>
-        );
+        { name: "renders PostCreateForm on matching isUser and userId", userId: isUser },
+        { name: "does not render PostCreateForm on not matching isUser and userId", userId, },
+    ])("$name", ({ userId }) => {
+        setup({
+            userId,
+            isLoading: false,
+        });
 
         if (isUser === userId) {
             expect(screen.getByTestId("post-form")).toBeInTheDocument();
@@ -74,21 +81,15 @@ describe("PostsSection component", () => {
     })
 
     it.each([
-        { toRender: 'PostsList', isLoadingStatus: false },
-        { toRender: 'LoadingSpinner', isLoadingStatus: true },
-    ])("renders $toRender component on isloading $isLoadingStatus", ({ isLoadingStatus }) => {
-        useParams.mockReturnValue({ userId: '123' });
+        { name: "renders LoadingSpinner when component is still loading", isLoading: true },
+        { name: "renders PostsList when component is not loading", isLoading: false },
+    ])("$name", ({ isLoading }) => {
+        setup({
+            userId,
+            isLoading,
+        });
 
-        render(
-            <UserContext.Provider value={{ isUser: '123' }}>
-                <PostsSection
-                    isLoading={isLoadingStatus}
-                    userName={mockProps.userName}
-                />
-            </UserContext.Provider>
-        );
-
-        if (isLoadingStatus) {
+        if (isLoading) {
             expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
             expect(screen.queryByTestId('posts-list')).not.toBeInTheDocument();
         } else {
