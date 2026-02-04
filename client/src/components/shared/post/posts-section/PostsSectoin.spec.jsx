@@ -52,9 +52,9 @@ function setup(options = {
 
 describe("PostsSection component", () => {
     it.each([
-        { name: "renders SectionHeading with Friends Posts: text content on invalid userProfileId", result: "Friends Posts:", userId: null },
-        { name: `renders SectionHeading with ${mockProps.userName}'s Posts: text content on not matching userProfileId and userId`, result: `${mockProps.userName}'s Posts:`, userId, },
-        { name: `renders SectionHeading with My Posts: text content on matching userProfileId and userId`, result: "My Posts:", userId: isUser },
+        { name: "renders SectionHeading with 'Friends Posts:' text content on invalid userProfileId", result: "Friends Posts:", userId: null },
+        { name: `renders SectionHeading with '${mockProps.userName}'s Posts:' text content on not matching userProfileId and userId`, result: `${mockProps.userName}'s Posts:`, userId, },
+        { name: `renders SectionHeading 'with My Posts:' text content on matching userProfileId and userId`, result: "My Posts:", userId: isUser },
     ])("$name", ({ result, userId }) => {
         setup({
             userId,
