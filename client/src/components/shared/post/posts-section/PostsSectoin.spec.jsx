@@ -31,7 +31,7 @@ const isUser = "loggedInUserId";
 const userId = "profileUserId";
 
 const mockProps = {
-    userName: 'John',
+    userName: "John",
 };
 
 function setup(options = {
@@ -90,11 +90,11 @@ describe("PostsSection component", () => {
         });
 
         if (isLoading) {
-            expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
-            expect(screen.queryByTestId('posts-list')).not.toBeInTheDocument();
+            expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
+            expect(screen.queryByTestId("posts-list")).not.toBeInTheDocument();
         } else {
-            expect(screen.getByTestId('posts-list')).toBeInTheDocument();
-            expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
+            expect(screen.getByTestId("posts-list")).toBeInTheDocument();
+            expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
         }
     })
 });
