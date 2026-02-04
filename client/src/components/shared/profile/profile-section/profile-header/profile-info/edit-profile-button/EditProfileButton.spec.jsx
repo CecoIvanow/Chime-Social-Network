@@ -16,13 +16,13 @@ vi.mock("../../../../../../ui/buttons/link-button/LinkButton", () => ({
 describe("EditProfileButton component", () => {
     it("renders LinkButton with the correct props from context", () => {
         render(
-            <UserContext.Provider value={{ isUser: 'User123' }}>
+            <UserContext.Provider value={{ isUser: "User123" }}>
                 <EditProfileButton />
             </UserContext.Provider>
         );
 
-        expect(screen.getByTestId('edit-profile-btn')).toBeInTheDocument();
+        expect(screen.getByTestId("edit-profile-btn")).toBeInTheDocument();
 
-        expect(screen.getByTestId('url')).toHaveTextContent('/profile/User123/edit');
+        expect(screen.getByTestId("url")).toHaveTextContent("/profile/User123/edit");
     })
 })
