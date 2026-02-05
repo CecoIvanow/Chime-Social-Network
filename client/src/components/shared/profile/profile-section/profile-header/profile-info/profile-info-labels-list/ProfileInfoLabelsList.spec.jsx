@@ -6,9 +6,8 @@ import ProfileInfoLabelsList from "./ProfileInfoLabelsList.jsx";
 vi.mock("./profile-info-label/ProfileInfoLabel", () => ({
     default: ({ label, userData }) => (
         <div data-testid="profile-info-label">
-            <div data-testid="label-key" >{label.labelText}</div>
-            <div data-testid="label-text" >{label.labelKey}</div>
-            <div data-testid="label-key" >{userData[label.labelKey]}</div>
+            <div>{label.labelText}</div>
+            <div>{userData[label.labelKey]}</div>
         </div>
     )
 }));
