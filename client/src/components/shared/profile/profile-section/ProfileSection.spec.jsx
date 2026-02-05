@@ -17,30 +17,34 @@ vi.mock("./profile-header/ProfileHeader", () => ({
     )
 }));
 
+function setup(options={
+    isLoading: false,
+}) {
+    
+    render(
+        <ProfileSection
+            isLoading={options.isLoading}
+            userData={"Test1"}
+        />
+    );
+};
+
 describe('ProfileSection component', () => {
+    it("shows ProfileHeader when isLoading is false", () => {
+        setup();
+
+        expect(screen.getByTestId("profile-header")).toHaveTextContent("Test1");
+
+        expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
+    });
+
     it("shows LoadingSpinner when isLoading is true", () => {
-        render(
-            <ProfileSection
-                isLoading={true}
-                userData={"Test1"}
-            />
-        )
+        setup({
+            isLoading: true,
+        });
 
         expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
         
         expect(screen.queryByTestId("profile-header")).not.toBeInTheDocument();
     });
-    
-    it("shows ProfileHeader when isLoading is false", () => {
-        render(
-            <ProfileSection
-                isLoading={false}
-                userData={"Test1"}
-            />
-        )
-
-        expect(screen.getByTestId("profile-header")).toHaveTextContent("Test1");
-
-        expect(screen.getByTestId("loading-spinner")).not.toBeInTheDocument();
-    });
-})
+});
