@@ -13,19 +13,21 @@ vi.mock("./profile-info-label/ProfileInfoLabel", () => ({
     )
 }));
 
-const mockUserData = {
-    bio: 'Coder',
-    age: '25',
-    gender: 'Male',
-    location: 'Earth',
-    occupation: 'Developer',
-    education: 'CS Degree',
-    status: 'Active',
-    memberSince: '25.08.2025',
+const mockProps = {
+    userData: {
+        bio: 'Coder',
+        age: '25',
+        gender: 'Male',
+        location: 'Earth',
+        occupation: 'Developer',
+        education: 'CS Degree',
+        status: 'Active',
+        memberSince: '25.08.2025',
+    }
 };
 
 beforeEach(() => {
-    render(<ProfileInfoLabelsList userData={mockUserData} />);
+    render(<ProfileInfoLabelsList {...mockProps} />);
 });
 
 describe("profileInfoLabelsList", () => {
@@ -43,8 +45,8 @@ describe("profileInfoLabelsList", () => {
         expect(screen.getByText("Status:")).toBeInTheDocument();
         expect(screen.getByText("Member Since:")).toBeInTheDocument();
 
-        expect(screen.getByText(mockUserData.bio)).toBeInTheDocument();
-        expect(screen.getByText(mockUserData.memberSince)).toBeInTheDocument();
-        expect(screen.getByText(mockUserData.gender)).toBeInTheDocument();
+        expect(screen.getByText(mockProps.userData.bio)).toBeInTheDocument();
+        expect(screen.getByText(mockProps.userData.memberSince)).toBeInTheDocument();
+        expect(screen.getByText(mockProps.userData.gender)).toBeInTheDocument();
     })
 })
