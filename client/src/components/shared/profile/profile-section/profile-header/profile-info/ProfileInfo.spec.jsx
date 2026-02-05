@@ -39,15 +39,36 @@ const userData ={
     info: "Info test"
 };
 
+function setup(options={
+    isUserIsNull: false,
+    isUserIsMatching: false,
+}) {
+    const userId = "OriginalUser";
+    let isUser;
+
+    if (options.isUserIsNull) {
+        isUser = null;
+    } else if (options.isUserIsMatching) {
+        isUser = userId;
+    } else {
+        isUser = "randomId";
+    }
+
+    useParams.mockReturnValue({ userId, });
+
+    render(
+        <UserContext.Provider value={{ isUser, }}>
+            <ProfileInfo userData={userData} />
+        </UserContext.Provider>
+    );  
+};
+
 describe("ProfileInfo Component", () => {
     it("renders ProfileFullName and ProfileInfoLabelsList with passed userData", () => {
-        useParams.mockReturnValue({ userId: "OriginalUser" });
-
-        render(
-            <UserContext.Provider value={{ isUser: "Test" }}>
-                <ProfileInfo userData={userData}/>
-            </UserContext.Provider>
-        )
+        setup({
+            isUserIsMatching: false,
+            isUserIsNull: false,
+        });
 
         const fullNameComp = screen.getByTestId("profile-fullname");
         const infoComp = screen.getByTestId("profile-info");
@@ -60,25 +81,19 @@ describe("ProfileInfo Component", () => {
     });
 
     it("does not render EditProfileButton with false isUser", () => {
-        useParams.mockReturnValue({ userId: "OriginalUser" });
-
-        render(
-            <UserContext.Provider value={{ isUser: null }}>
-                <ProfileInfo userData={userData}/>
-            </UserContext.Provider>
-        )
+        setup({
+            isUserIsMatching: false,
+            isUserIsNull: true,
+        })
 
         expect(screen.queryByTestId('edit-button')).not.toBeInTheDocument();
     });
 
     it("renders EditProfileButton with matching isUser and userId", () => {
-        useParams.mockReturnValue({ userId: "OriginalUser" });
-
-        render(
-            <UserContext.Provider value={{ isUser: "OriginalUser" }}>
-                <ProfileInfo userData={userData}/>
-            </UserContext.Provider>
-        )
+        setup({
+            isUserIsMatching: true,
+            isUserIsNull: false,
+        });
 
         expect(screen.queryByTestId('edit-button')).toBeInTheDocument();
     });
