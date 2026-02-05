@@ -45,13 +45,13 @@ describe("profileInfoLabelsList", () => {
         expect(screen.getAllByTestId("profile-info-label")).toHaveLength(8);
     });
 
-    it("passes correct props to each ProfileInfoLabel component", () => {
+    it("renders ProfileInfoLabel component with user data values", () => {
         for (const label of labelTextArr) {
             expect(screen.getByText(label)).toBeInTheDocument();
         };
 
-        expect(screen.getByText(mockProps.userData.bio)).toBeInTheDocument();
-        expect(screen.getByText(mockProps.userData.memberSince)).toBeInTheDocument();
-        expect(screen.getByText(mockProps.userData.gender)).toBeInTheDocument();
+        for (const key in mockProps.userData) {
+            expect(screen.getByText(mockProps.userData[key])).toBeInTheDocument();
+        };
     });
 });
