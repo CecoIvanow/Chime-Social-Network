@@ -1,11 +1,11 @@
+import { useParams } from "react-router";
+
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import ProfileInfo from "./ProfileInfo.jsx";
-
 import { UserContext } from "../../../../../../contexts/user-context.js";
 
-import { useParams } from "react-router";
+import ProfileInfo from "./ProfileInfo.jsx";
 
 vi.mock("./profile-fullname/ProfileFullname", () => ({
     default: ({userData}) => (
@@ -32,12 +32,12 @@ vi.mock("./edit-profile-button/EditProfileButton", () => ({
 
 vi.mock("react-router", () => ({
     useParams: vi.fn(),
-}))
+}));
 
 const userData ={
     fullName: "Fullname test",
     info: "Info test"
-}
+};
 
 describe("ProfileInfo Component", () => {
     it("renders ProfileFullName and ProfileInfoLabelsList with passed userData", () => {
