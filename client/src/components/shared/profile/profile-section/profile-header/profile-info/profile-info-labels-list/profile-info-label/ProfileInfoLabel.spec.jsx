@@ -1,7 +1,9 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import ProfileInfoLabel from "./ProfileInfoLabel.jsx";
+
+const MISSING_DATA = "N\\A";
 
 const mockProps = {
     label: {
@@ -13,23 +15,34 @@ const mockProps = {
     },
 };
 
-describe("ProfileInfoLabel componen", () => {
-    it("renders with correct props", () => {
-        render(<ProfileInfoLabel userData={mockProps.userData} label={ mockProps.label } />);
+function setup(options={
+    isUserDataUndefined: false,
+}) {
+    const userData = options.isUserDataUndefined ? undefined : mockProps.userData;
 
-        expect(screen.getByText('Bio')).toBeInTheDocument();
-        expect(screen.getByText('Coder')).toBeInTheDocument();
+    render(
+        <ProfileInfoLabel userData={userData} label={mockProps.label} />
+    );
+};
 
-        expect(screen.queryByText('N\\A')).not.toBeInTheDocument();
+describe("ProfileInfoLabel component", () => {
+    it("renders component with passed label and userData", () => {
+        setup();
 
-    })
+        expect(screen.getByText(mockProps.label.labelText)).toBeInTheDocument();
+        expect(screen.getByText(mockProps.userData.bio)).toBeInTheDocument();
 
-    it("renders with N\\A if empty userData is passed", () => {
-        render(<ProfileInfoLabel userData={undefined} label={mockProps.label} />);
+        expect(screen.queryByText(MISSING_DATA)).not.toBeInTheDocument();
+    });
 
-        expect(screen.getByText('Bio')).toBeInTheDocument();
-        expect(screen.queryByText('Coder')).not.toBeInTheDocument();
+    it("renders with N\\A text content if no userData is passed", () => {
+        setup({
+            isUserDataUndefined: true,
+        });
 
-        expect(screen.getByText('N\\A')).toBeInTheDocument();
-    })
-})
+        expect(screen.getByText(mockProps.label.labelText)).toBeInTheDocument();
+        expect(screen.queryByText(mockProps.userData.bio)).not.toBeInTheDocument();
+
+        expect(screen.getByText(MISSING_DATA)).toBeInTheDocument();
+    });
+});

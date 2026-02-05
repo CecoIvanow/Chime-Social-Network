@@ -1,104 +1,93 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { Link, MemoryRouter } from "react-router";
+
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
 import { ActionsContext } from "../../../../contexts/actions-context";
+
 import EditControls from "./EditControls";
 
-vi.mock('../../../ui/buttons/link-button/LinkButton', () => ({
-    default: ({ urlLink }) => (
-        <div data-testid="edit-link-button">
-            <span>{urlLink}</span>
-        </div>
-    )
+vi.mock("../../../ui/buttons/link-button/LinkButton", () => ({
+    default: ({ urlLink }) => <Link to={urlLink}></Link>
 }));
 
-vi.mock('../../../ui/buttons/button/Button', () => ({
+vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName, onClickHandler }) => (
-        <div
-            data-testid={buttonName === 'Edit' ? 'edit-button' : 'cancel-button'}
-            onClick={onClickHandler}
-        >
-            {buttonName}
-        </div >
+        <button onClick={onClickHandler}>{buttonName}</button >
     )
 }));
 
-const mockedParams = {
-    urlLink: "Test Link",
+const mockProps = {
+    urlLink: "/test-link",
     itemId: 5,
-}
+};
 
-const mockedFunctions = {
+const mockHandlers = {
     onCancelEditClickHandler: vi.fn(),
     onSaveEditClickHandler: vi.fn(),
-}
+};
 
-describe('EditControls component', () => {
-    it('renders Cancel Button component always, regardless of props', () => {
-        const { rerender } = render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
+function setup(options = {
+    passUrlLink: true,
+}) {
+    const urlLinkProp = options.passUrlLink ? mockProps.urlLink : null;
+
+    render(
+        <MemoryRouter>
+            <ActionsContext.Provider value={{ ...mockHandlers }}>
                 <EditControls
-                    urlLink={mockedParams.urlLink}
-                    itemId={mockedParams.itemId}
+                    urlLink={urlLinkProp}
+                    itemId={mockProps.itemId}
                 />
             </ActionsContext.Provider>
-        );
+        </MemoryRouter>
+    );
+};
 
-        expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
+describe("EditControls component", () => {
+    it.each([
+        { name: "renders Close Button on passed urlLink prop", passUrlLink: true },
+        { name: "renders Close Button on empty urlLink prop", passUrlLink: false },
+    ])("$name", ({passUrlLink}) => {
+        setup({
+            passUrlLink,
+        });
 
-        rerender(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <EditControls />
-            </ActionsContext.Provider>
-        );
-
-        expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
     });
 
-    it('renders Edit LinkButton when urlLink is provided', () => {
-        render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <EditControls
-                    urlLink={mockedParams.urlLink}
-                />
-            </ActionsContext.Provider>
-        );
+    it("calls onCancelEditClickHandler on Close Button click", async () => {
+        const user = userEvent.setup();
+        setup();
 
-        expect(screen.getByTestId('edit-link-button')).toBeInTheDocument();
-        expect(screen.getByText(mockedParams.urlLink)).toBeInTheDocument();
-
-        expect(screen.queryByTestId('edit-button')).not.toBeInTheDocument();
+        await user.click(screen.getByRole("button", { name: "Close" }));
+        expect(mockHandlers.onCancelEditClickHandler).toHaveBeenCalled();
     });
 
-    it('renders Edit Button when urlLink is not provided', () => {
-        render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <EditControls
-                    itemId={mockedParams.itemId}
-                />
-            </ActionsContext.Provider>
-        );
+    it("renders Edit LinkButton  and not Edit Button when urlLink is provided", () => {
+        setup();
 
-        expect(screen.getByTestId('edit-button')).toBeInTheDocument();
-
-        expect(screen.queryByTestId('edit-link-button')).not.toBeInTheDocument();
+        expect(screen.getByRole("link")).toHaveAttribute("href", mockProps.urlLink);
+        expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     });
 
-    it('Cancel and Edit Buttons react on clicks', () => {
-        render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <EditControls
-                    itemId={mockedParams.itemId}
-                />
-            </ActionsContext.Provider>
-        );
+    it("renders Edit Button and not Edit LinkButton when urlLink is not provided", () => {
+        setup({
+            passUrlLink: false,
+        });
 
-        fireEvent.click(screen.getByTestId('cancel-button'));
-        expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
-        expect(mockedFunctions.onCancelEditClickHandler).toBeCalledTimes(1);
+        expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
+        expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    });
 
-        fireEvent.click(screen.getByTestId('edit-button'));
-        expect(screen.getByTestId('edit-button')).toBeInTheDocument();
-        expect(mockedFunctions.onSaveEditClickHandler).toBeCalledTimes(1);
-        expect(mockedFunctions.onSaveEditClickHandler).toHaveBeenCalledWith(mockedParams.itemId);
+    it("calls onSaveEditClickHandler on Edit Button click", async () => {
+        const user = userEvent.setup();
+        setup({
+            passUrlLink: false,
+        });
+
+        await user.click(screen.getByRole("button", { name: "Edit" }));
+        expect(mockHandlers.onSaveEditClickHandler).toHaveBeenCalledWith(mockProps.itemId);
     });
 });

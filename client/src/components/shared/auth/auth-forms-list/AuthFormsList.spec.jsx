@@ -6,10 +6,10 @@ import AuthFormsList from "./AuthFormsList";
 vi.mock("../../../ui/auth/auth-form/AuthForm", () => ({
     default: ({ fieldName, inputName, inputType, placeholderText }) => (
         <div data-testid="auth-form">
-            <span>{fieldName}</span>
-            <span>{inputName}</span>
-            <span>{inputType}</span>
-            <span>{placeholderText}</span>
+            <div>{fieldName}</div>
+            <div>{inputName}</div>
+            <div>{inputType}</div>
+            <div>{placeholderText}</div>
         </div>
     ),
 }));
@@ -30,24 +30,24 @@ const mockFields = [
 ];
 
 beforeEach(() => {
-    render(<AuthFormsList
-        authFieldsList={mockFields}
-    />)
-})
+    render(
+        <AuthFormsList
+            authFieldsList={mockFields}
+        />
+    );
+});
 
-describe('AuthFormslist component', () => {
-    it('renders with correct number of AuthForm components', () => {
-        const authForms = screen.getAllByTestId('auth-form');
-        
-        expect(authForms).toHaveLength(mockFields.length);
-    })
+describe("AuthFormsList component", () => {
+    it("renders with correct number of AuthForm components", () => {
+        expect(screen.getAllByTestId("auth-form")).toHaveLength(mockFields.length);
+    });
 
-    it('renders Authform component with passed props', () => {
+    it("renders AuthForm component with correct props", () => {
         for (const field of mockFields) {
             expect(screen.getByText(field.fieldName)).toBeInTheDocument();
             expect(screen.getByText(field.inputName)).toBeInTheDocument();
             expect(screen.getByText(field.inputType)).toBeInTheDocument();
             expect(screen.getByText(field.placeholderText)).toBeInTheDocument();
-        }
-    })
+        };
+    });
 });

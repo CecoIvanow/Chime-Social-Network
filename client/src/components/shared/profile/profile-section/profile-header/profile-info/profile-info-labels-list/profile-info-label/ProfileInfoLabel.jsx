@@ -2,6 +2,8 @@ export default function ProfileInfoLabel({
     label,
     userData = {},
 }) {
+    const paragraphText = userData[label.labelKey] ?? 'N\\A';
+
     return <>
         <p>
             <span
@@ -9,7 +11,7 @@ export default function ProfileInfoLabel({
             >
                 {label.labelText}
             </span>
-            {userData[label.labelKey] ? userData[label.labelKey] : 'N\\A'}
+            {paragraphText}
         </p>
     </>
 }

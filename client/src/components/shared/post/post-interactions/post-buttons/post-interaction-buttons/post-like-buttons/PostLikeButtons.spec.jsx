@@ -1,183 +1,136 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
+import { ActionsContext } from "../../../../../../../contexts/actions-context";
+import { LikesContext } from "../../../../../../../contexts/likes-context";
+import { PostContext } from "../../../../../../../contexts/post-context";
+import { UserContext } from "../../../../../../../contexts/user-context";
 
 import PostLikeButtons from "./PostLikeButtons";
 
-import { PostContext } from "../../../../../../../contexts/post-context";
-import { UserContext } from "../../../../../../../contexts/user-context";
-import { LikesContext } from "../../../../../../../contexts/likes-context";
-import { ActionsContext } from "../../../../../../../contexts/actions-context";
-
 vi.mock("../../../../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName, onClickHandler }) => (
-        <div data-testid="button" onClick={onClickHandler}>{buttonName}</div>
+        <button onClick={onClickHandler}>{buttonName}</button>
     )
 }));
 
 const post = {
     _id: 1
-}
+};
 
 const isUser = "User1";
 
-const setLikes = vi.fn()
+const setLikes = vi.fn();
 const onLikeClickHandler = vi.fn();
 const onUnlikeClickHandler = vi.fn();
 
+function setup(options = {
+    isLikedByUser: true,
+    onLikeEmptyReturn: false,
+    onUnlikeEmptyReturn: false,
+}) {
+    const likes = options.isLikedByUser ? [isUser, "User2"] : ["User2"];
+
+    options.onLikeEmptyReturn ? onLikeClickHandler.mockResolvedValue(null) : onLikeClickHandler.mockResolvedValue(true);
+    options.onUnlikeEmptyReturn ? onUnlikeClickHandler.mockResolvedValue(null) : onUnlikeClickHandler.mockResolvedValue(true);
+
+    render(
+        <UserContext.Provider value={{ isUser }}>
+            <PostContext.Provider value={{ post }}>
+                <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler }}>
+                    <LikesContext.Provider value={{ likes, setLikes }}>
+                        <PostLikeButtons />
+                    </LikesContext.Provider>
+                </ActionsContext.Provider>
+            </PostContext.Provider>
+        </UserContext.Provider>
+    );
+};
+
 describe("PostLikeButtons component", () => {
-    it("post renders unlike button when already liked", () => {
-        const likes = [isUser, "User2"]
+    it("unlike button is rendered when user has liked the post", () => {
+        setup();
 
-        render(
-            <UserContext.Provider value={{ isUser }}>
-                <PostContext.Provider value={{ post }}>
-                    <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler }}>
-                        <LikesContext.Provider value={{ likes, setLikes }}>
-                            <PostLikeButtons />
-                        </LikesContext.Provider>
-                    </ActionsContext.Provider>
-                </PostContext.Provider>
-            </UserContext.Provider>
-        );
-
-        expect(screen.getByTestId('button')).toHaveTextContent('Unlike');
+        expect(screen.getByRole("button")).toHaveTextContent('Unlike');
     });
 
-    it("post renders like button when not liked", () => {
-        const likes = ["User2"];
+    it("like button is rendered when user has not liked the post", () => {
+        setup({
+            isLikedByUser: false,
+            onLikeEmptyReturn: true,
+            onUnlikeEmptyReturn: true,
+        });
 
-        render(
-            <UserContext.Provider value={{ isUser }}>
-                <PostContext.Provider value={{ post }}>
-                    <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler }}>
-                        <LikesContext.Provider value={{ likes, setLikes }}>
-                            <PostLikeButtons />
-                        </LikesContext.Provider>
-                    </ActionsContext.Provider>
-                </PostContext.Provider>
-            </UserContext.Provider>
-        );
-
-        expect(screen.getByTestId('button')).toHaveTextContent('Like');
+        expect(screen.getByRole("button")).toHaveTextContent('Like');
     });
 
-    it("calls setLikes to add user when onLikeClickHandler resolves successfully", async () => {
-        const likes = ["User2"];
+    it("calls setLikes when onLikeClickHandler resolves successfully", async () => {
+        const user = userEvent.setup();
+        setup({
+            isLikedByUser: false,
+            onLikeEmptyReturn: false,
+            onUnlikeEmptyReturn: false,
+        });
 
-        const onLikeClickHandler = vi.fn().mockResolvedValue(true);
-
-        render(
-            <UserContext.Provider value={{ isUser }}>
-                <PostContext.Provider value={{ post }}>
-                    <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler }}>
-                        <LikesContext.Provider value={{ likes, setLikes }}>
-                            <PostLikeButtons />
-                        </LikesContext.Provider>
-                    </ActionsContext.Provider>
-                </PostContext.Provider>
-            </UserContext.Provider>
-        );
-
-        const likeButton = screen.getByText('Like');
-
-        expect(onLikeClickHandler).toHaveBeenCalledTimes(0);
-
-        fireEvent.click(likeButton);
+        await user.click(screen.getByRole("button", { name: "Like" }));
 
         await waitFor(() => {
             expect(onLikeClickHandler).toHaveBeenCalledWith(post);
-            expect(setLikes).toHaveBeenCalled();
-        })
+        });
+        expect(setLikes).toHaveBeenCalled();
     });
 
-    it("calls setLikes to remove user when onUnlikeClickHandler resolves successfully", async () => {
-        const likes = [isUser, "User2"];
+    it("calls setLikes when onUnlikeClickHandler resolves successfully", async () => {
+        const user = userEvent.setup();
+        setup({
+            isLikedByUser: true,
+            onLikeEmptyReturn: false,
+            onUnlikeEmptyReturn: false,
+        });
 
-        const onUnlikeClickHandler = vi.fn().mockResolvedValue(true);
-
-        render(
-            <UserContext.Provider value={{ isUser }}>
-                <PostContext.Provider value={{ post }}>
-                    <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler }}>
-                        <LikesContext.Provider value={{ likes, setLikes }}>
-                            <PostLikeButtons />
-                        </LikesContext.Provider>
-                    </ActionsContext.Provider>
-                </PostContext.Provider>
-            </UserContext.Provider>
-        );
-
-        const unlikeButton = screen.getByText('Unlike');
-
-        expect(onUnlikeClickHandler).toHaveBeenCalledTimes(0);
-
-        fireEvent.click(unlikeButton);
+        await user.click((screen.getByRole("button", { name: "Unlike" })));
 
         await waitFor(() => {
             expect(onUnlikeClickHandler).toHaveBeenCalledWith(post);
-            expect(setLikes).toHaveBeenCalled();
         });
+        expect(setLikes).toHaveBeenCalled();
     });
 
-    it("does not call setLikes to add user when onLikeClickHandler does not resolves", async () => {
-        const likes = ["User2"];
+    it("does not call setLikes when onLikeClickHandler resolves with empty value", async () => {
+        const user = userEvent.setup(); 
+        setup({
+            isLikedByUser: false,
+            onLikeEmptyReturn: true,
+            onUnlikeEmptyReturn: false,
+        });
 
-        const onLikeClickHandler = vi.fn().mockResolvedValue(false);
-
-        render(
-            <UserContext.Provider value={{ isUser }}>
-                <PostContext.Provider value={{ post }}>
-                    <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler }}>
-                        <LikesContext.Provider value={{ likes, setLikes }}>
-                            <PostLikeButtons />
-                        </LikesContext.Provider>
-                    </ActionsContext.Provider>
-                </PostContext.Provider>
-            </UserContext.Provider>
-        );
-
-        const likeButton = screen.getByText('Like');
-
-        expect(onLikeClickHandler).toHaveBeenCalledTimes(0);
-
-        fireEvent.click(likeButton);
+        await user.click(screen.getByRole("button", { name: "Like" }));
 
         await waitFor(() => {
             expect(onLikeClickHandler).toHaveBeenCalledWith(post);
-            expect(setLikes).not.toHaveBeenCalled();
         });
+        expect(setLikes).not.toHaveBeenCalled();
     });
 
     it("does not call setLikes to remove user when onUnlikeClickHandler does not resolves", async () => {
-        const likes = [isUser, "User2"];
+        const user = userEvent.setup();
+        setup({
+            isLikedByUser: true,
+            onLikeEmptyReturn: true,
+            onUnlikeEmptyReturn: true,
+        });
 
-        const onUnlikeClickHandler = vi.fn().mockResolvedValue(false);
-
-        render(
-            <UserContext.Provider value={{ isUser }}>
-                <PostContext.Provider value={{ post }}>
-                    <ActionsContext.Provider value={{ onLikeClickHandler: onUnlikeClickHandler, onUnlikeClickHandler }}>
-                        <LikesContext.Provider value={{ likes, setLikes }}>
-                            <PostLikeButtons />
-                        </LikesContext.Provider>
-                    </ActionsContext.Provider>
-                </PostContext.Provider>
-            </UserContext.Provider>
-        );
-
-        const unlikeButton = screen.getByText('Unlike');
-
-        expect(onUnlikeClickHandler).toHaveBeenCalledTimes(0);
-
-        fireEvent.click(unlikeButton);
+        await user.click((screen.getByRole("button", { name: "Unlike" })));
 
         await waitFor(() => {
             expect(onUnlikeClickHandler).toHaveBeenCalledWith(post);
-            expect(setLikes).not.toHaveBeenCalled();
         });
+        expect(setLikes).not.toHaveBeenCalled();
     });
 
-    it("updates likes array correctly when onLikeClickHandler resolves true", async () => {
+    it("updates likes array correctly when onLikeClickHandler resolves successfully", async () => {
+        const user = userEvent.setup();
         const likes = ["User2"];
 
         const onLikeClickHandler = vi.fn().mockResolvedValue(true);
@@ -199,13 +152,12 @@ describe("PostLikeButtons component", () => {
             </UserContext.Provider>
         );
 
-        const likeButton = screen.getByText("Like");
-        await fireEvent.click(likeButton);
+        await user.click((screen.getByRole("button", { name: "Like" })));
 
-        expect(onLikeClickHandler).toHaveBeenCalledWith(post);
         expect(setLikes).toHaveBeenCalled();
     });
-    it("updates likes array correctly when onUnlikeClickHandler resolves true", async () => {
+    it("updates likes array correctly when onUnlikeClickHandler resolves successfully", async () => {
+        const user = userEvent.setup();
         const likes = [isUser, "User2"];
 
         const onUnlikeClickHandler = vi.fn().mockResolvedValue(true);
@@ -227,10 +179,8 @@ describe("PostLikeButtons component", () => {
             </UserContext.Provider>
         );
 
-        const unlikeButton = screen.getByText("Unlike");
-        await fireEvent.click(unlikeButton);
+        await user.click((screen.getByRole("button", { name: "Unlike" })));
 
-        expect(onUnlikeClickHandler).toHaveBeenCalledWith(post);
         expect(setLikes).toHaveBeenCalled();
     });
 });

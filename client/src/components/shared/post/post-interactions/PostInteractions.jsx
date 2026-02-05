@@ -10,7 +10,7 @@ export default function PostInteractions() {
 
     const { post } = useContext(PostContext);
 
-    const [likes, setLikes] = useState(post.likes || []);
+    const [likes, setLikes] = useState(post?.likes || []);
 
     const likesContextValues = {
         likes,

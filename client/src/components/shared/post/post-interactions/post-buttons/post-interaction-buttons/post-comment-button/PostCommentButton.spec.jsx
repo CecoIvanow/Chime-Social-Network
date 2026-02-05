@@ -1,29 +1,35 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { Link, MemoryRouter } from "react-router";
 
-import PostCommentButton from "./PostCommentButton";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { PostContext } from "../../../../../../../contexts/post-context";
 
+import PostCommentButton from "./PostCommentButton";
+
 const post = {
     _id: 1
-}
+};
 
 vi.mock("../../../../../../ui/buttons/link-button/LinkButton", () => ({
-    default: ({ urlLink }) => (
-        <div data-testid='urlLink'>{urlLink}</div>
+    default: ({ urlLink, buttonName }) => (
+        <Link to={urlLink}>{buttonName}</Link>
     )
 }));
 
-describe("PostCommentButton component", () => {
-    it("renders LinkButton with correct urlLink prop", () => {
-        render(
+beforeEach(() => {
+    render(
+        <MemoryRouter>
             <PostContext.Provider value={{ post }}>
                 <PostCommentButton />
             </PostContext.Provider >
-        );
+        </MemoryRouter>
+    );
+});
 
-        expect(screen.getByTestId('urlLink')).toHaveTextContent(`/post/${post._id}/details`);
+describe("PostCommentButton component", () => {
+    it("renders LinkButton with correct urlLink prop", () => {
+        expect(screen.getByRole("link")).toHaveAttribute("href", `/post/${post._id}/details`);
+        expect(screen.getByRole("link")).toHaveTextContent("Comment");
     });
-
-})
+});

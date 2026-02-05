@@ -1,89 +1,82 @@
+import { useParams } from "react-router";
+
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-
-import PostInteractionButtons from "./PostInteractionButtons";
 
 import { UserContext } from "../../../../../../contexts/user-context";
 import { PostContext } from "../../../../../../contexts/post-context";
 
-import { useParams } from "react-router";
+import PostInteractionButtons from "./PostInteractionButtons";
 
 vi.mock("./post-like-buttons/PostLikeButtons", () => ({
-    default: () => <button data-testid="like-btn"></button>
-}))
+    default: () => <button>{"Like"}</button>
+}));
 
 vi.mock("./post-comment-button/PostCommentButton", () => ({
-    default: () => <button data-testid="comment-btn"></button>
-}))
+    default: () => <button>{"Comment"}</button>
+}));
 
 vi.mock("react-router", () => ({
     useParams: vi.fn(),
-}))
+}));
 
 const post = {
     owner: {
-        _id: "OtherUserId"
+        _id: "userId"
     }
-}
+};
+
+function setup(options = {
+    useParamsEmptyPostId: false,
+    userIdEqualsPostOwnerId: true,
+}) {
+    const postId = options.useParamsEmptyPostId ? null : "123";
+
+    const isUser = options.userIdEqualsPostOwnerId ? post.owner._id : "differentUserId";
+
+    useParams.mockReturnValue({ postId });
+
+    render(
+        <UserContext.Provider value={{ isUser }}>
+            <PostContext.Provider value={{ post }}>
+                <PostInteractionButtons />
+            </PostContext.Provider>
+        </UserContext.Provider>
+    );
+};
 
 describe("PostInteractionButtons component", () => {
     it("renders like button on valid isUser and different post owner id", () => {
-        useParams.mockReturnValue({ postId: "someId" });
-        const isUser = 'UserId'
+        setup({
+            useParamsEmptyPostId: false,
+            userIdEqualsPostOwnerId: false,
+        });
 
-        render(
-            <UserContext.Provider value={{ isUser }}>
-                <PostContext.Provider value={{ post }}>
-                    <PostInteractionButtons />
-                </PostContext.Provider>
-            </UserContext.Provider>
-        );
-
-        expect(screen.getByTestId('like-btn')).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Like" })).toBeInTheDocument();
     });
 
     it("does not render like button on valid isUser and matching post owner id", () => {
-        useParams.mockReturnValue({ postId: "someId" });
-        const isUser = 'OtherUserId'
+        setup({
+            useParamsEmptyPostId: false,
+            userIdEqualsPostOwnerId: true,
+        });
 
-        render(
-            <UserContext.Provider value={{ isUser }}>
-                <PostContext.Provider value={{ post }}>
-                    <PostInteractionButtons />
-                </PostContext.Provider>
-            </UserContext.Provider>
-        );
-
-        expect(screen.queryByTestId('like-btn')).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Like" })).not.toBeInTheDocument();
     });
 
-    it("renders comment button on falsey postId", () => {
-        useParams.mockReturnValue({ postId: ''});
-        const isUser = 'UserId'
+    it("renders comment button on empty postId", () => {
+        setup({
+            useParamsEmptyPostId: true,
+            userIdEqualsPostOwnerId: false,
+        });
 
-        render(
-            <UserContext.Provider value={{ isUser }}>
-                <PostContext.Provider value={{ post }}>
-                    <PostInteractionButtons />
-                </PostContext.Provider>
-            </UserContext.Provider>
-        );
-
-        expect(screen.getByTestId('comment-btn')).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Comment" })).toBeInTheDocument();
     });
 
-    it("does not render comment button on truthy postId", () => {
-        useParams.mockReturnValue({ postId: 'someId' });
-        const isUser = 'UserId'
+    it("does not render comment button on valid postId", () => {
+        setup();
 
-        render(
-            <UserContext.Provider value={{ isUser }}>
-                <PostContext.Provider value={{ post }}>
-                    <PostInteractionButtons />
-                </PostContext.Provider>
-            </UserContext.Provider>
-        );
+        expect(screen.queryByRole("button", { name: "Comment" })).not.toBeInTheDocument();
 
-        expect(screen.queryByTestId('comment-btn')).not.toBeInTheDocument();
     });
 })

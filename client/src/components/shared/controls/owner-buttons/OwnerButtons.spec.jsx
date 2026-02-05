@@ -1,61 +1,63 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
-
-import OwnerButtons from "./OwnerButtons";
+import { describe, expect, it, vi } from "vitest";
 
 import { ActionsContext } from "../../../../contexts/actions-context";
+
+import OwnerButtons from "./OwnerButtons";
 
 vi.mock("../edit-controls/EditControls", () => ({
     default: ({ itemId }) => (
         <div data-testid="edit-controls">
-            <span>{itemId}</span>
+            <div>{itemId}</div>
         </div>
     )
-}))
+}));
 
 vi.mock("../owner-controls/OwnerControls", () => ({
     default: ({ itemId, urlLink }) => (
         <div data-testid="owner-controls">
-            <span>{urlLink}</span>
-            <span>{itemId}</span>
+            <div>{urlLink}</div>
+            <div>{itemId}</div>
         </div>
     )
-}))
+}));
 
-const mockedProps = {
+const mockProps = {
     itemId: 5,
     urlLink: "testLink"
-}
+};
 
-describe('OwnerButtons component', () => {
-    it('renders only EditControls component with isEditClicked context true', () => {
-        render(
-            <ActionsContext.Provider value={{ isEditClicked: true }} >
-                <OwnerButtons
-                    {...mockedProps}
-                />
-            </ActionsContext.Provider >
-        )
+function setup(options = {
+    isEditClicked: true
+}) {
+    render(
+        <ActionsContext.Provider value={{ ...options }} >
+            <OwnerButtons
+                {...mockProps}
+            />
+        </ActionsContext.Provider >
+    );
+};
 
-        expect(screen.getByTestId('edit-controls')).toBeInTheDocument();
-        expect(screen.getByText(String(mockedProps.itemId))).toBeInTheDocument();
+describe("OwnerButtons component", () => {
+    it("renders EditControls and not OwnerControls when isEditClicked context is true", () => {
+        setup();
 
-        expect(screen.queryByTestId('owner-controls')).not.toBeInTheDocument();
+        expect(screen.getByTestId("edit-controls")).toBeInTheDocument();
+        expect(screen.getByText(mockProps.itemId)).toBeInTheDocument();
+
+        expect(screen.queryByTestId("owner-controls")).not.toBeInTheDocument();
     });
 
-    it('renders only OwnerControls component with isEditClicked context false', () => {
-        render(
-            <ActionsContext.Provider value={{ isEditClicked: false }} >
-                <OwnerButtons
-                    {...mockedProps}
-                />
-            </ActionsContext.Provider >
-        )
+    it("renders OwnerControls and not EditControls when isEditClicked context is false", () => {
+        setup({
+            isEditClicked: false,
+        });
 
-        expect(screen.getByTestId('owner-controls')).toBeInTheDocument();
-        expect(screen.getByText(String(mockedProps.itemId))).toBeInTheDocument();
-        expect(screen.getByText(mockedProps.urlLink)).toBeInTheDocument();
+        expect(screen.getByTestId("owner-controls")).toBeInTheDocument();
+        expect(screen.getByText(mockProps.itemId)).toBeInTheDocument();
+        expect(screen.getByText(mockProps.urlLink)).toBeInTheDocument();
 
-        expect(screen.queryByTestId('edit-controls')).not.toBeInTheDocument();
+        expect(screen.queryByTestId("edit-controls")).not.toBeInTheDocument();
     });
-})
+});

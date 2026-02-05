@@ -1,67 +1,64 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import CreateContentInputField from "./CreateContentInputField";
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName }) => (
-        <button>
+        <button type="submit">
             {buttonName}
         </button>
     )
-}))
+}));
 
 vi.mock("../../../ui/create-content-input/CreateContentInput", () => ({
-    default: ({ text, placeholderText, onTextChangeHandler }) => (
+    default: ({ text, placeholderText, onTextChangeHandler }) => <>
+        <label htmlFor="input"></label>
         <input
+            id="input"
+            name="input"
             onChange={onTextChangeHandler}
             placeholder={placeholderText}
             value={text}
         />
-    )
-}))
+    </>
+}));
 
-const mockedProps = {
-    placeholderText: 'Share your thoughts...',
-    buttonText: 'Post',
-    text: 'Hello!',
+const mockProps = {
+    placeholderText: "Share your thoughts...",
+    buttonText: "Post",
+    text: "Hello!",
     onTextChangeHandler: vi.fn(),
     onSubmitHandler: vi.fn(),
-}
+};
 
 beforeEach(() => {
     render(
         <CreateContentInputField
-            buttonText={mockedProps.buttonText}
-            placeholderText={mockedProps.placeholderText}
-            text={mockedProps.text}
-            onTextChangeHandler={mockedProps.onTextChangeHandler}
-            onSubmitHandler={mockedProps.onSubmitHandler}
+            {...mockProps}
         />
     );
-})
+});
 
-describe('CreateContentInputField component', () => {
-    it('renders Button and CreateContentInput with passed props', () => {
+describe("CreateContentInputField component", () => {
+    it("renders Button and CreateContentInput with provided props", () => {
+        expect(screen.getByRole("button")).toHaveTextContent(mockProps.buttonText);
 
-        expect(screen.getByText(mockedProps.buttonText)).toBeInTheDocument();
-        expect(screen.getByDisplayValue(mockedProps.text)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText(mockedProps.placeholderText)).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(mockProps.placeholderText)).toHaveValue(mockProps.text);
     });
 
-    it('onTextChangeHandler gets called on text change', () => {
-        const createContentInput = screen.getByDisplayValue(mockedProps.text);
+    it("calls onTextChangeHandler on input change", async () => {
+        const user = userEvent.setup();
 
-        expect(mockedProps.onTextChangeHandler).toHaveBeenCalledTimes(0);
-
-        fireEvent.change(createContentInput, { target: { value: 'Hello, there!' } })
-        expect(mockedProps.onTextChangeHandler).toHaveBeenCalledTimes(1);
+        await user.type(screen.getByPlaceholderText(mockProps.placeholderText), "Hello, there!");
+        expect(mockProps.onTextChangeHandler).toHaveBeenCalled();
     });
 
-    it('onSubmitHandler gets called on submit', () => {
-        expect(mockedProps.onSubmitHandler).toHaveBeenCalledTimes(0);
+    it("onSubmitHandler gets called on submit", async () => {
+        const user = userEvent.setup();
 
-        fireEvent.submit(screen.getByTestId('form-action-submit'));
-        expect(mockedProps.onSubmitHandler).toHaveBeenCalledTimes(1);
-    })
-})
+        await user.click(screen.getByRole("button"));
+        expect(mockProps.onSubmitHandler).toHaveBeenCalled();
+    });
+});

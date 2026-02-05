@@ -3,8 +3,6 @@ import { describe, expect, it, vi } from "vitest";
 
 import PostItem from "./PostItem";
 
-import { PostContext } from "../../../../../contexts/post-context";
-
 vi.mock("../../post-header/PostHeader", () => ({
     default: () => <div data-testid="post-header"></div>
 }));
@@ -14,32 +12,37 @@ vi.mock("../../post-interactions/PostInteractions", () => ({
 }));
 
 vi.mock("../../post-text/PostText", () => ({
-    default: ({ postText }) => <div data-testid="post-text">{ postText }</div>
+    default: ({ postText }) => <div data-testid="post-text">{postText}</div>
 }));
 
-describe("PostItem component", () => {
-    const postItem = {
-        _id: 'postId',
-        text: 'This is a post!'
-    }
+const postItemMock = {
+    _id: "postId",
+    text: "This is a post!"
+};
 
+function setup(options = {
+    emptyPostItem: false,
+}) {
+    const postItem = options.emptyPostItem ? null : postItemMock;
+
+    render(
+        <PostItem postItem={postItem} />
+    );
+};
+
+describe("PostItem component", () => {
     it("renders PostItem component on valid post id", () => {
-        render(
-            <PostItem postItem={ postItem } />
-        );
-        
+        setup();
+
         expect(screen.getByTestId("post-header")).toBeInTheDocument();
         expect(screen.getByTestId("post-interactions")).toBeInTheDocument();
-        expect(screen.getByTestId("post-text")).toBeInTheDocument();
-        expect(screen.getByTestId("post-text")).toHaveTextContent(postItem.text);
+        expect(screen.getByTestId("post-text")).toHaveTextContent(postItemMock.text);
     });
 
-    it("does not render PostItem on falsy post id", () => {
-        postItem._id='';
-
-        render(
-            <PostItem postItem={postItem} />
-        );
+    it("does not render PostItem on empty postItem", () => {
+        setup({
+            emptyPostItem: true,
+        });
 
         expect(screen.queryByTestId("post-header")).not.toBeInTheDocument();
         expect(screen.queryByTestId("post-interactions")).not.toBeInTheDocument();

@@ -1,217 +1,203 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { useContext } from "react";
 
-import PostsList from "./PostsList";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
+import { ActionsContext } from "../../../../contexts/actions-context";
 import { AlertContext } from "../../../../contexts/alert-context";
 import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 import { UserContext } from "../../../../contexts/user-context";
-import usePostServices from "../../../../hooks/usePostServices";
-import { ActionsContext } from "../../../../contexts/actions-context";
+
+import PostsList from "./PostsList";
 
 vi.mock("./post-item/PostItem", () => ({
-    default: ({ postItem }) => (
-        <ActionsContext.Consumer>
-            {actions => (
-                <div data-testid="post-item">
-                    <button onClick={() => actions.onDeleteClickHandler(postItem._id)}>Delete</button>
-                    <button onClick={() => actions.onLikeClickHandler(postItem._id)}>Like</button>
-                    <button onClick={() => actions.onUnlikeClickHandler(postItem._id)}>Unlike</button>
-                </div>
-            )}
-        </ActionsContext.Consumer>
-    )
+    default: function PostItemMock({ postItem }) {
+        const actions = useContext(ActionsContext);
+
+        return (
+            <div data-testid="post-item">
+                <button onClick={() => actions.onDeleteClickHandler(postItem)}>Delete</button>
+                <button onClick={() => actions.onLikeClickHandler(postItem)}>Like</button>
+                <button onClick={() => actions.onUnlikeClickHandler(postItem)}>Unlike</button>
+            </div>
+        )
+    }
 }));
 
-vi.mock("../../../../hooks/usePostServices");
+vi.mock("../../../../hooks/usePostServices", () => ({
+    default: () => ({
+        ...usePostServicesMock
+    })
+}));
 
-describe("PostsList component", () => {
-    const setAlert = vi.fn();
+const FIRST_POST = 0;
+const SECOND_POST = 1;
 
-    const isUser = "userId";
+const ERR_MSG = {
+    DELETE_POST: "Rejected deletePost call!",
+    LIKE_POST: "Rejected likePost call!",
+    UNLIKE_POST: "Rejected unlikePost call!",
+};
 
-    const setTotalPosts = vi.fn();
-    const totalPosts = [
+const isUser = "userId";
+
+const setAlert = vi.fn();
+
+const totalPostsCtxMock = {
+    totalPosts: [
         { _id: "1" },
         { _id: "2" },
-    ];
+    ],
+    setTotalPosts: vi.fn(),
+};
 
-    const deletePost = vi.fn();
-    const likePost = vi.fn();
-    const unlikePost = vi.fn();
-    const abortAll = vi.fn();
+const usePostServicesMock = {
+    deletePost: vi.fn(),
+    likePost: vi.fn(),
+    unlikePost: vi.fn(),
+    abortAll: vi.fn(),
+};
 
-    beforeEach(() => {
-        usePostServices.mockReturnValue({
-            deletePost,
-            likePost,
-            unlikePost,
-            abortAll,
-        });
-    })
+function setup(options = {
+    deleteConfirmation: true,
+    deletePostSuccessfullResolve: true,
+    likePostSuccessfullResolve: true,
+    unlikePostSuccessfullResolve: true,
+}) {
+    options.deletePostSuccessfullResolve ?
+        usePostServicesMock.deletePost.mockResolvedValue(totalPostsCtxMock.totalPosts.at(0)._id) :
+        usePostServicesMock.deletePost.mockRejectedValue(new Error(ERR_MSG.DELETE_POST));
 
+    options.likePostSuccessfullResolve ? usePostServicesMock.likePost.mockResolvedValue(true) : usePostServicesMock.likePost.mockRejectedValue(new Error(ERR_MSG.LIKE_POST));
+    options.unlikePostSuccessfullResolve ? usePostServicesMock.unlikePost.mockResolvedValue(true) : usePostServicesMock.unlikePost.mockRejectedValue(new Error(ERR_MSG.UNLIKE_POST));
+
+    vi.spyOn(window, "confirm").mockReturnValue(options.deleteConfirmation);
+
+    const { unmount } = render(
+        <AlertContext.Provider value={{ setAlert }}>
+            <UserContext.Provider value={{ isUser }}>
+                <TotalPostsContext.Provider value={{ ...totalPostsCtxMock }}>
+                    <PostsList />
+                </TotalPostsContext.Provider>
+            </UserContext.Provider>
+        </AlertContext.Provider>
+    );
+
+    return { unmount };
+};
+
+describe("PostsList component", () => {
     it("renders PostItem for each post ", () => {
-        render(
-            <AlertContext.Provider value={{ setAlert }}>
-                <UserContext.Provider value={{ isUser }}>
-                    <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
-                        <PostsList />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
+        setup();
 
         expect(screen.getAllByTestId("post-item")).toHaveLength(2);
     });
 
-    it("triggers onDeletePostClickHandler after delete confirmation", async () => {
-        vi.spyOn(window, "confirm").mockReturnValue(true);
-
-        render(
-            <AlertContext.Provider value={{ setAlert }}>
-                <UserContext.Provider value={{ isUser }}>
-                    <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
-                        <PostsList />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
-
-        fireEvent.click(screen.getAllByText('Delete').at(0));
-
-        await vi.waitFor(() => {
-            expect(deletePost).toHaveBeenCalledOnce();
-        });
-    });
-
-    it(" does not trigger onDeletePostClickHandler after cancelling delete confirmation", async () => {
-        vi.spyOn(window, "confirm").mockReturnValue(false);
-
-        render(
-            <AlertContext.Provider value={{ setAlert }}>
-                <UserContext.Provider value={{ isUser }}>
-                    <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
-                        <PostsList />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
-
-        fireEvent.click(screen.getAllByText('Delete').at(0));
-
-        await vi.waitFor(() => {
-            expect(deletePost).not.toHaveBeenCalled();
-        });
-    });
-
-    it("triggers setTotalPosts on post deletion", async () => {
-        vi.spyOn(window, "confirm").mockReturnValue(true);
-
-        deletePost.mockResolvedValueOnce("1");
-
-        render(
-            <AlertContext.Provider value={{ setAlert }}>
-                <UserContext.Provider value={{ isUser }}>
-                    <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
-                        <PostsList />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
-
-        fireEvent.click(screen.getAllByText('Delete').at(0));
-
-        await vi.waitFor(() => {
-            expect(deletePost).toHaveBeenCalled();
-            expect(setTotalPosts).toHaveBeenCalledOnce();
+    it.each([
+        { name: "deletes post after deletePost user confirmation", shouldTrigger: true, deleteConfirmation: true },
+        { name: "does not delete post after deletePost user rejection", shouldTrigger: false, deleteConfirmation: false },
+    ])("$name", async ({ shouldTrigger, deleteConfirmation }) => {
+        const user = userEvent.setup();
+        setup({
+            deleteConfirmation,
+            deletePostSuccessfullResolve: true,
+            likePostSuccessfullResolve: true,
+            unlikePostSuccessfullResolve: true
         });
 
-        const updater = setTotalPosts.mock.calls[0][0]
-        const updatedPosts = updater(totalPosts);
-        expect(updatedPosts).toEqual([{ _id: "2" }]);
+        await user.click(screen.getAllByText('Delete').at(FIRST_POST));
+
+        if (shouldTrigger) {
+            const updater = totalPostsCtxMock.setTotalPosts.mock.calls[0][0];
+            const updatedPosts = updater(totalPostsCtxMock.totalPosts);
+
+            expect(updatedPosts).toEqual([totalPostsCtxMock.totalPosts.at(SECOND_POST)]);
+        } else {
+            expect(totalPostsCtxMock.setTotalPosts).not.toHaveBeenCalled();
+        };
     });
 
-    it("triggers onLikeClickHandler after click", async () => {
-        render(
-            <AlertContext.Provider value={{ setAlert }}>
-                <UserContext.Provider value={{ isUser }}>
-                    <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
-                        <PostsList />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
-
-        fireEvent.click(screen.getAllByText('Like').at(0));
-
-        await vi.waitFor(() => {
-            expect(likePost).toHaveBeenCalledOnce();
+    it("shows alert when delete action is rejected", async () => {
+        const user = userEvent.setup();
+        setup({
+            deleteConfirmation: true,
+            deletePostSuccessfullResolve: false,
+            likePostSuccessfullResolve: true,
+            unlikePostSuccessfullResolve: true,
         });
-    });
 
-    it("triggers onUnlikeClickHandler on click", async () => {
-        render(
-            <AlertContext.Provider value={{ setAlert }}>
-                <UserContext.Provider value={{ isUser }}>
-                    <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
-                        <PostsList />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
-
-        fireEvent.click(screen.getAllByText('Unlike').at(0));
-
-        await vi.waitFor(() => {
-            expect(unlikePost).toHaveBeenCalledOnce();
-        });
-    });
-
-    it("triggers setAlert on error", async () => {
-        vi.spyOn(window, "confirm").mockReturnValue(true);
-
-        unlikePost.mockRejectedValueOnce(new Error('Error'));
-        likePost.mockRejectedValueOnce(new Error('Error'));
-        deletePost.mockRejectedValueOnce(new Error('Error'));
-
-        render(
-            <AlertContext.Provider value={{ setAlert }}>
-                <UserContext.Provider value={{ isUser }}>
-                    <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
-                        <PostsList />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
-
-        fireEvent.click(screen.getAllByText('Delete').at(0));
-        fireEvent.click(screen.getAllByText('Like').at(0));
-        fireEvent.click(screen.getAllByText('Unlike').at(0));
+        await user.click(screen.getAllByText('Delete').at(FIRST_POST));
 
         await waitFor(() => {
-            expect(setAlert).toHaveBeenCalledTimes(3);
-        })
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.DELETE_POST);
+        });
     });
 
-    it("triggers abortAll on unmount", async () => {
-        vi.spyOn(window, "confirm").mockReturnValue(true);
+    it("triggers like action when Like button is clicked", async () => {
+        const user = userEvent.setup();
+        setup();
 
-        const { unmount } = render(
-            <AlertContext.Provider value={{ setAlert }}>
-                <UserContext.Provider value={{ isUser }}>
-                    <TotalPostsContext.Provider value={{ totalPosts, setTotalPosts }}>
-                        <PostsList />
-                    </TotalPostsContext.Provider>
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
+        await user.click(screen.getAllByText('Like').at(FIRST_POST));
 
-        fireEvent.click(screen.getAllByText('Delete').at(0));
-        fireEvent.click(screen.getAllByText('Like').at(0));
-        fireEvent.click(screen.getAllByText('Unlike').at(0));
+        await vi.waitFor(() => {
+            expect(usePostServicesMock.likePost).toHaveBeenCalledWith(isUser, totalPostsCtxMock.totalPosts.at(FIRST_POST)._id);
+        });
+    });
+
+    it("shows alert when like action is rejected", async () => {
+        const user = userEvent.setup();
+        setup({
+            deleteConfirmation: true,
+            deletePostSuccessfullResolve: true,
+            likePostSuccessfullResolve: false,
+            unlikePostSuccessfullResolve: true
+        });
+
+        await user.click(screen.getAllByText('Like').at(FIRST_POST));
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.LIKE_POST);
+        });
+    });
+
+    it("triggers unlike action when Unlike button is clicked", async () => {
+        const user = userEvent.setup();
+        setup();
+
+        await user.click(screen.getAllByText('Unlike').at(FIRST_POST));
+
+        await vi.waitFor(() => {
+            expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(isUser, totalPostsCtxMock.totalPosts.at(FIRST_POST)._id);
+        });
+    });
+
+    it("shows alert when unlike action is rejected", async () => {
+        const user = userEvent.setup();
+        setup({
+            deleteConfirmation: true,
+            deletePostSuccessfullResolve: true,
+            likePostSuccessfullResolve: true,
+            unlikePostSuccessfullResolve: false
+        });
+
+        await user.click(screen.getAllByText('Unlike').at(FIRST_POST));
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UNLIKE_POST);
+        });
+    });
+
+    it("stops all actions when component is unmounted", async () => {
+        const user = userEvent.setup();
+        const { unmount } = setup();
+
+        await user.click(screen.getAllByText('Delete').at(FIRST_POST));
+        await user.click(screen.getAllByText('Like').at(FIRST_POST));
+        await user.click(screen.getAllByText('Unlike').at(FIRST_POST));
 
         unmount();
 
-        expect(abortAll).toHaveBeenCalledOnce();
-    })
+        expect(usePostServicesMock.abortAll).toHaveBeenCalled();
+    });
 });

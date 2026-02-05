@@ -1,104 +1,91 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { Link, MemoryRouter } from "react-router";
+
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
 import { ActionsContext } from "../../../../contexts/actions-context";
+
 import OwnerControls from "./OwnerControls";
 
-vi.mock('../../../ui/buttons/link-button/LinkButton', () => ({
-    default: ({ urlLink }) => (
-        <div data-testid="edit-link-button">
-            <span>{urlLink}</span>
-        </div>
-    )
+vi.mock("../../../ui/buttons/link-button/LinkButton", () => ({
+    default: ({ urlLink }) => <Link to={urlLink}></Link>
 }));
 
-vi.mock('../../../ui/buttons/button/Button', () => ({
-    default: ({ buttonName, onClickHandler }) => (
-        <div
-            data-testid={buttonName === 'Edit' ? 'edit-button' : 'delete-button'}
-            onClick={onClickHandler}
-        >
-            {buttonName}
-        </div >
-    )
+vi.mock("../../../ui/buttons/button/Button", () => ({
+    default: ({ buttonName, onClickHandler }) => <button onClick={onClickHandler}>{buttonName}</button >
 }));
 
-const mockedParams = {
-    urlLink: "Test Link",
+const mockProps = {
+    urlLink: "/test-link",
     itemId: 5,
-}
+};
 
-const mockedFunctions = {
+const mockHandlers = {
     onDeleteClickHandler: vi.fn(),
     onEditClickHandler: vi.fn(),
-}
+};
 
-describe('OwnerControls component', () => {
-    it('renders Delete Button component always, regardless of props', () => {
-        const { rerender } = render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
+function setup(options = {
+    passUrlLink: true,
+}) {
+    const urlLinkProp = options.passUrlLink ? mockProps.urlLink : null;
+
+    render(
+        <MemoryRouter>
+            <ActionsContext.Provider value={{ ...mockHandlers }}>
                 <OwnerControls
-                    urlLink={mockedParams.urlLink}
-                    itemId={mockedParams.itemId}
+                    urlLink={urlLinkProp}
+                    itemId={mockProps.itemId}
                 />
             </ActionsContext.Provider>
-        );
+        </MemoryRouter>
+    );
+};
 
-        expect(screen.getByTestId('delete-button')).toBeInTheDocument();
+describe("OwnerControls component", () => {
+    it.each([
+        { name: "renders Delete Button when urlLink is provided", passUrlLink: true },
+        { name: "renders Delete Button when urlLink is not provided", passUrlLink: false },
+    ])("$name", ({ passUrlLink }) => {
+        setup({
+            passUrlLink,
+        });
 
-        rerender(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <OwnerControls />
-            </ActionsContext.Provider>
-        );
-
-        expect(screen.getByTestId('delete-button')).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Delete" })).toBeInTheDocument();
     });
 
-    it('renders Edit LinkButton when urlLink is provided', () => {
-        render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <OwnerControls
-                    urlLink={mockedParams.urlLink}
-                />
-            </ActionsContext.Provider>
-        );
+    it("renders Edit LinkButton and not Edit Button when urlLink is provided", () => {
+        setup();
 
-        expect(screen.getByTestId('edit-link-button')).toBeInTheDocument();
-        expect(screen.getByText(mockedParams.urlLink)).toBeInTheDocument();
-
-        expect(screen.queryByTestId('edit-button')).not.toBeInTheDocument();
+        expect(screen.getByRole("link")).toHaveAttribute("href", mockProps.urlLink);
+        expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     });
 
-    it('renders Edit Button when urlLink is not provided', () => {
-        render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <OwnerControls
-                    itemId={mockedParams.itemId}
-                />
-            </ActionsContext.Provider>
-        );
+    it("renders Edit Button and not Edit LinkButton when urlLink is not provided", () => {
+        setup({
+            passUrlLink: false,
+        });
 
-        expect(screen.getByTestId('edit-button')).toBeInTheDocument();
-
-        expect(screen.queryByTestId('edit-link-button')).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
+        expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
 
-    it('Cancel and Edit Buttons react on clicks', () => {
-        render(
-            <ActionsContext.Provider value={{ ...mockedFunctions }}>
-                <OwnerControls
-                    itemId={mockedParams.itemId}
-                />
-            </ActionsContext.Provider>
-        );
+    it("calls onDeleteClickHandler when Delete Button is clicked", async () => {
+        const user = userEvent.setup();
+        setup();
 
-        fireEvent.click(screen.getByTestId('delete-button'));
-        expect(screen.getByTestId('delete-button')).toBeInTheDocument();
-        expect(mockedFunctions.onDeleteClickHandler).toBeCalledTimes(1);
-        expect(mockedFunctions.onDeleteClickHandler).toHaveBeenCalledWith(mockedParams.itemId);
+        await user.click(screen.getByRole("button", { name: "Delete" }));
+        expect(mockHandlers.onDeleteClickHandler).toHaveBeenCalledWith(mockProps.itemId);
+    });
 
-        fireEvent.click(screen.getByTestId('edit-button'));
-        expect(screen.getByTestId('edit-button')).toBeInTheDocument();
-        expect(mockedFunctions.onEditClickHandler).toBeCalledTimes(1);
+    it("calls onEditClickHandler when Edit Button is clicked", async () => {
+        const user = userEvent.setup();
+        setup({
+            passUrlLink: false,
+        });
+
+        await user.click(screen.getByRole("button", { name: "Edit" }));
+        expect(mockHandlers.onEditClickHandler).toHaveBeenCalled();
     });
 });

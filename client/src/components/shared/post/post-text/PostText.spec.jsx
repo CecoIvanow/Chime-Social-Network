@@ -1,16 +1,20 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeEach } from "vitest";
 
 import PostText from "./PostText";
 
-describe('PostText component', () => {
-    it('renders component with passed postText', () => {
-        render(
-            <PostText
-                postText='Some text.'
-            />
-        )
+const text = "Some text.";
 
-        expect(screen.getByText('Some text.')).toBeInTheDocument();
-    })
-})
+beforeEach(() => {
+    render(
+        <PostText
+            postText={text}
+        />
+    )
+});
+
+describe("PostText component", () => {
+    it("renders component with passed postText", () => {
+        expect(screen.getByText(text)).toBeInTheDocument();
+    });
+});

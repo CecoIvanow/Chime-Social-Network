@@ -1,11 +1,11 @@
+import { useParams } from "react-router";
+
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import ProfileInfo from "./ProfileInfo.jsx";
-
 import { UserContext } from "../../../../../../contexts/user-context.js";
 
-import { useParams } from "react-router";
+import ProfileInfo from "./ProfileInfo.jsx";
 
 vi.mock("./profile-fullname/ProfileFullname", () => ({
     default: ({userData}) => (
@@ -32,54 +32,60 @@ vi.mock("./edit-profile-button/EditProfileButton", () => ({
 
 vi.mock("react-router", () => ({
     useParams: vi.fn(),
-}))
+}));
 
 const userData ={
     fullName: "Fullname test",
     info: "Info test"
-}
+};
+
+function setup(options={
+    isUserIsNull: false,
+    isUserIsMatching: false,
+}) {
+    const userId = "OriginalUser";
+    let isUser;
+
+    if (options.isUserIsNull) {
+        isUser = null;
+    } else if (options.isUserIsMatching) {
+        isUser = userId;
+    } else {
+        isUser = "randomId";
+    };
+
+    useParams.mockReturnValue({ userId, });
+
+    render(
+        <UserContext.Provider value={{ isUser, }}>
+            <ProfileInfo userData={userData} />
+        </UserContext.Provider>
+    );  
+};
 
 describe("ProfileInfo Component", () => {
-    it("renders ProfileFullName and ProfileInfoLabelsList with passed userData", () => {
-        useParams.mockReturnValue({ userId: "OriginalUser" });
+    it("renders user full name and profile information on passed user data", () => {
+        setup();
 
-        render(
-            <UserContext.Provider value={{ isUser: "Test" }}>
-                <ProfileInfo userData={userData}/>
-            </UserContext.Provider>
-        )
-
-        const fullNameComp = screen.getByTestId("profile-fullname");
-        const infoComp = screen.getByTestId("profile-info");
-
-        expect(fullNameComp).toBeInTheDocument();
-        expect(infoComp).toBeInTheDocument();
-
-        expect(fullNameComp).toHaveTextContent(userData.fullName);
-        expect(infoComp).toHaveTextContent(userData.info);
+        expect(screen.getByTestId("profile-fullname")).toHaveTextContent(userData.fullName);
+        expect(screen.getByTestId("profile-info")).toHaveTextContent(userData.info);
     });
 
-    it("does not render EditProfileButton with false isUser", () => {
-        useParams.mockReturnValue({ userId: "OriginalUser" });
+    it("does not render profile edit button when user is not logged in", () => {
+        setup({
+            isUserIsMatching: false,
+            isUserIsNull: true,
+        })
 
-        render(
-            <UserContext.Provider value={{ isUser: null }}>
-                <ProfileInfo userData={userData}/>
-            </UserContext.Provider>
-        )
-
-        expect(screen.queryByTestId('edit-button')).not.toBeInTheDocument();
+        expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
     });
 
-    it("renders EditProfileButton with matching isUser and userId", () => {
-        useParams.mockReturnValue({ userId: "OriginalUser" });
+    it("renders profile edit button with matching user is logged in and in his profile page", () => {
+        setup({
+            isUserIsMatching: true,
+            isUserIsNull: false,
+        });
 
-        render(
-            <UserContext.Provider value={{ isUser: "OriginalUser" }}>
-                <ProfileInfo userData={userData}/>
-            </UserContext.Provider>
-        )
-
-        expect(screen.queryByTestId('edit-button')).toBeInTheDocument();
+        expect(screen.getByTestId("edit-button")).toBeInTheDocument();
     });
-})
+});

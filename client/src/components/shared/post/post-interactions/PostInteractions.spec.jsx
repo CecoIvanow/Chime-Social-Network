@@ -9,55 +9,60 @@ import { LikesContext } from "../../../../contexts/likes-context";
 import PostInteractions from "./PostInteractions";
 
 vi.mock("./post-interactions-amount/PostInteractionsAmount", () => ({
-    default: () => <div data-testid='post-interactions-amount'></div>
+    default: () => (
+        <div data-testid='post-interactions-amount'>
+            <LikesConsumer />
+        </div>
+    )
 }));
 
 vi.mock("./post-buttons/PostButtons", () => ({
-    default: () => <button data-testid="post-button"></button>
+    default: () => <div data-testid="post-button"></div>
 }));
 
-describe("PostInteractions component", () => {
-    const post = {
-        likes: ["like1", "like2"],
-    };
+const postMock = {
+    likes: ["like1", "like2"],
+};
 
-    it("renders PostInteractionsAmount and PostButtons", () => {
-        render(
-            <PostContext.Provider value={{ post }}>
+function LikesConsumer() {
+    const { likes } = useContext(LikesContext);
+
+    return <div data-testid="likes-count">{likes.length}</div>
+};
+
+function setup(options = {
+    renderPostWithoutLikes: false
+}) {
+    const post = options.renderPostWithoutLikes ? null : postMock;
+
+    render(
+        <PostContext.Provider value={{ post }}>
+            <LikesContext.Provider value={{ likes: post?.likes, setLikes: () => { } }}>
                 <PostInteractions />
-            </PostContext.Provider>
-        );
+            </LikesContext.Provider>
+        </PostContext.Provider>
+    );
+}
+
+
+describe("PostInteractions component", () => {
+    it("renders PostInteractionsAmount and PostButtons", () => {
+        setup();
 
         expect(screen.getByTestId("post-interactions-amount")).toBeInTheDocument();
         expect(screen.getByTestId("post-button")).toBeInTheDocument();
     });
 
     it("provides likes array through LikesContext", () => {
-        function LikesConsumer() {
-            const { likes } = useContext(LikesContext);
+        setup();
 
-            return <div data-testid="likes-count">{likes.length}</div>
-        }
-
-        render(
-            <PostContext.Provider value={{ post }}>
-                <LikesContext.Provider value={{ likes: post.likes, setLikes: () => { } }}>
-                    <LikesConsumer />
-                </LikesContext.Provider>
-            </PostContext.Provider>
-        );
-
-        expect(screen.getByTestId("likes-count")).toHaveTextContent("2");
+        expect(screen.getByTestId("likes-count")).toHaveTextContent(postMock.likes.length);
     });
 
-    it("renders without error when post.likes is undefined", () => {
-        const post = {};
-
-        render(
-            <PostContext.Provider value={{ post }}>
-                <PostInteractions />
-            </PostContext.Provider>
-        );
+    it("renders without error when post.likes is null", () => {
+        setup({
+            renderPostWithoutLikes: true,
+        })
 
         expect(screen.getByTestId("post-interactions-amount")).toBeInTheDocument();
         expect(screen.getByTestId("post-button")).toBeInTheDocument();
