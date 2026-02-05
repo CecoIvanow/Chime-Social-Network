@@ -23,11 +23,10 @@ function setup(options={
     render(
         <ProfileInfoLabel userData={userData} label={mockProps.label} />
     );
-
 };
 
-describe("ProfileInfoLabel componen", () => {
-    it("renders with correct props", () => {
+describe("ProfileInfoLabel component", () => {
+    it("renders component with passed label and userData", () => {
         setup();
 
         expect(screen.getByText(mockProps.label.labelText)).toBeInTheDocument();
@@ -36,7 +35,7 @@ describe("ProfileInfoLabel componen", () => {
         expect(screen.queryByText(MISSING_DATA)).not.toBeInTheDocument();
     });
 
-    it("renders with N\\A if empty userData is passed", () => {
+    it("renders with N\\A text content if no userData is passed", () => {
         setup({
             isUserDataUndefined: true,
         });
