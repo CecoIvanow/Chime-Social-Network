@@ -8,28 +8,32 @@ vi.mock("./profile-avatar/ProfileAvatar", () => ({
         <div data-testid="profile-avatar" >
             {userData}
         </div>
-}))
+}));
 
 vi.mock("./profile-info/ProfileInfo", () => ({
     default: ({userData}) => 
         <div data-testid="profile-info">
             {userData}
         </div>
-}))
+}));
+
+const mockProps = {
+    userData: "Test123",
+};
 
 beforeEach(() => {
     render(
         <ProfileHeader
-            userData={"Test123"}
+            {...mockProps}
         />
-    )
-})
+    );
+});
 
 describe("ProfileHeader component", () => {
     it("renders both child components and passes userData", () => {
         expect(screen.getByTestId('profile-avatar')).toBeInTheDocument();
         expect(screen.getByTestId('profile-info')).toBeInTheDocument();
         
-        expect(screen.getAllByText("Test123")).toHaveLength(2);
-    })
-})
+        expect(screen.getAllByText(mockProps.userData)).toHaveLength(2);
+    });
+});
