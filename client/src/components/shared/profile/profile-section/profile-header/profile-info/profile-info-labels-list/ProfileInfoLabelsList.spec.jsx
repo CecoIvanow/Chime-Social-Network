@@ -13,6 +13,17 @@ vi.mock("./profile-info-label/ProfileInfoLabel", () => ({
     )
 }));
 
+const labelTextArr = [
+    "Bio:",
+    "Age:",
+    "Gender:",
+    "Location:",
+    "Occupation:",
+    "Education:",
+    "Status:",
+    "Member Since:"
+];
+
 const mockProps = {
     userData: {
         bio: "Coder",
@@ -36,14 +47,9 @@ describe("profileInfoLabelsList", () => {
     });
 
     it("passes correct props to each ProfileInfoLabel component", () => {
-        expect(screen.getByText("Bio:")).toBeInTheDocument();
-        expect(screen.getByText("Age:")).toBeInTheDocument();
-        expect(screen.getByText("Gender:")).toBeInTheDocument();
-        expect(screen.getByText("Location:")).toBeInTheDocument();
-        expect(screen.getByText("Occupation:")).toBeInTheDocument();
-        expect(screen.getByText("Education:")).toBeInTheDocument();
-        expect(screen.getByText("Status:")).toBeInTheDocument();
-        expect(screen.getByText("Member Since:")).toBeInTheDocument();
+        for (const label of labelTextArr) {
+            expect(screen.getByText(label)).toBeInTheDocument();
+        };
 
         expect(screen.getByText(mockProps.userData.bio)).toBeInTheDocument();
         expect(screen.getByText(mockProps.userData.memberSince)).toBeInTheDocument();
