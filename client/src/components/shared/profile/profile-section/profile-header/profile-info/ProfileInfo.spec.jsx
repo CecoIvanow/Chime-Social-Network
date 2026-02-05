@@ -70,14 +70,8 @@ describe("ProfileInfo Component", () => {
             isUserIsNull: false,
         });
 
-        const fullNameComp = screen.getByTestId("profile-fullname");
-        const infoComp = screen.getByTestId("profile-info");
-
-        expect(fullNameComp).toBeInTheDocument();
-        expect(infoComp).toBeInTheDocument();
-
-        expect(fullNameComp).toHaveTextContent(userData.fullName);
-        expect(infoComp).toHaveTextContent(userData.info);
+        expect(screen.getByTestId("profile-fullname")).toHaveTextContent(userData.fullName);
+        expect(screen.getByTestId("profile-info")).toHaveTextContent(userData.info);
     });
 
     it("does not render EditProfileButton with false isUser", () => {
@@ -95,6 +89,6 @@ describe("ProfileInfo Component", () => {
             isUserIsNull: false,
         });
 
-        expect(screen.queryByTestId('edit-button')).toBeInTheDocument();
+        expect(screen.getByTestId('edit-button')).toBeInTheDocument();
     });
 })
