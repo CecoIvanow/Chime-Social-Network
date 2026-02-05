@@ -30,7 +30,7 @@ function setup(options={
 };
 
 describe('ProfileSection component', () => {
-    it("shows ProfileHeader when isLoading is false", () => {
+    it("shows profile header when not loading", () => {
         setup();
 
         expect(screen.getByTestId("profile-header")).toHaveTextContent("Test1");
@@ -38,7 +38,7 @@ describe('ProfileSection component', () => {
         expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
     });
 
-    it("shows LoadingSpinner when isLoading is true", () => {
+    it("shows a loading spinner while loading", () => {
         setup({
             isLoading: true,
         });
