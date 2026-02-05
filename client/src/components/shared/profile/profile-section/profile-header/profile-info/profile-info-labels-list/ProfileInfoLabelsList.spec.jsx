@@ -15,14 +15,14 @@ vi.mock("./profile-info-label/ProfileInfoLabel", () => ({
 
 const mockProps = {
     userData: {
-        bio: 'Coder',
-        age: '25',
-        gender: 'Male',
-        location: 'Earth',
-        occupation: 'Developer',
-        education: 'CS Degree',
-        status: 'Active',
-        memberSince: '25.08.2025',
+        bio: "Coder",
+        age: "25",
+        gender: "Male",
+        location: "Earth",
+        occupation: "Developer",
+        education: "CS Degree",
+        status: "Active",
+        memberSince: "25.08.2025",
     }
 };
 
@@ -32,7 +32,7 @@ beforeEach(() => {
 
 describe("profileInfoLabelsList", () => {
     it("renders the correct number of ProfileInfoLabel components", () => {
-        expect(screen.getAllByTestId('profile-info-label')).toHaveLength(8);
+        expect(screen.getAllByTestId("profile-info-label")).toHaveLength(8);
     });
 
     it("passes correct props to each ProfileInfoLabel component", () => {
@@ -48,5 +48,5 @@ describe("profileInfoLabelsList", () => {
         expect(screen.getByText(mockProps.userData.bio)).toBeInTheDocument();
         expect(screen.getByText(mockProps.userData.memberSince)).toBeInTheDocument();
         expect(screen.getByText(mockProps.userData.gender)).toBeInTheDocument();
-    })
-})
+    });
+});
