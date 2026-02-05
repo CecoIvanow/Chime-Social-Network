@@ -17,7 +17,7 @@ beforeEach(() => {
 });
 
 describe("ProfileFullName component", () => {
-    it("renders with passed props", () => {
+    it("renders heading with correct text content", () => {
         expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(`${mockProps.userData.firstName} ${mockProps.userData.lastName}`);
     });
 });
