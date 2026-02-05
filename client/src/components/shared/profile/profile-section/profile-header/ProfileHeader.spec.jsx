@@ -4,14 +4,14 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import ProfileHeader from "./ProfileHeader.jsx";
 
 vi.mock("./profile-avatar/ProfileAvatar", () => ({
-    default: ({userData}) => 
+    default: ({ userData }) =>
         <div data-testid="profile-avatar" >
             {userData}
         </div>
 }));
 
 vi.mock("./profile-info/ProfileInfo", () => ({
-    default: ({userData}) => 
+    default: ({ userData }) =>
         <div data-testid="profile-info">
             {userData}
         </div>
@@ -31,9 +31,7 @@ beforeEach(() => {
 
 describe("ProfileHeader component", () => {
     it("renders the profile avatar and profile info with passed user data", () => {
-        expect(screen.getByTestId('profile-avatar')).toBeInTheDocument();
-        expect(screen.getByTestId('profile-info')).toBeInTheDocument();
-        
-        expect(screen.getAllByText(mockProps.userData)).toHaveLength(2);
+        expect(screen.getByTestId('profile-avatar')).toHaveTextContent(mockProps.userData);
+        expect(screen.getByTestId('profile-info')).toBeInTheDocument(mockProps.userData);
     });
 });
