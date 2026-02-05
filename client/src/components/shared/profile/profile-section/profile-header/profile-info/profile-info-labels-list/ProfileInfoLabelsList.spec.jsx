@@ -42,7 +42,9 @@ beforeEach(() => {
 
 describe("profileInfoLabelsList", () => {
     it("renders the correct number of ProfileInfoLabel components", () => {
-        expect(screen.getAllByTestId("profile-info-label")).toHaveLength(8);
+        const amountOfChildComponents = Object.keys(mockProps.userData).length;
+
+        expect(screen.getAllByTestId("profile-info-label")).toHaveLength(amountOfChildComponents);
     });
 
     it("renders ProfileInfoLabel component with user data values", () => {
