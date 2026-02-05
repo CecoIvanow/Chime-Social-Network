@@ -5,19 +5,17 @@ import ProfileSection from "./ProfileSection.jsx";
 
 vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
     default: () => (
-        <div>
-            {"Loading Spinner"}
-        </div>
+        <div data-testid="loading-spinner"></div>
     )
 }));
 
 vi.mock("./profile-header/ProfileHeader", () => ({
     default: ({userData}) => (
-        <div>
+        <div data-testid="profile-header">
             {userData}
         </div>
     )
-}))
+}));
 
 describe('ProfileSection component', () => {
     it("shows LoadingSpinner when isLoading is true", () => {
@@ -28,9 +26,9 @@ describe('ProfileSection component', () => {
             />
         )
 
-        expect(screen.getByText('Loading Spinner')).toBeInTheDocument();
+        expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
         
-        expect(screen.queryByText("Test1")).not.toBeInTheDocument();
+        expect(screen.queryByTestId("profile-header")).not.toBeInTheDocument();
     });
     
     it("shows ProfileHeader when isLoading is false", () => {
@@ -41,8 +39,8 @@ describe('ProfileSection component', () => {
             />
         )
 
-        expect(screen.getByText("Test1")).toBeInTheDocument();
+        expect(screen.getByTestId("profile-header")).toHaveTextContent("Test1");
 
-        expect(screen.queryByText('Loading Spinner')).not.toBeInTheDocument();
+        expect(screen.getByTestId("loading-spinner")).not.toBeInTheDocument();
     });
 })
