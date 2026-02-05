@@ -64,7 +64,7 @@ function setup(options={
 };
 
 describe("ProfileInfo Component", () => {
-    it("renders ProfileFullName and ProfileInfoLabelsList with passed userData", () => {
+    it("renders ProfileFullName and ProfileInfoLabelsList with passed user data", () => {
         setup({
             isUserIsMatching: false,
             isUserIsNull: false,
@@ -80,7 +80,7 @@ describe("ProfileInfo Component", () => {
             isUserIsNull: true,
         })
 
-        expect(screen.queryByTestId('edit-button')).not.toBeInTheDocument();
+        expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
     });
 
     it("renders EditProfileButton with matching isUser and userId", () => {
@@ -89,6 +89,6 @@ describe("ProfileInfo Component", () => {
             isUserIsNull: false,
         });
 
-        expect(screen.getByTestId('edit-button')).toBeInTheDocument();
+        expect(screen.getByTestId("edit-button")).toBeInTheDocument();
     });
 })
