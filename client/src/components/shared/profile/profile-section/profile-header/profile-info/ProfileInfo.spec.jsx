@@ -52,7 +52,7 @@ function setup(options={
         isUser = userId;
     } else {
         isUser = "randomId";
-    }
+    };
 
     useParams.mockReturnValue({ userId, });
 
@@ -64,17 +64,14 @@ function setup(options={
 };
 
 describe("ProfileInfo Component", () => {
-    it("renders ProfileFullName and ProfileInfoLabelsList with passed user data", () => {
-        setup({
-            isUserIsMatching: false,
-            isUserIsNull: false,
-        });
+    it("renders user full name and profile information on passed user data", () => {
+        setup();
 
         expect(screen.getByTestId("profile-fullname")).toHaveTextContent(userData.fullName);
         expect(screen.getByTestId("profile-info")).toHaveTextContent(userData.info);
     });
 
-    it("does not render EditProfileButton with false isUser", () => {
+    it("does not render profile edit button when user is not logged in", () => {
         setup({
             isUserIsMatching: false,
             isUserIsNull: true,
@@ -83,7 +80,7 @@ describe("ProfileInfo Component", () => {
         expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
     });
 
-    it("renders EditProfileButton with matching isUser and userId", () => {
+    it("renders profile edit button with matching user is logged in and in his profile page", () => {
         setup({
             isUserIsMatching: true,
             isUserIsNull: false,
@@ -91,4 +88,4 @@ describe("ProfileInfo Component", () => {
 
         expect(screen.getByTestId("edit-button")).toBeInTheDocument();
     });
-})
+});
