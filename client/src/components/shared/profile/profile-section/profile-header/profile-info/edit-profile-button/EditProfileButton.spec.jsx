@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { UserContext } from "../../../../../../../contexts/user-context.js";
 
@@ -13,14 +13,18 @@ vi.mock("../../../../../../ui/buttons/link-button/LinkButton", () => ({
     )
 }));
 
+const isUser = "User123";
+
+beforeEach(() => {
+    render(
+        <UserContext.Provider value={{ isUser, }}>
+            <EditProfileButton />
+        </UserContext.Provider>
+    );
+});
+
 describe("EditProfileButton component", () => {
     it("renders LinkButton with the correct props from context", () => {
-        render(
-            <UserContext.Provider value={{ isUser: "User123" }}>
-                <EditProfileButton />
-            </UserContext.Provider>
-        );
-
         expect(screen.getByTestId("edit-profile-btn")).toBeInTheDocument();
 
         expect(screen.getByTestId("url")).toHaveTextContent("/profile/User123/edit");
