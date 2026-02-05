@@ -17,6 +17,10 @@ vi.mock("./profile-header/ProfileHeader", () => ({
     )
 }));
 
+const mockProps = {
+    userData: "Test1",
+}
+
 function setup(options={
     isLoading: false,
 }) {
@@ -24,7 +28,7 @@ function setup(options={
     render(
         <ProfileSection
             isLoading={options.isLoading}
-            userData={"Test1"}
+            {...mockProps}
         />
     );
 };
@@ -33,7 +37,7 @@ describe('ProfileSection component', () => {
     it("shows profile header when not loading", () => {
         setup();
 
-        expect(screen.getByTestId("profile-header")).toHaveTextContent("Test1");
+        expect(screen.getByTestId("profile-header")).toHaveTextContent(mockProps.userData);
 
         expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
     });
