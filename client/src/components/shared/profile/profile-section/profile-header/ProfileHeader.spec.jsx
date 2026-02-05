@@ -30,7 +30,7 @@ beforeEach(() => {
 });
 
 describe("ProfileHeader component", () => {
-    it("renders both child components and passes userData", () => {
+    it("renders the profile avatar and profile info with passed user data", () => {
         expect(screen.getByTestId('profile-avatar')).toBeInTheDocument();
         expect(screen.getByTestId('profile-info')).toBeInTheDocument();
         
