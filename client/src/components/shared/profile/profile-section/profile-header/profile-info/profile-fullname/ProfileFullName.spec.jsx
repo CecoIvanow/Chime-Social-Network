@@ -18,6 +18,6 @@ beforeEach(() => {
 
 describe("ProfileFullName component", () => {
     it("renders with passed props", () => {
-        expect(screen.getByText("John Doe")).toBeInTheDocument();
+        expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(`${mockProps.userData.firstName} ${mockProps.userData.lastName}`);
     });
 });
