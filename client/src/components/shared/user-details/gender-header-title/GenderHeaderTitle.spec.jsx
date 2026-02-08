@@ -8,7 +8,7 @@ beforeEach(() => {
 });
 
 describe("GenderHeaderTitle component", () => {
-    it('renders on screen', () => {
+    it('renders header title', () => {
         expect(screen.getByText('Gender')).toBeInTheDocument();
     });
 });
