@@ -7,7 +7,6 @@ vi.mock("./gender-input/GenderInput", () => ({
     default: ({ inputData, chosenGender, onChangeHandler }) => (
         <label>
             <input
-                data-testid="gender-input"
                 type="radio"
                 value={inputData.value}
                 onChange={onChangeHandler}

@@ -7,11 +7,11 @@ const mockLabel = {
     id: 'femaleId',
     value: 'Female',
     genderClassName: 'female',
-}
+};
 
 beforeEach(() => {
     render(<GenderLabel label={mockLabel} />)
-})
+});
 
 describe("GenderLabel component", () => {
     it("renders with passed props", () => {
@@ -25,5 +25,5 @@ describe("GenderLabel component", () => {
         expect(screen.getByTestId('gender-class')).toBeInTheDocument();
 
         expect(screen.getByTestId('gender-class')).toHaveClass('dot', 'female');
-    })
-})
+    });
+});
