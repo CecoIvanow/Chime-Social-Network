@@ -11,14 +11,14 @@ vi.mock("./gender-label/GenderLabel", () => ({
             <div>{label.genderClassName}</div>
         </div>
     )
-}))
+}));
 
 beforeEach(() => {
     render(<GenderLabelsList />);
-})
+});
 
 describe("GenderLabelsList", () => {
-    it("renders with passed value, id and genderClassName props", () => {
+    it("correcctly passes genderLabels attributes to its child component", () => {
         expect(screen.getAllByTestId("gender-label")).toHaveLength(2);
 
         expect(screen.getByText("Male")).toBeInTheDocument();
@@ -30,4 +30,4 @@ describe("GenderLabelsList", () => {
         expect(screen.getByText("one")).toBeInTheDocument();
         expect(screen.getByText("two")).toBeInTheDocument();
     });
-})
+});
