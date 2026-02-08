@@ -9,13 +9,19 @@ const mockInputData = {
     id: 'femaleid',
 };
 
-describe("GenderInput component", () => {
-    it("renders with correct value and id", () => {
-        render(<GenderInput
+function setup(chosenGender = null) {
+    render(
+        <GenderInput
             onChangeHandler={onChangeHandlerMock}
             inputData={mockInputData}
-            chosenGender={'Female'}
-        />)
+            chosenGender={chosenGender}
+        />
+    );
+};
+
+describe("GenderInput component", () => {
+    it("renders with correct value and id", () => {
+        setup("Female");
 
         expect(screen.getByDisplayValue('Female')).toBeInTheDocument();
         expect(screen.getByDisplayValue('Female')).toHaveAttribute('id', 'femaleid');
@@ -25,11 +31,8 @@ describe("GenderInput component", () => {
         { chosenGender: 'Male', shouldBeChecked: false },
         { chosenGender: 'Female', shouldBeChecked: true },
     ])("chosenGender $chosenGender => checked: $shouldBeChecked", ({ chosenGender, shouldBeChecked }) => {
-        render(<GenderInput
-            onChangeHandler={onChangeHandlerMock}
-            inputData={mockInputData}
-            chosenGender={chosenGender}
-        />);
+        setup(chosenGender);
+
 
         const input = screen.getByDisplayValue('Female');
 
@@ -41,11 +44,8 @@ describe("GenderInput component", () => {
     })
 
     it('calls onChangeHandler when clicked', () => {
-        render(<GenderInput
-            onChangeHandler={onChangeHandlerMock}
-            inputData={mockInputData}
-            chosenGender={'Male'}
-        />)
+        setup("Male");
+
 
         const input = screen.getByRole('radio');
 
