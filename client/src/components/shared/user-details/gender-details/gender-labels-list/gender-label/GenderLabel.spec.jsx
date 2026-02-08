@@ -5,8 +5,8 @@ import GenderLabel from "./GenderLabel.jsx";
 
 const mockProps = {
     label: {
-        id: 'femaleId',
-        value: 'Female',
+        id: "femaleId",
+        value: "Female",
     }
 };
 
@@ -16,7 +16,7 @@ beforeEach(() => {
 
 describe("GenderLabel component", () => {
     it("renders label with correct value and for attributes", () => {
-        expect(screen.getByTestId('gender-label')).toHaveAttribute('for', mockProps.label.id);
+        expect(screen.getByTestId("gender-label")).toHaveAttribute("for", mockProps.label.id);
 
         expect(screen.getByText(mockProps.label.value)).toBeInTheDocument();
     });
