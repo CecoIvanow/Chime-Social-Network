@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import GenderInput from "./GenderInput.jsx";
+import userEvent from "@testing-library/user-event";
 
 const mockProps = {
     inputData: {
@@ -43,12 +44,11 @@ describe("GenderInput component", () => {
         }
     })
 
-    it("calls onChangeHandler when clicked", () => {
+    it("radio input triggers event action after being clicked", async () => {
+        const user = userEvent.setup();
         setup("Male");
 
-        const input = screen.getByRole("radio");
-
-        fireEvent.click(input);
+        await user.click(screen.getByRole("radio"));
 
         expect(mockProps.onChangeHandler).toHaveBeenCalledTimes(1);
     });
