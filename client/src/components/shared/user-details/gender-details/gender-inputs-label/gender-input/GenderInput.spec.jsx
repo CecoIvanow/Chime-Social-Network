@@ -3,17 +3,18 @@ import { describe, expect, it, vi } from "vitest";
 
 import GenderInput from "./GenderInput.jsx";
 
-const onChangeHandlerMock = vi.fn();
-const mockInputData = {
-    value: "Female",
-    id: "femaleid",
-};
+const mockProps = {
+    inputData: {
+        value: "Female",
+        id: "femaleid",
+    },
+    onChangeHandler: vi.fn(),
+}
 
 function setup(chosenGender = null) {
     render(
         <GenderInput
-            onChangeHandler={onChangeHandlerMock}
-            inputData={mockInputData}
+            {...mockProps}
             chosenGender={chosenGender}
         />
     );
@@ -51,6 +52,6 @@ describe("GenderInput component", () => {
 
         fireEvent.click(input);
 
-        expect(onChangeHandlerMock).toHaveBeenCalledTimes(1);
+        expect(mockProps.onChangeHandler).toHaveBeenCalledTimes(1);
     });
 })
