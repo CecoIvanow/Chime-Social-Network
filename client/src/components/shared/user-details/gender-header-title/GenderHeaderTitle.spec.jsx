@@ -1,12 +1,14 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeEach } from "vitest";
 
 import GenderHeaderTitle from "./GenderHeaderTitle.jsx";
 
-describe("GenderHeaderTitle component", () => {
-    it('renders on screen', () => {
-        render(<GenderHeaderTitle/>);
+beforeEach(() => {
+    render(<GenderHeaderTitle />);
+});
 
+describe("GenderHeaderTitle component", () => {
+    it('renders header title', () => {
         expect(screen.getByText('Gender')).toBeInTheDocument();
-    })
-})
+    });
+});

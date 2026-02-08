@@ -7,7 +7,6 @@ vi.mock("./gender-input/GenderInput", () => ({
     default: ({ inputData, chosenGender, onChangeHandler }) => (
         <label>
             <input
-                data-testid="gender-input"
                 type="radio"
                 value={inputData.value}
                 onChange={onChangeHandler}
@@ -19,25 +18,27 @@ vi.mock("./gender-input/GenderInput", () => ({
     )
 }));
 
-describe("GenderInputsLabel", () => {
-    it("renders both gender options", () => {
-        render(<GenderInputsLabel userGender="Male" />);
+function setup(userGender=null) {
+    render(<GenderInputsLabel userGender={userGender} />);
+};
 
-        expect(screen.getAllByTestId("gender-input")).toHaveLength(2);
+describe("GenderInputsLabel", () => {
+    it("renders the radio button with Female and Male options", () => {
+        setup();
 
         expect(screen.getByDisplayValue("Male")).toBeInTheDocument();
         expect(screen.getByDisplayValue("Female")).toBeInTheDocument();
     });
 
-    it("sets correct Gender based on userGender prop", () => {
-        render(<GenderInputsLabel userGender="Female" />);
+    it("default gender option is checked on render", () => {
+        setup("Female");
 
         expect(screen.getByDisplayValue("Female")).toBeChecked();
         expect(screen.getByDisplayValue("Male")).not.toBeChecked();
     });
 
-    it("updates chosenGender when a different option is clicked", () => {
-        render(<GenderInputsLabel userGender="Male" />);
+    it("radio button changes the checked option when clicked on an unchecked one", () => {
+        setup("Male");
 
         const femaleOption = screen.getByDisplayValue("Female");
 

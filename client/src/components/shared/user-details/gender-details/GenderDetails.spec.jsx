@@ -17,16 +17,16 @@ vi.mock("./gender-labels-list/GenderLabelsList", () => ({
 
 beforeEach(() => {
     render(<GenderDetails userGender={"Male"}/>);
-})
+});
 
 describe("GenderDetails component", () => {
-    it("renders with children components", () => {
+    it("renders GenderInputsLabel, GenderHeaderTitle and GenderLabelsList child components", () => {
         expect(screen.getByTestId("gender-inputs-label")).toBeInTheDocument();
         expect(screen.getByTestId("gender-header-title")).toBeInTheDocument();
         expect(screen.getByTestId("gender-labels-list")).toBeInTheDocument();
     });
 
-    it("renders GenderInputsLabel with passed userGender", () => {
+    it("renders GenderInputsLabel with correct user gender", () => {
         expect(screen.getByText("Male")).toBeInTheDocument();
     });
-})
+});

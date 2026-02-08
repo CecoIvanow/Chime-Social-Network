@@ -1,37 +1,42 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
+import userEvent from "@testing-library/user-event";
 
 import GenderInput from "./GenderInput.jsx";
 
-const onChangeHandlerMock = vi.fn();
-const mockInputData = {
-    value: 'Female',
-    id: 'femaleid',
+const mockProps = {
+    inputData: {
+        value: "Female",
+        id: "femaleid",
+    },
+    onChangeHandler: vi.fn(),
+}
+
+function setup(chosenGender = null) {
+    render(
+        <GenderInput
+            {...mockProps}
+            chosenGender={chosenGender}
+        />
+    );
 };
 
 describe("GenderInput component", () => {
-    it("renders with correct value and id", () => {
-        render(<GenderInput
-            onChangeHandler={onChangeHandlerMock}
-            inputData={mockInputData}
-            chosenGender={'Female'}
-        />)
+    it("renders input with correct value, name and id attributes", () => {
+        setup("Female");
 
-        expect(screen.getByDisplayValue('Female')).toBeInTheDocument();
-        expect(screen.getByDisplayValue('Female')).toHaveAttribute('id', 'femaleid');
+        expect(screen.getByDisplayValue("Female")).toHaveAttribute("id", "femaleid");
+        expect(screen.getByDisplayValue("Female")).toHaveAttribute("name", "gender");
     });
 
     it.each([
-        { chosenGender: 'Male', shouldBeChecked: false },
-        { chosenGender: 'Female', shouldBeChecked: true },
-    ])("chosenGender $chosenGender => checked: $shouldBeChecked", ({ chosenGender, shouldBeChecked }) => {
-        render(<GenderInput
-            onChangeHandler={onChangeHandlerMock}
-            inputData={mockInputData}
-            chosenGender={chosenGender}
-        />);
+        { name: "default Male gender is checked on render", chosenGender: "Male", shouldBeChecked: false },
+        { name: "default Female gender is checked on render", chosenGender: "Female", shouldBeChecked: true },
+    ])("$name", ({ chosenGender, shouldBeChecked }) => {
+        setup(chosenGender);
 
-        const input = screen.getByDisplayValue('Female');
+        const input = screen.getByRole("radio");
 
         if (shouldBeChecked) {
             expect(input).toBeChecked();
@@ -40,17 +45,12 @@ describe("GenderInput component", () => {
         }
     })
 
-    it('calls onChangeHandler when clicked', () => {
-        render(<GenderInput
-            onChangeHandler={onChangeHandlerMock}
-            inputData={mockInputData}
-            chosenGender={'Male'}
-        />)
+    it("radio input triggers event action after being clicked", async () => {
+        const user = userEvent.setup();
+        setup("Male");
 
-        const input = screen.getByRole('radio');
+        await user.click(screen.getByRole("radio"));
 
-        fireEvent.click(input);
-
-        expect(onChangeHandlerMock).toHaveBeenCalledTimes(1);
+        expect(mockProps.onChangeHandler).toHaveBeenCalledTimes(1);
     });
 })

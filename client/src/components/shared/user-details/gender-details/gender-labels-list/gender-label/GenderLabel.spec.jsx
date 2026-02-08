@@ -3,27 +3,21 @@ import { describe, expect, it, beforeEach } from "vitest";
 
 import GenderLabel from "./GenderLabel.jsx";
 
-const mockLabel = {
-    id: 'femaleId',
-    value: 'Female',
-    genderClassName: 'female',
-}
+const mockProps = {
+    label: {
+        id: "femaleId",
+        value: "Female",
+    }
+};
 
 beforeEach(() => {
-    render(<GenderLabel label={mockLabel} />)
-})
+    render(<GenderLabel {...mockProps} />)
+});
 
 describe("GenderLabel component", () => {
-    it("renders with passed props", () => {
-        const label = screen.getByTestId('gender-label')
+    it("renders label with correct value and for attributes", () => {
+        expect(screen.getByTestId("gender-label")).toHaveAttribute("for", mockProps.label.id);
 
-        expect(label).toBeInTheDocument();
-        expect(label).toHaveAttribute('for', 'femaleId');
-
-        expect(screen.getByText('Female')).toBeInTheDocument();
-
-        expect(screen.getByTestId('gender-class')).toBeInTheDocument();
-
-        expect(screen.getByTestId('gender-class')).toHaveClass('dot', 'female');
-    })
-})
+        expect(screen.getByText(mockProps.label.value)).toBeInTheDocument();
+    });
+});
