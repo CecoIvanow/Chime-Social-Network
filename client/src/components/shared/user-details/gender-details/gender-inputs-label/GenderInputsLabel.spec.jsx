@@ -31,7 +31,7 @@ describe("GenderInputsLabel", () => {
         expect(screen.getByDisplayValue("Female")).toBeInTheDocument();
     });
 
-    it("sets correct Gender based on userGender prop", () => {
+    it("default gender option is checked on render", () => {
         setup("Female");
 
         expect(screen.getByDisplayValue("Female")).toBeChecked();
