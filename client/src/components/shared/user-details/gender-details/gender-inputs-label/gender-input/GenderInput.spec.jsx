@@ -5,8 +5,8 @@ import GenderInput from "./GenderInput.jsx";
 
 const onChangeHandlerMock = vi.fn();
 const mockInputData = {
-    value: 'Female',
-    id: 'femaleid',
+    value: "Female",
+    id: "femaleid",
 };
 
 function setup(chosenGender = null) {
@@ -23,18 +23,18 @@ describe("GenderInput component", () => {
     it("renders with correct value and id", () => {
         setup("Female");
 
-        expect(screen.getByDisplayValue('Female')).toBeInTheDocument();
-        expect(screen.getByDisplayValue('Female')).toHaveAttribute('id', 'femaleid');
+        expect(screen.getByDisplayValue("Female")).toBeInTheDocument();
+        expect(screen.getByDisplayValue("Female")).toHaveAttribute("id", "femaleid");
     });
 
     it.each([
-        { chosenGender: 'Male', shouldBeChecked: false },
-        { chosenGender: 'Female', shouldBeChecked: true },
+        { chosenGender: "Male", shouldBeChecked: false },
+        { chosenGender: "Female", shouldBeChecked: true },
     ])("chosenGender $chosenGender => checked: $shouldBeChecked", ({ chosenGender, shouldBeChecked }) => {
         setup(chosenGender);
 
 
-        const input = screen.getByDisplayValue('Female');
+        const input = screen.getByDisplayValue("Female");
 
         if (shouldBeChecked) {
             expect(input).toBeChecked();
@@ -43,11 +43,11 @@ describe("GenderInput component", () => {
         }
     })
 
-    it('calls onChangeHandler when clicked', () => {
+    it("calls onChangeHandler when clicked", () => {
         setup("Male");
 
 
-        const input = screen.getByRole('radio');
+        const input = screen.getByRole("radio");
 
         fireEvent.click(input);
 
