@@ -1,8 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import GenderInput from "./GenderInput.jsx";
 import userEvent from "@testing-library/user-event";
+
+import GenderInput from "./GenderInput.jsx";
 
 const mockProps = {
     inputData: {
@@ -30,12 +31,12 @@ describe("GenderInput component", () => {
     });
 
     it.each([
-        { chosenGender: "Male", shouldBeChecked: false },
-        { chosenGender: "Female", shouldBeChecked: true },
-    ])("chosenGender $chosenGender => checked: $shouldBeChecked", ({ chosenGender, shouldBeChecked }) => {
+        { name: "default Male gender is checked on render", chosenGender: "Male", shouldBeChecked: false },
+        { name: "default Female gender is checked on render", chosenGender: "Female", shouldBeChecked: true },
+    ])("$name", ({ chosenGender, shouldBeChecked }) => {
         setup(chosenGender);
 
-        const input = screen.getByDisplayValue("Female");
+        const input = screen.getByRole("radio");
 
         if (shouldBeChecked) {
             expect(input).toBeChecked();
