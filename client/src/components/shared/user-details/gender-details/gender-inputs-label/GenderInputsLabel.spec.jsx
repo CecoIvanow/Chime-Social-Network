@@ -19,9 +19,13 @@ vi.mock("./gender-input/GenderInput", () => ({
     )
 }));
 
+function setup(userGender=null) {
+    render(<GenderInputsLabel userGender={userGender} />);
+};
+
 describe("GenderInputsLabel", () => {
     it("renders both gender options", () => {
-        render(<GenderInputsLabel userGender="Male" />);
+        setup("Male");
 
         expect(screen.getAllByTestId("gender-input")).toHaveLength(2);
 
@@ -30,14 +34,14 @@ describe("GenderInputsLabel", () => {
     });
 
     it("sets correct Gender based on userGender prop", () => {
-        render(<GenderInputsLabel userGender="Female" />);
+        setup("Female");
 
         expect(screen.getByDisplayValue("Female")).toBeChecked();
         expect(screen.getByDisplayValue("Male")).not.toBeChecked();
     });
 
     it("updates chosenGender when a different option is clicked", () => {
-        render(<GenderInputsLabel userGender="Male" />);
+        setup("Male");
 
         const femaleOption = screen.getByDisplayValue("Female");
 
