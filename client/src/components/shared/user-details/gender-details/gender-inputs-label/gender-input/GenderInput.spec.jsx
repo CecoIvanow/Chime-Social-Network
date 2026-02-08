@@ -21,11 +21,11 @@ function setup(chosenGender = null) {
 };
 
 describe("GenderInput component", () => {
-    it("renders with correct value and id", () => {
+    it("renders input with correct value, name and id attributes", () => {
         setup("Female");
 
-        expect(screen.getByDisplayValue("Female")).toBeInTheDocument();
         expect(screen.getByDisplayValue("Female")).toHaveAttribute("id", "femaleid");
+        expect(screen.getByDisplayValue("Female")).toHaveAttribute("name", "gender");
     });
 
     it.each([
@@ -33,7 +33,6 @@ describe("GenderInput component", () => {
         { chosenGender: "Female", shouldBeChecked: true },
     ])("chosenGender $chosenGender => checked: $shouldBeChecked", ({ chosenGender, shouldBeChecked }) => {
         setup(chosenGender);
-
 
         const input = screen.getByDisplayValue("Female");
 
@@ -46,7 +45,6 @@ describe("GenderInput component", () => {
 
     it("calls onChangeHandler when clicked", () => {
         setup("Male");
-
 
         const input = screen.getByRole("radio");
 
