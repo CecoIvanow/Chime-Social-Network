@@ -38,7 +38,7 @@ describe("GenderInputsLabel", () => {
         expect(screen.getByDisplayValue("Male")).not.toBeChecked();
     });
 
-    it("updates chosenGender when a different option is clicked", () => {
+    it("radio button changes the checked option when clicked on an unchecked one", () => {
         setup("Male");
 
         const femaleOption = screen.getByDisplayValue("Female");
