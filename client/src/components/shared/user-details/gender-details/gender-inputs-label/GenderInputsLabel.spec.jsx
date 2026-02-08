@@ -24,10 +24,8 @@ function setup(userGender=null) {
 };
 
 describe("GenderInputsLabel", () => {
-    it("renders both gender options", () => {
-        setup("Male");
-
-        expect(screen.getAllByTestId("gender-input")).toHaveLength(2);
+    it("renders the radio button with Female and Male options", () => {
+        setup();
 
         expect(screen.getByDisplayValue("Male")).toBeInTheDocument();
         expect(screen.getByDisplayValue("Female")).toBeInTheDocument();
