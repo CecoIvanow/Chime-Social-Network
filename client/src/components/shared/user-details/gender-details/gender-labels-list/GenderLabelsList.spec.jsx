@@ -19,10 +19,10 @@ beforeEach(() => {
 
 describe("GenderLabelsList", () => {
     it("renders with passed value, id and genderClassName props", () => {
-        expect(screen.getAllByTestId('gender-label')).toHaveLength(2);
+        expect(screen.getAllByTestId("gender-label")).toHaveLength(2);
 
-        expect(screen.getByText('Male')).toBeInTheDocument();
-        expect(screen.getByText('Female')).toBeInTheDocument();
+        expect(screen.getByText("Male")).toBeInTheDocument();
+        expect(screen.getByText("Female")).toBeInTheDocument();
 
         expect(screen.getByText("dot-1")).toBeInTheDocument();
         expect(screen.getByText("dot-2")).toBeInTheDocument();
