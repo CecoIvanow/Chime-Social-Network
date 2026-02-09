@@ -42,21 +42,21 @@ vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
     default: () => <div data-testid="loading-spinner"></div>
 }));
 
-const totalPosts = [
-    { _id: "postOne", text: "First post!" },
-    { _id: "postTwo", text: "Second post!" },
-];
-
-const setTotalPostsMock = vi.fn();
+const mockProps = {
+    setTotalPosts: vi.fn(),
+    totalPosts: [
+        { _id: "postOne", text: "First post!" },
+        { _id: "postTwo", text: "Second post!" },
+    ],
+};
 
 function setup(options = {
     isLoading: true
 }) {
     render(
         <PostsCatalog
+            {...mockProps}
             isLoading={options.isLoading}
-            totalPosts={totalPosts}
-            setTotalPosts={setTotalPostsMock}
         />
     );
 };
@@ -91,8 +91,8 @@ describe("PostsCatalog component", () => {
     it.each([
         { search: "First", resultLen: 1 },
         { search: "Second", resultLen: 1 },
-        { search: "", resultLen: totalPosts.length },
-        { search: "post", resultLen: totalPosts.length },
+        { search: "", resultLen: mockProps.totalPosts.length },
+        { search: "post", resultLen: mockProps.totalPosts.length },
         { search: "Third post!", resultLen: "0" },
     ])("renders $resultLen post elements with SearchField value $search", async ({ search, resultLen }) => {
         setup({
@@ -112,10 +112,10 @@ describe("PostsCatalog component", () => {
         setup({
             isLoading: false
         });
-        
+
         fireEvent.click(screen.getByTestId("posts-list"));
 
-        expect(setTotalPostsMock).toHaveBeenCalled();
+        expect(mockProps.setTotalPosts).toHaveBeenCalled();
     });
 
 });
