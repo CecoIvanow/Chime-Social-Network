@@ -32,14 +32,14 @@ function setup(options = {
 
 describe("AddFriendButton component", () => {
     it.each([
-        { button: "Add", isAdded: false },
-        { button: "Unfriend", isAdded: true },
-    ])("renders $button button on isAddedAsFriend $isAdded", ({ isAdded }) => {
+        {name: "renders Add button when user is not added as friend", isAddedAsFriend: false},
+        {name: "renders Unfriend button when user is added as friend", isAddedAsFriend: true},
+    ])("$name", ({ isAddedAsFriend }) => {
         setup({
-            isAddedAsFriend: isAdded
+            isAddedAsFriend
         });
 
-        if (isAdded) {
+        if (isAddedAsFriend) {
             expect(screen.getByRole("button", { name: "Unfriend"})).toBeInTheDocument();
         } else {
             expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
@@ -47,17 +47,17 @@ describe("AddFriendButton component", () => {
     });
 
     it.each([
-        { button: "Add", handler: "handleAddFriendClick", isAdded: false },
-        { button: "Unfriend", handler: "handleUnfriendClick", isAdded: true },
-    ])("on $button button triggers $handler on click", async ({ isAdded }) => {
+        { name: "Add button triggers an event when clicked", isAddedAsFriend: false},
+        { name: "Unfriend button triggers an event when clicked", isAddedAsFriend: true},
+    ])("$name", async ({ isAddedAsFriend }) => {
         const user = userEvent.setup();
         setup({
-            isAddedAsFriend: isAdded
+            isAddedAsFriend
         });
 
         await user.click(screen.getByRole("button"));
 
-        if(isAdded) {
+        if(isAddedAsFriend) {
             expect(mockProps.handleUnfriendClick).toHaveBeenCalled();
         }else{
             expect(mockProps.handleAddFriendClick).toHaveBeenCalled();
