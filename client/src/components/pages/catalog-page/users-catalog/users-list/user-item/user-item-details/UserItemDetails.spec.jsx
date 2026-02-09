@@ -1,5 +1,5 @@
-import { fireEvent, prettyDOM, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, beforeEach } from "vitest";
 
 import UserItemDetails from "./UserItemDetails";
 import { MemoryRouter } from "react-router";
