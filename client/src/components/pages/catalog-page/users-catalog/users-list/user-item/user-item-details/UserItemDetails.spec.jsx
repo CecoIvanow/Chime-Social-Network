@@ -1,8 +1,9 @@
+import { MemoryRouter } from "react-router";
+
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, beforeEach } from "vitest";
 
 import UserItemDetails from "./UserItemDetails";
-import { MemoryRouter } from "react-router";
 
 const user = {
     _id: "userId123",
