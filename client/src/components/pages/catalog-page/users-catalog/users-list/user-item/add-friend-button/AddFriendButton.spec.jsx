@@ -1,7 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import AddFriendButton from "./AddFriendButton";
+import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../../../../ui/buttons/button/Button", () => ({
     default: ({ onClickHandler, buttonName }) => (
@@ -22,7 +23,6 @@ const mockProps = {
 function setup(options = {
     isAddedAsFriend: false
 }) {
-
     render(
         <AddFriendButton
             isAddedAsFriend={options.isAddedAsFriend}
@@ -50,12 +50,13 @@ describe("AddFriendButton component", () => {
     it.each([
         { button: "Add", handler: "handleAddFriendClick", isAdded: false },
         { button: "Unfriend", handler: "handleUnfriendClick", isAdded: true },
-    ])("on $button button triggers $handler on click", ({ isAdded }) => {
+    ])("on $button button triggers $handler on click", async ({ isAdded }) => {
+        const user = userEvent.setup();
         setup({
             isAddedAsFriend: isAdded
         });
 
-        fireEvent.click(screen.getByTestId("button"));
+        await user.click(screen.getByTestId("button"));
 
         if(isAdded) {
             expect(mockProps.handleUnfriendClick).toHaveBeenCalled();
