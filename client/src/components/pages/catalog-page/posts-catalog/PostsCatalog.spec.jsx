@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { TotalPostsContext } from "../../../../contexts/total-posts-context";
@@ -89,17 +90,20 @@ describe("PostsCatalog component", () => {
     });
 
     it.each([
-        { name: "matches only the first post", searchBy: "First", expectedCount: 1},
-        { name: "matches only the second post", searchBy: "Second", expectedCount: 1},
-        { name: "matches all posts with an empty string", searchBy: "", expectedCount: 2},
-        { name: "matches all posts with 'post' string", searchBy: "post", expectedCount: 2},
-        { name: "does not match posts with invalid string", searchBy: "Invalid!", expectedCount: "0"},
+        { name: "matches only the first post", searchBy: "First", expectedCount: 1 },
+        { name: "matches only the second post", searchBy: "Second", expectedCount: 1 },
+        { name: "matches all posts with an empty string", searchBy: "", expectedCount: 2 },
+        { name: "matches all posts with 'post' string", searchBy: "post", expectedCount: 2 },
+        { name: "does not match posts with invalid string", searchBy: "Invalid!", expectedCount: "0" },
     ])("$name", async ({ searchBy, expectedCount }) => {
+        const user = userEvent.setup();
         setup({
             isLoading: false,
         });
 
-        fireEvent.change(screen.getByTestId("search-field-input"), { target: { value: searchBy } });
+        if (searchBy) {
+            await user.type(screen.getByTestId("search-field-input"), searchBy);
+        };
 
         if (expectedCount > 0) {
             expect(await screen.findAllByTestId("post")).toHaveLength(expectedCount);
@@ -108,12 +112,13 @@ describe("PostsCatalog component", () => {
         };
     });
 
-    it("correctly passes posts to PostsList", () => {
+    it("correctly passes posts to PostsList", async () => {
+        const user = userEvent.setup();
         setup({
             isLoading: false
         });
 
-        fireEvent.click(screen.getByTestId("posts-list"));
+        await user.click(screen.getByTestId("posts-list"));
 
         expect(mockProps.setTotalPosts).toHaveBeenCalled();
     });
