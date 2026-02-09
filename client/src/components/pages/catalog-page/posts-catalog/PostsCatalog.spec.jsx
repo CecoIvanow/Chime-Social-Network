@@ -62,7 +62,7 @@ function setup(options = {
 };
 
 describe("PostsCatalog component", () => {
-    it("renders component with passed props", () => {
+    it("renders SectionHeading and SearchField child components with sectionName and searchBy props ", () => {
         setup();
 
         expect(screen.getByTestId("section-heading")).toHaveTextContent("All Posts:");
@@ -72,8 +72,8 @@ describe("PostsCatalog component", () => {
     });
 
     it.each([
-        { name: "renders LoadingSpinner on isLoading true", isLoading: true },
-        { name: "renders PostsList on isLoading false", isLoading: false },
+        { name: "renders load spinner while PostsList is loading data", isLoading: true },
+        { name: "renders PostsList after data has been loaded", isLoading: false },
     ])("$name", ({ isLoading }) => {
         setup({
             isLoading,
@@ -89,26 +89,26 @@ describe("PostsCatalog component", () => {
     });
 
     it.each([
-        { search: "First", resultLen: 1 },
-        { search: "Second", resultLen: 1 },
-        { search: "", resultLen: mockProps.totalPosts.length },
-        { search: "post", resultLen: mockProps.totalPosts.length },
-        { search: "Third post!", resultLen: "0" },
-    ])("renders $resultLen post elements with SearchField value $search", async ({ search, resultLen }) => {
+        { name: "matches only the first post", searchBy: "First", expectedCount: 1},
+        { name: "matches only the second post", searchBy: "Second", expectedCount: 1},
+        { name: "matches all posts with an empty string", searchBy: "", expectedCount: 2},
+        { name: "matches all posts with 'post' string", searchBy: "post", expectedCount: 2},
+        { name: "does not match posts with invalid string", searchBy: "Invalid!", expectedCount: "0"},
+    ])("$name", async ({ searchBy, expectedCount }) => {
         setup({
             isLoading: false,
         });
 
-        fireEvent.change(screen.getByTestId("search-field-input"), { target: { value: search } });
+        fireEvent.change(screen.getByTestId("search-field-input"), { target: { value: searchBy } });
 
-        if (resultLen > 0) {
-            expect(await screen.findAllByTestId("post")).toHaveLength(resultLen);
+        if (expectedCount > 0) {
+            expect(await screen.findAllByTestId("post")).toHaveLength(expectedCount);
         } else {
-            expect(screen.queryAllByTestId("post")).toHaveLength(Number(resultLen));
+            expect(screen.queryAllByTestId("post")).toHaveLength(Number(expectedCount));
         };
     });
 
-    it("passes setTotalPosts to TotalPostsContext", () => {
+    it("correctly passes posts to PostsList", () => {
         setup({
             isLoading: false
         });
@@ -117,5 +117,4 @@ describe("PostsCatalog component", () => {
 
         expect(mockProps.setTotalPosts).toHaveBeenCalled();
     });
-
 });
