@@ -14,8 +14,10 @@ vi.mock("../../../../../../ui/buttons/button/Button", () => ({
     )
 }));
 
-const handleAddFriendClickMock = vi.fn();
-const handleUnfriendClickMock = vi.fn();
+const mockProps = {
+    handleUnfriendClick: vi.fn(),
+    handleAddFriendClick: vi.fn(),
+}
 
 function setup(options = {
     isAddedAsFriend: false
@@ -24,8 +26,7 @@ function setup(options = {
     render(
         <AddFriendButton
             isAddedAsFriend={options.isAddedAsFriend}
-            handleAddFriendClick={handleAddFriendClickMock}
-            handleUnfriendClick={handleUnfriendClickMock}
+            {...mockProps}
         />
     );
 };
@@ -57,9 +58,9 @@ describe("AddFriendButton component", () => {
         fireEvent.click(screen.getByTestId("button"));
 
         if(isAdded) {
-            expect(handleUnfriendClickMock).toHaveBeenCalled();
+            expect(mockProps.handleUnfriendClick).toHaveBeenCalled();
         }else{
-            expect(handleAddFriendClickMock).toHaveBeenCalled();
+            expect(mockProps.handleAddFriendClick).toHaveBeenCalled();
         };
     });
 });
