@@ -46,21 +46,21 @@ describe("AddFriendButton component", () => {
         };
     });
 
-    it.each([
-        { name: "Add button triggers an event when clicked", isAddedAsFriend: false},
-        { name: "Unfriend button triggers an event when clicked", isAddedAsFriend: true},
-    ])("$name", async ({ isAddedAsFriend }) => {
+    it("Add button triggers an event when clicked", async () => {
+        const user = userEvent.setup();
+        setup();
+
+        await user.click(screen.getByRole("button"));
+        expect(mockProps.handleAddFriendClick).toHaveBeenCalled();
+    });
+
+    it("Unfriend button triggers an event when clicked", async () => {
         const user = userEvent.setup();
         setup({
-            isAddedAsFriend
+            isAddedAsFriend: true
         });
 
         await user.click(screen.getByRole("button"));
-
-        if(isAddedAsFriend) {
-            expect(mockProps.handleUnfriendClick).toHaveBeenCalled();
-        }else{
-            expect(mockProps.handleAddFriendClick).toHaveBeenCalled();
-        };
+        expect(mockProps.handleUnfriendClick).toHaveBeenCalled();
     });
 });
