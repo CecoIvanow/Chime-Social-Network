@@ -5,33 +5,37 @@ import { describe, expect, it, beforeEach } from "vitest";
 
 import UserItemDetails from "./UserItemDetails";
 
-const user = {
-    _id: "userId123",
-    imageUrl: "https://image.com/test-image.png",
-    firstName: "John",
-    lastName: "Doe",
-    memberSince: "15.01.2026",
-    createdPosts: [
-        { content: "First post" },
-        { content: "Second post" },
-    ],
+const mockProps = {
+    user: {
+        _id: "userId123",
+        imageUrl: "https://image.com/test-image.png",
+        firstName: "John",
+        lastName: "Doe",
+        memberSince: "15.01.2026",
+        createdPosts: [
+            { content: "First post" },
+            { content: "Second post" },
+        ],
+    },
 };
 
 beforeEach(() => render(
     <MemoryRouter>
-        <UserItemDetails user={user} />
+        <UserItemDetails {...mockProps} />
     </MemoryRouter>
-))
+));
 
 describe("UserItemDetails component", () => {
-    it("renders component with passed props", () => {
-        expect(screen.getByRole("img")).toHaveAttribute("src", user.imageUrl);
+    it("renders component with correct member since date and posts amount", () => {
+        expect(screen.getByText(`Member since: ${mockProps.user.memberSince}`)).toBeInTheDocument();
+        expect(screen.getByText(`Posts: ${mockProps.user.createdPosts.length}`)).toBeInTheDocument();
+    });
+
+    it("renders component with correct img and link attributes", () => {
+        expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.user.imageUrl);
         expect(screen.getByRole("img")).toHaveAttribute("alt", "User avatar");
 
-        expect(screen.getByRole("link")).toHaveAttribute("href", `/profile/${user._id}`);
-        expect(screen.getByRole("link")).toHaveTextContent(`${user.firstName} ${user.lastName}`);
-
-        expect(screen.getByText(`Member since: ${user.memberSince}`)).toBeInTheDocument();
-        expect(screen.getByText(`Posts: ${user.createdPosts.length}`)).toBeInTheDocument();
+        expect(screen.getByRole("link")).toHaveAttribute("href", `/profile/${mockProps.user._id}`);
+        expect(screen.getByRole("link")).toHaveTextContent(`${mockProps.user.firstName} ${mockProps.user.lastName}`);
     });
 });
