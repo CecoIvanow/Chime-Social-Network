@@ -7,7 +7,6 @@ import userEvent from "@testing-library/user-event";
 vi.mock("../../../../../../ui/buttons/button/Button", () => ({
     default: ({ onClickHandler, buttonName }) => (
         <button
-            data-testid="button"
             onClick={onClickHandler}
         >
             {buttonName}
@@ -41,10 +40,10 @@ describe("AddFriendButton component", () => {
         });
 
         if (isAdded) {
-            expect(screen.getByTestId("button")).toHaveTextContent("Unfriend");
+            expect(screen.getByRole("button", { name: "Unfriend"})).toBeInTheDocument();
         } else {
-            expect(screen.getByTestId("button")).toHaveTextContent("Add");
-        }
+            expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
+        };
     });
 
     it.each([
@@ -56,7 +55,7 @@ describe("AddFriendButton component", () => {
             isAddedAsFriend: isAdded
         });
 
-        await user.click(screen.getByTestId("button"));
+        await user.click(screen.getByRole("button"));
 
         if(isAdded) {
             expect(mockProps.handleUnfriendClick).toHaveBeenCalled();
