@@ -1,3 +1,5 @@
+import { useContext } from "react";
+
 import userEvent from "@testing-library/user-event";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -22,21 +24,7 @@ vi.mock("../../../ui/search-field/SearchField", () => ({
 }));
 
 vi.mock("../../../shared/post/posts-list/PostsList", () => ({
-    default: () =>
-        <TotalPostsContext.Consumer>
-            {ctx => (
-                <div data-testid="posts-list" onClick={ctx.setTotalPosts}>
-                    {ctx.totalPosts.map(post => (
-                        <div
-                            key={post._id}
-                            data-testid="post"
-                        >
-                            {post.text}
-                        </div>)
-                    )}
-                </div>
-            )}
-        </TotalPostsContext.Consumer>
+    default: () => <PostsListConsumer />
 }));
 
 vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
@@ -49,6 +37,23 @@ const mockProps = {
         { _id: "postOne", text: "First post!" },
         { _id: "postTwo", text: "Second post!" },
     ],
+};
+
+function PostsListConsumer() {
+    const ctx = useContext(TotalPostsContext);
+
+    return (
+        <div data-testid="posts-list" onClick={ctx.setTotalPosts}>
+            {ctx.totalPosts.map(post => (
+                <div
+                    key={post._id}
+                    data-testid="post"
+                >
+                    {post.text}
+                </div>)
+            )}
+        </div>
+    );
 };
 
 function setup(options = {
