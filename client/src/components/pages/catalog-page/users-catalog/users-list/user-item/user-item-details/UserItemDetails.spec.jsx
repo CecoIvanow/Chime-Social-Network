@@ -31,7 +31,12 @@ describe("UserItemDetails component", () => {
         expect(screen.getByText(`Posts: ${mockProps.user.createdPosts.length}`)).toBeInTheDocument();
     });
 
-    it("renders component with correct img and link attributes", () => {
+    it("renders component with correct src and alt image attributes", () => {
+        expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.user.imageUrl);
+        expect(screen.getByRole("img")).toHaveAttribute("alt", "User avatar");
+    });
+
+    it("renders component with correct href and link text content attributes", () => {
         expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.user.imageUrl);
         expect(screen.getByRole("img")).toHaveAttribute("alt", "User avatar");
 
