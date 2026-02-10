@@ -1,8 +1,9 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
-import { UserContext } from "../../../../../contexts/user-context";
 import { AlertContext } from "../../../../../contexts/alert-context";
+import { UserContext } from "../../../../../contexts/user-context";
 
 import UsersList from "./UsersList";
 
@@ -71,12 +72,13 @@ describe("UsersList component", () => {
     });
 
     it("triggers addFriend with passed isUser and passed user._id prop", async () => {
+        const user = userEvent.setup();
         setup();
 
         const addFriendEls = screen.getAllByTestId("add-friend");
 
         for (let i = 0; i < addFriendEls.length; i++) {
-            fireEvent.click(addFriendEls[i]);
+            await user.click(addFriendEls[i]);
 
             await waitFor(() => {
                 expect(addFriendMock).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
@@ -85,6 +87,7 @@ describe("UsersList component", () => {
     });
 
     it("triggers setAlert on rejected addFriend call", async () => {
+        const user = userEvent.setup();
         setup({
             addFriendCallSuccess: false,
             removeFriendCallSuccess: true,
@@ -92,18 +95,19 @@ describe("UsersList component", () => {
 
         const addFriendEls = screen.getAllByTestId("add-friend");
 
-        fireEvent.click(addFriendEls[0]);
+        await user.click(addFriendEls[0]);
 
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(ERR_MSG.ADD_FRIEND));
     });
 
     it("triggers removeFriend with passed isUser and passed user._id prop", async () => {
+        const user = userEvent.setup();
         setup();
 
         const removeFriendEls = screen.getAllByTestId("remove-friend");
 
         for (let i = 0; i < removeFriendEls.length; i++) {
-            fireEvent.click(removeFriendEls[i]);
+            await user.click(removeFriendEls[i]);
 
             await waitFor(() => {
                 expect(removeFriendMock).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
@@ -112,6 +116,7 @@ describe("UsersList component", () => {
     });
 
     it("triggers setAlert on rejected removeFriend call", async () => {
+        const user = userEvent.setup();
         setup({
             addFriendCallSuccess: true,
             removeFriendCallSuccess: false,
@@ -119,7 +124,7 @@ describe("UsersList component", () => {
 
         const removeFriendEls = screen.getAllByTestId("remove-friend");
 
-        fireEvent.click(removeFriendEls[0]);
+        await user.click(removeFriendEls[0]);
 
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(ERR_MSG.REMOVE_FRIEND));
     });
