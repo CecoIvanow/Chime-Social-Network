@@ -68,7 +68,7 @@ function setup(options = {
 };
 
 describe("PostsCatalog component", () => {
-    it("renders SectionHeading and SearchField child components with sectionName and searchBy props ", () => {
+    it("renders section heading and search field components", () => {
         setup();
 
         expect(screen.getByTestId("section-heading")).toHaveTextContent("All Posts:");
@@ -78,8 +78,8 @@ describe("PostsCatalog component", () => {
     });
 
     it.each([
-        { name: "renders load spinner while PostsList is loading data", isLoading: true },
-        { name: "renders PostsList after data has been loaded", isLoading: false },
+        { name: "renders load spinner while posts data is loading", isLoading: true },
+        { name: "renders posts after data has been loaded", isLoading: false },
     ])("$name", ({ isLoading }) => {
         setup({
             isLoading,
@@ -99,7 +99,7 @@ describe("PostsCatalog component", () => {
         { name: "matches only the second post", searchBy: "Second", expectedCount: 1 },
         { name: "matches all posts with an empty string", searchBy: "", expectedCount: 2 },
         { name: "matches all posts with 'post' string", searchBy: "post", expectedCount: 2 },
-        { name: "does not match posts with invalid string", searchBy: "Invalid!", expectedCount: "0" },
+        { name: "does not match posts with an invalid string", searchBy: "Invalid!", expectedCount: "0" },
     ])("$name", async ({ searchBy, expectedCount }) => {
         const user = userEvent.setup();
         setup({
@@ -117,7 +117,7 @@ describe("PostsCatalog component", () => {
         };
     });
 
-    it("correctly passes posts to PostsList", async () => {
+    it("updates posts on change", async () => {
         const user = userEvent.setup();
         setup({
             isLoading: false
