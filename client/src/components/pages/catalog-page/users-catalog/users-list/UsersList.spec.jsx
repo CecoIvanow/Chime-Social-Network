@@ -15,11 +15,7 @@ vi.mock("./user-item/UserItem", () => ({
 }));
 
 vi.mock("../../../../../hooks/useUserServices", () => ({
-    default: () => ({
-        addFriend: addFriendMock,
-        removeFriend: removeFriendMock,
-        abortAll: abortAllMock,
-    })
+    default: () => ({ ...useUserServicesMock }),
 }));
 
 const ERR_MSG = {
@@ -36,21 +32,23 @@ const matchingUsers = [
     { _id: "idTwo" },
 ];
 
-const addFriendMock = vi.fn();
-const removeFriendMock = vi.fn();
-const abortAllMock = vi.fn();
+const useUserServicesMock = {
+    addFriend: vi.fn(),
+    removeFriend: vi.fn(),
+    abortAll: vi.fn(),
+};
 
 function setup(options = {
     addFriendCallSuccess: true,
     removeFriendCallSuccess: true,
 }) {
     options.addFriendCallSuccess ?
-        addFriendMock.mockResolvedValue(true) :
-        addFriendMock.mockRejectedValue(new Error(ERR_MSG.ADD_FRIEND));
+        useUserServicesMock.addFriend.mockResolvedValue(true) :
+        useUserServicesMock.addFriend.mockRejectedValue(new Error(ERR_MSG.ADD_FRIEND));
 
     options.removeFriendCallSuccess ?
-        removeFriendMock.mockResolvedValue(true) :
-        removeFriendMock.mockRejectedValue(new Error(ERR_MSG.REMOVE_FRIEND));
+        useUserServicesMock.removeFriend.mockResolvedValue(true) :
+        useUserServicesMock.removeFriend.mockRejectedValue(new Error(ERR_MSG.REMOVE_FRIEND));
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -81,7 +79,7 @@ describe("UsersList component", () => {
             await user.click(addFriendEls[i]);
 
             await waitFor(() => {
-                expect(addFriendMock).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
+                expect(useUserServicesMock.addFriend).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
             });
         };
     });
@@ -110,7 +108,7 @@ describe("UsersList component", () => {
             await user.click(removeFriendEls[i]);
 
             await waitFor(() => {
-                expect(removeFriendMock).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
+                expect(useUserServicesMock.removeFriend).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
             });
         };
     });
@@ -134,6 +132,6 @@ describe("UsersList component", () => {
 
         unmount();
 
-        expect(abortAllMock).toHaveBeenCalled();
+        expect(useUserServicesMock.abortAll).toHaveBeenCalled();
     })
 });
