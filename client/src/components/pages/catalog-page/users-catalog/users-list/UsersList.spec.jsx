@@ -64,14 +64,14 @@ function setup(options = {
 }
 
 describe("UsersList component", () => {
-    it("renders inner UserItem component correct number of times", () => {
+    it("renders users items based on number of users present", () => {
         setup();
 
         expect(screen.getAllByRole("button", { name: "Add" })).toHaveLength(mockProps.matchingUsers.length);
         expect(screen.getAllByRole("button", { name: "Remove" })).toHaveLength(mockProps.matchingUsers.length);
     });
 
-    it("triggers addFriend with passed isUser and passed user._id prop", async () => {
+    it("triggers add friend logic on Add button click", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -86,7 +86,7 @@ describe("UsersList component", () => {
         };
     });
 
-    it("triggers setAlert on rejected addFriend call", async () => {
+    it("shows error message on a failed add friend call", async () => {
         const user = userEvent.setup();
         setup({
             addFriendCallSuccess: false,
@@ -100,7 +100,7 @@ describe("UsersList component", () => {
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(ERR_MSG.ADD_FRIEND));
     });
 
-    it("triggers removeFriend with passed isUser and passed user._id prop", async () => {
+    it("triggers remove friend logic on Remove button click", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -115,7 +115,7 @@ describe("UsersList component", () => {
         };
     });
 
-    it("triggers setAlert on rejected removeFriend call", async () => {
+    it("shows error message on a failed remove friend call", async () => {
         const user = userEvent.setup();
         setup({
             addFriendCallSuccess: true,
@@ -129,7 +129,7 @@ describe("UsersList component", () => {
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(ERR_MSG.REMOVE_FRIEND));
     });
 
-    it("triggers setAlert on component unmount", () => {
+    it("stops all ongoing calls on component unmount", () => {
         const { unmount } = setup();
 
         unmount();
