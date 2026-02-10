@@ -23,8 +23,8 @@ vi.mock("../../../../../hooks/useUserServices", () => ({
 }));
 
 const ERR_MSG = {
-    ADD_FRIEND: "Successfully rejected addFriend call",
-    REMOVE_FRIEND: "Successfully rejected removeFriend call",
+    ADD_FRIEND: "Rejected addFriend call",
+    REMOVE_FRIEND: "Rejected removeFriend call",
 };
 
 const isUser = "userId236";
