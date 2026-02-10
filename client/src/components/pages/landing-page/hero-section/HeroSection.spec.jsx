@@ -1,8 +1,9 @@
+import { MemoryRouter } from "react-router";
+
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, beforeEach } from "vitest";
 
 import HeroSection from "./HeroSection";
-import { MemoryRouter } from "react-router";
 
 const HERO_HEADING_TEXT = "Stay Connected with Your Social Circle";
 const HERO_SUBHEADING_TEXT = "Share moments, connect with friends, and discover new communities in a safe and welcoming environment.";
