@@ -72,9 +72,9 @@ describe("UserItem component", () => {
     });
 
     it.each([
-        { name: "renders AddFriendButton when isUser exists and is different from user._id", isUserValue: isUser, shouldRender: true },
-        { name: "does not render AddFriendButton when isUser exists and matches user._id", isUserValue: mockProps.user._id, shouldRender: false },
-        { name: "does not render AddFriendButton when isUser is empty", isUserValue: "", shouldRender: false },
+        { name: "renders friend buttons when user is logged in and is not viewing their profile", isUserValue: isUser, shouldRender: true },
+        { name: "does not render friend buttons when user is logged in and is viewing their profile", isUserValue: mockProps.user._id, shouldRender: false },
+        { name: "does not render friend buttons when user is not logged in", isUserValue: "", shouldRender: false },
     ])("$name", ({ isUserValue, shouldRender }) => {
         setup({
             isAddedAsFriend: false,
@@ -91,8 +91,8 @@ describe("UserItem component", () => {
     });
 
     it.each([
-        { name: "passes props and renders add-friend button inside AddFriendButton on isAddedAsFriend true", isAddedAsFriend: true },
-        { name: "passes props and renders unfriend button inside AddFriendButton on isAddedAsFriend false", isAddedAsFriend: false },
+        { name: "renders Add friend button when the users are not added as friends", isAddedAsFriend: true },
+        { name: "renders Unfriend button when the users are added as friends", isAddedAsFriend: false },
     ])("$name", ({ isAddedAsFriend }) => {
         setup({
             isAddedAsFriend,
@@ -110,7 +110,7 @@ describe("UserItem component", () => {
         }
     });
 
-    it("triggers handleAddFriend and changes setIsAddedAsFriend to true on successfull call", async () => {
+    it("adds users as friends when the Add button is clicked", async () => {
         setup();
 
         fireEvent.click(screen.getByTestId("add-friend"));
@@ -123,7 +123,7 @@ describe("UserItem component", () => {
         expect(screen.getByTestId("unfriend")).toBeInTheDocument();
     });
 
-    it("triggers handleAddFriend and does not change setIsAddedAsFriend on empty call", async () => {
+    it("does not add users as friends on a failed add friend call", async () => {
         setup({
             isAddedAsFriend: false,
             isUserValue: isUser,
@@ -141,7 +141,7 @@ describe("UserItem component", () => {
         expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
     });
 
-    it("triggers handleRemoveFriend and changes setIsAddedAsFriend to false on successfull call", async () => {
+    it("removes users as friends when the Unfriend button is clicked", async () => {
         setup({
             isAddedAsFriend: true,
             isUserValue: isUser,
@@ -164,7 +164,7 @@ describe("UserItem component", () => {
         expect(screen.getByTestId("add-friend")).toBeInTheDocument();
     });
 
-    it("triggers handleRemoveFriend and does not change setIsAddedAsFriend on empty call", async () => {
+    it("does not remove users as friends on a failed unfriend call", async () => {
         setup({
             isAddedAsFriend: true,
             isUserValue: isUser,
