@@ -1,5 +1,6 @@
-import { fireEvent, getSuggestedQuery, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { AlertContext } from "../../../contexts/alert-context";
 
@@ -109,11 +110,12 @@ describe("CatalogPage component", () => {
     });
 
     it("setTotalPosts updates posts amount on click", async () => {
+        const user = userEvent.setup();
         setup();
 
         const postsCatalog = await screen.findByTestId("posts-catalog");
 
-        fireEvent.click(postsCatalog);
+        await user.click(postsCatalog);
 
         expect(await screen.findAllByTestId("post")).toHaveLength(UPDATED_POSTS_AMOUNT);
     });
