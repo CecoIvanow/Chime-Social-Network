@@ -8,13 +8,13 @@ import CatalogPage from "./CatalogPage";
 
 vi.mock("../../../hooks/usePostServices", () => ({
     default: () => ({
-        ...usePostMocks
+        ...usePostServicesMock
     })
 }));
 
 vi.mock("../../../hooks/useUserServices", () => ({
     default: () => ({
-        ...useUserMocks
+        ...useUserServices
     })
 }));
 
@@ -55,13 +55,13 @@ const totalUsers = [
     { _id: 2, fullName: "Willam Dafoe" },
 ];
 
-const usePostMocks = {
+const usePostServicesMock = {
     getAllPosts: vi.fn(),
     isLoading: false,
     abortAll: vi.fn(),
 };
 
-const useUserMocks = {
+const useUserServices = {
     getAllUsers: vi.fn(),
     isLoading: false,
     abortAll: vi.fn(),
@@ -76,15 +76,15 @@ function setup(options = {
     getAllUsersIsLoading: false,
 }) {
     options.getAllPostsSuccess ?
-        usePostMocks.getAllPosts.mockResolvedValue(totalPosts) :
-        usePostMocks.getAllPosts.mockRejectedValue(new Error(ERR_MSG.GET_ALL_POSTS));
+        usePostServicesMock.getAllPosts.mockResolvedValue(totalPosts) :
+        usePostServicesMock.getAllPosts.mockRejectedValue(new Error(ERR_MSG.GET_ALL_POSTS));
 
     options.getAllUsersSuccess ?
-        useUserMocks.getAllUsers.mockResolvedValue(totalUsers) :
-        useUserMocks.getAllUsers.mockRejectedValue(new Error(ERR_MSG.GET_ALL_USERS));
+        useUserServices.getAllUsers.mockResolvedValue(totalUsers) :
+        useUserServices.getAllUsers.mockRejectedValue(new Error(ERR_MSG.GET_ALL_USERS));
 
-    usePostMocks.isLoading = options.getAllPostsIsLoading;
-    useUserMocks.isLoading = options.getAllUsersIsLoading;
+    usePostServicesMock.isLoading = options.getAllPostsIsLoading;
+    useUserServices.isLoading = options.getAllUsersIsLoading;
 
     render(
         <AlertContext.Provider value={{ setAlert }}>
