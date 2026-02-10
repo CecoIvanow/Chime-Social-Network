@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { UserContext } from "../../../../../../contexts/user-context";
@@ -111,9 +112,10 @@ describe("UserItem component", () => {
     });
 
     it("adds users as friends when the Add button is clicked", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getByRole("button", { name: "Add" }));
+        await user.click(screen.getByRole("button", { name: "Add" }));
 
         await waitFor(() => {
             expect(mockProps.handleAddFriend).toHaveBeenCalledWith(mockProps.user);
@@ -124,6 +126,7 @@ describe("UserItem component", () => {
     });
 
     it("does not add users as friends on a failed add friend call", async () => {
+        const user = userEvent.setup();
         setup({
             isAddedAsFriend: false,
             isUserValue: isUser,
@@ -131,7 +134,7 @@ describe("UserItem component", () => {
             handleRemoveFriendReturn: true,
         });
 
-        fireEvent.click(screen.getByRole("button", { name: "Add" }));
+        await user.click(screen.getByRole("button", { name: "Add" }));
 
         await waitFor(() => {
             expect(mockProps.handleAddFriend).toHaveBeenCalledWith(mockProps.user);
@@ -142,6 +145,7 @@ describe("UserItem component", () => {
     });
 
     it("removes users as friends when the Unfriend button is clicked", async () => {
+        const user = userEvent.setup();
         setup({
             isAddedAsFriend: true,
             isUserValue: isUser,
@@ -154,7 +158,7 @@ describe("UserItem component", () => {
             friends: [...mockProps.user.friends, isUser]
         }
 
-        fireEvent.click(screen.getByRole("button", { name: "Unfriend" }));
+        await user.click(screen.getByRole("button", { name: "Unfriend" }));
 
         await waitFor(() => {
             expect(mockProps.handleRemoveFriend).toHaveBeenCalledWith(userWithFriends);
@@ -165,6 +169,7 @@ describe("UserItem component", () => {
     });
 
     it("does not remove users as friends on a failed unfriend call", async () => {
+        const user = userEvent.setup();
         setup({
             isAddedAsFriend: true,
             isUserValue: isUser,
@@ -177,7 +182,7 @@ describe("UserItem component", () => {
             friends: [...mockProps.user.friends, isUser]
         }
 
-        fireEvent.click(screen.getByRole("button", { name: "Unfriend" }));
+        await user.click(screen.getByRole("button", { name: "Unfriend" }));
 
         await waitFor(() => {
             expect(mockProps.handleRemoveFriend).toHaveBeenCalledWith(userWithFriends);
