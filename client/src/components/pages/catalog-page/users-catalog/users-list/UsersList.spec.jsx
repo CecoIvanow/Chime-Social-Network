@@ -25,12 +25,14 @@ const ERR_MSG = {
 
 const isUser = "userId236";
 
-const setAlert = vi.fn();
+const mockProps = {
+    matchingUsers: [
+        { _id: "idOne" },
+        { _id: "idTwo" },
+    ],
+}
 
-const matchingUsers = [
-    { _id: "idOne" },
-    { _id: "idTwo" },
-];
+const setAlert = vi.fn();
 
 const useUserServicesMock = {
     addFriend: vi.fn(),
@@ -53,7 +55,7 @@ function setup(options = {
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
-                <UsersList matchingUsers={matchingUsers} />
+                <UsersList {...mockProps} />
             </UserContext.Provider>
         </AlertContext.Provider>
     );
@@ -65,8 +67,8 @@ describe("UsersList component", () => {
     it("renders inner UserItem component correct number of times", () => {
         setup();
 
-        expect(screen.getAllByTestId("add-friend")).toHaveLength(matchingUsers.length);
-        expect(screen.getAllByTestId("remove-friend")).toHaveLength(matchingUsers.length);
+        expect(screen.getAllByTestId("add-friend")).toHaveLength(mockProps.matchingUsers.length);
+        expect(screen.getAllByTestId("remove-friend")).toHaveLength(mockProps.matchingUsers.length);
     });
 
     it("triggers addFriend with passed isUser and passed user._id prop", async () => {
@@ -79,7 +81,7 @@ describe("UsersList component", () => {
             await user.click(addFriendEls[i]);
 
             await waitFor(() => {
-                expect(useUserServicesMock.addFriend).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
+                expect(useUserServicesMock.addFriend).toHaveBeenCalledWith(isUser, mockProps.matchingUsers[i]._id);
             });
         };
     });
@@ -108,7 +110,7 @@ describe("UsersList component", () => {
             await user.click(removeFriendEls[i]);
 
             await waitFor(() => {
-                expect(useUserServicesMock.removeFriend).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
+                expect(useUserServicesMock.removeFriend).toHaveBeenCalledWith(isUser, mockProps.matchingUsers[i]._id);
             });
         };
     });
