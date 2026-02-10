@@ -14,7 +14,7 @@ vi.mock("./features-section/FeaturesSection", () => ({
 beforeEach(() => render(<LandingPage />));
 
 describe("LandingPage component", () => {
-    it("renders child component", () => {
+    it("renders landing page with hero and features sections", () => {
         expect(screen.getByTestId("hero-section")).toBeInTheDocument();
         expect(screen.getByTestId("features-section")).toBeInTheDocument();
     });
