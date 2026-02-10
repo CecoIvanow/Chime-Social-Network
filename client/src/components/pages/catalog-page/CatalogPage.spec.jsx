@@ -94,7 +94,7 @@ function setup(options = {
 };
 
 describe("CatalogPage component", () => {
-    it("renders component with passed props", async () => {
+    it("renders users and posts catalogs", async () => {
         setup();
 
         await waitFor(() => {
@@ -109,20 +109,19 @@ describe("CatalogPage component", () => {
         expect(users).toHaveLength(totalUsers.length);
     });
 
-    it("setTotalPosts updates posts amount on click", async () => {
+    it("posts get updated on change", async () => {
         const user = userEvent.setup();
         setup();
 
         const postsCatalog = await screen.findByTestId("posts-catalog");
 
         await user.click(postsCatalog);
-
         expect(await screen.findAllByTestId("post")).toHaveLength(UPDATED_POSTS_AMOUNT);
     });
 
     it.each([
-        { name: "does not render UsersCatalog on getAllUsers isLoading true", isLoading: true },
-        { name: "renders UsersCatalog on getAllUsers isLoading false", isLoading: false },
+        { name: "does not render users  while data is loading", isLoading: true },
+        { name: "renders users on after data has loaded", isLoading: false },
     ])("$name", ({ isLoading }) => {
         setup({
             getAllPostsSuccess: true,
@@ -139,8 +138,8 @@ describe("CatalogPage component", () => {
     });
 
     it.each([
-        { name: "does not render PostsCatalog on getAllPosts isLoading true", isLoading: true },
-        { name: "renders PostsCatalog on getAllPosts isLoading false", isLoading: false },
+        { name: "does not render posts while data is loading", isLoading: true },
+        { name: "renders posts after data has loaded", isLoading: false },
     ])("$name", ({ isLoading }) => {
         setup({
             getAllPostsSuccess: true,
@@ -157,8 +156,8 @@ describe("CatalogPage component", () => {
     });
 
     it.each([
-        { name: "triggers setAlert on rejected getAllPosts call", getAllPostsSuccess: false, getAllUsersSuccess: true },
-        { name: "triggers setAlert on rejected getAllUsers call", getAllPostsSuccess: true, getAllUsersSuccess: false },
+        { name: "shows alert message on a failed posts data fetch", getAllPostsSuccess: false, getAllUsersSuccess: true },
+        { name: "shows alert message on a failed users data fetch", getAllPostsSuccess: true, getAllUsersSuccess: false },
     ])("$name", async ({ getAllPostsSuccess, getAllUsersSuccess }) => {
         setup({
             getAllPostsIsLoading: false,
