@@ -41,8 +41,8 @@ vi.mock("./users-catalog/UsersCatalog", () => ({
 const UPDATED_POSTS_AMOUNT = 1;
 
 const ERR_MSG = {
-    GET_ALL_USERS: "Successfully rejected getAllUsers call",
-    GET_ALL_POSTS: "Successfully rejected getAllPosts call",
+    GET_ALL_USERS: "Rejected getAllUsers call",
+    GET_ALL_POSTS: "Rejected getAllPosts call",
 };
 
 const totalPosts = [
