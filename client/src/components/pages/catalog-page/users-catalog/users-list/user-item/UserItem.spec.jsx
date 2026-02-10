@@ -13,9 +13,9 @@ vi.mock("./add-friend-button/AddFriendButton", () => ({
     default: ({ isAddedAsFriend, handleAddFriendClick, handleUnfriendClick }) => (
         <div data-testid="add-friend-button-comp">
             {isAddedAsFriend ? (
-                <button data-testid="unfriend" onClick={handleUnfriendClick}></button>
+                <button onClick={handleUnfriendClick}>Unfriend</button>
             ) : (
-                <button data-testid="add-friend" onClick={handleAddFriendClick}></button>
+                <button onClick={handleAddFriendClick}>Add</button>
             )}
         </div>
     ),
@@ -102,25 +102,25 @@ describe("UserItem component", () => {
         });
 
         if (isAddedAsFriend) {
-            expect(screen.queryByTestId("add-friend")).not.toBeInTheDocument();
-            expect(screen.getByTestId("unfriend")).toBeInTheDocument();
+            expect(screen.queryByRole("button", { name: "Add" })).not.toBeInTheDocument();
+            expect(screen.getByRole("button", { name: "Unfriend" })).toBeInTheDocument();
         } else {
-            expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
-            expect(screen.getByTestId("add-friend")).toBeInTheDocument();
+            expect(screen.queryByRole("button", { name: "Unfriend" })).not.toBeInTheDocument();
+            expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
         }
     });
 
     it("adds users as friends when the Add button is clicked", async () => {
         setup();
 
-        fireEvent.click(screen.getByTestId("add-friend"));
+        fireEvent.click(screen.getByRole("button", { name: "Add" }));
 
         await waitFor(() => {
             expect(mockProps.handleAddFriend).toHaveBeenCalledWith(mockProps.user);
         });
 
-        expect(screen.queryByTestId("add-friend")).not.toBeInTheDocument();
-        expect(screen.getByTestId("unfriend")).toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Add" })).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Unfriend" })).toBeInTheDocument();
     });
 
     it("does not add users as friends on a failed add friend call", async () => {
@@ -131,14 +131,14 @@ describe("UserItem component", () => {
             handleRemoveFriendReturn: true,
         });
 
-        fireEvent.click(screen.getByTestId("add-friend"));
+        fireEvent.click(screen.getByRole("button", { name: "Add" }));
 
         await waitFor(() => {
             expect(mockProps.handleAddFriend).toHaveBeenCalledWith(mockProps.user);
         });
 
-        expect(screen.getByTestId("add-friend")).toBeInTheDocument();
-        expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Unfriend" })).not.toBeInTheDocument();
     });
 
     it("removes users as friends when the Unfriend button is clicked", async () => {
@@ -154,14 +154,14 @@ describe("UserItem component", () => {
             friends: [...mockProps.user.friends, isUser]
         }
 
-        fireEvent.click(screen.getByTestId("unfriend"));
+        fireEvent.click(screen.getByRole("button", { name: "Unfriend" }));
 
         await waitFor(() => {
             expect(mockProps.handleRemoveFriend).toHaveBeenCalledWith(userWithFriends);
         });
 
-        expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
-        expect(screen.getByTestId("add-friend")).toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Unfriend" })).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
     });
 
     it("does not remove users as friends on a failed unfriend call", async () => {
@@ -177,13 +177,13 @@ describe("UserItem component", () => {
             friends: [...mockProps.user.friends, isUser]
         }
 
-        fireEvent.click(screen.getByTestId("unfriend"));
+        fireEvent.click(screen.getByRole("button", { name: "Unfriend" }));
 
         await waitFor(() => {
             expect(mockProps.handleRemoveFriend).toHaveBeenCalledWith(userWithFriends);
         });
 
-        expect(screen.getByTestId("unfriend")).toBeInTheDocument();
-        expect(screen.queryByTestId("add-friend")).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Unfriend" })).toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Add" })).not.toBeInTheDocument();
     });
 });
