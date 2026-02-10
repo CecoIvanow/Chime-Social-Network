@@ -1,9 +1,9 @@
 import { render, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import Logout from "./Logout";
-
 import { AlertContext } from "../../../contexts/alert-context";
+
+import Logout from "./Logout";
 
 vi.mock("../../../hooks/useUserServices", () => ({
     default: () => ({
