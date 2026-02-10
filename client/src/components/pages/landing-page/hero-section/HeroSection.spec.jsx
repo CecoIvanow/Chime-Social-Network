@@ -17,12 +17,12 @@ beforeEach(() => render(
 ));
 
 describe("HeroSection component", () => {
-    it("renders component with correct headings", () => {
+    it("renders hero section with title and description", () => {
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(HERO_HEADING_TEXT);
         expect(screen.getByRole("paragraph")).toHaveTextContent(HERO_SUBHEADING_TEXT);
     });
 
-    it("renders buttons with correct attributes", () => {
+    it("renders link buttons with correct href attributes", () => {
         expect(screen.getByText(REGISTER_TEXT)).toHaveAttribute("href", "/register");
         expect(screen.getByText(LOGIN_TEXT)).toHaveAttribute("href", "/login");
         expect(screen.getByText(CATALOG_TEXT)).toHaveAttribute("href", "/catalog");
