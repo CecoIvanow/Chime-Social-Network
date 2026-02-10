@@ -7,13 +7,13 @@ import { AlertContext } from "../../../contexts/alert-context";
 
 vi.mock("../../../hooks/useUserServices", () => ({
     default: () => ({
-        logout: logoutMock
+        logout,
     })
 }));
 
 const LOGOUT_ERR_MSG = "Successfully rejected logout call!";
 
-const logoutMock = vi.fn();
+const logout = vi.fn();
 
 const setAlert = vi.fn();
 
@@ -22,8 +22,8 @@ function setup(options = {
 }) {
 
     options.logoutRejectedCall ?
-    logoutMock.mockRejectedValue(new Error(LOGOUT_ERR_MSG)) :
-    logoutMock.mockResolvedValue();
+    logout.mockRejectedValue(new Error(LOGOUT_ERR_MSG)) :
+    logout.mockResolvedValue();
 
     render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -33,13 +33,13 @@ function setup(options = {
 }
 
 describe("Logout component", () => {
-    it("triggers logout on initial render", () => {
+    it("logs out user when called", () => {
         setup();
 
-        expect(logoutMock).toHaveBeenCalled();
+        expect(logout).toHaveBeenCalled();
     });
 
-    it("triggers setAlert on rejected call", async () => {
+    it("shows error message on a failed logout call", async () => {
         setup({
             logoutRejectedCall: true
         });
