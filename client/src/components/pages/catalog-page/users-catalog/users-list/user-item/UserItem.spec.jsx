@@ -10,13 +10,15 @@ vi.mock("./user-item-details/UserItemDetails", () => ({
 }));
 
 vi.mock("./add-friend-button/AddFriendButton", () => ({
-    default: ({ isAddedAsFriend, handleAddFriendClick, handleUnfriendClick }) => <div data-testid="add-friend-button-comp">
-        {isAddedAsFriend ? (
-            <button data-testid="unfriend" onClick={handleUnfriendClick}></button>
-        ) : (
-            <button data-testid="add-friend" onClick={handleAddFriendClick}></button>
-        )}
-    </div>
+    default: ({ isAddedAsFriend, handleAddFriendClick, handleUnfriendClick }) => (
+        <div data-testid="add-friend-button-comp">
+            {isAddedAsFriend ? (
+                <button data-testid="unfriend" onClick={handleUnfriendClick}></button>
+            ) : (
+                <button data-testid="add-friend" onClick={handleAddFriendClick}></button>
+            )}
+        </div>
+    ),
 }));
 
 const isUser = "userId111";
@@ -63,7 +65,7 @@ function setup(options = {
 };
 
 describe("UserItem component", () => {
-    it("renders UserItenDeails with passed props", () => {
+    it("renders with user details", () => {
         setup();
 
         expect(screen.getByTestId("user-item-details")).toHaveTextContent(mockProps.user.age);
