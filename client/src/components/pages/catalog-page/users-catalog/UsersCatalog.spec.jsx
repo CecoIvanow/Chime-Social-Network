@@ -1,7 +1,8 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import UsersCatalog from "./UsersCatalog";
+import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../ui/headings/SectionHeading", () => ({
     default: ({ sectionName }) => <p data-testid="section-heading">{sectionName}</p>
@@ -70,7 +71,7 @@ describe("UsersCatalog component", () => {
         } else {
             expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
             expect(screen.getByTestId("users-list")).toBeInTheDocument();
-        }
+        };
     });
 
     it.each([
@@ -80,11 +81,14 @@ describe("UsersCatalog component", () => {
         { search: "e", resultLen: totalUsers.length },
         { search: "William", resultLen: "0" },
     ])("renders $resultLen user elements with SearchField value $search", async ({ search, resultLen }) => {
+        const user = userEvent.setup();
         setup({
             isLoading: false,
         });
 
-        fireEvent.change(screen.getByTestId("search-field-input"), { target: { value: search } });
+        if (search) {
+            await user.type(screen.getByTestId("search-field-input"), search);
+        };
 
         if (resultLen > 0) {
             expect(await screen.findAllByTestId("user")).toHaveLength(resultLen);
