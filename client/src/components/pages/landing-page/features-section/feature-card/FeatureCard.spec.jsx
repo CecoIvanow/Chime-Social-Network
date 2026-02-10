@@ -15,7 +15,7 @@ beforeEach(() => render(
     />));
 
 describe("FeatureCard component", () => {
-    it("renders component with passed props", () => {
+    it("renders feature card with title and description", () => {
 
         expect(screen.getByRole("heading", {level: 3})).toHaveTextContent(FEATURE_CARD_TITLE);
         
