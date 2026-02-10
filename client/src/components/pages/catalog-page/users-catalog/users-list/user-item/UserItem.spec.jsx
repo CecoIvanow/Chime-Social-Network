@@ -21,14 +21,15 @@ vi.mock("./add-friend-button/AddFriendButton", () => ({
 
 const isUser = "userId111";
 
-const user = {
-    _id: "userId123",
-    friends: ["userId4234"],
-    age: "28",
+const mockProps = {
+    user: {
+        _id: "userId123",
+        friends: ["userId4234"],
+        age: "28",
+    },
+    handleAddFriend: vi.fn(),
+    handleRemoveFriend: vi.fn(),
 };
-
-const handleAddFriendMock = vi.fn();
-const handleRemoveFriendMock = vi.fn();
 
 function setup(options = {
     isAddedAsFriend: false,
@@ -37,24 +38,25 @@ function setup(options = {
     handleRemoveFriendReturn: true,
 }) {
     const userWithFriends = {
-        ...user,
-        friends: options.isAddedAsFriend ? [...user.friends, isUser] : [...user.friends]
+        ...mockProps,
+        user: {
+            ...mockProps.user,
+            friends: options.isAddedAsFriend ? [...mockProps.user.friends, isUser] : [...mockProps.user.friends],
+        },
     };
 
     options.handleAddFriendReturn ?
-        handleAddFriendMock.mockResolvedValue(true) :
-        handleAddFriendMock.mockResolvedValue("");
+        mockProps.handleAddFriend.mockResolvedValue(true) :
+        mockProps.handleAddFriend.mockResolvedValue("");
 
     options.handleRemoveFriendReturn ?
-        handleRemoveFriendMock.mockResolvedValue(true) :
-        handleRemoveFriendMock.mockResolvedValue("");
+        mockProps.handleRemoveFriend.mockResolvedValue(true) :
+        mockProps.handleRemoveFriend.mockResolvedValue("");
 
     render(
         <UserContext.Provider value={{ isUser: options.isUserValue }}>
             <UserItem
-                handleAddFriend={handleAddFriendMock}
-                handleRemoveFriend={handleRemoveFriendMock}
-                user={userWithFriends}
+                {...userWithFriends}
             />
         </UserContext.Provider>
     );
@@ -64,12 +66,12 @@ describe("UserItem component", () => {
     it("renders UserItenDeails with passed props", () => {
         setup();
 
-        expect(screen.getByTestId("user-item-details")).toHaveTextContent(user.age);
+        expect(screen.getByTestId("user-item-details")).toHaveTextContent(mockProps.user.age);
     });
 
     it.each([
         { name: "renders AddFriendButton when isUser exists and is different from user._id", isUserValue: isUser, shouldRender: true },
-        { name: "does not render AddFriendButton when isUser exists and matches user._id", isUserValue: user._id, shouldRender: false },
+        { name: "does not render AddFriendButton when isUser exists and matches user._id", isUserValue: mockProps.user._id, shouldRender: false },
         { name: "does not render AddFriendButton when isUser is empty", isUserValue: "", shouldRender: false },
     ])("$name", ({ isUserValue, shouldRender }) => {
         setup({
@@ -112,7 +114,7 @@ describe("UserItem component", () => {
         fireEvent.click(screen.getByTestId("add-friend"));
 
         await waitFor(() => {
-            expect(handleAddFriendMock).toHaveBeenCalledWith(user);
+            expect(mockProps.handleAddFriend).toHaveBeenCalledWith(mockProps.user);
         });
 
         expect(screen.queryByTestId("add-friend")).not.toBeInTheDocument();
@@ -130,7 +132,7 @@ describe("UserItem component", () => {
         fireEvent.click(screen.getByTestId("add-friend"));
 
         await waitFor(() => {
-            expect(handleAddFriendMock).toHaveBeenCalledWith(user);
+            expect(mockProps.handleAddFriend).toHaveBeenCalledWith(mockProps.user);
         });
 
         expect(screen.getByTestId("add-friend")).toBeInTheDocument();
@@ -146,14 +148,14 @@ describe("UserItem component", () => {
         });
 
         const userWithFriends = {
-            ...user,
-            friends: [...user.friends, isUser]
+            ...mockProps.user,
+            friends: [...mockProps.user.friends, isUser]
         }
 
         fireEvent.click(screen.getByTestId("unfriend"));
 
         await waitFor(() => {
-            expect(handleRemoveFriendMock).toHaveBeenCalledWith(userWithFriends);
+            expect(mockProps.handleRemoveFriend).toHaveBeenCalledWith(userWithFriends);
         });
 
         expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
@@ -169,14 +171,14 @@ describe("UserItem component", () => {
         });
 
         const userWithFriends = {
-            ...user,
-            friends: [...user.friends, isUser]
+            ...mockProps.user,
+            friends: [...mockProps.user.friends, isUser]
         }
 
         fireEvent.click(screen.getByTestId("unfriend"));
 
         await waitFor(() => {
-            expect(handleRemoveFriendMock).toHaveBeenCalledWith(userWithFriends);
+            expect(mockProps.handleRemoveFriend).toHaveBeenCalledWith(userWithFriends);
         });
 
         expect(screen.getByTestId("unfriend")).toBeInTheDocument();
