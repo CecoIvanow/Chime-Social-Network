@@ -9,8 +9,8 @@ import UsersList from "./UsersList";
 
 vi.mock("./user-item/UserItem", () => ({
     default: ({ user, handleAddFriend, handleRemoveFriend }) => <>
-        <button data-testid="add-friend" onClick={() => handleAddFriend(user)}></button>
-        <button data-testid="remove-friend" onClick={() => handleRemoveFriend(user)}></button>
+        <button onClick={() => handleAddFriend(user)}>Add</button>
+        <button onClick={() => handleRemoveFriend(user)}>Remove</button>
     </>
 }));
 
@@ -67,15 +67,15 @@ describe("UsersList component", () => {
     it("renders inner UserItem component correct number of times", () => {
         setup();
 
-        expect(screen.getAllByTestId("add-friend")).toHaveLength(mockProps.matchingUsers.length);
-        expect(screen.getAllByTestId("remove-friend")).toHaveLength(mockProps.matchingUsers.length);
+        expect(screen.getAllByRole("button", { name: "Add" })).toHaveLength(mockProps.matchingUsers.length);
+        expect(screen.getAllByRole("button", { name: "Remove" })).toHaveLength(mockProps.matchingUsers.length);
     });
 
     it("triggers addFriend with passed isUser and passed user._id prop", async () => {
         const user = userEvent.setup();
         setup();
 
-        const addFriendEls = screen.getAllByTestId("add-friend");
+        const addFriendEls = screen.getAllByRole("button", { name: "Add" });
 
         for (let i = 0; i < addFriendEls.length; i++) {
             await user.click(addFriendEls[i]);
@@ -93,7 +93,7 @@ describe("UsersList component", () => {
             removeFriendCallSuccess: true,
         });
 
-        const addFriendEls = screen.getAllByTestId("add-friend");
+        const addFriendEls = screen.getAllByRole("button", { name: "Add" });
 
         await user.click(addFriendEls[0]);
 
@@ -104,7 +104,7 @@ describe("UsersList component", () => {
         const user = userEvent.setup();
         setup();
 
-        const removeFriendEls = screen.getAllByTestId("remove-friend");
+        const removeFriendEls = screen.getAllByRole("button", { name: "Remove" });
 
         for (let i = 0; i < removeFriendEls.length; i++) {
             await user.click(removeFriendEls[i]);
@@ -122,7 +122,7 @@ describe("UsersList component", () => {
             removeFriendCallSuccess: false,
         });
 
-        const removeFriendEls = screen.getAllByTestId("remove-friend");
+        const removeFriendEls = screen.getAllByRole("button", { name: "Remove" });
 
         await user.click(removeFriendEls[0]);
 
