@@ -1,8 +1,8 @@
+import userEvent from "@testing-library/user-event";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import UsersCatalog from "./UsersCatalog";
-import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../ui/headings/SectionHeading", () => ({
     default: ({ sectionName }) => <p data-testid="section-heading">{sectionName}</p>
@@ -31,10 +31,12 @@ vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
     default: () => <div data-testid="loading-spinner"></div>
 }));
 
-const totalUsers = [
-    { firstName: "John", lastName: "Doe", _id: "userOne" },
-    { firstName: "Ivan", lastName: "Petrov", _id: "userTwo" },
-];
+const mockProps = {
+    totalUsers: [
+        { firstName: "John", lastName: "Doe", _id: "userOne" },
+        { firstName: "Ivan", lastName: "Petrov", _id: "userTwo" },
+    ],
+};
 
 function setup(options = {
     isLoading: true
@@ -42,7 +44,7 @@ function setup(options = {
     render(
         <UsersCatalog
             isLoading={options.isLoading}
-            totalUsers={totalUsers}
+            {...mockProps}
         />
     );
 };
@@ -77,8 +79,8 @@ describe("UsersCatalog component", () => {
     it.each([
         { name: "matches the only 'John' user", searchBy: "John", expectedCount: 1 },
         { name: "matches the only 'Petrov' user", searchBy: "Petrov", expectedCount: 1 },
-        { name: "matches all people with an empty search string", searchBy: "", expectedCount: totalUsers.length },
-        { name: "matches everyone using search string 'e'", searchBy: "e", expectedCount: totalUsers.length },
+        { name: "matches all people with an empty search string", searchBy: "", expectedCount: mockProps.totalUsers.length },
+        { name: "matches everyone using search string 'e'", searchBy: "e", expectedCount: mockProps.totalUsers.length },
         { name: "matches no one on when searching with 'William'", searchBy: "William", expectedCount: "0" },
     ])("$name", async ({ searchBy, expectedCount }) => {
         const user = userEvent.setup();
