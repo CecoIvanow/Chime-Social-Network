@@ -38,7 +38,7 @@ vi.mock("../../../../hooks/useCommentServices", () => ({
 const BUTTON_TEXT = "Reply";
 const INITIAL_INPUT_VALUE = "";
 
-const CREATE_COMMENT_ERROR_MSG = "Successfully rejected createComment call!";
+const CREATE_COMMENT_ERROR_MSG = "Rejected createComment call!";
 
 const isUser = "User123";
 
