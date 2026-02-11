@@ -7,7 +7,7 @@ const H1_CONTENT = "404";
 const H2_CONTENT = "the page you requested could not be found";
 
 describe("NotFoundMessage component", () => {
-    it("NotFoundmessage component message is rendered", () => {
+    it("renders component with error/not-found message", () => {
         render(
             <NotFoundMessage />
         );
