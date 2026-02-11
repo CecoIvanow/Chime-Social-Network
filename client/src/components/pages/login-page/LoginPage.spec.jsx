@@ -1,6 +1,7 @@
 import { Link, MemoryRouter } from "react-router";
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { AlertContext } from "../../../contexts/alert-context";
@@ -119,14 +120,16 @@ describe("LoginPage component", () => {
     });
 
     it("authButton is disabled after form submit", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getByTestId("auth-button"));
+        user.click(screen.getByTestId("auth-button"));
 
         await waitFor(() => expect(screen.getByTestId("auth-button")).toBeDisabled());
     });
 
     it("triggers login with form data on submit", async () => {
+        const user = userEvent.setup();
         setup();
 
         const PASSWORD_VALUE = "MySecretPassword!";
@@ -137,10 +140,10 @@ describe("LoginPage component", () => {
         const emailInput = inputs.find(input => input.getAttribute("name") === "email");
         const passwordInput = inputs.find(input => input.getAttribute("name") === "password");
 
-        fireEvent.change(emailInput, { target: { value: EMAIL_VALUE } });
-        fireEvent.change(passwordInput, { target: { value: PASSWORD_VALUE } });
+        await user.type(emailInput, EMAIL_VALUE);
+        await user.type(passwordInput, PASSWORD_VALUE);
 
-        fireEvent.click(screen.getByTestId("auth-button"));
+        await user.click(screen.getByTestId("auth-button"));
 
         await waitFor(() => expect(loginMock).toHaveBeenCalledWith({
             email: EMAIL_VALUE,
@@ -149,11 +152,12 @@ describe("LoginPage component", () => {
     });
 
     it("tiggers setAlert on rejected login call", async () => {
+        const user = userEvent.setup();
         setup({
             loginRejectedReturnValue: true
         });
 
-        fireEvent.click(screen.getByTestId("auth-button"))
+        await user.click(screen.getByTestId("auth-button"))
 
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(LOGIN_ERR_MSG));
     });
