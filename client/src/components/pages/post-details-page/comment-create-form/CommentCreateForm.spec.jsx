@@ -41,6 +41,8 @@ const INITIAL_INPUT_VALUE = "";
 
 const CREATE_COMMENT_ERROR_MSG = "Rejected createComment call!";
 
+const updatedInputValue = "Testing!";
+
 const isUser = "User123";
 
 const newComment = {
@@ -101,12 +103,10 @@ describe("CommentCreateForm component", () => {
         const user = userEvent.setup();
         setup();
 
-        const newValue = "test";
-
         const inputEl = screen.getByLabelText("Comment");
 
-        await user.type(inputEl, newValue);
-        expect(inputEl).toHaveValue(newValue);
+        await user.type(inputEl, updatedInputValue);
+        expect(inputEl).toHaveValue(updatedInputValue);
     });
 
     it("adds new comment after successfull comment creation", async () => {
@@ -115,11 +115,9 @@ describe("CommentCreateForm component", () => {
 
         const initialCommentsLen = postContextMock.post.comments.length;
 
-        const newValue = "test";
-
         const inputEl = screen.getByLabelText("Comment");
 
-        await user.type(inputEl, newValue);
+        await user.type(inputEl, updatedInputValue);
         await user.click(screen.getByRole("button", { name: BUTTON_TEXT }));
 
         await waitFor(() => {
@@ -138,18 +136,16 @@ describe("CommentCreateForm component", () => {
             createCommentTruthyReturn: false
         });
 
-        const newValue = "test";
-
         const inputEl = screen.getByLabelText("Comment");
 
-        await user.type(inputEl, newValue);
+        await user.type(inputEl, updatedInputValue);
         await user.click(screen.getByRole("button", { name: BUTTON_TEXT }));
 
         await waitFor(() => {
             expect(useCommentServicesMock.createComment).toHaveBeenCalled();
         });
 
-        expect(inputEl).toHaveValue(newValue);
+        expect(inputEl).toHaveValue(updatedInputValue);
         expect(postContextMock.setPost).not.toHaveBeenCalled();
         expect(setAlert).not.toHaveBeenCalled();
     });
