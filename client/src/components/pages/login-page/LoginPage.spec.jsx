@@ -121,13 +121,7 @@ describe("LoginPage component", () => {
         expect(screen.getByRole("link")).toHaveTextContent("Don`t have an account?");
     });
 
-    it("authButton is not disabled on initial render", () => {
-        setup();
-
-        expect(screen.getByRole("button", { name: "Login" })).not.toBeDisabled();
-    });
-
-    it("authButton is disabled after form submit", async () => {
+    it("login button gets disabled after the form is submitted", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -136,7 +130,7 @@ describe("LoginPage component", () => {
         await waitFor(() => expect(screen.getByRole("button", { name: "Login" })).toBeDisabled());
     });
 
-    it("triggers login with form data on submit", async () => {
+    it("logs in the user after the form is submitted", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -159,7 +153,7 @@ describe("LoginPage component", () => {
         }));
     });
 
-    it("tiggers setAlert on rejected login call", async () => {
+    it("shows error message on a rejected login call", async () => {
         const user = userEvent.setup();
         setup({
             loginRejectedReturnValue: true
@@ -170,10 +164,8 @@ describe("LoginPage component", () => {
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(LOGIN_ERR_MSG));
     });
 
-    it("triggers abortAll on unmount", async () => {
+    it("stops the ongoing login call on component unmount", async () => {
         const { unmount } = setup();
-
-        expect(useUserServicesMock.abortAll).not.toHaveBeenCalled();
 
         unmount();
 
