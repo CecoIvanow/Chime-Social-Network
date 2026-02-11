@@ -1,11 +1,11 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi, } from "vitest";
 
-import CreateCommentForm from "./CommentCreateForm";
-
+import { AlertContext } from "../../../../contexts/alert-context";
 import { PostContext } from "../../../../contexts/post-context";
 import { UserContext } from "../../../../contexts/user-context";
-import { AlertContext } from "../../../../contexts/alert-context";
+
+import CreateCommentForm from "./CommentCreateForm";
 
 vi.mock("../../../shared/input-fields/create-content-input-field/CreateContentInputField", () => ({
     default: ({ onSubmitHandler, onTextChangeHandler, buttonText, text }) => <>
