@@ -27,17 +27,18 @@ vi.mock("../../../shared/input-fields/create-content-input-field/CreateContentIn
             <button data-testid="button" type="submit">{buttonText}</button>
         </form>
     </>
-}))
+}));
 
 vi.mock("../../../../hooks/useCommentServices", () => ({
     default: () => ({
-        createComment: createCommentMock,
-        abortAll: abortAllMock,
+        ...useCommentServicesMock
     })
-}))
+}));
 
-const createCommentMock = vi.fn();
-const abortAllMock = vi.fn();
+const useCommentServicesMock = {
+    createComment: vi.fn(),
+    abortAll: vi.fn(),
+};
 
 const setAlert = vi.fn();
 
@@ -53,24 +54,24 @@ const isUser = "User123";
 const newComment = {
     _id: 3,
     content: "The new comment",
-}
+};
 
 const BUTTON_TEXT = "Reply";
 const INITIAL_INPUT_VALUE = "";
 
-const CREATE_COMMENT_ERROR_MSG = "Successfully rejected createComment call!"
+const CREATE_COMMENT_ERROR_MSG = "Successfully rejected createComment call!";
 
 function setup(options = {
     createCommentSuccess: true,
     createCommentTruthyReturn: true
 }) {
     if (!options.createCommentSuccess) {
-        createCommentMock.mockRejectedValue(new Error(CREATE_COMMENT_ERROR_MSG));
+        useCommentServicesMock.createComment.mockRejectedValue(new Error(CREATE_COMMENT_ERROR_MSG));
     } else if (options.createCommentTruthyReturn) {
-        createCommentMock.mockResolvedValue(newComment);
+        useCommentServicesMock.createComment.mockResolvedValue(newComment);
     } else {
-        createCommentMock.mockResolvedValue("");
-    }
+        useCommentServicesMock.createComment.mockResolvedValue("");
+    };
 
     render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -80,8 +81,8 @@ function setup(options = {
                 </PostContext.Provider>
             </UserContext.Provider>
         </AlertContext.Provider>
-    )
-}
+    );
+};
 
 describe("CommentCreateForm component", () => {
     it("renders CommentCreateForm with passed props", () => {
@@ -116,7 +117,7 @@ describe("CommentCreateForm component", () => {
         fireEvent.click(screen.getByTestId("button"));
 
         await waitFor(() => {
-            const updatedPost = setPost.mock.calls[0][0];            
+            const updatedPost = setPost.mock.calls[0][0];
 
             expect(updatedPost.comments).toHaveLength(initialCommentsLen + 1);
         });
@@ -138,13 +139,13 @@ describe("CommentCreateForm component", () => {
         fireEvent.click(screen.getByTestId("button"));
 
         await waitFor(() => {
-            expect(createCommentMock).toHaveBeenCalled();
+            expect(useCommentServicesMock.createComment).toHaveBeenCalled();
         });
 
         expect(inputEl).toHaveValue(newValue);
         expect(setPost).not.toHaveBeenCalled();
         expect(setAlert).not.toHaveBeenCalled();
-    })
+    });
 
     it("on rejected createComment call triggers setAlert", async () => {
         setup({
@@ -156,6 +157,6 @@ describe("CommentCreateForm component", () => {
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(CREATE_COMMENT_ERROR_MSG);
-        })
-    })
+        });
+    });
 });
