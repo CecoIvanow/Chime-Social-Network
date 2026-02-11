@@ -87,16 +87,14 @@ function setup(options = {
 }
 
 describe("LoginPage component", () => {
-    it("renders components with passed props", () => {
-
+    it("renders header title with 'Login' text content", () => {
         setup();
 
         expect(screen.getByTestId("auth-header-title")).toHaveTextContent("Login");
+    });
 
-        expect(screen.getByRole("button", { name: "Login" })).toBeInTheDocument();
-
-        expect(screen.getByRole("link")).toHaveAttribute("href", "/register");
-        expect(screen.getByRole("link")).toHaveTextContent("Don`t have an account?");
+    it("renders connected auth forms with type, name and placeholder attributes", () => {
+        setup();
 
         const authFormsLabels = screen.getAllByTestId("auth-forms-label");
         const authFormsInputs = screen.getAllByTestId("auth-forms-input");
@@ -108,6 +106,19 @@ describe("LoginPage component", () => {
             expect(authFormsInputs[i]).toHaveAttribute("type", loginFields[i].inputType);
             expect(authFormsInputs[i]).toHaveAttribute("placeholder", loginFields[i].placeholderText);
         }
+    });
+
+    it("renders login button", () => {
+        setup();
+
+        expect(screen.getByRole("button", { name: "Login" })).toBeInTheDocument();
+    });
+
+    it("renders link button with href attribute and correct text content", () => {
+        setup();
+
+        expect(screen.getByRole("link")).toHaveAttribute("href", "/register");
+        expect(screen.getByRole("link")).toHaveTextContent("Don`t have an account?");
     });
 
     it("authButton is not disabled on initial render", () => {
