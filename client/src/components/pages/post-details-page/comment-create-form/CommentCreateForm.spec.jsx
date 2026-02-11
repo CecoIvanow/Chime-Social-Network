@@ -90,14 +90,14 @@ function setup(options = {
 };
 
 describe("CommentCreateForm component", () => {
-    it("renders CommentCreateForm with passed props", () => {
+    it("renders create comment form with initial value and submit button", () => {
         setup();
 
         expect(screen.getByRole("button", {name: BUTTON_TEXT})).toBeInTheDocument();
         expect(screen.getByLabelText("Comment")).toHaveValue(INITIAL_INPUT_VALUE);
     });
 
-    it("on value change triggers onTextChangeHandler", async () => {
+    it("updates form input value on change", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -106,11 +106,10 @@ describe("CommentCreateForm component", () => {
         const inputEl = screen.getByLabelText("Comment");
 
         await user.type(inputEl, newValue);
-
         expect(inputEl).toHaveValue(newValue);
     });
 
-    it("on successfull createComment call updates post comments array", async () => {
+    it("adds new comment after successfull comment creation", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -132,7 +131,7 @@ describe("CommentCreateForm component", () => {
         expect(setAlert).not.toHaveBeenCalled();
     });
 
-    it("exits on empty createComment return value", async () => {
+    it("does not create new comment with an empty form input", async () => {
         const user = userEvent.setup();
         setup({
             createCommentSuccess: true,
@@ -155,7 +154,7 @@ describe("CommentCreateForm component", () => {
         expect(setAlert).not.toHaveBeenCalled();
     });
 
-    it("on rejected createComment call triggers setAlert", async () => {
+    it("shows error message on a rejected comment creation call", async () => {
         const user = userEvent.setup();
         setup({
             createCommentSuccess: false,
@@ -169,7 +168,7 @@ describe("CommentCreateForm component", () => {
         });
     });
 
-    it("stops all ongoing create comment calls on component unmount", () => {
+    it("stops all ongoing comment creation calls on component unmount", () => {
         const { unmount } = setup();
 
         unmount();
