@@ -22,10 +22,12 @@ beforeEach(() => {
 });
 
 describe("NotFoundPage component", () => {
-    it("renders components with passed props", () => {
+    it("renders link button with correct text content and href attribute", () => {
         expect(screen.getByTestId("link-button")).toHaveTextContent("Home");
         expect(screen.getByTestId("link-button")).toHaveAttribute("href", '/');
+    });
 
+    it("renders not found message on screen", () => {
         expect(screen.getByTestId("not-found-msg")).toBeInTheDocument();
     });
 });
