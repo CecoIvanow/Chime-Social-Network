@@ -75,7 +75,7 @@ function setup(options = {
         useCommentServicesMock.createComment.mockResolvedValue("");
     };
 
-    render(
+    const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
                 <PostContext.Provider value={{ ...postContextMock }}>
@@ -84,6 +84,8 @@ function setup(options = {
             </UserContext.Provider>
         </AlertContext.Provider>
     );
+
+    return { unmount };
 };
 
 describe("CommentCreateForm component", () => {
@@ -160,5 +162,13 @@ describe("CommentCreateForm component", () => {
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(CREATE_COMMENT_ERROR_MSG);
         });
+    });
+
+    it("stops all ongoing create comment calls on component unmount", () => {
+        const { unmount } = setup();
+
+        unmount();
+
+        expect(useCommentServicesMock.abortAll).toHaveBeenCalled();
     });
 });
