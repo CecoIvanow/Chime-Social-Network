@@ -35,19 +35,10 @@ vi.mock("../../../../hooks/useCommentServices", () => ({
     })
 }));
 
-const useCommentServicesMock = {
-    createComment: vi.fn(),
-    abortAll: vi.fn(),
-};
+const BUTTON_TEXT = "Reply";
+const INITIAL_INPUT_VALUE = "";
 
-const setAlert = vi.fn();
-
-const setPost = vi.fn();
-const post = {
-    comments: [
-        { _id: 1, content: "First comment!", onPost: "3dadew", owner: "User2" },
-    ]
-};
+const CREATE_COMMENT_ERROR_MSG = "Successfully rejected createComment call!";
 
 const isUser = "User123";
 
@@ -56,10 +47,21 @@ const newComment = {
     content: "The new comment",
 };
 
-const BUTTON_TEXT = "Reply";
-const INITIAL_INPUT_VALUE = "";
+const setAlert = vi.fn();
 
-const CREATE_COMMENT_ERROR_MSG = "Successfully rejected createComment call!";
+const useCommentServicesMock = {
+    createComment: vi.fn(),
+    abortAll: vi.fn(),
+};
+
+const postContextMock = {
+    setPost: vi.fn(),
+    post: {
+        comments: [
+            { _id: 1, content: "First comment!", onPost: "3dadew", owner: "User2" },
+        ]
+    },
+};
 
 function setup(options = {
     createCommentSuccess: true,
@@ -76,7 +78,7 @@ function setup(options = {
     render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
-                <PostContext.Provider value={{ post, setPost }}>
+                <PostContext.Provider value={{ ...postContextMock }}>
                     <CreateCommentForm />
                 </PostContext.Provider>
             </UserContext.Provider>
@@ -107,7 +109,7 @@ describe("CommentCreateForm component", () => {
     it("on successfull createComment call updates post comments array", async () => {
         setup();
 
-        const initialCommentsLen = post.comments.length;
+        const initialCommentsLen = postContextMock.post.comments.length;
 
         const newValue = "test";
 
@@ -117,7 +119,7 @@ describe("CommentCreateForm component", () => {
         fireEvent.click(screen.getByTestId("button"));
 
         await waitFor(() => {
-            const updatedPost = setPost.mock.calls[0][0];
+            const updatedPost = postContextMock.setPost.mock.calls[0][0];
 
             expect(updatedPost.comments).toHaveLength(initialCommentsLen + 1);
         });
@@ -143,7 +145,7 @@ describe("CommentCreateForm component", () => {
         });
 
         expect(inputEl).toHaveValue(newValue);
-        expect(setPost).not.toHaveBeenCalled();
+        expect(postContextMock.setPost).not.toHaveBeenCalled();
         expect(setAlert).not.toHaveBeenCalled();
     });
 
