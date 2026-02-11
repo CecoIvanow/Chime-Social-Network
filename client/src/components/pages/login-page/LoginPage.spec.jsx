@@ -51,10 +51,7 @@ vi.mock("../../ui/auth/auth-nav-link/AuthNavLink", () => ({
 }));
 
 vi.mock("../../../hooks/useUserServices", () => ({
-    default: () => ({
-        login: loginMock,
-        abortAll: abortAllMock,
-    })
+    default: () => ({ ...useUserServicesMock })
 }));
 
 const LOGIN_ERR_MSG = "Successfullly rejected login call!";
@@ -64,8 +61,10 @@ const loginFields = [
     { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' }
 ];
 
-const abortAllMock = vi.fn();
-const loginMock = vi.fn();
+const useUserServicesMock = {
+    login: vi.fn(),
+    abortAll: vi.fn(),
+}
 
 const setAlert = vi.fn();
 
@@ -73,8 +72,8 @@ function setup(options = {
     loginRejectedReturnValue: false
 }) {
     options.loginRejectedReturnValue ?
-        loginMock.mockRejectedValue(new Error(LOGIN_ERR_MSG)) :
-        loginMock.mockResolvedValue();
+        useUserServicesMock.login.mockRejectedValue(new Error(LOGIN_ERR_MSG)) :
+        useUserServicesMock.login.mockResolvedValue();
 
     const { unmount } = render(
         <MemoryRouter>
@@ -143,7 +142,7 @@ describe("LoginPage component", () => {
 
         await user.click(screen.getByRole("button", { name: "Login" }));
 
-        await waitFor(() => expect(loginMock).toHaveBeenCalledWith({
+        await waitFor(() => expect(useUserServicesMock.login).toHaveBeenCalledWith({
             email: EMAIL_VALUE,
             password: PASSWORD_VALUE,
         }));
@@ -163,10 +162,10 @@ describe("LoginPage component", () => {
     it("triggers abortAll on unmount", async () => {
         const { unmount } = setup();
 
-        expect(abortAllMock).not.toHaveBeenCalled();
-        
+        expect(useUserServicesMock.abortAll).not.toHaveBeenCalled();
+
         unmount();
 
-        await waitFor(() => expect(abortAllMock).toHaveBeenCalled());
+        await waitFor(() => expect(useUserServicesMock.abortAll).toHaveBeenCalled());
     });
 });
