@@ -54,7 +54,7 @@ vi.mock("../../../hooks/useUserServices", () => ({
     default: () => ({ ...useUserServicesMock })
 }));
 
-const LOGIN_ERR_MSG = "Successfullly rejected login call!";
+const LOGIN_ERR_MSG = "Rejected login call!";
 
 const loginFields = [
     { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
