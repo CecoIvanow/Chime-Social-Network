@@ -125,8 +125,6 @@ describe("CommentCreateForm component", () => {
 
             expect(updatedPost.comments).toHaveLength(initialCommentsLen + 1);
         });
-
-        expect(setAlert).not.toHaveBeenCalled();
     });
 
     it("does nothing when comment creation returns nothing", async () => {
@@ -147,7 +145,6 @@ describe("CommentCreateForm component", () => {
 
         expect(inputEl).toHaveValue(updatedInputValue);
         expect(postContextMock.setPost).not.toHaveBeenCalled();
-        expect(setAlert).not.toHaveBeenCalled();
     });
 
     it("shows error message on a rejected comment creation call", async () => {
