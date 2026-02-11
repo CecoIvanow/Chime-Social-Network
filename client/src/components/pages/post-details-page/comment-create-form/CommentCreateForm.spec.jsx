@@ -68,14 +68,14 @@ const postContextMock = {
 
 function setup(options = {
     createCommentSuccess: true,
-    createCommentTruthyReturn: true
+    createCommentEmptyReturn: false
 }) {
     if (!options.createCommentSuccess) {
         useCommentServicesMock.createComment.mockRejectedValue(new Error(CREATE_COMMENT_ERROR_MSG));
-    } else if (options.createCommentTruthyReturn) {
-        useCommentServicesMock.createComment.mockResolvedValue(newComment);
-    } else {
+    } else if (options.createCommentEmptyReturn) {
         useCommentServicesMock.createComment.mockResolvedValue("");
+    } else {
+        useCommentServicesMock.createComment.mockResolvedValue(newComment);
     };
 
     const { unmount } = render(
@@ -129,11 +129,11 @@ describe("CommentCreateForm component", () => {
         expect(setAlert).not.toHaveBeenCalled();
     });
 
-    it("does not create new comment with an empty form input", async () => {
+    it("does nothing when comment creation returns nothing", async () => {
         const user = userEvent.setup();
         setup({
             createCommentSuccess: true,
-            createCommentTruthyReturn: false
+            createCommentEmptyReturn: true
         });
 
         const inputEl = screen.getByLabelText("Comment");
@@ -154,7 +154,7 @@ describe("CommentCreateForm component", () => {
         const user = userEvent.setup();
         setup({
             createCommentSuccess: false,
-            createCommentTruthyReturn: true,
+            createCommentEmptyReturn: false,
         });
 
         await user.click(screen.getByRole("button", { name: BUTTON_TEXT }));
