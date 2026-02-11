@@ -1,10 +1,11 @@
+import { Link, MemoryRouter } from "react-router";
+
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { AlertContext } from "../../../contexts/alert-context";
 
 import LoginPage from "./LoginPage";
-import { Link, MemoryRouter } from "react-router";
 
 vi.mock("../../shared/auth/auth-header-title/AuthHeaderTitle", () => ({
     default: ({ title }) => <h4 data-testid="auth-header-title">{title}</h4>
