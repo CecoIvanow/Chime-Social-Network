@@ -9,7 +9,7 @@ import { AlertContext } from "../../../contexts/alert-context";
 import LoginPage from "./LoginPage";
 
 vi.mock("../../shared/auth/auth-header-title/AuthHeaderTitle", () => ({
-    default: ({ title }) => <h4 data-testid="auth-header-title">{title}</h4>
+    default: ({ title }) => <div data-testid="auth-header-title">{title}</div>
 }));
 
 vi.mock("../../shared/auth/auth-forms-list/AuthFormsList", () => ({
@@ -31,7 +31,6 @@ vi.mock("../../shared/auth/auth-forms-list/AuthFormsList", () => ({
 vi.mock("../../ui/auth/auth-button/AuthButton", () => ({
     default: ({ buttonText, isPending }) => (
         <button
-            data-testid="auth-button"
             type="submit"
             disabled={isPending}
         >
@@ -43,7 +42,6 @@ vi.mock("../../ui/auth/auth-button/AuthButton", () => ({
 vi.mock("../../ui/auth/auth-nav-link/AuthNavLink", () => ({
     default: ({ path, buttonText }) => (
         <Link
-            data-testid="auth-nav-link"
             to={path}>
             <button>
                 {buttonText}
@@ -96,10 +94,10 @@ describe("LoginPage component", () => {
 
         expect(screen.getByTestId("auth-header-title")).toHaveTextContent("Login");
 
-        expect(screen.getByTestId("auth-button")).toHaveTextContent("Login");
+        expect(screen.getByRole("button", { name: "Login" })).toBeInTheDocument();
 
-        expect(screen.getByTestId("auth-nav-link")).toHaveAttribute("href", "/register");
-        expect(screen.getByTestId("auth-nav-link")).toHaveTextContent("Don`t have an account?");
+        expect(screen.getByRole("link")).toHaveAttribute("href", "/register");
+        expect(screen.getByRole("link")).toHaveTextContent("Don`t have an account?");
 
         const authFormsLabels = screen.getAllByTestId("auth-forms-label");
         const authFormsInputs = screen.getAllByTestId("auth-forms-input");
@@ -116,16 +114,16 @@ describe("LoginPage component", () => {
     it("authButton is not disabled on initial render", () => {
         setup();
 
-        expect(screen.getByTestId("auth-button")).not.toBeDisabled();
+        expect(screen.getByRole("button", { name: "Login" })).not.toBeDisabled();
     });
 
     it("authButton is disabled after form submit", async () => {
         const user = userEvent.setup();
         setup();
 
-        user.click(screen.getByTestId("auth-button"));
+        user.click(screen.getByRole("button", { name: "Login" }));
 
-        await waitFor(() => expect(screen.getByTestId("auth-button")).toBeDisabled());
+        await waitFor(() => expect(screen.getByRole("button", { name: "Login" })).toBeDisabled());
     });
 
     it("triggers login with form data on submit", async () => {
@@ -143,7 +141,7 @@ describe("LoginPage component", () => {
         await user.type(emailInput, EMAIL_VALUE);
         await user.type(passwordInput, PASSWORD_VALUE);
 
-        await user.click(screen.getByTestId("auth-button"));
+        await user.click(screen.getByRole("button", { name: "Login" }));
 
         await waitFor(() => expect(loginMock).toHaveBeenCalledWith({
             email: EMAIL_VALUE,
@@ -157,7 +155,7 @@ describe("LoginPage component", () => {
             loginRejectedReturnValue: true
         });
 
-        await user.click(screen.getByTestId("auth-button"))
+        await user.click(screen.getByRole("button", { name: "Login" }))
 
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(LOGIN_ERR_MSG));
     });
