@@ -93,19 +93,16 @@ describe("LoginPage component", () => {
         expect(screen.getByTestId("auth-header-title")).toHaveTextContent("Login");
     });
 
-    it("renders connected auth forms with type, name and placeholder attributes", () => {
+    it("renders connected form inputs and with type, name and placeholder attributes", () => {
         setup();
 
-        const authFormsLabels = screen.getAllByTestId("auth-forms-label");
-        const authFormsInputs = screen.getAllByTestId("auth-forms-input");
-
         for (let i = 0; i < loginFields.length; i++) {
-            expect(authFormsLabels[i]).toHaveAttribute("for", loginFields[i].inputName);
-            expect(authFormsInputs[i]).toHaveAttribute("id", loginFields[i].inputName);
-            expect(authFormsInputs[i]).toHaveAttribute("name", loginFields[i].inputName);
-            expect(authFormsInputs[i]).toHaveAttribute("type", loginFields[i].inputType);
-            expect(authFormsInputs[i]).toHaveAttribute("placeholder", loginFields[i].placeholderText);
-        }
+            const authFormsInputs = screen.getByLabelText(loginFields[i].fieldName);
+
+            expect(authFormsInputs).toHaveAttribute("name", loginFields[i].inputName);
+            expect(authFormsInputs).toHaveAttribute("type", loginFields[i].inputType);
+            expect(authFormsInputs).toHaveAttribute("placeholder", loginFields[i].placeholderText);
+        };
     });
 
     it("renders login button", () => {
