@@ -14,17 +14,17 @@ vi.mock("../../../shared/input-fields/create-content-input-field/CreateContentIn
             const formData = new FormData(e.currentTarget);
             onSubmitHandler(formData);
         }}>
+            <label htmlFor="comment">{"Comment"}</label>
             <input
                 type="text"
                 onChange={onTextChangeHandler}
                 id="comment"
                 value={text}
-                data-testid="input"
                 name="content"
             >
             </input>
 
-            <button data-testid="button" type="submit">{buttonText}</button>
+            <button type="submit">{buttonText}</button>
         </form>
     </>
 }));
@@ -92,8 +92,8 @@ describe("CommentCreateForm component", () => {
     it("renders CommentCreateForm with passed props", () => {
         setup();
 
-        expect(screen.getByTestId("button")).toHaveTextContent(BUTTON_TEXT);
-        expect(screen.getByTestId("input")).toHaveValue(INITIAL_INPUT_VALUE);
+        expect(screen.getByRole("button", {name: BUTTON_TEXT})).toBeInTheDocument();
+        expect(screen.getByLabelText("Comment")).toHaveValue(INITIAL_INPUT_VALUE);
     });
 
     it("on value change triggers onTextChangeHandler", () => {
@@ -101,7 +101,7 @@ describe("CommentCreateForm component", () => {
 
         const newValue = "test";
 
-        const inputEl = screen.getByTestId("input");
+        const inputEl = screen.getByLabelText("Comment");
 
         fireEvent.change(inputEl, { target: { value: newValue } });
 
@@ -115,10 +115,10 @@ describe("CommentCreateForm component", () => {
 
         const newValue = "test";
 
-        const inputEl = screen.getByTestId("input");
+        const inputEl = screen.getByLabelText("Comment");
 
         fireEvent.change(inputEl, { target: { value: newValue } });
-        fireEvent.click(screen.getByTestId("button"));
+        fireEvent.click(screen.getByRole("button", { name: BUTTON_TEXT }));
 
         await waitFor(() => {
             const updatedPost = postContextMock.setPost.mock.calls[0][0];
@@ -137,10 +137,10 @@ describe("CommentCreateForm component", () => {
 
         const newValue = "test";
 
-        const inputEl = screen.getByTestId("input");
+        const inputEl = screen.getByLabelText("Comment");
 
         fireEvent.change(inputEl, { target: { value: newValue } });
-        fireEvent.click(screen.getByTestId("button"));
+        fireEvent.click(screen.getByRole("button", { name: BUTTON_TEXT }));
 
         await waitFor(() => {
             expect(useCommentServicesMock.createComment).toHaveBeenCalled();
@@ -157,7 +157,7 @@ describe("CommentCreateForm component", () => {
             createCommentTruthyReturn: true,
         });
 
-        fireEvent.click(screen.getByTestId("button"));
+        fireEvent.click(screen.getByRole("button", { name: BUTTON_TEXT }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(CREATE_COMMENT_ERROR_MSG);
