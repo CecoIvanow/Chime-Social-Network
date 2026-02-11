@@ -10,7 +10,7 @@ vi.mock("./not-found-message/NotFoundMessage", () => ({
 }));
 
 vi.mock("../../ui/buttons/link-button/LinkButton", () => ({
-    default: ({ urlLink, buttonName }) => <Link data-testid="link-button" to={urlLink}>{buttonName}</Link>
+    default: ({ urlLink, buttonName }) => <Link to={urlLink}>{buttonName}</Link>
 }));
 
 beforeEach(() => {
@@ -23,8 +23,7 @@ beforeEach(() => {
 
 describe("NotFoundPage component", () => {
     it("renders link button with correct text content and href attribute", () => {
-        expect(screen.getByTestId("link-button")).toHaveTextContent("Home");
-        expect(screen.getByTestId("link-button")).toHaveAttribute("href", '/');
+        expect(screen.getByRole("link", {name: "Home"})).toHaveAttribute("href", '/');
     });
 
     it("renders not found message on screen", () => {
