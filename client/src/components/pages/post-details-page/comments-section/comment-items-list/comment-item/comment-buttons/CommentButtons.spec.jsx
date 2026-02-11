@@ -1,12 +1,13 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+import { UserContext } from "../../../../../../../contexts/user-context";
 
 import CommentButtons from "./CommentButtons";
-import { UserContext } from "../../../../../../../contexts/user-context";
 
 vi.mock("../../../../../../shared/controls/owner-buttons/OwnerButtons", () => ({
     default: ({ itemId }) => <button data-testid="owner-button">{itemId}</button>
-}))
+}));
 
 const comment = {
     _id: "commentId",
