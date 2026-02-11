@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, } from "vitest";
 
 import { AlertContext } from "../../../../contexts/alert-context";
@@ -8,7 +9,7 @@ import { UserContext } from "../../../../contexts/user-context";
 import CreateCommentForm from "./CommentCreateForm";
 
 vi.mock("../../../shared/input-fields/create-content-input-field/CreateContentInputField", () => ({
-    default: ({ onSubmitHandler, onTextChangeHandler, buttonText, text }) => <>
+    default: ({ onSubmitHandler, onTextChangeHandler, buttonText, text }) => (
         <form onSubmit={(e) => {
             e.preventDefault();
             const formData = new FormData(e.currentTarget);
@@ -26,7 +27,7 @@ vi.mock("../../../shared/input-fields/create-content-input-field/CreateContentIn
 
             <button type="submit">{buttonText}</button>
         </form>
-    </>
+    )
 }));
 
 vi.mock("../../../../hooks/useCommentServices", () => ({
@@ -96,19 +97,21 @@ describe("CommentCreateForm component", () => {
         expect(screen.getByLabelText("Comment")).toHaveValue(INITIAL_INPUT_VALUE);
     });
 
-    it("on value change triggers onTextChangeHandler", () => {
+    it("on value change triggers onTextChangeHandler", async () => {
+        const user = userEvent.setup();
         setup();
 
         const newValue = "test";
 
         const inputEl = screen.getByLabelText("Comment");
 
-        fireEvent.change(inputEl, { target: { value: newValue } });
+        await user.type(inputEl, newValue);
 
         expect(inputEl).toHaveValue(newValue);
     });
 
     it("on successfull createComment call updates post comments array", async () => {
+        const user = userEvent.setup();
         setup();
 
         const initialCommentsLen = postContextMock.post.comments.length;
@@ -117,8 +120,8 @@ describe("CommentCreateForm component", () => {
 
         const inputEl = screen.getByLabelText("Comment");
 
-        fireEvent.change(inputEl, { target: { value: newValue } });
-        fireEvent.click(screen.getByRole("button", { name: BUTTON_TEXT }));
+        await user.type(inputEl, newValue);
+        await user.click(screen.getByRole("button", { name: BUTTON_TEXT }));
 
         await waitFor(() => {
             const updatedPost = postContextMock.setPost.mock.calls[0][0];
@@ -130,6 +133,7 @@ describe("CommentCreateForm component", () => {
     });
 
     it("exits on empty createComment return value", async () => {
+        const user = userEvent.setup();
         setup({
             createCommentSuccess: true,
             createCommentTruthyReturn: false
@@ -139,8 +143,8 @@ describe("CommentCreateForm component", () => {
 
         const inputEl = screen.getByLabelText("Comment");
 
-        fireEvent.change(inputEl, { target: { value: newValue } });
-        fireEvent.click(screen.getByRole("button", { name: BUTTON_TEXT }));
+        await user.type(inputEl, newValue);
+        await user.click(screen.getByRole("button", { name: BUTTON_TEXT }));
 
         await waitFor(() => {
             expect(useCommentServicesMock.createComment).toHaveBeenCalled();
@@ -152,12 +156,13 @@ describe("CommentCreateForm component", () => {
     });
 
     it("on rejected createComment call triggers setAlert", async () => {
+        const user = userEvent.setup();
         setup({
             createCommentSuccess: false,
             createCommentTruthyReturn: true,
         });
 
-        fireEvent.click(screen.getByRole("button", { name: BUTTON_TEXT }));
+        await user.click(screen.getByRole("button", { name: BUTTON_TEXT }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(CREATE_COMMENT_ERROR_MSG);
