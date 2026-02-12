@@ -31,13 +31,13 @@ function setup(options = {
 };
 
 describe("CommentButtons component", () => {
-    it("renders OwnerButtons with passed props on matchimg isUser and owner id", () => {
+    it("renders the owner buttons when the user is logged in and the owner", () => {
         setup();
 
         expect(screen.getByTestId("owner-buttons")).toHaveTextContent(mockProps.comment._id);
     });
 
-    it("does not render OwnerButtons on different isUser and owner id", () => {
+    it("does not render the owner buttons when the logged in user is not the owner", () => {
         setup({
             matchingIds: false
         });
