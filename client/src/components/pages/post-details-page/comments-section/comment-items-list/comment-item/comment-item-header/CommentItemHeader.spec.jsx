@@ -5,23 +5,25 @@ import { describe, expect, it, beforeEach } from "vitest";
 
 import CommentItemHeader from "./CommentItemHeader";
 
-const comment = {
-    owner: {
-        _id: "ownerId",
-        imageUrl: "https://example.org/avatar.webp",
-        firstName: "Petar",
-        lastName: "Ivanov",
+const mockProps = {
+    comment: {
+        owner: {
+            _id: "ownerId",
+            imageUrl: "https://example.org/avatar.webp",
+            firstName: "Petar",
+            lastName: "Ivanov",
+        },
+        postedOn: "23.12.2025",
     },
-    postedOn: "23.12.2025",
-}
+};
 
 function setup() {
     render(
         <MemoryRouter>
-            <CommentItemHeader comment={comment} />
+            <CommentItemHeader {...mockProps} />
         </MemoryRouter>
     );
-}
+};
 
 describe("CommentItemHeader component", () => {
     beforeEach(() => {
@@ -29,9 +31,9 @@ describe("CommentItemHeader component", () => {
     });
 
     it("renders component with passed props", () => {
-        expect(screen.getByAltText(`${comment.owner.firstName} ${comment.owner.lastName} avatar`)).toHaveAttribute("src", comment.owner.imageUrl);
-        expect(screen.getByRole("link")).toHaveTextContent(`${comment.owner.firstName} ${comment.owner.lastName}`);
-        expect(screen.getByRole("link")).toHaveAttribute("href", `/profile/${comment.owner._id}`);
-        expect(screen.getByText(`Posted on ${ comment.postedOn }`)).toBeInTheDocument();
+        expect(screen.getByAltText(`${mockProps.comment.owner.firstName} ${mockProps.comment.owner.lastName} avatar`)).toHaveAttribute("src", mockProps.comment.owner.imageUrl);
+        expect(screen.getByRole("link")).toHaveTextContent(`${mockProps.comment.owner.firstName} ${mockProps.comment.owner.lastName}`);
+        expect(screen.getByRole("link")).toHaveAttribute("href", `/profile/${mockProps.comment.owner._id}`);
+        expect(screen.getByText(`Posted on ${mockProps.comment.postedOn}`)).toBeInTheDocument();
     });
 });
