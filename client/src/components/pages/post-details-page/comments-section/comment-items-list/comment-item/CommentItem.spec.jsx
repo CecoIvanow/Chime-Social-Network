@@ -76,4 +76,12 @@ describe("CommentItem component", () => {
             expect(screen.getByTestId("comment-text")).toBeInTheDocument();
         };
     });
+
+    it("calls comment text setters on mount", () => {
+        setup();
+
+        expect(actionsCtxMock.setCommentText).toHaveBeenCalledWith(mockProps.comment.text);
+
+        expect(actionsCtxMock.setOnEditCommentText).toHaveBeenCalledWith(mockProps.comment.text);
+    });
 });
