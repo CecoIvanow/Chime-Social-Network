@@ -7,19 +7,15 @@ import CommentText from "./CommentText";
 
 const actionsCtxCommentText = "Comment text content!";
 
-function setup() {
+beforeEach(() => {
     render(
         <ActionsContext.Provider value={{ commentText: actionsCtxCommentText }}>
             <CommentText />
         </ActionsContext.Provider>
     );
-};
+});
 
 describe("CommentText component", () => {
-    beforeEach(() => {
-        setup();
-    });
-
     it("renders component with commentText context value", () => {
         expect(screen.getByText(actionsCtxCommentText)).toBeInTheDocument();
     });
