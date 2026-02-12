@@ -26,12 +26,11 @@ describe("CommentEditTextArea component", () => {
     });
 
     it("renders component with context values", () => {
-        expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", PLACEHOLDER_TEXT);
-        expect(screen.getByRole("textbox")).toHaveValue(actionsContextMock.onEditCommentText);
+        expect(screen.getByRole("textbox", { value: actionsContextMock.onEditCommentText })).toHaveAttribute("placeholder", PLACEHOLDER_TEXT);
     });
 
     it("triggers onTextChangeHandler on value change", () => {
-        fireEvent.change(screen.getByRole("textbox"), {target: {value: "a"}});
+        fireEvent.change(screen.getByRole("textbox"), { target: { value: "a" } });
 
         expect(actionsContextMock.onTextChangeHandler).toHaveBeenCalled();
     });
