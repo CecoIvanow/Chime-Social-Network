@@ -19,19 +19,15 @@ const mockProps = {
 
 const commentOwnerNames = `${mockProps.comment.owner.firstName} ${mockProps.comment.owner.lastName}`;
 
-function setup() {
+beforeEach(() => {
     render(
         <MemoryRouter>
             <CommentItemHeader {...mockProps} />
         </MemoryRouter>
     );
-};
+});
 
 describe("CommentItemHeader component", () => {
-    beforeEach(() => {
-        setup();
-    });
-
     it("renders image with correct src and alt attributes", () => {
         expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.comment.owner.imageUrl);
         expect(screen.getByRole("img")).toHaveAttribute("alt", `${commentOwnerNames} avatar`);
