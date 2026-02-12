@@ -1,9 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
-
-import CommentItem from "./CommentItem";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { ActionsContext } from "../../../../../../contexts/actions-context";
+
+import CommentItem from "./CommentItem";
 
 vi.mock("./comment-item-header/CommentItemHeader", () => ({
     default: ({ comment }) => <div data-testid="comment-item-header">{comment.text}</div>
@@ -23,7 +23,7 @@ vi.mock("./comment-buttons/CommentButtons", () => ({
 
 const mockProps = {
     comment: {
-        text: "This is a mockProps.comment."
+        text: "This is a comment."
     },
 };
 
