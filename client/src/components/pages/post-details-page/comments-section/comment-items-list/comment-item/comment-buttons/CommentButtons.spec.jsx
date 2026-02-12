@@ -19,9 +19,9 @@ const mockProps = {
 };
 
 function setup(options = {
-    matchingIds: true
+    isTheOwner: true
 }) {
-    const isUser = options.matchingIds ? mockProps.comment.owner._id : "userId";
+    const isUser = options.isTheOwner ? mockProps.comment.owner._id : "userId";
 
     render(
         <UserContext.Provider value={{ isUser }}>
@@ -39,7 +39,7 @@ describe("CommentButtons component", () => {
 
     it("does not render the owner buttons when the logged in user is not the owner", () => {
         setup({
-            matchingIds: false
+            isTheOwner: false
         });
 
         expect(screen.queryByTestId("owner-buttons")).not.toBeInTheDocument();
