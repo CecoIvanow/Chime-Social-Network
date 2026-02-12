@@ -1,11 +1,11 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import CommentItemsList from "./CommentItemsList";
-
 import { ActionsContext } from "../../../../../contexts/actions-context";
-import { PostContext } from "../../../../../contexts/post-context";
 import { AlertContext } from "../../../../../contexts/alert-context";
+import { PostContext } from "../../../../../contexts/post-context";
+
+import CommentItemsList from "./CommentItemsList";
 
 vi.mock("./comment-item/CommentItem", () => ({
     default: ({ comment }) =>
