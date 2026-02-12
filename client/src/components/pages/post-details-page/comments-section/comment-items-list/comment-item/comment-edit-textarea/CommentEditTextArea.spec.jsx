@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
@@ -25,9 +26,12 @@ describe("CommentEditTextArea component", () => {
         expect(screen.getByRole("textbox", { value: actionsContextMock.onEditCommentText })).toHaveAttribute("placeholder", PLACEHOLDER_TEXT);
     });
 
-    it("triggers onTextChangeHandler on value change", () => {
-        fireEvent.change(screen.getByRole("textbox"), { target: { value: "a" } });
+    it("triggers onTextChangeHandler on value change", async () => {
+        const user = userEvent.setup();
 
+        const newValue = "Test!";
+        
+        await user.type(screen.getByRole("textbox"), newValue);
         expect(actionsContextMock.onTextChangeHandler).toHaveBeenCalled();
     });
 });
