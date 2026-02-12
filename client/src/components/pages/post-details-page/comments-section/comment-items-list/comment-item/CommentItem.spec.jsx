@@ -37,7 +37,7 @@ function setup(options = {
 }) {
     const isEditClicked = options.isEditClicked || false;
 
-    render(
+    const { rerender } = render(
         <ActionsContext.Provider value={{
             isEditClicked,
             ...actionsCtxMock
@@ -45,6 +45,8 @@ function setup(options = {
             <CommentItem {...mockProps} />
         </ActionsContext.Provider >
     );
+
+    return { rerender };
 };
 
 describe("CommentItem component", () => {
@@ -83,5 +85,24 @@ describe("CommentItem component", () => {
         expect(actionsCtxMock.setCommentText).toHaveBeenCalledWith(mockProps.comment.text);
 
         expect(actionsCtxMock.setOnEditCommentText).toHaveBeenCalledWith(mockProps.comment.text);
+    });
+
+    it("calls setters again when comment text changes", () => {
+        const { rerender } = setup();
+
+        const newComment = { text: "Updated comment." };
+
+        rerender(
+            <ActionsContext.Provider value={{
+                isEditClicked: true,
+                ...actionsCtxMock
+            }}>
+                <CommentItem comment={newComment} />
+            </ActionsContext.Provider>
+        );
+
+        expect(actionsCtxMock.setCommentText).toHaveBeenLastCalledWith(newComment.text);
+
+        expect(actionsCtxMock.setOnEditCommentText).toHaveBeenLastCalledWith(newComment.text);
     });
 });
