@@ -6,7 +6,7 @@ import CommentItem from "./CommentItem";
 import { ActionsContext } from "../../../../../../contexts/actions-context";
 
 vi.mock("./comment-item-header/CommentItemHeader", () => ({
-    default: ({ comment }) => <div data-testid="comment-item-header">{comment.text}</div>
+    default: ({ comment }) => <div data-testid="comment-item-header">{mockProps.comment.text}</div>
 }))
 
 vi.mock("./comment-edit-textarea/CommentEditTextArea", () => ({
@@ -18,11 +18,13 @@ vi.mock("./comment-text/CommentText", () => ({
 }));
 
 vi.mock("./comment-buttons/CommentButtons", () => ({
-    default: ({ comment }) => <div data-testid="comment-button">{comment.text}</div>
+    default: ({ comment }) => <div data-testid="comment-button">{mockProps.comment.text}</div>
 }))
 
-const comment = {
-    text: "This is a comment."
+const mockProps = {
+    comment: {
+        text: "This is a mockProps.comment."
+    },
 };
 
 const setCommentText = vi.fn();
@@ -39,7 +41,7 @@ function setup(options = {
             setCommentText,
             setOnEditCommentText
         }}>
-            <CommentItem comment={comment} />
+            <CommentItem {...mockProps} />
         </ActionsContext.Provider>
     );
 };
@@ -48,13 +50,13 @@ describe("CommentItem component", () => {
     it("renders CommentItemHeader with passed props", () => {
         setup();
 
-        expect(screen.getByTestId("comment-item-header")).toHaveTextContent(comment.text);
+        expect(screen.getByTestId("comment-item-header")).toHaveTextContent(mockProps.comment.text);
     });
 
     it("renders CommentButtons with passed props", () => {
         setup();
 
-        expect(screen.getByTestId("comment-button")).toHaveTextContent(comment.text);
+        expect(screen.getByTestId("comment-button")).toHaveTextContent(mockProps.comment.text);
     });
 
     it.each([
