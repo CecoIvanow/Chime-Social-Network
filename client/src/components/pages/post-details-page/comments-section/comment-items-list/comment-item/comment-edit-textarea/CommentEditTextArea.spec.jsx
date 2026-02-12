@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { ActionsContext } from "../../../../../../../contexts/actions-context";
@@ -22,11 +22,11 @@ beforeEach(() => {
 });
 
 describe("CommentEditTextArea component", () => {
-    it("renders component with context values", () => {
+    it("renders textarea with placeholder attribute and correct value", () => {
         expect(screen.getByRole("textbox", { value: actionsContextMock.onEditCommentText })).toHaveAttribute("placeholder", PLACEHOLDER_TEXT);
     });
 
-    it("triggers onTextChangeHandler on value change", async () => {
+    it("triggers an event on user value change", async () => {
         const user = userEvent.setup();
 
         const newValue = "Test!";
