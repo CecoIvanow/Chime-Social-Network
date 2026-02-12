@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
-import CommentEditTextArea from "./CommentEditTextArea";
-
 import { ActionsContext } from "../../../../../../../contexts/actions-context";
+
+import CommentEditTextArea from "./CommentEditTextArea";
 
 const PLACEHOLDER_TEXT = "Edit your post content..."
 
