@@ -57,6 +57,11 @@ vi.mock("../../../../../hooks/useCommentServices", () => ({
 const TEST_COMMENT = 0;
 const NEW_COMMENT_CONTENT = "The comment content has changed";
 
+const ERR_MSG = {
+    UPDATE_COMMENT: "Rejected comment update!",
+    DELETE_COMMENT: "Rejected comment deletion!",
+};
+
 const useCommentServicesMock = {
     updateComment: vi.fn(),
     deleteComment: vi.fn(),
@@ -80,7 +85,7 @@ function setup(options = {
     updateCommentTruthyReturn: true
 }) {
     if (!options.updateCommentSuccess) {
-        useCommentServicesMock.updateComment.mockRejectedValue(new Error("Successfully rejected comment update!"));
+        useCommentServicesMock.updateComment.mockRejectedValue(new Error(ERR_MSG.UPDATE_COMMENT));
     } else if (!options.updateCommentTruthyReturn) {
         useCommentServicesMock.updateComment.mockResolvedValue(""); // falsy value
     } else {
@@ -89,7 +94,7 @@ function setup(options = {
 
     options.deleteCommentSuccess ?
         useCommentServicesMock.deleteComment.mockResolvedValue(TEST_COMMENT) :
-        useCommentServicesMock.deleteComment.mockRejectedValue(new Error("Successfully rejected delete comment!"));
+        useCommentServicesMock.deleteComment.mockRejectedValue(new Error(ERR_MSG.DELETE_COMMENT));
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
