@@ -9,21 +9,23 @@ vi.mock("../../../../../../shared/controls/owner-buttons/OwnerButtons", () => ({
     default: ({ itemId }) => <div data-testid="owner-buttons">{itemId}</div>
 }));
 
-const comment = {
-    _id: "commentId",
-    owner: {
-        _id: "ownerId",
-    },
+const mockProps = {
+    comment: {
+        _id: "commentId",
+        owner: {
+            _id: "ownerId",
+        },
+    }
 };
 
 function setup(options = {
     matchingIds: true
 }) {
-    const isUser = options.matchingIds ? comment.owner._id : "userId";
+    const isUser = options.matchingIds ? mockProps.comment.owner._id : "userId";
 
     render(
         <UserContext.Provider value={{ isUser }}>
-            <CommentButtons comment={comment} />
+            <CommentButtons {...mockProps} />
         </UserContext.Provider>
     );
 };
@@ -32,7 +34,7 @@ describe("CommentButtons component", () => {
     it("renders OwnerButtons with passed props on matchimg isUser and owner id", () => {
         setup();
 
-        expect(screen.getByTestId("owner-buttons")).toHaveTextContent(comment._id);
+        expect(screen.getByTestId("owner-buttons")).toHaveTextContent(mockProps.comment._id);
     });
 
     it("does not render OwnerButtons on different isUser and owner id", () => {
