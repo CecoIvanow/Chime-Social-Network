@@ -48,23 +48,22 @@ function setup(options = {
 };
 
 describe("CommentItem component", () => {
-    it("renders CommentItemHeader with passed props", () => {
+    it("renders comment header with comment info", () => {
         setup();
 
         expect(screen.getByTestId("comment-item-header")).toHaveTextContent(mockProps.comment.text);
     });
 
-    it("renders CommentButtons with passed props", () => {
+    it("renders comment buttons with comment info", () => {
         setup();
 
         expect(screen.getByTestId("comment-button")).toHaveTextContent(mockProps.comment.text);
     });
 
     it.each([
-        { renderedComp: "CommentText", isEditClicked: false },
-        { renderedComp: "CommentEditTextArea", isEditClicked: true },
-    ])("renders $renderedComp on isEditClicked $isEditClicked", ({ isEditClicked }) => {
-
+        { name: "renders comment text when editing is not chosen", isEditClicked: false },
+        { name: "renders comment text area when editing is chosen", isEditClicked: true },
+    ])("$name", ({ isEditClicked }) => {
         setup({
             isEditClicked
         });
