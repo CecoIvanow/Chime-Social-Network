@@ -50,15 +50,15 @@ vi.mock("./comment-item/CommentItem", () => ({
 
 vi.mock("../../../../../hooks/useCommentServices", () => ({
     default: () => ({
-        updateComment: updateCommentMock,
-        deleteComment: deleteCommentMock,
-        abortAll: abortAllMock,
+        ...useCommentServicesMock
     })
 }));
 
-const updateCommentMock = vi.fn();
-const deleteCommentMock = vi.fn();
-const abortAllMock = vi.fn();
+const useCommentServicesMock = {
+    updateComment: vi.fn(),
+    deleteComment: vi.fn(),
+    abortAll: vi.fn(),
+};
 
 const setAlert = vi.fn();
 
@@ -78,16 +78,16 @@ function setup(options = {
     updateCommentTruthyReturn: true
 }) {
     if (!options.updateCommentSuccess) {
-        updateCommentMock.mockRejectedValue(new Error("Successfully rejected comment update!"));
+        useCommentServicesMock.updateComment.mockRejectedValue(new Error("Successfully rejected comment update!"));
     } else if (!options.updateCommentTruthyReturn) {
-        updateCommentMock.mockResolvedValue(""); // falsy value
+        useCommentServicesMock.updateComment.mockResolvedValue(""); // falsy value
     } else {
-        updateCommentMock.mockResolvedValue(NEW_COMMENT_CONTENT);
+        useCommentServicesMock.updateComment.mockResolvedValue(NEW_COMMENT_CONTENT);
     }
 
     options.deleteCommentSuccess ?
-        deleteCommentMock.mockResolvedValue(TEST_COMMENT) :
-        deleteCommentMock.mockRejectedValue(new Error("Successfully rejected delete comment!"));
+        useCommentServicesMock.deleteComment.mockResolvedValue(TEST_COMMENT) :
+        useCommentServicesMock.deleteComment.mockRejectedValue(new Error("Successfully rejected delete comment!"));
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -119,7 +119,7 @@ describe("CommentItemsList", () => {
             const updater = setPost.mock.calls[0][0];
             const result = updater(post);
 
-            expect(deleteCommentMock).toHaveBeenCalledWith(TEST_COMMENT);
+            expect(useCommentServicesMock.deleteComment).toHaveBeenCalledWith(TEST_COMMENT);
             expect(setPost).toHaveBeenCalledWith(updater);
             expect(result.comments).toHaveLength(0);
         });
@@ -132,7 +132,7 @@ describe("CommentItemsList", () => {
         fireEvent.click(screen.getAllByTestId("delete-button")[TEST_COMMENT]);
 
         await waitFor(() => {
-            expect(deleteCommentMock).not.toHaveBeenCalledWith();
+            expect(useCommentServicesMock.deleteComment).not.toHaveBeenCalledWith();
             expect(setPost).not.toHaveBeenCalled();
         })
     });
@@ -149,7 +149,7 @@ describe("CommentItemsList", () => {
         fireEvent.click(screen.getAllByTestId("delete-button")[TEST_COMMENT]);
 
         await waitFor(() => {
-            expect(deleteCommentMock).toHaveBeenCalledWith(TEST_COMMENT);
+            expect(useCommentServicesMock.deleteComment).toHaveBeenCalledWith(TEST_COMMENT);
             expect(setAlert).toHaveBeenCalled();
         });
     });
@@ -210,7 +210,7 @@ describe("CommentItemsList", () => {
         fireEvent.click(screen.getByTestId("save-button"));
 
         await waitFor(() => {
-            expect(updateCommentMock).toHaveBeenCalledWith(TEST_COMMENT, NEW_COMMENT_CONTENT);
+            expect(useCommentServicesMock.updateComment).toHaveBeenCalledWith(TEST_COMMENT, NEW_COMMENT_CONTENT);
             expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
             expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
             expect(screen.queryByTestId("cancel-button")).not.toBeInTheDocument();
@@ -252,7 +252,7 @@ describe("CommentItemsList", () => {
         fireEvent.click(screen.getByTestId("save-button"));
 
         await waitFor(() => {
-            expect(updateCommentMock).toHaveBeenCalledWith(TEST_COMMENT, NEW_COMMENT_CONTENT);
+            expect(useCommentServicesMock.updateComment).toHaveBeenCalledWith(TEST_COMMENT, NEW_COMMENT_CONTENT);
             expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
             expect(screen.getByTestId("save-button")).toBeInTheDocument();
             expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
@@ -265,6 +265,6 @@ describe("CommentItemsList", () => {
 
         unmount();
 
-        expect(abortAllMock).toHaveBeenCalled();
+        expect(useCommentServicesMock.abortAll).toHaveBeenCalled();
     })
 });
