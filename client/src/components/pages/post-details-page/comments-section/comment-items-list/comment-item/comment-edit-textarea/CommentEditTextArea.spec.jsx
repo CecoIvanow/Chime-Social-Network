@@ -7,12 +7,14 @@ import CommentEditTextArea from "./CommentEditTextArea";
 
 const PLACEHOLDER_TEXT = "Edit your post content..."
 
-const onEditCommentText = "Comment content!";
-const onTextChangeHandler = vi.fn();
+const actionsContextMock = {
+    onEditCommentText: "Comment content!",
+    onTextChangeHandler: vi.fn(),
+};
 
 function setup() {
     render(
-        <ActionsContext.Provider value={{ onEditCommentText, onTextChangeHandler, }}>
+        <ActionsContext.Provider value={{ ...actionsContextMock }}>
             <CommentEditTextArea />
         </ActionsContext.Provider>
     );
@@ -25,12 +27,12 @@ describe("CommentEditTextArea component", () => {
 
     it("renders component with context values", () => {
         expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", PLACEHOLDER_TEXT);
-        expect(screen.getByRole("textbox")).toHaveValue(onEditCommentText);
+        expect(screen.getByRole("textbox")).toHaveValue(actionsContextMock.onEditCommentText);
     });
 
     it("triggers onTextChangeHandler on value change", () => {
         fireEvent.change(screen.getByRole("textbox"), {target: {value: "a"}});
 
-        expect(onTextChangeHandler).toHaveBeenCalled();
+        expect(actionsContextMock.onTextChangeHandler).toHaveBeenCalled();
     });
 });
