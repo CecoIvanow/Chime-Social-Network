@@ -82,12 +82,12 @@ const postCtxMock = {
 function setup(options = {
     deleteCommentSuccess: true,
     updateCommentSuccess: true,
-    updateCommentTruthyReturn: true
+    updateCommentEmptyReturn: false
 }) {
     if (!options.updateCommentSuccess) {
         useCommentServicesMock.updateComment.mockRejectedValue(new Error(ERR_MSG.UPDATE_COMMENT));
-    } else if (!options.updateCommentTruthyReturn) {
-        useCommentServicesMock.updateComment.mockResolvedValue(""); // falsy value
+    } else if (options.updateCommentEmptyReturn) {
+        useCommentServicesMock.updateComment.mockResolvedValue(null);
     } else {
         useCommentServicesMock.updateComment.mockResolvedValue(NEW_COMMENT_CONTENT);
     }
@@ -144,11 +144,11 @@ describe("CommentItemsList", () => {
         })
     });
 
-    it("triggers setAlert on deleteComment rejectred call", async () => {
+    it("triggers setAlert on deleteComment rejected call", async () => {
         setup({
             deleteCommentSuccess: false,
             updateCommentSuccess: true,
-            updateCommentTruthyReturn: true
+            updateCommentEmptyReturn: false,
         });
 
         vi.spyOn(window, "confirm").mockReturnValue(true);
@@ -229,7 +229,7 @@ describe("CommentItemsList", () => {
         setup({
             deleteCommentSuccess: true,
             updateCommentSuccess: false,
-            updateCommentTruthyReturn: true
+            updateCommentEmptyReturn: false,
         });
 
         fireEvent.click(screen.getByTestId("edit-button"));
@@ -244,11 +244,11 @@ describe("CommentItemsList", () => {
         });
     });
     
-    it("does NOT exit edit mode when updateComment returns falsy value", async () => {
+    it("does NOT exit edit mode when updateComment returns empty value", async () => {
         setup({
             deleteCommentSuccess: true,
             updateCommentSuccess: true,
-            updateCommentTruthyReturn: false
+            updateCommentEmptyReturn: true
         });
 
         fireEvent.click(screen.getByTestId("edit-button"));
