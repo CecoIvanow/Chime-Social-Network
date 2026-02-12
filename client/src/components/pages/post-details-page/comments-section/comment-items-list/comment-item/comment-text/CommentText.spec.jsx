@@ -16,7 +16,7 @@ beforeEach(() => {
 });
 
 describe("CommentText component", () => {
-    it("renders component with commentText context value", () => {
+    it("renders with correct comment text value", () => {
         expect(screen.getByText(actionsCtxCommentText)).toBeInTheDocument();
     });
 });
