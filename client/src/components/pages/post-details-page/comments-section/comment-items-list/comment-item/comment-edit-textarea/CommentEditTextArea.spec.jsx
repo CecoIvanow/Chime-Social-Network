@@ -12,19 +12,15 @@ const actionsContextMock = {
     onTextChangeHandler: vi.fn(),
 };
 
-function setup() {
+beforeEach(() => {
     render(
         <ActionsContext.Provider value={{ ...actionsContextMock }}>
             <CommentEditTextArea />
         </ActionsContext.Provider>
     );
-};
+});
 
 describe("CommentEditTextArea component", () => {
-    beforeEach(() => {
-        setup();
-    });
-
     it("renders component with context values", () => {
         expect(screen.getByRole("textbox", { value: actionsContextMock.onEditCommentText })).toHaveAttribute("placeholder", PLACEHOLDER_TEXT);
     });
