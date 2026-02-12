@@ -6,7 +6,7 @@ import CommentItem from "./CommentItem";
 import { ActionsContext } from "../../../../../../contexts/actions-context";
 
 vi.mock("./comment-item-header/CommentItemHeader", () => ({
-    default: ({ comment }) => <div data-testid="comment-item-header">{mockProps.comment.text}</div>
+    default: ({ comment }) => <div data-testid="comment-item-header">{comment.text}</div>
 }))
 
 vi.mock("./comment-edit-textarea/CommentEditTextArea", () => ({
@@ -18,7 +18,7 @@ vi.mock("./comment-text/CommentText", () => ({
 }));
 
 vi.mock("./comment-buttons/CommentButtons", () => ({
-    default: ({ comment }) => <div data-testid="comment-button">{mockProps.comment.text}</div>
+    default: ({ comment }) => <div data-testid="comment-button">{comment.text}</div>
 }))
 
 const mockProps = {
@@ -27,8 +27,10 @@ const mockProps = {
     },
 };
 
-const setCommentText = vi.fn();
-const setOnEditCommentText = vi.fn();
+const actionsCtxMock = {
+    setCommentText: vi.fn(),
+    setOnEditCommentText: vi.fn(),
+};
 
 function setup(options = {
     isEditClicked: true,
@@ -38,11 +40,10 @@ function setup(options = {
     render(
         <ActionsContext.Provider value={{
             isEditClicked,
-            setCommentText,
-            setOnEditCommentText
+            ...actionsCtxMock
         }}>
             <CommentItem {...mockProps} />
-        </ActionsContext.Provider>
+        </ActionsContext.Provider >
     );
 };
 
