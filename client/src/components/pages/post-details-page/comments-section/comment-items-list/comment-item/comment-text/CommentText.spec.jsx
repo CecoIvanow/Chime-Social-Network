@@ -5,11 +5,11 @@ import { ActionsContext } from "../../../../../../../contexts/actions-context";
 
 import CommentText from "./CommentText";
 
-const COMMENT_TEXT = "Comment text content!";
+const actionsCtxCommentText = "Comment text content!";
 
 function setup() {
     render(
-        <ActionsContext.Provider value={{ commentText: COMMENT_TEXT }}>
+        <ActionsContext.Provider value={{ commentText: actionsCtxCommentText }}>
             <CommentText />
         </ActionsContext.Provider>
     );
@@ -21,6 +21,6 @@ describe("CommentText component", () => {
     });
 
     it("renders component with commentText context value", () => {
-        expect(screen.getByText(COMMENT_TEXT)).toBeInTheDocument();
+        expect(screen.getByText(actionsCtxCommentText)).toBeInTheDocument();
     });
 });
