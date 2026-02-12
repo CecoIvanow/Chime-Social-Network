@@ -54,6 +54,9 @@ vi.mock("../../../../../hooks/useCommentServices", () => ({
     })
 }));
 
+const TEST_COMMENT = 0;
+const NEW_COMMENT_CONTENT = "The comment content has changed";
+
 const useCommentServicesMock = {
     updateComment: vi.fn(),
     deleteComment: vi.fn(),
@@ -62,15 +65,14 @@ const useCommentServicesMock = {
 
 const setAlert = vi.fn();
 
-const setPost = vi.fn();
-let post = {
-    comments: [
-        { _id: 0, content: "Comment One" },
-    ],
+const postCtxMock = {
+    setPost: vi.fn(),
+    post: {
+        comments: [
+            { _id: 0, content: "Comment One" },
+        ],
+    }
 };
-
-const TEST_COMMENT = 0;
-const NEW_COMMENT_CONTENT = "The comment content has changed";
 
 function setup(options = {
     deleteCommentSuccess: true,
@@ -91,7 +93,7 @@ function setup(options = {
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
-            <PostContext.Provider value={{ post, setPost }}>
+            <PostContext.Provider value={{ ...postCtxMock }}>
                 <CommentItemsList />
             </PostContext.Provider>
         </AlertContext.Provider>
@@ -104,8 +106,8 @@ describe("CommentItemsList", () => {
     it("renders CommentItem with passed props", () => {
         setup();
 
-        for (let i = 0; i < post.comments.length; i++) {
-            expect(screen.getAllByTestId("comment-content")[i]).toHaveValue(post.comments.at(i).content);
+        for (let i = 0; i < postCtxMock.post.comments.length; i++) {
+            expect(screen.getAllByTestId("comment-content")[i]).toHaveValue(postCtxMock.post.comments.at(i).content);
         };
     });
 
@@ -116,11 +118,11 @@ describe("CommentItemsList", () => {
         fireEvent.click(screen.getAllByTestId("delete-button")[TEST_COMMENT]);
 
         await waitFor(() => {
-            const updater = setPost.mock.calls[0][0];
-            const result = updater(post);
+            const updater = postCtxMock.setPost.mock.calls[0][0];
+            const result = updater(postCtxMock.post);
 
             expect(useCommentServicesMock.deleteComment).toHaveBeenCalledWith(TEST_COMMENT);
-            expect(setPost).toHaveBeenCalledWith(updater);
+            expect(postCtxMock.setPost).toHaveBeenCalledWith(updater);
             expect(result.comments).toHaveLength(0);
         });
     });
@@ -133,7 +135,7 @@ describe("CommentItemsList", () => {
 
         await waitFor(() => {
             expect(useCommentServicesMock.deleteComment).not.toHaveBeenCalledWith();
-            expect(setPost).not.toHaveBeenCalled();
+            expect(postCtxMock.setPost).not.toHaveBeenCalled();
         })
     });
 
@@ -170,7 +172,7 @@ describe("CommentItemsList", () => {
 
         expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(post.comments.at(0).content);
+        expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(0).content);
         expect(screen.getByTestId("save-button")).toBeInTheDocument();
         expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
     });
@@ -196,7 +198,7 @@ describe("CommentItemsList", () => {
 
         fireEvent.click(screen.getByTestId("cancel-button"));
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(post.comments.at(0).content);
+        expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(0).content);
     });
 
     it("saves new content on successfull save button click", async () => {
@@ -266,5 +268,5 @@ describe("CommentItemsList", () => {
         unmount();
 
         expect(useCommentServicesMock.abortAll).toHaveBeenCalled();
-    })
+    });
 });
