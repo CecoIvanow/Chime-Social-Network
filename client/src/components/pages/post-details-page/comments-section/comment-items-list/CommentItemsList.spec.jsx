@@ -23,28 +23,24 @@ vi.mock("./comment-item/CommentItem", () => ({
             {actions.isEditClicked ? <>
                 <button
                     onClick={() => actions.onSaveEditClickHandler(comment._id)}
-                    data-testid="save-button"
                 >
                     Save
                 </button>
                 <button
                     onClick={() => actions.onCancelEditClickHandler()}
-                    data-testid="cancel-button"
                 >
                     Cancel
                 </button>
             </> : <>
                 <button
                     onClick={() => actions.onEditClickHandler()}
-                    data-testid="edit-button"
                 >
                     Edit
                 </button>
             </>}
-            
+
             <button
                 onClick={() => actions.onDeleteClickHandler(comment._id)}
-                data-testid="delete-button"
             >
                 Delete
             </button>
@@ -101,11 +97,11 @@ function setup(options = {
     } else {
         useCommentServicesMock.updateComment.mockResolvedValue(commentTextAddition);
     }
-    
+
     options.deleteCommentSuccess ?
-    useCommentServicesMock.deleteComment.mockResolvedValue(TEST_COMMENT_INDEX) :
-    useCommentServicesMock.deleteComment.mockRejectedValue(new Error(ERR_MSG.DELETE_COMMENT));
-    
+        useCommentServicesMock.deleteComment.mockResolvedValue(TEST_COMMENT_INDEX) :
+        useCommentServicesMock.deleteComment.mockRejectedValue(new Error(ERR_MSG.DELETE_COMMENT));
+
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
             <PostContext.Provider value={{ ...postCtxMock }}>
@@ -113,7 +109,7 @@ function setup(options = {
             </PostContext.Provider>
         </AlertContext.Provider>
     );
-    
+
     return unmount;
 };
 
@@ -131,10 +127,10 @@ describe("CommentItemsList", () => {
     it("deletes chosen comment after delete confirm window", async () => {
         const user = userEvent.setup();
         setup();
-        
+
         vi.spyOn(window, "confirm").mockReturnValue(true);
 
-        await user.click(screen.getAllByTestId("delete-button")[TEST_COMMENT_INDEX]);
+        await user.click(screen.getAllByRole("button", { name: "Delete" })[TEST_COMMENT_INDEX]);
 
         await waitFor(() => {
             const updater = postCtxMock.setPost.mock.calls[0][0];
@@ -152,7 +148,7 @@ describe("CommentItemsList", () => {
 
         vi.spyOn(window, "confirm").mockReturnValue(false);
 
-        await user.click(screen.getAllByTestId("delete-button")[TEST_COMMENT_INDEX]);
+        await user.click(screen.getAllByRole("button", { name: "Delete" })[TEST_COMMENT_INDEX]);
 
         await waitFor(() => {
             expect(useCommentServicesMock.deleteComment).not.toHaveBeenCalledWith();
@@ -170,7 +166,7 @@ describe("CommentItemsList", () => {
 
         vi.spyOn(window, "confirm").mockReturnValue(true);
 
-        await user.click(screen.getAllByTestId("delete-button")[TEST_COMMENT_INDEX]);
+        await user.click(screen.getAllByRole("button", { name: "Delete" })[TEST_COMMENT_INDEX]);
 
         await waitFor(() => {
             expect(useCommentServicesMock.deleteComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX);
@@ -181,30 +177,30 @@ describe("CommentItemsList", () => {
     it("renders edit button", () => {
         setup();
 
-        expect(screen.getByTestId("edit-button")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
 
-        expect(screen.queryByTestId("cancel-button")).not.toBeInTheDocument();
-        expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Cancel" })).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument();
     });
 
     it("hides edit button and renders input field and save and cancel buttons after edit has been clicked", async () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(screen.getByTestId("edit-button"));
+        await user.click(screen.getByRole("button", { name: "Edit" }));
 
-        expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
 
         expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(0).content);
-        expect(screen.getByTestId("save-button")).toBeInTheDocument();
-        expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Save" })).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
     });
 
     it("comment text gets updated on user typing", async () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(screen.getByTestId("edit-button"));
+        await user.click(screen.getByRole("button", { name: "Edit" }));
         user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
         await waitFor(() => {
@@ -216,12 +212,12 @@ describe("CommentItemsList", () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(screen.getByTestId("edit-button"));
+        await user.click(screen.getByRole("button", { name: "Edit" }));
         await user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
         expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
 
-        await user.click(screen.getByTestId("cancel-button"));
+        await user.click(screen.getByRole("button", { name: "Cancel" }));
 
         expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content);
     });
@@ -230,19 +226,19 @@ describe("CommentItemsList", () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(screen.getByTestId("edit-button"));
+        await user.click(screen.getByRole("button", { name: "Edit" }));
         await user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
         expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
 
-        await user.click(screen.getByTestId("save-button"));
+        await user.click(screen.getByRole("button", { name: "Save" }));
 
         await waitFor(() => {
             expect(useCommentServicesMock.updateComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX, finalCommentTextValue);
             expect(screen.getByTestId("comment-content")).toHaveValue(commentTextAddition);
-            expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
-            expect(screen.queryByTestId("cancel-button")).not.toBeInTheDocument();
-            expect(screen.getByTestId("edit-button")).toBeInTheDocument();
+            expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument();
+            expect(screen.queryByRole("button", { name: "Cancel" })).not.toBeInTheDocument();
+            expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
         });
     });
 
@@ -254,12 +250,12 @@ describe("CommentItemsList", () => {
             updateCommentEmptyReturn: false,
         });
 
-        await user.click(screen.getByTestId("edit-button"));
+        await user.click(screen.getByRole("button", { name: "Edit" }));
         await user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
         expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
 
-        await user.click(screen.getByTestId("save-button"));
+        await user.click(screen.getByRole("button", { name: "Save" }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalled();
@@ -274,19 +270,19 @@ describe("CommentItemsList", () => {
             updateCommentEmptyReturn: true,
         });
 
-        await user.click(screen.getByTestId("edit-button"));
+        await user.click(screen.getByRole("button", { name: "Edit" }));
         await user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
         expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
 
-        await user.click(screen.getByTestId("save-button"));
+        await user.click(screen.getByRole("button", { name: "Save" }));
 
         await waitFor(() => {
             expect(useCommentServicesMock.updateComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX, finalCommentTextValue);
             expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
-            expect(screen.getByTestId("save-button")).toBeInTheDocument();
-            expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
-            expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
+            expect(screen.getByRole("button", { name: "Save" })).toBeInTheDocument();
+            expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
+            expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
         });
     });
 
