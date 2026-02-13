@@ -70,7 +70,7 @@ const ERR_MSG = {
     DELETE_COMMENT: "Rejected comment deletion!",
 };
 
-const updatedCommentText = ", testing!";
+const commentTextAddition = ", testing!";
 
 const useCommentServicesMock = {
     updateComment: vi.fn(),
@@ -99,13 +99,13 @@ function setup(options = {
     } else if (options.updateCommentEmptyReturn) {
         useCommentServicesMock.updateComment.mockResolvedValue(null);
     } else {
-        useCommentServicesMock.updateComment.mockResolvedValue(updatedCommentText);
+        useCommentServicesMock.updateComment.mockResolvedValue(commentTextAddition);
     }
-
+    
     options.deleteCommentSuccess ?
-        useCommentServicesMock.deleteComment.mockResolvedValue(TEST_COMMENT_INDEX) :
-        useCommentServicesMock.deleteComment.mockRejectedValue(new Error(ERR_MSG.DELETE_COMMENT));
-
+    useCommentServicesMock.deleteComment.mockResolvedValue(TEST_COMMENT_INDEX) :
+    useCommentServicesMock.deleteComment.mockRejectedValue(new Error(ERR_MSG.DELETE_COMMENT));
+    
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
             <PostContext.Provider value={{ ...postCtxMock }}>
@@ -113,11 +113,13 @@ function setup(options = {
             </PostContext.Provider>
         </AlertContext.Provider>
     );
-
+    
     return unmount;
 };
 
 describe("CommentItemsList", () => {
+    const finalCommentTextValue = postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content + commentTextAddition;
+
     it("renders CommentItem with passed props", () => {
         setup();
 
@@ -203,10 +205,10 @@ describe("CommentItemsList", () => {
         setup();
 
         await user.click(screen.getByTestId("edit-button"));
-        user.type(screen.getByTestId("comment-content"), updatedCommentText);
+        user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
         await waitFor(() => {
-            expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content + updatedCommentText);
+            expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
         })
     });
 
@@ -215,13 +217,13 @@ describe("CommentItemsList", () => {
         setup();
 
         await user.click(screen.getByTestId("edit-button"));
-        await user.type(screen.getByTestId("comment-content"), updatedCommentText);
+        await user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content + updatedCommentText);
+        expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
 
         await user.click(screen.getByTestId("cancel-button"));
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(0).content);
+        expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content);
     });
 
     it("saves new content on successfull save button click", async () => {
@@ -229,15 +231,15 @@ describe("CommentItemsList", () => {
         setup();
 
         await user.click(screen.getByTestId("edit-button"));
-        await user.type(screen.getByTestId("comment-content"), updatedCommentText);
+        await user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content + updatedCommentText);
+        expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
 
         await user.click(screen.getByTestId("save-button"));
 
         await waitFor(() => {
-            expect(useCommentServicesMock.updateComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX, postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content + updatedCommentText);
-            expect(screen.getByTestId("comment-content")).toHaveValue(updatedCommentText);
+            expect(useCommentServicesMock.updateComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX, finalCommentTextValue);
+            expect(screen.getByTestId("comment-content")).toHaveValue(commentTextAddition);
             expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
             expect(screen.queryByTestId("cancel-button")).not.toBeInTheDocument();
             expect(screen.getByTestId("edit-button")).toBeInTheDocument();
@@ -253,9 +255,9 @@ describe("CommentItemsList", () => {
         });
 
         await user.click(screen.getByTestId("edit-button"));
-        await user.type(screen.getByTestId("comment-content"), updatedCommentText);
+        await user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content + updatedCommentText);
+        expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
 
         await user.click(screen.getByTestId("save-button"));
 
@@ -273,15 +275,15 @@ describe("CommentItemsList", () => {
         });
 
         await user.click(screen.getByTestId("edit-button"));
-        await user.type(screen.getByTestId("comment-content"), updatedCommentText);
+        await user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content + updatedCommentText);
+        expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
 
         await user.click(screen.getByTestId("save-button"));
 
         await waitFor(() => {
-            expect(useCommentServicesMock.updateComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX, postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content + updatedCommentText);
-            expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content + updatedCommentText);
+            expect(useCommentServicesMock.updateComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX, finalCommentTextValue);
+            expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
             expect(screen.getByTestId("save-button")).toBeInTheDocument();
             expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
             expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
