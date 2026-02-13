@@ -166,14 +166,21 @@ function setup(options = {
 };
 
 describe("PostDetailsPage component", () => {
-    it("renders components with passed props on successfull getPostWithComments call", async () => {
+    it("renders comments section, post header and post interactions components after post data has been fetched", async () => {
         setup();
 
         await waitFor(() => {
             expect(screen.getByTestId("comments-section")).toBeInTheDocument();
             expect(screen.getByTestId("post-header")).toBeInTheDocument();
-            expect(screen.getByTestId("post-text")).toHaveTextContent(post.text);
             expect(screen.getByTestId("post-interactions")).toBeInTheDocument();
+        });
+    });
+
+    it("renders post text with correct content after post data has been fetched", async () => {
+        setup();
+
+        await waitFor(() => {
+            expect(screen.getByTestId("post-text")).toHaveTextContent(post.text);
         });
     });
 
