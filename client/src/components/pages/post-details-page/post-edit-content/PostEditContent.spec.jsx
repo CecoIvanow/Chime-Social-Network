@@ -19,11 +19,11 @@ beforeEach(() => {
 });
 
 describe("PostEditContent", () => {
-    it("renders component with passed props", () => {
+    it("renders textarea with correct value and placeholder attributes", () => {
         expect(screen.getByRole("textbox", {value: POST_TEXT})).toHaveAttribute("placeholder", PLACEHOLDER_TEXT);
     });
 
-    it("triggers textChangeHandler on input change", async () => {
+    it("triggers an event on user typing", async () => {
         const user = userEvent.setup();
 
         await user.type(screen.getByRole("textbox", { value: POST_TEXT }), "a");
