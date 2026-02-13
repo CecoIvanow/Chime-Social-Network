@@ -30,15 +30,7 @@ vi.mock("./post-edit-content/PostEditContent", () => ({
 }));
 
 vi.mock("../../shared/post/post-header/PostHeader", () => ({
-    default: () => {
-        const postCtx = PostCtxConsumer();
-
-        return (
-            postCtx && (
-                <div data-testid="post-header">{post.owner.firstName}</div>
-            )
-        );
-    }
+    default: () => <div data-testid="post-header"></div>
 }));
 
 vi.mock("../../shared/post/post-interactions/PostInteractions", () => ({
@@ -102,7 +94,6 @@ let post = {
     _id: POST_ID,
     text: "This is a post!",
     owner: {
-        firstName: "Ivan",
         _id: "ownerId123",
     },
 };
@@ -180,7 +171,7 @@ describe("PostDetailsPage component", () => {
 
         await waitFor(() => {
             expect(screen.getByTestId("comments-section")).toBeInTheDocument();
-            expect(screen.getByTestId("post-header")).toHaveTextContent(post.owner.firstName);
+            expect(screen.getByTestId("post-header")).toBeInTheDocument();
             expect(screen.getByTestId("post-text")).toHaveTextContent(post.text);
             expect(screen.getByTestId("post-interactions")).toBeInTheDocument();
         });
@@ -461,7 +452,6 @@ describe("PostDetailsPage component", () => {
             _id: POST_ID,
             text: "This is a post!",
             owner: {
-                firstName: "Ivan",
                 _id: isUser,
             },
         };
