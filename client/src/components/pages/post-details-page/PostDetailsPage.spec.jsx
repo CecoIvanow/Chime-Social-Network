@@ -1,3 +1,5 @@
+import { useContext } from "react";
+
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -13,55 +15,55 @@ vi.mock("./comment-create-form/CommentCreateForm", () => ({
 }));
 
 vi.mock("./comments-section/CommentsSection", () => ({
-    default: () => <ul data-testid="comments-section">
-        <li>
-            <p>Comment 1</p>;
-        </li>
-        <li>
-            <p>Comment 2</p>;
-        </li>
-    </ul>
+    default: () => <div data-testid="comments-section" />
 }));
 
 vi.mock("./post-edit-content/PostEditContent", () => ({
-    default: ({ postText, textChangeHandler }) => <textarea
-        data-testid="post-text-edit"
-        onChange={(e) => textChangeHandler(e)}
-        value={postText}
-    >
-    </textarea>
+    default: ({ postText, textChangeHandler }) => (
+        <textarea
+            data-testid="post-text-edit"
+            onChange={(e) => textChangeHandler(e)}
+            value={postText}
+        >
+        </textarea>
+    )
 }));
 
 vi.mock("../../shared/post/post-header/PostHeader", () => ({
-    default: () => <PostContext.Consumer>
-        {postContext =>
-            postContext && (
-                <h4 data-testid="post-header">{post.owner.firstName}</h4>
+    default: () => {
+        const postCtx = PostCtxConsumer();
+
+        return (
+            postCtx && (
+                <div data-testid="post-header">{post.owner.firstName}</div>
             )
-        }
-    </PostContext.Consumer>
+        );
+    }
 }));
 
 vi.mock("../../shared/post/post-interactions/PostInteractions", () => ({
-    default: () => <PostContext.Consumer>
-        {postContext => <ActionsContext.Consumer>
-            {actionsContext => <div data-testid="post-interactions">
-                <button data-testid="like-button" onClick={actionsContext.onLikeClickHandler}>Like</button>
-                <button data-testid="unlike-button" onClick={actionsContext.onUnlikeClickHandler}>Unlike</button>
-                <button data-testid="edit-button" onClick={actionsContext.onEditPostClickHandler}>Edit</button>
-                <button data-testid="delete-button" onClick={() => actionsContext.onDeleteClickHandler(postContext.post._id)}>Delete</button>
+    default: () => {
+        const postCtx = PostCtxConsumer();
+        const actions = ActionsCtxConsumer();
 
-                {actionsContext.isEditClicked && <>
-                    <button data-testid="save-button" onClick={() => actionsContext.onSaveEditClickHandler(postContext.post._id)}>Save</button>
-                    <button data-testid="cancel-button" onClick={actionsContext.onCancelEditClickHandler}>Cancel</button>
+        return (
+            <div data-testid="post-interactions">
+                <button data-testid="like-button" onClick={actions.onLikeClickHandler}>Like</button>
+                <button data-testid="unlike-button" onClick={actions.onUnlikeClickHandler}>Unlike</button>
+                <button data-testid="edit-button" onClick={actions.onEditPostClickHandler}>Edit</button>
+                <button data-testid="delete-button" onClick={() => actions.onDeleteClickHandler(postCtx.post._id)}>Delete</button>
+
+                {actions.isEditClicked && <>
+                    <button data-testid="save-button" onClick={() => actions.onSaveEditClickHandler(postCtx.post._id)}>Save</button>
+                    <button data-testid="cancel-button" onClick={actions.onCancelEditClickHandler}>Cancel</button>
                 </>}
-            </div>}
-        </ActionsContext.Consumer>}
-    </PostContext.Consumer>
+            </div>
+        );
+    }
 }));
 
 vi.mock("../../shared/post/post-text/PostText", () => ({
-    default: ({ postText }) => <p data-testid="post-text">{postText}</p>
+    default: ({ postText }) => <div data-testid="post-text">{postText}</div>
 }));
 
 vi.mock("../../../hooks/usePostServices", () => ({
@@ -109,6 +111,20 @@ let post = {
         _id: "ownerId123",
     },
 };
+
+
+const ActionsCtxConsumer = () => {
+    const actions = useContext(ActionsContext);
+
+    return actions;
+}
+
+const PostCtxConsumer = () => {
+    const postCtx = useContext(PostContext);
+
+    return postCtx;
+};
+
 
 const deletePostMock = vi.fn();
 const editPostMock = vi.fn();
