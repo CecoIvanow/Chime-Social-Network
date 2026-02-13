@@ -10,21 +10,17 @@ const POST_TEXT = "Hi, this is my first post!";
 
 let textAreaEl;
 
-function setup() {
+beforeEach(() => {
     render(
         <PostEditContent
             postText={POST_TEXT}
             textChangeHandler={textChangeHandlerMock}
         />
     );
-};
+    textAreaEl = screen.getByPlaceholderText(PLACEHOLDER_TEXT)
+});
 
 describe("PostEditContent", () => {
-    beforeEach(() => {
-        setup();
-        textAreaEl = screen.getByPlaceholderText(PLACEHOLDER_TEXT)
-    })
-
     it("renders component with passed props", () => {
         expect(textAreaEl).toHaveValue(POST_TEXT);
     });
