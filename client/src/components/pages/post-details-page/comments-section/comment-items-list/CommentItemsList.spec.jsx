@@ -120,7 +120,7 @@ function setup(options = {
 describe("CommentItemsList", () => {
     const finalCommentTextValue = postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content + commentTextAddition;
 
-    it("renders CommentItem with passed props", () => {
+    it("renders correct number of comments", () => {
         setup();
 
         for (let i = 0; i < postCtxMock.post.comments.length; i++) {
@@ -128,7 +128,7 @@ describe("CommentItemsList", () => {
         };
     });
 
-    it("deletes comment on onDeleteClickHandler trigger with confirm true", async () => {
+    it("deletes chosen comment after delete confirm window", async () => {
         const user = userEvent.setup();
         setup();
         
@@ -146,7 +146,7 @@ describe("CommentItemsList", () => {
         });
     });
 
-    it("does not delete comment on onDeleteClickHandler trigger with confirm false", async () => {
+    it("does not delete comment after rejected delete confirm window", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -160,7 +160,7 @@ describe("CommentItemsList", () => {
         })
     });
 
-    it("triggers setAlert on deleteComment rejected call", async () => {
+    it("shows error message on a rejected comment deletion call", async () => {
         const user = userEvent.setup();
         setup({
             deleteCommentSuccess: false,
@@ -178,7 +178,7 @@ describe("CommentItemsList", () => {
         });
     });
 
-    it("renders edit buttons when isEditClicked is false", () => {
+    it("renders edit button", () => {
         setup();
 
         expect(screen.getByTestId("edit-button")).toBeInTheDocument();
@@ -187,7 +187,7 @@ describe("CommentItemsList", () => {
         expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
     });
 
-    it("on edit button click sets isEditClicked to false and renders cancel and save buttons", async () => {
+    it("hides edit button and renders input field and save and cancel buttons after edit has been clicked", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -200,7 +200,7 @@ describe("CommentItemsList", () => {
         expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
     });
 
-    it("on input field change triggers onTextChangeHandler", async () => {
+    it("comment text gets updated on user typing", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -212,7 +212,7 @@ describe("CommentItemsList", () => {
         })
     });
 
-    it("on cancel button click sets back original content", async () => {
+    it("clicking on the cancel button reverts the comment text to the original content", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -226,7 +226,7 @@ describe("CommentItemsList", () => {
         expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content);
     });
 
-    it("saves new content on successfull save button click", async () => {
+    it("updates comment text after clicking the save button", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -246,7 +246,7 @@ describe("CommentItemsList", () => {
         });
     });
 
-    it("triggers setAlert on rejected updateComment call", async () => {
+    it("shows error message on a rejected comment update call", async () => {
         const user = userEvent.setup();
         setup({
             deleteCommentSuccess: true,
@@ -266,7 +266,7 @@ describe("CommentItemsList", () => {
         });
     });
 
-    it("does NOT exit edit mode when updateComment returns empty value", async () => {
+    it("does nothing when updated comment returns empty", async () => {
         const user = userEvent.setup();
         setup({
             deleteCommentSuccess: true,
@@ -290,7 +290,7 @@ describe("CommentItemsList", () => {
         });
     });
 
-    it("triggers abortAll on unmount", () => {
+    it("stops all ongoing calls on unmount", () => {
         const unmount = setup();
 
         unmount();
