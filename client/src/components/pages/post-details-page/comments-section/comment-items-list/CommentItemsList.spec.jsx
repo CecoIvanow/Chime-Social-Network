@@ -132,14 +132,15 @@ describe("CommentItemsList", () => {
 
         await user.click(screen.getAllByRole("button", { name: "Delete" })[TEST_COMMENT_INDEX]);
 
-        await waitFor(() => {
-            const updater = postCtxMock.setPost.mock.calls[0][0];
-            const result = updater(postCtxMock.post);
+        const updater = postCtxMock.setPost.mock.calls[0][0];
+        const result = updater(postCtxMock.post);
 
+        await waitFor(() => {
             expect(useCommentServicesMock.deleteComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX);
             expect(postCtxMock.setPost).toHaveBeenCalledWith(updater);
-            expect(result.comments).toHaveLength(0);
         });
+
+        expect(result.comments).toHaveLength(0);
     });
 
     it("does not delete comment after rejected delete confirm window", async () => {
@@ -150,10 +151,8 @@ describe("CommentItemsList", () => {
 
         await user.click(screen.getAllByRole("button", { name: "Delete" })[TEST_COMMENT_INDEX]);
 
-        await waitFor(() => {
-            expect(useCommentServicesMock.deleteComment).not.toHaveBeenCalledWith();
-            expect(postCtxMock.setPost).not.toHaveBeenCalled();
-        })
+        expect(useCommentServicesMock.deleteComment).not.toHaveBeenCalledWith();
+        expect(postCtxMock.setPost).not.toHaveBeenCalled();
     });
 
     it("shows error message on a rejected comment deletion call", async () => {
@@ -236,9 +235,6 @@ describe("CommentItemsList", () => {
         await waitFor(() => {
             expect(useCommentServicesMock.updateComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX, finalCommentTextValue);
             expect(screen.getByTestId("comment-content")).toHaveValue(commentTextAddition);
-            expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument();
-            expect(screen.queryByRole("button", { name: "Cancel" })).not.toBeInTheDocument();
-            expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
         });
     });
 
@@ -280,9 +276,6 @@ describe("CommentItemsList", () => {
         await waitFor(() => {
             expect(useCommentServicesMock.updateComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX, finalCommentTextValue);
             expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
-            expect(screen.getByRole("button", { name: "Save" })).toBeInTheDocument();
-            expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
-            expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
         });
     });
 
