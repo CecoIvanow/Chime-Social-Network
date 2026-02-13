@@ -1,7 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import PostEditContent from "./PostEditContent";
+import userEvent from "@testing-library/user-event";
 
 const textChangeHandlerMock = vi.fn();
 
@@ -25,9 +26,10 @@ describe("PostEditContent", () => {
         expect(textAreaEl).toHaveValue(POST_TEXT);
     });
 
-    it("triggers textChangeHandler on input change", () => {
-        fireEvent.change(textAreaEl, {target: {value: "a"}});
+    it("triggers textChangeHandler on input change", async () => {
+        const user = userEvent.setup();
 
+        await user.type(textAreaEl, "a");
         expect(textChangeHandlerMock).toHaveBeenCalled();
     });
 });
