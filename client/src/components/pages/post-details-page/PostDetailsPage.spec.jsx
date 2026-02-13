@@ -83,11 +83,11 @@ vi.mock("react-router", () => ({
 }));
 
 const ERR_MSG = {
-    EDIT: "Successfully rejected editPost call!",
-    DELETE: "Successfully rejected deletePost call!",
-    LIKE: "Successfully rejected likePost call!",
-    UNLIKE: "Successfully rejected unlikePost call!",
-    GET_POST: "Successfully rejected getPostWithComments call!"
+    EDIT: "Rejected editPost call!",
+    DELETE: "Rejected deletePost call!",
+    LIKE: "Rejected likePost call!",
+    UNLIKE: "Rejected unlikePost call!",
+    GET_POST: "Rejected getPostWithComments call!"
 }
 
 const POST_ID = "postId435";
