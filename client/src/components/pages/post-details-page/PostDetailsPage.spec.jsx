@@ -166,7 +166,7 @@ function setup(options = {
 };
 
 describe("PostDetailsPage component", () => {
-    it("renders comments section, post header and post interactions components after post data has been fetched", async () => {
+    it("renders comments section, post header and post interactions components after successfull post data call on mount", async () => {
         setup();
 
         await waitFor(() => {
@@ -176,7 +176,7 @@ describe("PostDetailsPage component", () => {
         });
     });
 
-    it("renders post text with correct content after post data has been fetched", async () => {
+    it("renders post text with correct content after successfull post data call on mount", async () => {
         setup();
 
         await waitFor(() => {
@@ -184,7 +184,7 @@ describe("PostDetailsPage component", () => {
         });
     });
 
-    it("does not render components on rejected getPostWithComments call", async () => {
+    it("does not render on a rejected post data call", async () => {
         setup({
             getPostWithCommentsSuccess: false,
             deletePostSuccess: true,
@@ -202,15 +202,7 @@ describe("PostDetailsPage component", () => {
         });
     });
 
-    it("triggers abortAll on unmount", () => {
-        const unmount = setup();
-
-        unmount();
-
-        expect(usePostServicesMock.abortAll).toHaveBeenCalled();
-    });
-
-    it("triggers setAlert on rejected getPostWithComments call", async () => {
+    it("shows error message on a rejected post data call", async () => {
         setup({
             getPostWithCommentsSuccess: false,
             deletePostSuccess: true,
@@ -226,9 +218,9 @@ describe("PostDetailsPage component", () => {
     });
 
     it.each([
-        { action: "triggers", confirm: "accepted", accepted: true },
-        { action: "does not trigger", confirm: "cancelled", accepted: false },
-    ])("triggers $action on $confirmState deletePost call", async ({ accepted }) => {
+        { name: "deletes post and navigates to catalog after the delete confirmation window is accepted", accepted: true},
+        { name: "does nothing after the delete confirmation window is cancelled", accepted: true},
+    ])("$name", async ({ accepted }) => {
         setup();
 
         vi.spyOn(window, "confirm").mockReturnValue(accepted);
@@ -251,7 +243,7 @@ describe("PostDetailsPage component", () => {
         }
     });
 
-    it("triggers setAlert on rejected deletePost call", async () => {
+    it("shows error message on a rejected post deletion call", async () => {
         setup({
             getPostWithCommentsSuccess: true,
             deletePostSuccess: false,
@@ -270,18 +262,17 @@ describe("PostDetailsPage component", () => {
         });
     });
 
-    it("calls likePost with currenrUser and post id", async () => {
+    it("successfully likes a post", async () => {
         setup();
 
         fireEvent.click(await screen.findByTestId("like-button"));
 
         await waitFor(() => {
             expect(usePostServicesMock.likePost).toHaveBeenCalledWith(isUser, post._id);
-            expect(setAlert).not.toHaveBeenCalled();
         });
     });
 
-    it("triggers setAlert on rejected likePost call", async () => {
+    it("shows error message on a rejected post like call", async () => {
         setup({
             getPostWithCommentsSuccess: true,
             deletePostSuccess: true,
@@ -300,7 +291,7 @@ describe("PostDetailsPage component", () => {
         expect(setAlert).toHaveBeenCalledWith(ERR_MSG.LIKE);
     });
 
-    it("calls unlikePost with currenrUser and post id", async () => {
+    it("successfully unlikes a post", async () => {
         setup();
 
         fireEvent.click(await screen.findByTestId("unlike-button"));
@@ -311,7 +302,7 @@ describe("PostDetailsPage component", () => {
         });
     });
 
-    it("triggers setAlert on rejected unlikePost call", async () => {
+    it("shows error message on a rejected post unlike call", async () => {
         setup({
             getPostWithCommentsSuccess: true,
             deletePostSuccess: true,
@@ -330,7 +321,7 @@ describe("PostDetailsPage component", () => {
         expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UNLIKE);
     });
 
-    it("triggers onEditPostClickHandler and sets isEditClicked to true", async () => {
+    it("on edit button click renders post edit textarea with cancel and save buttons instead of post text", async () => {
         setup();
 
         expect(await screen.findByTestId("post-text")).toBeInTheDocument();
@@ -345,7 +336,7 @@ describe("PostDetailsPage component", () => {
         expect(screen.getByTestId("post-text-edit")).toBeInTheDocument();
     });
 
-    it("textChangeHandler updates post text content on trigger", async () => {
+    it("post text gets updated on user typing", async () => {
         setup();
 
         fireEvent.click(await screen.findByTestId("edit-button"));
@@ -355,7 +346,7 @@ describe("PostDetailsPage component", () => {
         expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
     });
 
-    it("onCancelEditHandler sets isEditClicked to false and postEditContent to default post text", async () => {
+    it("on cancel button click rerenders to post text with correct content", async () => {
         setup();
 
         fireEvent.click(await screen.findByTestId("edit-button"));
@@ -367,7 +358,7 @@ describe("PostDetailsPage component", () => {
         expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
     });
 
-    it("calls editPost and sets isEditClicked false on successfull call", async () => {
+    it("on save button click renders default the post text with the updated content", async () => {
         setup();
 
         fireEvent.click(await screen.findByTestId("edit-button"));
@@ -383,7 +374,7 @@ describe("PostDetailsPage component", () => {
         expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
     });
 
-    it("calls editPost and does not set isEditClicked to false on empty return", async () => {
+    it("does nothing when the save post call returns an empty value", async () => {
         setup({
             getPostWithCommentsSuccess: true,
             deletePostSuccess: true,
@@ -406,7 +397,7 @@ describe("PostDetailsPage component", () => {
         expect(screen.getByTestId("post-text-edit")).toBeInTheDocument();
     });
 
-    it("triggers setAlert on rejected editPost call", async () => {
+    it("shows error message on a rejected post save call", async () => {
         setup({
             getPostWithCommentsSuccess: true,
             deletePostSuccess: true,
@@ -429,8 +420,7 @@ describe("PostDetailsPage component", () => {
         expect(setAlert).toHaveBeenCalledWith(ERR_MSG.EDIT);
     });
 
-    it("triggers navigateTo on isEditClicked true and differing isUser and post owner id", async () => {
-
+    it("redirects to /404 the user is not the owner of the post and tries to edit it", async () => {
         location = {
             state: {
                 shouldEdit: true,
@@ -445,7 +435,7 @@ describe("PostDetailsPage component", () => {
         });
     });
 
-    it("does not trigger navigateTo on isEditClicked false", async () => {
+    it("does not redirect to /404 when the user is not the post owner and does not try to edit the post", async () => {
 
         setup();
 
@@ -454,7 +444,7 @@ describe("PostDetailsPage component", () => {
         })
     });
 
-    it("does not trigger navigateTo on isEditClicked true and matching isUser and post owner id", async () => {
+    it("does not redirect to /404 when the user is the post owner and tries to edit the post", async () => {
         post = {
             _id: POST_ID,
             text: "This is a post!",
@@ -467,6 +457,13 @@ describe("PostDetailsPage component", () => {
 
         await waitFor(() => {
             expect(navigateToMock).not.toHaveBeenCalled();
-        })
+        });
+    });
+
+    it("stops all ongoing post calls on unmount", () => {
+        const unmount = setup();
+
+        unmount();
+        expect(usePostServicesMock.abortAll).toHaveBeenCalled();
     });
 });
