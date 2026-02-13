@@ -68,12 +68,7 @@ vi.mock("../../shared/post/post-text/PostText", () => ({
 
 vi.mock("../../../hooks/usePostServices", () => ({
     default: () => ({
-        deletePost: deletePostMock,
-        editPost: editPostMock,
-        getPostWithComments: getPostWithCommentsMock,
-        likePost: likePostMock,
-        unlikePost: unlikePostMock,
-        abortAll: abortAllMock,
+        ...usePostServicesMock
     })
 }));
 
@@ -115,23 +110,22 @@ let post = {
 
 const ActionsCtxConsumer = () => {
     const actions = useContext(ActionsContext);
-
     return actions;
 }
 
 const PostCtxConsumer = () => {
     const postCtx = useContext(PostContext);
-
     return postCtx;
 };
 
-
-const deletePostMock = vi.fn();
-const editPostMock = vi.fn();
-const getPostWithCommentsMock = vi.fn();
-const likePostMock = vi.fn();
-const unlikePostMock = vi.fn();
-const abortAllMock = vi.fn();
+const usePostServicesMock = {
+    deletePost: vi.fn(),
+    editPost: vi.fn(),
+    likePost: vi.fn(),
+    unlikePost: vi.fn(),
+    abortAll: vi.fn(),
+    getPostWithComments: vi.fn(),
+};
 
 const navigateToMock = vi.fn();
 
@@ -146,28 +140,28 @@ function setup(options = {
     unlikePostSuccess: true,
 }) {
     if (!options.editPostSuccess) {
-        editPostMock.mockRejectedValue(new Error(ERR_MSG.EDIT));
+        usePostServicesMock.editPost.mockRejectedValue(new Error(ERR_MSG.EDIT));
     } else if (options.editPostEmptyReturnValue) {
-        editPostMock.mockResolvedValue(undefined);
+        usePostServicesMock.editPost.mockResolvedValue(undefined);
     } else {
-        editPostMock.mockResolvedValue(UPDATED_POST_CONTENT);
+        usePostServicesMock.editPost.mockResolvedValue(UPDATED_POST_CONTENT);
     };
 
     options.deletePostSuccess ?
-        deletePostMock.mockResolvedValue() :
-        deletePostMock.mockRejectedValue(new Error(ERR_MSG.DELETE));
+        usePostServicesMock.deletePost.mockResolvedValue() :
+        usePostServicesMock.deletePost.mockRejectedValue(new Error(ERR_MSG.DELETE));
 
     options.likePostSuccess ?
-        likePostMock.mockResolvedValue() :
-        likePostMock.mockRejectedValue(new Error(ERR_MSG.LIKE));
+        usePostServicesMock.likePost.mockResolvedValue() :
+        usePostServicesMock.likePost.mockRejectedValue(new Error(ERR_MSG.LIKE));
 
     options.unlikePostSuccess ?
-        unlikePostMock.mockResolvedValue() :
-        unlikePostMock.mockRejectedValue(new Error(ERR_MSG.UNLIKE));
+        usePostServicesMock.unlikePost.mockResolvedValue() :
+        usePostServicesMock.unlikePost.mockRejectedValue(new Error(ERR_MSG.UNLIKE));
 
     options.getPostWithCommentsSuccess ?
-        getPostWithCommentsMock.mockResolvedValue(post) :
-        getPostWithCommentsMock.mockRejectedValue(new Error(ERR_MSG.GET_POST));
+        usePostServicesMock.getPostWithComments.mockResolvedValue(post) :
+        usePostServicesMock.getPostWithComments.mockRejectedValue(new Error(ERR_MSG.GET_POST));
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -215,7 +209,7 @@ describe("PostDetailsPage component", () => {
 
         unmount();
 
-        expect(abortAllMock).toHaveBeenCalled();
+        expect(usePostServicesMock.abortAll).toHaveBeenCalled();
     });
 
     it("triggers setAlert on rejected getPostWithComments call", async () => {
@@ -245,14 +239,14 @@ describe("PostDetailsPage component", () => {
 
         if (accepted) {
             await waitFor(() => {
-                expect(deletePostMock).toHaveBeenCalledWith(post._id);
+                expect(usePostServicesMock.deletePost).toHaveBeenCalledWith(post._id);
             });
 
             expect(navigateToMock).toHaveBeenCalledWith('/catalog');
 
         } else {
             await waitFor(() => {
-                expect(deletePostMock).not.toHaveBeenCalled();
+                expect(usePostServicesMock.deletePost).not.toHaveBeenCalled();
             });
 
             expect(navigateToMock).not.toHaveBeenCalled();
@@ -284,7 +278,7 @@ describe("PostDetailsPage component", () => {
         fireEvent.click(await screen.findByTestId("like-button"));
 
         await waitFor(() => {
-            expect(likePostMock).toHaveBeenCalledWith(isUser, post._id);
+            expect(usePostServicesMock.likePost).toHaveBeenCalledWith(isUser, post._id);
             expect(setAlert).not.toHaveBeenCalled();
         });
     });
@@ -302,7 +296,7 @@ describe("PostDetailsPage component", () => {
         fireEvent.click(await screen.findByTestId("like-button"));
 
         await waitFor(() => {
-            expect(likePostMock).toHaveBeenCalledWith(isUser, post._id);
+            expect(usePostServicesMock.likePost).toHaveBeenCalledWith(isUser, post._id);
         });
 
         expect(setAlert).toHaveBeenCalledWith(ERR_MSG.LIKE);
@@ -314,7 +308,7 @@ describe("PostDetailsPage component", () => {
         fireEvent.click(await screen.findByTestId("unlike-button"));
 
         await waitFor(() => {
-            expect(unlikePostMock).toHaveBeenCalledWith(isUser, post._id);
+            expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(isUser, post._id);
             expect(setAlert).not.toHaveBeenCalled();
         });
     });
@@ -332,7 +326,7 @@ describe("PostDetailsPage component", () => {
         fireEvent.click(await screen.findByTestId("unlike-button"));
 
         await waitFor(() => {
-            expect(unlikePostMock).toHaveBeenCalledWith(isUser, post._id);
+            expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(isUser, post._id);
         });
 
         expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UNLIKE);
@@ -385,7 +379,7 @@ describe("PostDetailsPage component", () => {
         fireEvent.click(screen.getByTestId("save-button"));
 
         await waitFor(() => {
-            expect(editPostMock).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
+            expect(usePostServicesMock.editPost).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
         });
 
         expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
@@ -408,7 +402,7 @@ describe("PostDetailsPage component", () => {
         fireEvent.click(screen.getByTestId("save-button"));
 
         await waitFor(() => {
-            expect(editPostMock).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
+            expect(usePostServicesMock.editPost).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
         });
 
         expect(screen.getByTestId("post-text-edit")).toBeInTheDocument();
@@ -431,7 +425,7 @@ describe("PostDetailsPage component", () => {
         fireEvent.click(screen.getByTestId("save-button"));
 
         await waitFor(() => {
-            expect(editPostMock).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
+            expect(usePostServicesMock.editPost).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
         });
 
         expect(setAlert).toHaveBeenCalledWith(ERR_MSG.EDIT);
