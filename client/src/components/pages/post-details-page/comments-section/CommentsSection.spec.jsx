@@ -15,17 +15,13 @@ vi.mock("./comments-section-header/CommentsSectionHeader", () => ({
     default: () => <div data-testid="comments-section-header">{SECTION_HEADER_CONTENT}</div>
 }))
 
-function setup() {
+beforeEach(() => {
     render(
         <CommentsSection />
     );
-};
+});
 
 describe("CommentsSection component", () => {
-    beforeEach(() => {
-        setup();
-    })
-
     it("renders CommentItemsList", () => {
         expect(screen.getByTestId("comment")).toHaveTextContent(COMMENT_CONTENT);
     });
