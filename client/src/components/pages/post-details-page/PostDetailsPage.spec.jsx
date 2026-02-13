@@ -1,12 +1,12 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import PostDetailsPage from "./PostDetailsPage";
-
+import { ActionsContext } from "../../../contexts/actions-context";
+import { AlertContext } from "../../../contexts/alert-context";
 import { PostContext } from "../../../contexts/post-context";
 import { UserContext } from "../../../contexts/user-context";
-import { AlertContext } from "../../../contexts/alert-context";
-import { ActionsContext } from "../../../contexts/actions-context";
+
+import PostDetailsPage from "./PostDetailsPage";
 
 vi.mock("./comment-create-form/CommentCreateForm", () => ({
     default: () => <div data-testid="comment-create-form"></div>
