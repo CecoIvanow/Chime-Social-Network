@@ -12,7 +12,7 @@ beforeEach(() => {
 });
 
 describe("CommentSectionHeader component", () => {
-    it("renders component with hardcoded text content", () => {
+    it("renders with correct text value", () => {
         expect(screen.getByText(PARAGRAPH_TEXT)).toBeInTheDocument();
     });
 });
