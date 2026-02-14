@@ -1,12 +1,19 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeAll, beforeEach } from "vitest";
 
 import ImageUpload from "./ImageUpload";
 
 const global = window;
-const imageFile = new File(
+const imageFile1 = new File(
     ["bits"],
     "avatar.png",
+    { type: "image/png" }
+);
+
+const imageFile2 = new File(
+    ["bits"],
+    "avatar-two.png",
     { type: "image/png" }
 );
 
@@ -33,23 +40,29 @@ describe("ImageUpload component", () => {
         expect(screen.getByAltText("Profile picture")).toHaveAttribute("src", mockProps.imageUrl);
     });
 
-    it("uploads image and shows image preview", () => {
-        fireEvent.change(screen.getByTestId("image-input"), { target: { files: [imageFile] } });
+    it("uploads image and shows image preview", async () => {
+        const user = userEvent.setup();
 
-        expect(mockProps.setImageUpload).toHaveBeenCalledWith(imageFile);
+        await user.upload(screen.getByTestId("image-input"), imageFile1);
+
+        expect(mockProps.setImageUpload).toHaveBeenCalledWith(imageFile1);
         expect(screen.getByAltText("Profile picture")).toHaveAttribute("src", "blob:mock-image-url");
     });
 
-    it("renders original image preview on empty upload", () => {
-        fireEvent.change(screen.getByTestId("image-input"), { target: { files: [] } });
+    it("renders original image preview on empty upload", async () => {
+        const user = userEvent.setup();
+
+        await user.upload(screen.getByTestId("image-input"), []);
 
         expect(mockProps.setImageUpload).not.toHaveBeenCalled();
         expect(screen.getByAltText("Profile picture")).toHaveAttribute("src", mockProps.imageUrl);
     });
 
-    it("revokes previous image on new upload", () => {
-        fireEvent.change(screen.getByTestId("image-input"), { target: { files: [imageFile] } });
-        fireEvent.change(screen.getByTestId("image-input"), { target: { files: [imageFile] } });
+    it("revokes previous image on new upload", async () => {
+        const user = userEvent.setup();
+
+        await user.upload(screen.getByTestId("image-input"), imageFile1);
+        await user.upload(screen.getByTestId("image-input"), imageFile2);
 
         expect(global.URL.revokeObjectURL).toHaveBeenCalled();
     })
