@@ -15,13 +15,16 @@ vi.mock("../../../ui/inputs/textarea-input-field/TextAreaInput", () => ({
     </>
 }));
 
-const userData = {
-    bio: "Test text!"
+const mockProps = {
+    userData: {
+        bio: "Test text!"
+
+    },
 };
 
 beforeEach(() => {
     render(
-        <ProfileBioTextArea userData={userData} />
+        <ProfileBioTextArea {...mockProps} />
     );
 });
 
@@ -37,6 +40,6 @@ describe("ProfileBioTextArea component", () => {
 
         expect(inputEl).toHaveAttribute("id", "bio");
         expect(inputEl).toHaveAttribute("name", "bio");
-        expect(inputEl).toHaveValue(userData.bio);
+        expect(inputEl).toHaveValue(mockProps.userData.bio);
     });
 });
