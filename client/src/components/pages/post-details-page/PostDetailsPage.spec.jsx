@@ -218,7 +218,7 @@ describe("PostDetailsPage component", () => {
 
     it.each([
         { name: "deletes post and navigates to catalog after the delete confirmation window is accepted", accepted: true },
-        { name: "does nothing after the delete confirmation window is cancelled", accepted: true },
+        { name: "does nothing after the delete confirmation window is cancelled", accepted: false },
     ])("$name", async ({ accepted }) => {
         const user = userEvent.setup();
         setup();
