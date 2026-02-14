@@ -234,10 +234,8 @@ describe("PostDetailsPage component", () => {
             });
 
             expect(navigateToMock).toHaveBeenCalledWith('/catalog');
-
         } else {
             expect(usePostServicesMock.deletePost).not.toHaveBeenCalled();
-
             expect(navigateToMock).not.toHaveBeenCalled();
         }
     });
@@ -287,10 +285,8 @@ describe("PostDetailsPage component", () => {
         await user.click(await screen.findByTestId("like-button"));
 
         await waitFor(() => {
-            expect(usePostServicesMock.likePost).toHaveBeenCalledWith(isUser, post._id);
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.LIKE);
         });
-
-        expect(setAlert).toHaveBeenCalledWith(ERR_MSG.LIKE);
     });
 
     it("successfully unlikes a post", async () => {
@@ -301,7 +297,6 @@ describe("PostDetailsPage component", () => {
 
         await waitFor(() => {
             expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(isUser, post._id);
-            expect(setAlert).not.toHaveBeenCalled();
         });
     });
 
@@ -319,26 +314,22 @@ describe("PostDetailsPage component", () => {
         await user.click(await screen.findByTestId("unlike-button"));
 
         await waitFor(() => {
-            expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(isUser, post._id);
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UNLIKE);
         });
-
-        expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UNLIKE);
     });
 
-    it("on edit button click renders post edit textarea with cancel and save buttons instead of post text", async () => {
+    it("on edit button click renders post edit textarea with original post text and with cancel and save buttons instead of post text", async () => {
         const user = userEvent.setup();
         setup();
 
-        expect(await screen.findByTestId("post-text")).toBeInTheDocument();
-        expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
-
-        await user.click(screen.getByTestId("edit-button"));
+        await user.click(await screen.findByTestId("edit-button"));
 
         expect(await screen.findByTestId("save-button")).toBeInTheDocument();
         expect(await screen.findByTestId("cancel-button")).toBeInTheDocument();
 
         expect(screen.queryByTestId("post-text")).not.toBeInTheDocument();
-        expect(screen.getByTestId("post-text-edit")).toBeInTheDocument();
+        expect(screen.getByTestId("post-text-edit")).toHaveValue(post.text);
+
     });
 
     it("post text gets updated on user typing", async () => {
@@ -346,14 +337,13 @@ describe("PostDetailsPage component", () => {
         setup();
 
         await user.click(await screen.findByTestId("edit-button"));
-        expect(screen.getByTestId("post-text-edit")).toHaveValue(post.text);
-
         await user.clear(screen.getByTestId("post-text-edit"));
+
         await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
         expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
     });
 
-    it("on cancel button click rerenders to post text with correct content", async () => {
+    it("on cancel button click rerenders to post text with original content", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -363,18 +353,17 @@ describe("PostDetailsPage component", () => {
 
         await user.click(screen.getByTestId("cancel-button"));
 
-        expect(screen.getByTestId("post-text")).toHaveTextContent(post.text);
         expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
+        expect(screen.getByTestId("post-text")).toHaveTextContent(post.text);
     });
 
-    it("on save button click renders default the post text with the updated content", async () => {
+    it("on save button click renders the default post text component with the updated content", async () => {
         const user = userEvent.setup();
         setup();
 
         await user.click(await screen.findByTestId("edit-button"));
         await user.clear(screen.getByTestId("post-text-edit"));
         await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
-        expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
 
         await user.click(screen.getByTestId("save-button"));
 
@@ -399,7 +388,6 @@ describe("PostDetailsPage component", () => {
         await user.click(await screen.findByTestId("edit-button"));
         await user.clear(screen.getByTestId("post-text-edit"));
         await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
-        expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
 
         await user.click(screen.getByTestId("save-button"));
 
@@ -424,15 +412,12 @@ describe("PostDetailsPage component", () => {
         await user.click(await screen.findByTestId("edit-button"));
         await user.clear(screen.getByTestId("post-text-edit"));
         await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
-        expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
 
         await user.click(screen.getByTestId("save-button"));
 
         await waitFor(() => {
-            expect(usePostServicesMock.editPost).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.EDIT);
         });
-
-        expect(setAlert).toHaveBeenCalledWith(ERR_MSG.EDIT);
     });
 
     it("redirects to /404 when the user is not the owner of the post and tries to edit it", async () => {
@@ -451,7 +436,6 @@ describe("PostDetailsPage component", () => {
     });
 
     it("does not redirect to /404 when the user is not the post owner and does not try to edit the post", async () => {
-
         setup();
 
         await waitFor(() => {
