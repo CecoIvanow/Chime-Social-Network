@@ -1,16 +1,18 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
 import React from "react";
 
-import ProfileEditPage from "./ProfileEditPage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../../../firebase/firebase-storage/config";
 
-import { AlertContext } from "../../../contexts/alert-context"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach } from "vitest";
+
 import { ActionsContext } from "../../../contexts/actions-context"
+import { AlertContext } from "../../../contexts/alert-context"
 import { UserContext } from "../../../contexts/user-context"
 
 import useUserServices from "../../../hooks/useUserServices"
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../../../firebase/firebase-storage/config";
+
+import ProfileEditPage from "./ProfileEditPage";
 
 vi.mock("../../shared/user-details/gender-details/GenderDetails", () => ({
     default: ({ userGender }) => <input
@@ -279,7 +281,7 @@ describe("ProfileEditPage component", () => {
             expect(navigateMock).toHaveBeenCalledWith(`/profile/${isUser}`);
         });
     });
-    
+
     it("triggers setAlert on rejected form submit", async () => {
         renderComp({
             updateUserResult: false,
