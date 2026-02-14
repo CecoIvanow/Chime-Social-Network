@@ -22,7 +22,6 @@ vi.mock("./comments-section/CommentsSection", () => ({
 vi.mock("./post-edit-content/PostEditContent", () => ({
     default: ({ postText, textChangeHandler }) => (
         <textarea
-            data-testid="post-text-edit"
             onChange={(e) => textChangeHandler(e)}
             value={postText}
         >
@@ -41,14 +40,14 @@ vi.mock("../../shared/post/post-interactions/PostInteractions", () => ({
 
         return (
             <div data-testid="post-interactions">
-                <button data-testid="like-button" onClick={actions.onLikeClickHandler}>Like</button>
-                <button data-testid="unlike-button" onClick={actions.onUnlikeClickHandler}>Unlike</button>
-                <button data-testid="edit-button" onClick={actions.onEditPostClickHandler}>Edit</button>
-                <button data-testid="delete-button" onClick={() => actions.onDeleteClickHandler(postCtx.post._id)}>Delete</button>
+                <button onClick={actions.onLikeClickHandler}>Like</button>
+                <button onClick={actions.onUnlikeClickHandler}>Unlike</button>
+                <button onClick={actions.onEditPostClickHandler}>Edit</button>
+                <button onClick={() => actions.onDeleteClickHandler(postCtx.post._id)}>Delete</button>
 
                 {actions.isEditClicked && <>
-                    <button data-testid="save-button" onClick={() => actions.onSaveEditClickHandler(postCtx.post._id)}>Save</button>
-                    <button data-testid="cancel-button" onClick={actions.onCancelEditClickHandler}>Cancel</button>
+                    <button onClick={() => actions.onSaveEditClickHandler(postCtx.post._id)}>Save</button>
+                    <button onClick={actions.onCancelEditClickHandler}>Cancel</button>
                 </>}
             </div>
         );
@@ -218,15 +217,15 @@ describe("PostDetailsPage component", () => {
     });
 
     it.each([
-        { name: "deletes post and navigates to catalog after the delete confirmation window is accepted", accepted: true},
-        { name: "does nothing after the delete confirmation window is cancelled", accepted: true},
+        { name: "deletes post and navigates to catalog after the delete confirmation window is accepted", accepted: true },
+        { name: "does nothing after the delete confirmation window is cancelled", accepted: true },
     ])("$name", async ({ accepted }) => {
         const user = userEvent.setup();
         setup();
 
         vi.spyOn(window, "confirm").mockReturnValue(accepted);
 
-        await user.click(await screen.findByTestId("delete-button"));
+        await user.click(await screen.findByRole("button", { name: "Delete" }));
 
         if (accepted) {
             await waitFor(() => {
@@ -253,7 +252,7 @@ describe("PostDetailsPage component", () => {
 
         vi.spyOn(window, "confirm").mockReturnValue(true);
 
-        await user.click(await screen.findByTestId("delete-button"));
+        await user.click(await screen.findByRole("button", { name: "Delete" }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(ERR_MSG.DELETE);
@@ -264,7 +263,7 @@ describe("PostDetailsPage component", () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(await screen.findByTestId("like-button"));
+        await user.click(await screen.findByRole("button", { name: "Like" }));
 
         await waitFor(() => {
             expect(usePostServicesMock.likePost).toHaveBeenCalledWith(isUser, post._id);
@@ -282,7 +281,7 @@ describe("PostDetailsPage component", () => {
             unlikePostSuccess: true,
         });
 
-        await user.click(await screen.findByTestId("like-button"));
+        await user.click(await screen.findByRole("button", { name: "Like" }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(ERR_MSG.LIKE);
@@ -293,7 +292,7 @@ describe("PostDetailsPage component", () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(await screen.findByTestId("unlike-button"));
+        await user.click(await screen.findByRole("button", { name: "Unlike" }));
 
         await waitFor(() => {
             expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(isUser, post._id);
@@ -311,7 +310,7 @@ describe("PostDetailsPage component", () => {
             unlikePostSuccess: false,
         });
 
-        await user.click(await screen.findByTestId("unlike-button"));
+        await user.click(await screen.findByRole("button", { name: "Unlike" }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UNLIKE);
@@ -322,13 +321,13 @@ describe("PostDetailsPage component", () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(await screen.findByTestId("edit-button"));
+        await user.click(await screen.findByRole("button", { name: "Edit" }));
 
-        expect(await screen.findByTestId("save-button")).toBeInTheDocument();
-        expect(await screen.findByTestId("cancel-button")).toBeInTheDocument();
+        expect(await screen.findByRole("button", { name: "Save" })).toBeInTheDocument();
+        expect(await screen.findByRole("button", { name: "Cancel" })).toBeInTheDocument();
 
         expect(screen.queryByTestId("post-text")).not.toBeInTheDocument();
-        expect(screen.getByTestId("post-text-edit")).toHaveValue(post.text);
+        expect(screen.getByRole("textbox")).toHaveValue(post.text);
 
     });
 
@@ -336,24 +335,24 @@ describe("PostDetailsPage component", () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(await screen.findByTestId("edit-button"));
-        await user.clear(screen.getByTestId("post-text-edit"));
+        await user.click(await screen.findByRole("button", { name: "Edit" }));
+        await user.clear(screen.getByRole("textbox"));
 
-        await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
-        expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
+        await user.type(screen.getByRole("textbox"), UPDATED_POST_CONTENT);
+        expect(screen.getByRole("textbox")).toHaveValue(UPDATED_POST_CONTENT);
     });
 
     it("on cancel button click rerenders to post text with original content", async () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(await screen.findByTestId("edit-button"));
-        await user.clear(screen.getByTestId("post-text-edit"));
-        await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
+        await user.click(await screen.findByRole("button", { name: "Edit" }));
+        await user.clear(screen.getByRole("textbox"));
+        await user.type(screen.getByRole("textbox"), UPDATED_POST_CONTENT);
 
-        await user.click(screen.getByTestId("cancel-button"));
+        await user.click(screen.getByRole("button", { name: "Cancel" }));
 
-        expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
+        expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
         expect(screen.getByTestId("post-text")).toHaveTextContent(post.text);
     });
 
@@ -361,17 +360,17 @@ describe("PostDetailsPage component", () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(await screen.findByTestId("edit-button"));
-        await user.clear(screen.getByTestId("post-text-edit"));
-        await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
+        await user.click(await screen.findByRole("button", { name: "Edit" }));
+        await user.clear(screen.getByRole("textbox"));
+        await user.type(screen.getByRole("textbox"), UPDATED_POST_CONTENT);
 
-        await user.click(screen.getByTestId("save-button"));
+        await user.click(screen.getByRole("button", { name: "Save" }));
 
         await waitFor(() => {
             expect(usePostServicesMock.editPost).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
         });
 
-        expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
+        expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     });
 
     it("does nothing when the save post call returns an empty value", async () => {
@@ -385,17 +384,17 @@ describe("PostDetailsPage component", () => {
             unlikePostSuccess: true,
         });
 
-        await user.click(await screen.findByTestId("edit-button"));
-        await user.clear(screen.getByTestId("post-text-edit"));
-        await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
+        await user.click(await screen.findByRole("button", { name: "Edit" }));
+        await user.clear(screen.getByRole("textbox"));
+        await user.type(screen.getByRole("textbox"), UPDATED_POST_CONTENT);
 
-        await user.click(screen.getByTestId("save-button"));
+        await user.click(screen.getByRole("button", { name: "Save" }));
 
         await waitFor(() => {
             expect(usePostServicesMock.editPost).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
         });
 
-        expect(screen.getByTestId("post-text-edit")).toBeInTheDocument();
+        expect(screen.getByRole("textbox")).toBeInTheDocument();
     });
 
     it("shows error message on a rejected post save call", async () => {
@@ -409,11 +408,11 @@ describe("PostDetailsPage component", () => {
             unlikePostSuccess: true,
         });
 
-        await user.click(await screen.findByTestId("edit-button"));
-        await user.clear(screen.getByTestId("post-text-edit"));
-        await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
+        await user.click(await screen.findByRole("button", { name: "Edit" }));
+        await user.clear(screen.getByRole("textbox"));
+        await user.type(screen.getByRole("textbox"), UPDATED_POST_CONTENT);
 
-        await user.click(screen.getByTestId("save-button"));
+        await user.click(screen.getByRole("button", { name: "Save" }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(ERR_MSG.EDIT);
