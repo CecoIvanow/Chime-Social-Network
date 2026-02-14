@@ -22,7 +22,7 @@ beforeEach(() => {
 });
 
 describe("PostEditRedirect component", () => {
-    it("redirects on render", () => {
+    it("redirects to correct post url with correct state", () => {
         expect(useNavigateMock).toHaveBeenCalledWith(REDIRECT_URL, REDIRECT_OPTIONS);
     });
 });
