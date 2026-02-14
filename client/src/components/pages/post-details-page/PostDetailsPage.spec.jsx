@@ -1,6 +1,7 @@
 import { useContext } from "react";
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { ActionsContext } from "../../../contexts/actions-context";
@@ -220,11 +221,12 @@ describe("PostDetailsPage component", () => {
         { name: "deletes post and navigates to catalog after the delete confirmation window is accepted", accepted: true},
         { name: "does nothing after the delete confirmation window is cancelled", accepted: true},
     ])("$name", async ({ accepted }) => {
+        const user = userEvent.setup();
         setup();
 
         vi.spyOn(window, "confirm").mockReturnValue(accepted);
 
-        fireEvent.click(await screen.findByTestId("delete-button"));
+        await user.click(await screen.findByTestId("delete-button"));
 
         if (accepted) {
             await waitFor(() => {
@@ -234,15 +236,14 @@ describe("PostDetailsPage component", () => {
             expect(navigateToMock).toHaveBeenCalledWith('/catalog');
 
         } else {
-            await waitFor(() => {
-                expect(usePostServicesMock.deletePost).not.toHaveBeenCalled();
-            });
+            expect(usePostServicesMock.deletePost).not.toHaveBeenCalled();
 
             expect(navigateToMock).not.toHaveBeenCalled();
         }
     });
 
     it("shows error message on a rejected post deletion call", async () => {
+        const user = userEvent.setup();
         setup({
             getPostWithCommentsSuccess: true,
             deletePostSuccess: false,
@@ -254,7 +255,7 @@ describe("PostDetailsPage component", () => {
 
         vi.spyOn(window, "confirm").mockReturnValue(true);
 
-        fireEvent.click(await screen.findByTestId("delete-button"));
+        await user.click(await screen.findByTestId("delete-button"));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(ERR_MSG.DELETE);
@@ -262,9 +263,10 @@ describe("PostDetailsPage component", () => {
     });
 
     it("successfully likes a post", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(await screen.findByTestId("like-button"));
+        await user.click(await screen.findByTestId("like-button"));
 
         await waitFor(() => {
             expect(usePostServicesMock.likePost).toHaveBeenCalledWith(isUser, post._id);
@@ -272,6 +274,7 @@ describe("PostDetailsPage component", () => {
     });
 
     it("shows error message on a rejected post like call", async () => {
+        const user = userEvent.setup();
         setup({
             getPostWithCommentsSuccess: true,
             deletePostSuccess: true,
@@ -281,7 +284,7 @@ describe("PostDetailsPage component", () => {
             unlikePostSuccess: true,
         });
 
-        fireEvent.click(await screen.findByTestId("like-button"));
+        await user.click(await screen.findByTestId("like-button"));
 
         await waitFor(() => {
             expect(usePostServicesMock.likePost).toHaveBeenCalledWith(isUser, post._id);
@@ -291,9 +294,10 @@ describe("PostDetailsPage component", () => {
     });
 
     it("successfully unlikes a post", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(await screen.findByTestId("unlike-button"));
+        await user.click(await screen.findByTestId("unlike-button"));
 
         await waitFor(() => {
             expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(isUser, post._id);
@@ -302,6 +306,7 @@ describe("PostDetailsPage component", () => {
     });
 
     it("shows error message on a rejected post unlike call", async () => {
+        const user = userEvent.setup();
         setup({
             getPostWithCommentsSuccess: true,
             deletePostSuccess: true,
@@ -311,7 +316,7 @@ describe("PostDetailsPage component", () => {
             unlikePostSuccess: false,
         });
 
-        fireEvent.click(await screen.findByTestId("unlike-button"));
+        await user.click(await screen.findByTestId("unlike-button"));
 
         await waitFor(() => {
             expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(isUser, post._id);
@@ -321,12 +326,13 @@ describe("PostDetailsPage component", () => {
     });
 
     it("on edit button click renders post edit textarea with cancel and save buttons instead of post text", async () => {
+        const user = userEvent.setup();
         setup();
 
         expect(await screen.findByTestId("post-text")).toBeInTheDocument();
         expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
 
-        fireEvent.click(screen.getByTestId("edit-button"));
+        await user.click(screen.getByTestId("edit-button"));
 
         expect(await screen.findByTestId("save-button")).toBeInTheDocument();
         expect(await screen.findByTestId("cancel-button")).toBeInTheDocument();
@@ -336,35 +342,41 @@ describe("PostDetailsPage component", () => {
     });
 
     it("post text gets updated on user typing", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(await screen.findByTestId("edit-button"));
+        await user.click(await screen.findByTestId("edit-button"));
         expect(screen.getByTestId("post-text-edit")).toHaveValue(post.text);
 
-        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: UPDATED_POST_CONTENT } });
+        await user.clear(screen.getByTestId("post-text-edit"));
+        await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
         expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
     });
 
     it("on cancel button click rerenders to post text with correct content", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(await screen.findByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: UPDATED_POST_CONTENT } });
+        await user.click(await screen.findByTestId("edit-button"));
+        await user.clear(screen.getByTestId("post-text-edit"));
+        await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
 
-        fireEvent.click(screen.getByTestId("cancel-button"));
+        await user.click(screen.getByTestId("cancel-button"));
 
         expect(screen.getByTestId("post-text")).toHaveTextContent(post.text);
         expect(screen.queryByTestId("post-text-edit")).not.toBeInTheDocument();
     });
 
     it("on save button click renders default the post text with the updated content", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(await screen.findByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: UPDATED_POST_CONTENT } });
+        await user.click(await screen.findByTestId("edit-button"));
+        await user.clear(screen.getByTestId("post-text-edit"));
+        await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
         expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
 
-        fireEvent.click(screen.getByTestId("save-button"));
+        await user.click(screen.getByTestId("save-button"));
 
         await waitFor(() => {
             expect(usePostServicesMock.editPost).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
@@ -374,6 +386,7 @@ describe("PostDetailsPage component", () => {
     });
 
     it("does nothing when the save post call returns an empty value", async () => {
+        const user = userEvent.setup();
         setup({
             getPostWithCommentsSuccess: true,
             deletePostSuccess: true,
@@ -383,11 +396,12 @@ describe("PostDetailsPage component", () => {
             unlikePostSuccess: true,
         });
 
-        fireEvent.click(await screen.findByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: UPDATED_POST_CONTENT } });
+        await user.click(await screen.findByTestId("edit-button"));
+        await user.clear(screen.getByTestId("post-text-edit"));
+        await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
         expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
 
-        fireEvent.click(screen.getByTestId("save-button"));
+        await user.click(screen.getByTestId("save-button"));
 
         await waitFor(() => {
             expect(usePostServicesMock.editPost).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
@@ -397,6 +411,7 @@ describe("PostDetailsPage component", () => {
     });
 
     it("shows error message on a rejected post save call", async () => {
+        const user = userEvent.setup();
         setup({
             getPostWithCommentsSuccess: true,
             deletePostSuccess: true,
@@ -406,11 +421,12 @@ describe("PostDetailsPage component", () => {
             unlikePostSuccess: true,
         });
 
-        fireEvent.click(await screen.findByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("post-text-edit"), { target: { value: UPDATED_POST_CONTENT } });
+        await user.click(await screen.findByTestId("edit-button"));
+        await user.clear(screen.getByTestId("post-text-edit"));
+        await user.type(screen.getByTestId("post-text-edit"), UPDATED_POST_CONTENT);
         expect(screen.getByTestId("post-text-edit")).toHaveValue(UPDATED_POST_CONTENT);
 
-        fireEvent.click(screen.getByTestId("save-button"));
+        await user.click(screen.getByTestId("save-button"));
 
         await waitFor(() => {
             expect(usePostServicesMock.editPost).toHaveBeenCalledWith(post._id, UPDATED_POST_CONTENT);
