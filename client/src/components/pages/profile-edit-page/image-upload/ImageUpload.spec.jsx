@@ -36,8 +36,9 @@ beforeEach(() => {
 });
 
 describe("ImageUpload component", () => {
-    it("renders ImageUpload with passed props", () => {
-        expect(screen.getByAltText("Profile picture")).toHaveAttribute("src", mockProps.imageUrl);
+    it("renders ImageUpload with correct alt attribute and src attribute with initial image url", () => {
+        expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.imageUrl);
+        expect(screen.getByRole("img")).toHaveAttribute("alt", "Profile picture");
     });
 
     it("uploads image and shows image preview", async () => {
@@ -46,7 +47,7 @@ describe("ImageUpload component", () => {
         await user.upload(screen.getByTestId("image-input"), imageFile1);
 
         expect(mockProps.setImageUpload).toHaveBeenCalledWith(imageFile1);
-        expect(screen.getByAltText("Profile picture")).toHaveAttribute("src", "blob:mock-image-url");
+        expect(screen.getByRole("img")).toHaveAttribute("src", "blob:mock-image-url");
     });
 
     it("renders original image preview on empty upload", async () => {
@@ -55,7 +56,7 @@ describe("ImageUpload component", () => {
         await user.upload(screen.getByTestId("image-input"), []);
 
         expect(mockProps.setImageUpload).not.toHaveBeenCalled();
-        expect(screen.getByAltText("Profile picture")).toHaveAttribute("src", mockProps.imageUrl);
+        expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.imageUrl);
     });
 
     it("revokes previous image on new upload", async () => {
