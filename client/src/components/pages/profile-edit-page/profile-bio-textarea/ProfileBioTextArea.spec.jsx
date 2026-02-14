@@ -9,7 +9,6 @@ vi.mock("../../../ui/inputs/textarea-input-field/TextAreaInput", () => ({
         <textarea
             data-testid="input-el"
             id={inputName}
-            name={inputName}
             defaultValue={initialValue}
         />
     </>
@@ -18,7 +17,6 @@ vi.mock("../../../ui/inputs/textarea-input-field/TextAreaInput", () => ({
 const mockProps = {
     userData: {
         bio: "Test text!"
-
     },
 };
 
@@ -29,17 +27,7 @@ beforeEach(() => {
 });
 
 describe("ProfileBioTextArea component", () => {
-    it("renders component with passed props", () => {
-        const pattern = /^Bio$/;
-
-        const labelEl = screen.getByTestId("label-el");
-        const inputEl = screen.getByTestId("input-el");
-
-        expect(labelEl).toHaveAttribute("for", "bio");
-        expect(labelEl).toHaveTextContent(pattern);
-
-        expect(inputEl).toHaveAttribute("id", "bio");
-        expect(inputEl).toHaveAttribute("name", "bio");
-        expect(inputEl).toHaveValue(mockProps.userData.bio);
+    it("renders with correct value attribute", () => {
+        expect(screen.getByLabelText("Bio")).toHaveValue(mockProps.userData.bio);
     });
 });
