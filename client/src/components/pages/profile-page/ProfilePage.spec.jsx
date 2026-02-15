@@ -83,7 +83,7 @@ describe("ProfilePage component", () => {
 
         useUserServicesMock.getUserPosts = options.getUserPosts ?
             useUserServicesMock.getUserPosts.mockResolvedValue(userPosts) :
-            useUserServicesMock.getUserPosts.mockRejectedValue(new Error(""));
+            useUserServicesMock.getUserPosts.mockRejectedValue(new Error(ERR_MSG.GET_POST_DATA));
 
         const { unmount } = render(
             <AlertContext.Provider value={{ setAlert }}>
@@ -143,19 +143,28 @@ describe("ProfilePage component", () => {
         };
     });
 
-    it.each([
-        { name: "shows error message on rejected user data call", getUserData: false },
-        { name: "shows error message on rejected post data call", getUserPosts: false },
-    ])("$name", async ({ getUserData, getUserPosts }) => {
+    it("shows error message on rejected user data call", async () => {
         renderComp({
             isLoading: false,
-            getUserData,
-            getUserPosts,
+            getUserData: false,
+            getUserPosts: true,
         });
 
         await waitFor(() => {
-            expect(setAlert).toHaveBeenCalled();
-        })
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.GET_USER_DATA);
+        });
+    });
+
+    it("shows error message on rejected user posts call", async () => {
+        renderComp({
+            isLoading: false,
+            getUserData: true,
+            getUserPosts: false,
+        });
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.GET_POST_DATA);
+        });
     });
 
     it("stops all ongoing calls on unmount", () => {
