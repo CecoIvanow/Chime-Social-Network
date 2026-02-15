@@ -95,9 +95,9 @@ describe("ProfilePage component", () => {
     }
 
     it.each([
-        { isLoading: false, renderedComp: "ProfileSection" },
-        { isLoading: true, renderedComp: "isLoading" },
-    ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
+        { name: "renders a loading spinner while the user data is being fetched", isLoading: true },
+        { name: "renders the user data after it has been fetched", isLoading: false },
+    ])("$name", async ({ isLoading }) => {
         const pattern = new RegExp(`^${userData.firstName}$`)
 
         renderComp({
@@ -112,15 +112,16 @@ describe("ProfilePage component", () => {
         } else {
             await waitFor(() => {
                 expect(screen.getByTestId("profile-section")).toHaveTextContent(pattern);
-            })
+            });
+
             expect(screen.queryByTestId("profile-loading-spinner")).not.toBeInTheDocument();
         };
     });
 
     it.each([
-        { isLoading: false, renderedComp: "PostsSection" },
-        { isLoading: true, renderedComp: "isLoading" },
-    ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
+        { name: "renders a loading spinner while the post data is being fetched", isLoading: true },
+        { name: "renders the post data after it has been fetched", isLoading: false },
+    ])("$name", async ({ isLoading }) => {
         const pattern = new RegExp(`^${userData.firstName}$`)
 
         renderComp({
@@ -135,16 +136,17 @@ describe("ProfilePage component", () => {
         } else {
             await waitFor(() => {
                 expect(screen.getByTestId("posts-section")).toHaveTextContent(pattern);
-                expect(screen.getAllByTestId("post")).toHaveLength(userPosts.createdPosts.length);
             });
+
+            expect(screen.getAllByTestId("post")).toHaveLength(userPosts.createdPosts.length);
             expect(screen.queryByTestId("posts-loading-spinner")).not.toBeInTheDocument();
         };
     });
 
     it.each([
-        { getUserData: false, renderedComp: "ProfileSection" },
-        { getUserPosts: false, renderedComp: "ProfileSection" },
-    ])("triggers setAlert on rejected $renderedComp", async ({ getUserData, getUserPosts }) => {
+        { name: "shows error message on rejected user data call", getUserData: false },
+        { name: "shows error message on rejected post data call", getUserPosts: false },
+    ])("$name", async ({ getUserData, getUserPosts }) => {
         renderComp({
             isLoading: false,
             getUserData,
@@ -156,11 +158,10 @@ describe("ProfilePage component", () => {
         })
     });
 
-    it("triggers abortAll on unmount", () => {
+    it("stops all ongoing calls on unmount", () => {
         const unmount = renderComp();
 
         unmount();
-
         expect(useUserServicesMock.abortAll).toHaveBeenCalled();
     });
 });
