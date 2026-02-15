@@ -44,6 +44,11 @@ vi.mock("../../shared/post/posts-section/PostsSection", () => ({
     }
 }));
 
+const ERR_MSG = {
+    GET_USER_DATA: "Rejected getUserData call!",
+    GET_POST_DATA: "Rejected getUserPosts call!",
+};
+
 const useUserServicesMock = {
     getUserData: vi.fn(),
     getUserPosts: vi.fn(),
@@ -73,11 +78,11 @@ describe("ProfilePage component", () => {
 
         useUserServicesMock.getUserData = options.getUserData ?
             useUserServicesMock.getUserData.mockResolvedValue(userData) :
-            useUserServicesMock.getUserData.mockRejectedValue(new Error("Successfully rejected getUserData!"));
+            useUserServicesMock.getUserData.mockRejectedValue(new Error(ERR_MSG.GET_USER_DATA));
 
         useUserServicesMock.getUserPosts = options.getUserPosts ?
             useUserServicesMock.getUserPosts.mockResolvedValue(userPosts) :
-            useUserServicesMock.getUserPosts.mockRejectedValue(new Error("Successfully rejected getUserPosts!"));
+            useUserServicesMock.getUserPosts.mockRejectedValue(new Error(""));
 
         const { unmount } = render(
             <AlertContext.Provider value={{ setAlert }}>
