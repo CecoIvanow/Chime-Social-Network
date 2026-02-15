@@ -3,10 +3,6 @@ import { describe, expect, it, vi } from "vitest";
 
 import PasswordChangeForm from "./PasswordChangeForm";
 
-vi.mock("../../../ui/buttons/button/Button", () => ({
-    default: ({ buttonName }) => <button data-testid="button">{buttonName}</button>
-}));
-
 vi.mock("../../../ui/headings/SectionHeading", () => ({
     default: ({ sectionName }) => <div data-testid="section-heading">{sectionName}</div>
 }));
@@ -26,6 +22,10 @@ vi.mock("../../../shared/input-fields/input-fields-list/InputFieldsList", () => 
             </>
         )
     )
+}));
+
+vi.mock("../../../ui/buttons/button/Button", () => ({
+    default: ({ buttonName }) => <button data-testid="button">{buttonName}</button>
 }));
 
 describe("PasswordChangeForm component", () => {
