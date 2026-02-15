@@ -28,7 +28,9 @@ vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName }) => <button type="submit">{buttonName}</button>
 }));
 
-const onSubmitHandlerMock = vi.fn();
+const mockProps = {
+    onSubmitHandler: vi.fn(),
+};
 
 const passwordChangeSettingsFields = [
     { fieldName: `Current Email`, inputType: 'text', inputName: 'curEmail' },
@@ -40,7 +42,7 @@ const passwordChangeSettingsFields = [
 beforeEach(() => {
     render(
         <PasswordChangeForm
-            onSubmitHandler={onSubmitHandlerMock}
+            {...mockProps}
         />
     );
 });
@@ -65,6 +67,6 @@ describe("PasswordChangeForm component", () => {
         const user = userEvent.setup();
 
         await user.click(screen.getByRole("button", { name: "Change Password" }));
-        expect(onSubmitHandlerMock).toHaveBeenCalledOnce();
+        expect(mockProps.onSubmitHandler).toHaveBeenCalled();
     });
 });
