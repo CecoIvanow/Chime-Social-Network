@@ -31,8 +31,8 @@ export default function ProfilePage() {
                 setTotalPosts(userPosts?.createdPosts.reverse());
                 
             } catch (error) {
-                console.error(error);
-                setAlert(error);
+                console.error(error.message);
+                setAlert(error.message);
             }
         }
         fetchData();
