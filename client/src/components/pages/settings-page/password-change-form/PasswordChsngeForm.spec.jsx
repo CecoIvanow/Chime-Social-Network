@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import PasswordChangeForm from "./PasswordChangeForm";
@@ -74,8 +75,10 @@ describe("PasswordChangeForm component", () => {
         };
     });
 
-    it("on submit handler gets attached to PasswordChangeForm", () => {
-        fireEvent.click(screen.getByTestId("button"));
+    it("on submit handler gets attached to PasswordChangeForm", async () => {
+        const user = userEvent.setup();
+
+        await user.click(screen.getByTestId("button"));
         expect(onSubmitHandlerMock).toHaveBeenCalledOnce();
     });
 });
