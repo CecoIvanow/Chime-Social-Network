@@ -1,10 +1,12 @@
+import { useContext } from "react";
+
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import useUserServices from "../../../hooks/useUserServices";
+
 import { AlertContext } from "../../../contexts/alert-context";
 import { TotalPostsContext } from "../../../contexts/total-posts-context";
-
-import useUserServices from "../../../hooks/useUserServices";
 
 import ProfilePage from "./ProfilePage";
 
@@ -21,21 +23,23 @@ vi.mock("../../shared/profile/profile-section/ProfileSection", () => ({
 }));
 
 vi.mock("../../shared/post/posts-section/PostsSection", () => ({
-    default: ({ isLoading, userName }) => <>
-        <TotalPostsContext.Consumer>
-            {context => (
-                isLoading ? (
+    default: function PostsSection({ isLoading, userName }) {
+        const context = useContext(TotalPostsContext);
+
+        return (
+            <>
+                {isLoading ? (
                     <div data-testid="posts-loading-spinner" ></div>
                 ) : (
                     <>
                         <div data-testid="posts-section">{userName}</div>
-                            {context.totalPosts.map(post =>
+                        {context.totalPosts.map(post =>
                             <div key={post._id} data-testid="post"></div>)}
-                    </>
-                )
-            )}
-        </TotalPostsContext.Consumer>
-    </>
+                    </>)
+                }
+            </>
+        )
+    }
 }));
 
 describe("ProfilePage component", () => {
@@ -47,8 +51,8 @@ describe("ProfilePage component", () => {
     const userData = { firstName: "Petar" };
     const userPosts = {
         createdPosts: [
-            { _id: 2},
-            { _id: 1},
+            { _id: 2 },
+            { _id: 1 },
         ]
     }
 
