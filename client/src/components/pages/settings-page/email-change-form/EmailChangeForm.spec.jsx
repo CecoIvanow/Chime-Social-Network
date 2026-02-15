@@ -25,13 +25,12 @@ vi.mock("../../../shared/input-fields/input-fields-list/InputFieldsList", () => 
 }));
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
-    default: ({ buttonName }) => <button>{buttonName}</button>
+    default: ({ buttonName }) => <button type="submit">{buttonName}</button>
 }));
 
 const mockProps = {
     userEmail: "example@email.com",
     onSubmitHandler: vi.fn(),
-
 };
 
 const emailChangeSettingsFields = [
@@ -50,22 +49,22 @@ beforeEach(() => {
 });
 
 describe("EmailChangeForm component", () => {
-    it("renders Button component with hardcoded values", () => {
-        expect(screen.getByRole("button", { name: "Change Email"})).toBeInTheDocument();
-    });
-
-    it("renders SectionHeading component with hardcoded values", () => {
+    it("renders section heading with the user email in it", () => {
         expect(screen.getByTestId("section-heading")).toHaveTextContent(mockProps.userEmail);
     });
 
-    it("renders InputFieldsList with passed props", () => {
+    it("renders the change email button", () => {
+        expect(screen.getByRole("button", { name: "Change Email"})).toBeInTheDocument();
+    });
+
+    it("renders the correct amount of input fields with name and type attributes and properly connected ", () => {
         for (let i = 0; i < emailChangeSettingsFields.length; i++) {
             expect(screen.getByLabelText(emailChangeSettingsFields[i].fieldName)).toHaveAttribute("name", emailChangeSettingsFields[i].fieldName);
             expect(screen.getByLabelText(emailChangeSettingsFields[i].fieldName)).toHaveAttribute("type", emailChangeSettingsFields[i].inputType);
         };
     });
 
-    it("on submit handler gets attached to EmailChangeForm", async () => {
+    it("triggers an event on form submit", async () => {
         const user = userEvent.setup();
 
         await user.click(screen.getByRole("button", { name: "Change Email"}));
