@@ -29,9 +29,11 @@ vi.mock("../../../shared/input-fields/input-fields-list/InputFieldsList", () => 
     )
 }));
 
-const userEmail = "example@email.com";
+const mockProps = {
+    userEmail: "example@email.com",
+    onSubmitHandler: vi.fn(),
 
-const onSubmitHandlerMock = vi.fn();
+};
 
 const emailChangeSettingsFields = [
     { fieldName: `Account Email`, inputType: 'text', inputName: 'curEmail' },
@@ -43,8 +45,7 @@ const emailChangeSettingsFields = [
 beforeEach(() => {
     render(
         <EmailChangeForm
-            userEmail={userEmail}
-            onSubmitHandler={onSubmitHandlerMock}
+            {...mockProps}
         />
     );
 });
@@ -57,7 +58,7 @@ describe("EmailChangeForm component", () => {
     });
 
     it("renders SectionHeading component with hardcoded values", () => {
-        const pattern = new RegExp(`^Account Email - ${userEmail}$`);
+        const pattern = new RegExp(`^Account Email - ${mockProps.userEmail}$`);
 
         expect(screen.getByTestId("section-heading")).toHaveTextContent(pattern);
     });
@@ -84,6 +85,6 @@ describe("EmailChangeForm component", () => {
 
         await user.click(screen.getByTestId("button"));
 
-        expect(onSubmitHandlerMock).toHaveBeenCalledOnce();
+        expect(mockProps.onSubmitHandler).toHaveBeenCalledOnce();
     })
 });
