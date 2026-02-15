@@ -14,23 +14,11 @@ vi.mock("../../../hooks/useUserServices", () => ({
 }));
 
 vi.mock("../../ui/auth/auth-button/AuthButton", () => ({
-    default: ({ buttonText, isPending }) =>
-        <button
-            data-testid="auth-button"
-            disabled={isPending}
-        >
-            {buttonText}
-        </button>
+    default: ({ buttonText, isPending }) => <button disabled={isPending}>{buttonText}</button>
 }));
 
 vi.mock("../../ui/auth/auth-nav-link/AuthNavLink", () => ({
-    default: ({ path, buttonText }) =>
-        <Link
-            data-testid="nav-link"
-            to={path}
-        >
-            {buttonText}
-        </Link>
+    default: ({ path, buttonText }) => <Link to={path}>{buttonText}</Link>
 }));
 
 vi.mock("../../shared/user-details/gender-details/GenderDetails", () => ({
@@ -45,14 +33,8 @@ vi.mock("../../shared/auth/auth-forms-list/AuthFormsList", () => ({
     default: ({ authFieldsList }) => <>
         <div data-testid="forms-list">
             {authFieldsList.map(field => <>
-                <label
-                    data-testid="label-el"
-                    htmlFor={field.inputName}
-                >
-                    {field.fieldName}
-                </label>
+                <label htmlFor={field.inputName}>{field.fieldName}</label>
                 <input
-                    data-testid="input-el"
                     id={field.inputName}
                     type={field.inputType}
                     placeholder={field.placeholderText}
@@ -115,46 +97,36 @@ describe("RegisterPage component", () => {
     it("renders AuthNavLink with passed props", () => {
         setup();
 
-        expect(screen.getByTestId("nav-link")).toBeInTheDocument();
-        expect(screen.getByTestId("nav-link")).toHaveAttribute("href", "/login")
+        expect(screen.getByRole("link", { name: "Already have an account?" })).toHaveAttribute("href", "/login")
     });
 
     it("renders AuthFormsList with passed props", () => {
         setup();
 
-        const labels = screen.getAllByTestId("label-el");
-        const inputs = screen.getAllByTestId('input-el');
-
         for (let i = 0; i < registerFields.length; i++) {
-            const pattern = new RegExp(`^${registerFields[i].fieldName}$`);
-
-            expect(labels[i]).toHaveTextContent(pattern);
-            expect(labels[i]).toHaveAttribute("for", registerFields[i].inputName);
-
-            expect(inputs[i]).toHaveAttribute("id", registerFields[i].inputName);
-            expect(inputs[i]).toHaveAttribute("type", registerFields[i].inputType);
-            expect(inputs[i]).toHaveAttribute("placeholder", registerFields[i].placeholderText);
-        }
+            expect(screen.getByLabelText(registerFields[i].fieldName)).toHaveAttribute("type", registerFields[i].inputType);
+            expect(screen.getByLabelText(registerFields[i].fieldName)).toHaveAttribute("placeholder", registerFields[i].placeholderText);
+        };
     });
 
     it("renders AuthButton enabled with passed props", () => {
         setup();
 
-        expect(screen.getByTestId("auth-button")).not.toBeDisabled();
+        expect(screen.getByRole("button", { name: "Register" })).not.toBeDisabled();
     });
 
     it("renders AuthButton disabled with passed props on submitted form", () => {
         setup();
 
-        fireEvent.click(screen.getByTestId("auth-button"));
+        fireEvent.click(screen.getByRole("button", { name: "Register" }));
 
-        expect(screen.getByTestId("auth-button")).toBeDisabled();
+        expect(screen.getByRole("button", { name: "Register" })).toBeDisabled();
     });
 
     it("on form submit triggers register method with successfull call", async () => {
         setup();
 
-        fireEvent.click(screen.getByTestId("auth-button"));
+        fireEvent.click(screen.getByRole("button", { name: "Register" }));
 
         await waitFor(() => {
             expect(useUserServicesMock.register).toHaveBeenCalled();
@@ -164,7 +136,7 @@ describe("RegisterPage component", () => {
     it("on form submit triggers setAlert on rejected register method call", async () => {
         setup(false);
 
-        fireEvent.click(screen.getByTestId("auth-button"));
+        fireEvent.click(screen.getByRole("button", { name: "Register" }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalled();
