@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import EmailChangeForm from "./EmailChangeForm";
@@ -81,10 +82,11 @@ describe("EmailChangeForm component", () => {
         };
     });
 
-    it("on submit handler gets attached to EmailChangeForm", () => {
+    it("on submit handler gets attached to EmailChangeForm", async () => {
+        const user = userEvent.setup();
         renderComp();
 
-        fireEvent.click(screen.getByTestId("button"));
+        await user.click(screen.getByTestId("button"));
 
         expect(onSubmitHandlerMock).toHaveBeenCalledOnce();
     })
