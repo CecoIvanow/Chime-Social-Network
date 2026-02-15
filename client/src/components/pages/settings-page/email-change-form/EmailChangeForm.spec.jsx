@@ -29,27 +29,27 @@ vi.mock("../../../shared/input-fields/input-fields-list/InputFieldsList", () => 
     )
 }));
 
+const userEmail = "example@email.com";
+
+const onSubmitHandlerMock = vi.fn();
+
+const emailChangeSettingsFields = [
+    { fieldName: `Account Email`, inputType: 'text', inputName: 'curEmail' },
+    { fieldName: 'New Email', inputType: 'text', inputName: 'newEmail' },
+    { fieldName: 'Current Password', inputType: 'password', inputName: 'curPass' },
+    { fieldName: 'Repeat Password', inputType: 'password', inputName: 'rePass' },
+];
+
+function renderComp() {
+    render(
+        <EmailChangeForm
+            userEmail={userEmail}
+            onSubmitHandler={onSubmitHandlerMock}
+        />
+    );
+}
+
 describe("EmailChangeForm component", () => {
-    const userEmail = "example@email.com";
-
-    const onSubmitHandlerMock = vi.fn();
-
-    const emailChangeSettingsFields = [
-        { fieldName: `Account Email`, inputType: 'text', inputName: 'curEmail' },
-        { fieldName: 'New Email', inputType: 'text', inputName: 'newEmail' },
-        { fieldName: 'Current Password', inputType: 'password', inputName: 'curPass' },
-        { fieldName: 'Repeat Password', inputType: 'password', inputName: 'rePass' },
-    ];
-
-    function renderComp() {
-        render(
-            <EmailChangeForm
-                userEmail={userEmail}
-                onSubmitHandler={onSubmitHandlerMock}
-            />
-        );
-    }
-
     it("renders Button component with hardcoded values", () => {
         const pattern = new RegExp("^Change Email$");
 
