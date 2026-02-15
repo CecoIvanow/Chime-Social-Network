@@ -4,7 +4,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../firebase/firebase-storage/config";
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { ActionsContext } from "../../../contexts/actions-context"
 import { AlertContext } from "../../../contexts/alert-context"
@@ -98,8 +98,8 @@ vi.mock("../../../firebase/firebase-storage/config", () => ({
 }));
 
 vi.mock("react-router", () => ({
-    useNavigate: () => navigateMock,
-    useParams: () => useParamsMock(),
+    useNavigate: () => reactRouterMock.navigateTo,
+    useParams: () => reactRouterMock.useParams(),
 }));
 
 const userData = {
@@ -125,8 +125,10 @@ const formProfileInputs = [
     { fieldName: 'Status', inputType: 'text', inputName: 'status', value: userData?.status },
 ];
 
-const useParamsMock = vi.fn();
-const navigateMock = vi.fn();
+const reactRouterMock = {
+    useParams: vi.fn(),
+    navigateTo: vi.fn(),
+};
 
 const setAlert = vi.fn();
 
@@ -155,7 +157,7 @@ function setup(
         "https://firebase.mock/avatar.webp"
     );
 
-    useParamsMock.mockReturnValue({ userId: options.useParamsMockValue });
+    reactRouterMock.useParams.mockReturnValue({ userId: options.useParamsMockValue });
 
     userUserServicesMock.updateUser = options.updateUserResult ?
         userUserServicesMock.updateUser.mockResolvedValue(true) :
@@ -232,7 +234,7 @@ describe("ProfileEditPage component", () => {
 
         fireEvent.click(cancelButton);
 
-        expect(navigateMock).toHaveBeenCalledWith(`/profile/${isUser}`);
+        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
     });
 
     it("triggers setAlert on rejected getUserData call", async () => {
@@ -254,7 +256,7 @@ describe("ProfileEditPage component", () => {
             useParamsMockValue: "differentId",
         });
 
-        expect(navigateMock).toHaveBeenCalledWith("/404");
+        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith("/404");
     });
 
     it("triggers navigateTo on successful form submit", async () => {
@@ -266,7 +268,7 @@ describe("ProfileEditPage component", () => {
 
         await waitFor(() => {
             expect(userUserServicesMock.updateUser).toHaveBeenCalled();
-            expect(navigateMock).toHaveBeenCalledWith(`/profile/${isUser}`);
+            expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
         });
     });
 
@@ -283,7 +285,7 @@ describe("ProfileEditPage component", () => {
 
         await waitFor(() => {
             expect(userUserServicesMock.updateUser).toHaveBeenCalled();
-            expect(navigateMock).not.toHaveBeenCalled();
+            expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
             expect(setAlert).toHaveBeenCalled();
         });
     });
