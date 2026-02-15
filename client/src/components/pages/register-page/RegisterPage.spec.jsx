@@ -1,12 +1,13 @@
-import { fireEvent, getByTestId, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { Link, MemoryRouter } from "react-router";
 
-import RegisterPage from "./RegisterPage";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import useUserServices from "../../../hooks/useUserServices";
 
 import { AlertContext } from "../../../contexts/alert-context";
-import { Link, MemoryRouter } from "react-router";
+
+import RegisterPage from "./RegisterPage";
 
 vi.mock("../../../hooks/useUserServices");
 
