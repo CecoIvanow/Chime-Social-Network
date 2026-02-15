@@ -136,9 +136,9 @@ const setAlert = vi.fn();
 
 function setup(
     options = {
-        updateUserResult: true,
-        getUserDataResult: true,
-        useParamsMockValue: isUser,
+        updateUserSuccessfullCall: true,
+        getUserSuccessfullCall: true,
+        chosenProfileId: isUser,
     }
 ) {
     ref.mockReturnValue("mock-image-ref");
@@ -151,13 +151,13 @@ function setup(
         "https://firebase.mock/avatar.webp"
     );
 
-    reactRouterMock.useParams.mockReturnValue({ userId: options.useParamsMockValue });
+    reactRouterMock.useParams.mockReturnValue({ userId: options.chosenProfileId });
 
-    userUserServicesMock.updateUser = options.updateUserResult ?
+    userUserServicesMock.updateUser = options.updateUserSuccessfullCall ?
         userUserServicesMock.updateUser.mockResolvedValue(true) :
         userUserServicesMock.updateUser.mockRejectedValue(new Error(ERR_MSG.UPDATE_USER));
 
-    userUserServicesMock.getUserData = options.getUserDataResult ?
+    userUserServicesMock.getUserData = options.getUserSuccessfullCall ?
         userUserServicesMock.getUserData.mockResolvedValue(userData) :
         userUserServicesMock.getUserData.mockRejectedValue(new Error(ERR_MSG.GET_USER_DATA));
 
@@ -220,9 +220,9 @@ describe("ProfileEditPage component", () => {
 
     it("shows error message on rejected user data call", async () => {
         setup({
-            getUserDataResult: false,
-            updateUserResult: true,
-            useParamsMockValue: isUser,
+            getUserSuccessfullCall: false,
+            updateUserSuccessfullCall: true,
+            chosenProfileId: isUser,
         });
 
         await waitFor(() => {
@@ -232,9 +232,9 @@ describe("ProfileEditPage component", () => {
 
     it("if the logged in user is not the profile owner redirects to /404", () => {
         setup({
-            getUserDataResult: true,
-            updateUserResult: true,
-            useParamsMockValue: "differentId",
+            getUserSuccessfullCall: true,
+            updateUserSuccessfullCall: true,
+            chosenProfileId: "differentId",
         });
 
         expect(reactRouterMock.navigateTo).toHaveBeenCalledWith("/404");
@@ -255,9 +255,9 @@ describe("ProfileEditPage component", () => {
 
     it("shows error message on a rejected form submit call", async () => {
         setup({
-            updateUserResult: false,
-            getUserDataResult: true,
-            useParamsMockValue: isUser,
+            updateUserSuccessfullCall: false,
+            getUserSuccessfullCall: true,
+            chosenProfileId: isUser,
         });
 
         fireEvent.click(
