@@ -1,6 +1,7 @@
 import { Link, MemoryRouter } from "react-router";
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { AlertContext } from "../../../contexts/alert-context";
@@ -69,7 +70,7 @@ function setup(options = {
     registerRejectedCall: false
 }) {
     if (options.registerRejectedCall) {
-        useUserServicesMock.register.mockRejectedValue(new Error(ERR_MSG.REGISTER))
+        useUserServicesMock.register.mockRejectedValue(new Error(ERR_MSG.REGISTER));
     }
 
     return render(
@@ -117,18 +118,29 @@ describe("RegisterPage component", () => {
         expect(screen.getByRole("button", { name: "Register" })).not.toBeDisabled();
     });
 
-    it("renders AuthButton disabled with passed props on submitted form", () => {
+    it("renders AuthButton disabled with passed props on submitted form", async () => {
+        const user = userEvent.setup();
+        let resolveRegister = () => null;
+
+        useUserServicesMock.register.mockImplementation(() => {
+            return new Promise((resolve) => {
+                resolveRegister = resolve;
+            });
+        });
+
         setup();
 
-        fireEvent.click(screen.getByRole("button", { name: "Register" }));
-
+        await user.click(screen.getByRole("button", { name: "Register" }));
         expect(screen.getByRole("button", { name: "Register" })).toBeDisabled();
+
+        resolveRegister();
     });
 
     it("on form submit triggers register method with successfull call", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getByRole("button", { name: "Register" }));
+        await user.click(screen.getByRole("button", { name: "Register" }));
 
         await waitFor(() => {
             expect(useUserServicesMock.register).toHaveBeenCalled();
@@ -136,11 +148,12 @@ describe("RegisterPage component", () => {
     });
 
     it("on form submit triggers setAlert on rejected register method call", async () => {
+        const user = userEvent.setup();
         setup({
             registerRejectedCall: true
         });
 
-        fireEvent.click(screen.getByRole("button", { name: "Register" }));
+        await user.click(screen.getByRole("button", { name: "Register" }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalled();
