@@ -61,6 +61,10 @@ vi.mock("../../shared/auth/auth-forms-list/AuthFormsList", () => ({
     </>
 }));
 
+const ERR_MSG = {
+    REGISTER: "Rejected register call!",
+};
+
 const registerFields = [
     { fieldName: 'First name', inputType: 'text', placeholderText: 'first name', inputName: 'firstName' },
     { fieldName: 'Last name', inputType: 'text', placeholderText: 'last name', inputName: 'lastName' },
@@ -77,7 +81,7 @@ const setAlert = vi.fn();
 function setup(registerMockResolved = true) {
     const registerMock = registerMockResolved ?
         register :
-        vi.fn().mockRejectedValue(new Error("Successfully rejected register call!"));
+        vi.fn().mockRejectedValue(new Error(ERR_MSG.REGISTER));
 
     useUserServices.mockReturnValue({
         abortAll,
