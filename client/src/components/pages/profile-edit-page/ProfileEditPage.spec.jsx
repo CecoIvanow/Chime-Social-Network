@@ -161,15 +161,13 @@ function setup(
         userUserServicesMock.getUserData.mockResolvedValue(userData) :
         userUserServicesMock.getUserData.mockRejectedValue(new Error(ERR_MSG.GET_USER_DATA));
 
-    const { unmount } = render(
+    return render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
                 <ProfileEditPage />
             </UserContext.Provider>
         </AlertContext.Provider>
     );
-
-    return unmount;
 };
 
 describe("ProfileEditPage component", () => {
@@ -196,7 +194,7 @@ describe("ProfileEditPage component", () => {
 
         for (let i = 0; i < formProfileInputs.length; i++) {
             expect(screen.getByLabelText(formProfileInputs[i].fieldName)).toHaveAttribute("type", formProfileInputs[i].inputType);
-            expect( await screen.findByLabelText(formProfileInputs[i].fieldName)).toHaveValue(formProfileInputs[i].value);
+            expect(await screen.findByLabelText(formProfileInputs[i].fieldName)).toHaveValue(formProfileInputs[i].value);
         };
     });
 
@@ -292,10 +290,9 @@ describe("ProfileEditPage component", () => {
     });
 
     it("stops all ongoing calls on unmount", () => {
-        const unmount = setup();
+        const { unmount } = setup();
 
         unmount();
-
         expect(userUserServicesMock.abortAll).toHaveBeenCalled();
     });
 });
