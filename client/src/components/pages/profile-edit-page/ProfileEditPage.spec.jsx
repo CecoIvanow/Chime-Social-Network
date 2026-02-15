@@ -101,6 +101,11 @@ vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
 
 const isUser = "curUserId";
 
+const ERR_MSG = {
+    GET_USER_DATA: "Rejected getUserData call!",
+    UPDATE_USER: "Rejected updateUser call!",
+}
+
 const userData = {
     gender: "Male",
     imageUrl: "https://www.example.org/example-image.webp",
@@ -158,11 +163,11 @@ function setup(
 
     userUserServicesMock.updateUser = options.updateUserResult ?
         userUserServicesMock.updateUser.mockResolvedValue(true) :
-        userUserServicesMock.updateUser.mockRejectedValue(new Error("Successfully rejected updateUser!"));
+        userUserServicesMock.updateUser.mockRejectedValue(new Error(ERR_MSG.UPDATE_USER));
 
     userUserServicesMock.getUserData = options.getUserDataResult ?
         userUserServicesMock.getUserData.mockResolvedValue(userData) :
-        userUserServicesMock.getUserData.mockRejectedValue(new Error("Successfully rejected getUserData!"));
+        userUserServicesMock.getUserData.mockRejectedValue(new Error(ERR_MSG.GET_USER_DATA));
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
