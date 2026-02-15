@@ -65,10 +65,12 @@ const useUserServicesMock = {
 
 const setAlert = vi.fn();
 
-function setup(registerMockResolved = true) {
-    useUserServicesMock.register = registerMockResolved ?
-        useUserServicesMock.register :
-        vi.fn().mockRejectedValue(new Error(ERR_MSG.REGISTER));
+function setup(options = {
+    registerRejectedCall: false
+}) {
+    if (options.registerRejectedCall) {
+        useUserServicesMock.register.mockRejectedValue(new Error(ERR_MSG.REGISTER))
+    }
 
     return render(
         <MemoryRouter>
@@ -134,7 +136,9 @@ describe("RegisterPage component", () => {
     });
 
     it("on form submit triggers setAlert on rejected register method call", async () => {
-        setup(false);
+        setup({
+            registerRejectedCall: true
+        });
 
         fireEvent.click(screen.getByRole("button", { name: "Register" }));
 
