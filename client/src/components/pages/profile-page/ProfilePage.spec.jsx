@@ -67,40 +67,40 @@ const userPosts = {
 
 const setAlert = vi.fn();
 
-describe("ProfilePage component", () => {
-    function renderComp(
-        options = {
-            isLoading: true,
-            getUserData: true,
-            getUserPosts: true,
-        }
-    ) {
-        useUserServicesMock.isLoading = options.isLoading;
-
-        useUserServicesMock.getUserData = options.getUserData ?
-            useUserServicesMock.getUserData.mockResolvedValue(userData) :
-            useUserServicesMock.getUserData.mockRejectedValue(new Error(ERR_MSG.GET_USER_DATA));
-
-        useUserServicesMock.getUserPosts = options.getUserPosts ?
-            useUserServicesMock.getUserPosts.mockResolvedValue(userPosts) :
-            useUserServicesMock.getUserPosts.mockRejectedValue(new Error(ERR_MSG.GET_POST_DATA));
-
-        const { unmount } = render(
-            <AlertContext.Provider value={{ setAlert }}>
-                <ProfilePage />
-            </AlertContext.Provider>
-        );
-
-        return unmount;
+function setup(
+    options = {
+        isLoading: true,
+        getUserData: true,
+        getUserPosts: true,
     }
+) {
+    useUserServicesMock.isLoading = options.isLoading;
 
+    useUserServicesMock.getUserData = options.getUserData ?
+        useUserServicesMock.getUserData.mockResolvedValue(userData) :
+        useUserServicesMock.getUserData.mockRejectedValue(new Error(ERR_MSG.GET_USER_DATA));
+
+    useUserServicesMock.getUserPosts = options.getUserPosts ?
+        useUserServicesMock.getUserPosts.mockResolvedValue(userPosts) :
+        useUserServicesMock.getUserPosts.mockRejectedValue(new Error(ERR_MSG.GET_POST_DATA));
+
+    const { unmount } = render(
+        <AlertContext.Provider value={{ setAlert }}>
+            <ProfilePage />
+        </AlertContext.Provider>
+    );
+
+    return unmount;
+};
+
+describe("ProfilePage component", () => {
     it.each([
         { name: "renders a loading spinner while the user data is being fetched", isLoading: true },
         { name: "renders the user data after it has been fetched", isLoading: false },
     ])("$name", async ({ isLoading }) => {
         const pattern = new RegExp(`^${userData.firstName}$`)
 
-        renderComp({
+        setup({
             isLoading,
             getUserData: true,
             getUserPosts: true,
@@ -124,7 +124,7 @@ describe("ProfilePage component", () => {
     ])("$name", async ({ isLoading }) => {
         const pattern = new RegExp(`^${userData.firstName}$`)
 
-        renderComp({
+        setup({
             isLoading,
             getUserData: true,
             getUserPosts: true,
@@ -144,7 +144,7 @@ describe("ProfilePage component", () => {
     });
 
     it("shows error message on rejected user data call", async () => {
-        renderComp({
+        setup({
             isLoading: false,
             getUserData: false,
             getUserPosts: true,
@@ -156,7 +156,7 @@ describe("ProfilePage component", () => {
     });
 
     it("shows error message on rejected user posts call", async () => {
-        renderComp({
+        setup({
             isLoading: false,
             getUserData: true,
             getUserPosts: false,
@@ -168,7 +168,7 @@ describe("ProfilePage component", () => {
     });
 
     it("stops all ongoing calls on unmount", () => {
-        const unmount = renderComp();
+        const unmount = setup();
 
         unmount();
         expect(useUserServicesMock.abortAll).toHaveBeenCalled();
