@@ -74,7 +74,7 @@ const abortAll = vi.fn();
 const register = vi.fn().mockResolvedValue(true);
 const setAlert = vi.fn();
 
-function renderComp(registerMockResolved = true) {
+function setup(registerMockResolved = true) {
     const registerMock = registerMockResolved ?
         register :
         vi.fn().mockRejectedValue(new Error("Successfully rejected register call!"));
@@ -84,41 +84,39 @@ function renderComp(registerMockResolved = true) {
         register: registerMock,
     });
 
-    const { unmount } = render(
+    return render(
         <MemoryRouter>
             <AlertContext.Provider value={{ setAlert }}>
                 <RegisterPage />
             </AlertContext.Provider>
         </MemoryRouter>
     );
-
-    return unmount;
-}
+};
 
 describe("RegisterPage component", () => {
     it("renders AuthHeaderTitle with passed prop", () => {
         const pattern = /^Register$/;
 
-        renderComp();
+        setup();
 
         expect(screen.getByTestId("header-title")).toHaveTextContent(pattern);
     });
 
     it("renders GenderDetails", () => {
-        renderComp();
+        setup();
 
         expect(screen.getByTestId("gender-details")).toBeInTheDocument();
     });
 
     it("renders AuthNavLink with passed props", () => {
-        renderComp();
+        setup();
 
         expect(screen.getByTestId("nav-link")).toBeInTheDocument();
         expect(screen.getByTestId("nav-link")).toHaveAttribute("href", "/login")
     });
 
     it("renders AuthFormsList with passed props", () => {
-        renderComp();
+        setup();
 
         const labels = screen.getAllByTestId("label-el");
         const inputs = screen.getAllByTestId('input-el');
@@ -136,29 +134,21 @@ describe("RegisterPage component", () => {
     });
 
     it("renders AuthButton enabled with passed props", () => {
-        renderComp();
+        setup();
 
         expect(screen.getByTestId("auth-button")).not.toBeDisabled();
     });
 
     it("renders AuthButton disabled with passed props on submitted form", () => {
-        renderComp();
+        setup();
 
         fireEvent.click(screen.getByTestId("auth-button"));
 
         expect(screen.getByTestId("auth-button")).toBeDisabled();
     });
 
-    it("triggers abortAll on unmount", () => {
-        const unmount = renderComp();
-
-        unmount();
-
-        expect(abortAll).toHaveBeenCalled();
-    });
-
     it("on form submit triggers register method with successfull call", async () => {
-        renderComp();
+        setup();
 
         fireEvent.click(screen.getByTestId("auth-button"));
 
@@ -168,12 +158,19 @@ describe("RegisterPage component", () => {
     });
 
     it("on form submit triggers setAlert on rejected register method call", async () => {
-        renderComp(false);
+        setup(false);
 
         fireEvent.click(screen.getByTestId("auth-button"));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalled();
         });
+    });
+
+    it("triggers abortAll on unmount", () => {
+        const { unmount } = setup();
+
+        unmount();
+        expect(abortAll).toHaveBeenCalled();
     });
 });
