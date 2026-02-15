@@ -84,13 +84,11 @@ function setup(
         useUserServicesMock.getUserPosts.mockResolvedValue(userPosts) :
         useUserServicesMock.getUserPosts.mockRejectedValue(new Error(ERR_MSG.GET_POST_DATA));
 
-    const { unmount } = render(
+    return render(
         <AlertContext.Provider value={{ setAlert }}>
             <ProfilePage />
         </AlertContext.Provider>
     );
-
-    return unmount;
 };
 
 describe("ProfilePage component", () => {
@@ -168,7 +166,7 @@ describe("ProfilePage component", () => {
     });
 
     it("stops all ongoing calls on unmount", () => {
-        const unmount = setup();
+        const { unmount } = setup();
 
         unmount();
         expect(useUserServicesMock.abortAll).toHaveBeenCalled();
