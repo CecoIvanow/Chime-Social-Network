@@ -48,22 +48,22 @@ beforeEach(() => {
 });
 
 describe("PasswordChangeForm component", () => {
-    it("renders Button component with hardcoded values", () => {
+    it("renders change password button", () => {
         expect(screen.getByRole("button", { name: "Change Password" })).toBeInTheDocument();
     });
 
-    it("renders SectionHeading component with hardcoded values", () => {
+    it("renders section heading with correct content", () => {
         expect(screen.getByTestId("section-heading")).toHaveTextContent("Account Password - ******");
     });
 
-    it("renders InputFieldsList with passed props", () => {
+    it("renders the correct amount of input fields with name and type attributes and properly connected", () => {
         for (let i = 0; i < passwordChangeSettingsFields.length; i++) {
             expect(screen.getByLabelText(passwordChangeSettingsFields[i].fieldName)).toHaveAttribute("name", passwordChangeSettingsFields[i].inputName);
             expect(screen.getByLabelText(passwordChangeSettingsFields[i].fieldName)).toHaveAttribute("type", passwordChangeSettingsFields[i].inputType);
         };
     });
 
-    it("on submit handler gets attached to PasswordChangeForm", async () => {
+    it("triggers an event when the user submits the form", async () => {
         const user = userEvent.setup();
 
         await user.click(screen.getByRole("button", { name: "Change Password" }));
