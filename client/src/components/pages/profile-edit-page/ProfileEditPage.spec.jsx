@@ -209,12 +209,7 @@ describe("ProfileEditPage component", () => {
         const user = userEvent.setup();
         setup();
 
-        const cancelButton = screen.getByRole("button", { name: "Cancel" });
-
-        expect(cancelButton).toBeInTheDocument();
-
-        await user.click(cancelButton);
-
+        await user.click(screen.getByRole("button", { name: "Cancel" }));
         expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
     });
 
@@ -226,7 +221,7 @@ describe("ProfileEditPage component", () => {
         });
 
         await waitFor(() => {
-            expect(setAlert).toHaveBeenCalled();
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.GET_USER_DATA);
         })
     });
 
@@ -245,11 +240,11 @@ describe("ProfileEditPage component", () => {
         setup();
 
         await user.click(screen.getByRole("button", { name: "Submit" }));
-
         await waitFor(() => {
             expect(userUserServicesMock.updateUser).toHaveBeenCalled();
-            expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
         });
+
+        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
     });
 
     it("shows error message on a rejected form submit call", async () => {
@@ -261,29 +256,29 @@ describe("ProfileEditPage component", () => {
         });
 
         await user.click(screen.getByRole("button", { name: "Submit" }));
-
         await waitFor(() => {
             expect(userUserServicesMock.updateUser).toHaveBeenCalled();
-            expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
-            expect(setAlert).toHaveBeenCalled();
         });
+
+        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
+        expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UPDATE_USER);
     });
 
-    it("uploads image to Firebase storage on form submit when image is uploaded", async () => {
+    it("uploads image to Firebase storage on form submit when an image is selected", async () => {
         const user = userEvent.setup();
         setup();
 
         const mockFile = new File(["mock-content"], "avatar.png", { type: "image/png" });
-        const fileInput = screen.getByTestId("image-upload-input");
 
-        await user.upload(fileInput, mockFile);
+        await user.upload(screen.getByTestId("image-upload-input"), mockFile);
         await user.click(screen.getByRole("button", { name: "Submit" }));
 
         await waitFor(() => {
             expect(ref).toHaveBeenCalledWith(storage, `/images/${isUser}/avatar`);
-            expect(uploadBytes).toHaveBeenCalledWith("mock-image-ref", mockFile);
-            expect(getDownloadURL).toHaveBeenCalledWith("mock-image-ref");
         });
+
+        expect(uploadBytes).toHaveBeenCalledWith("mock-image-ref", mockFile);
+        expect(getDownloadURL).toHaveBeenCalledWith("mock-image-ref");
     });
 
     it("stops all ongoing calls on unmount", () => {
