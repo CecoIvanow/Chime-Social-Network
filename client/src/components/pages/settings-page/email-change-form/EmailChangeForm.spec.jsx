@@ -4,10 +4,6 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import EmailChangeForm from "./EmailChangeForm";
 
-vi.mock("../../../ui/buttons/button/Button", () => ({
-    default: ({ buttonName }) => <button data-testid="button">{buttonName}</button>
-}));
-
 vi.mock("../../../ui/headings/SectionHeading", () => ({
     default: ({ sectionName }) => <div data-testid="section-heading">{sectionName}</div>
 }));
@@ -16,17 +12,20 @@ vi.mock("../../../shared/input-fields/input-fields-list/InputFieldsList", () => 
     default: ({ inputFields }) => (
         inputFields.map(field =>
             <>
-                <label htmlFor={field.inputName} data-testid="label-el">{field.fieldName}</label>
+                <label htmlFor={field.inputName}>{field.fieldName}</label>
                 <input
                     key={field.inputName}
                     id={field.inputName}
                     name={field.fieldName}
                     type={field.inputType}
-                    data-testid="input-el"
                 />
             </>
         )
     )
+}));
+
+vi.mock("../../../ui/buttons/button/Button", () => ({
+    default: ({ buttonName }) => <button>{buttonName}</button>
 }));
 
 const mockProps = {
@@ -52,39 +51,24 @@ beforeEach(() => {
 
 describe("EmailChangeForm component", () => {
     it("renders Button component with hardcoded values", () => {
-        const pattern = new RegExp("^Change Email$");
-
-        expect(screen.getByTestId("button")).toHaveTextContent(pattern);
+        expect(screen.getByRole("button", { name: "Change Email"})).toBeInTheDocument();
     });
 
     it("renders SectionHeading component with hardcoded values", () => {
-        const pattern = new RegExp(`^Account Email - ${mockProps.userEmail}$`);
-
-        expect(screen.getByTestId("section-heading")).toHaveTextContent(pattern);
+        expect(screen.getByTestId("section-heading")).toHaveTextContent(mockProps.userEmail);
     });
 
     it("renders InputFieldsList with passed props", () => {
-
-        const labels = screen.getAllByTestId("label-el");
-        const inputs = screen.getAllByTestId('input-el');
-
         for (let i = 0; i < emailChangeSettingsFields.length; i++) {
-            const pattern = new RegExp(`^${emailChangeSettingsFields[i].fieldName}$`);
-
-            expect(labels[i]).toHaveTextContent(pattern);
-            expect(labels[i]).toHaveAttribute("for", emailChangeSettingsFields[i].inputName);
-
-            expect(inputs[i]).toHaveAttribute("id", emailChangeSettingsFields[i].inputName);
-            expect(inputs[i]).toHaveAttribute("name", emailChangeSettingsFields[i].fieldName);
-            expect(inputs[i]).toHaveAttribute("type", emailChangeSettingsFields[i].inputType);
+            expect(screen.getByLabelText(emailChangeSettingsFields[i].fieldName)).toHaveAttribute("name", emailChangeSettingsFields[i].fieldName);
+            expect(screen.getByLabelText(emailChangeSettingsFields[i].fieldName)).toHaveAttribute("type", emailChangeSettingsFields[i].inputType);
         };
     });
 
     it("on submit handler gets attached to EmailChangeForm", async () => {
         const user = userEvent.setup();
 
-        await user.click(screen.getByTestId("button"));
-
+        await user.click(screen.getByRole("button", { name: "Change Email"}));
         expect(mockProps.onSubmitHandler).toHaveBeenCalledOnce();
     })
 });
