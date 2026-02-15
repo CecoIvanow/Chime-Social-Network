@@ -178,13 +178,13 @@ describe("ProfileEditPage component", () => {
         expect(screen.getByTestId("section-heading")).toHaveTextContent("Edit Profile");
     });
 
-    it("renders the user avatar", async () => {
+    it("renders the user avatar on a successfull user data call", async () => {
         setup();
 
         expect(await screen.findByRole("img")).toHaveAttribute("src", userData.imageUrl);
     });
 
-    it("renders the user's chosen gender", async () => {
+    it("renders the user's chosen gender on a successfull user data call", async () => {
         setup();
 
         expect(await screen.findByTestId("gender-details")).toHaveValue(userData.gender);
@@ -199,13 +199,13 @@ describe("ProfileEditPage component", () => {
         };
     });
 
-    it("renders the user's profile bio with correct data", async () => {
+    it("renders the user's profile bio with correct data on a successfull user data call", async () => {
         setup();
 
         expect(await screen.findByTestId("profile-bio")).toHaveTextContent(userData.bio);
     });
 
-    it("on cancel button click redirects to the user's profile", async () => {
+    it("on edit cancel button click redirects to the user's profile", async () => {
         const user = userEvent.setup();
         setup();
 
