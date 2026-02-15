@@ -83,27 +83,25 @@ function setup(options = {
 };
 
 describe("RegisterPage component", () => {
-    it("renders AuthHeaderTitle with passed prop", () => {
-        const pattern = /^Register$/;
-
+    it("renders header title with correct text content", () => {
         setup();
 
-        expect(screen.getByTestId("header-title")).toHaveTextContent(pattern);
+        expect(screen.getByTestId("header-title")).toHaveTextContent("Register");
     });
 
-    it("renders GenderDetails", () => {
+    it("renders gender details component", () => {
         setup();
 
         expect(screen.getByTestId("gender-details")).toBeInTheDocument();
     });
 
-    it("renders AuthNavLink with passed props", () => {
+    it("renders link button with correct text and href attributes", () => {
         setup();
 
         expect(screen.getByRole("link", { name: "Already have an account?" })).toHaveAttribute("href", "/login")
     });
 
-    it("renders AuthFormsList with passed props", () => {
+    it("renders and correctly connects inputs with type and placeholder attributes", () => {
         setup();
 
         for (let i = 0; i < registerFields.length; i++) {
@@ -112,13 +110,23 @@ describe("RegisterPage component", () => {
         };
     });
 
-    it("renders AuthButton enabled with passed props", () => {
+    it("renders the register button", () => {
         setup();
 
         expect(screen.getByRole("button", { name: "Register" })).not.toBeDisabled();
     });
 
-    it("renders AuthButton disabled with passed props on submitted form", async () => {
+    it("registers the user after the register button is clicked", async () => {
+        const user = userEvent.setup();
+        setup();
+
+        await user.click(screen.getByRole("button", { name: "Register" }));
+        await waitFor(() => {
+            expect(useUserServicesMock.register).toHaveBeenCalled();
+        });
+    });
+
+    it("disables the register button while the register call is being executed", async () => {
         const user = userEvent.setup();
         let resolveRegister = () => null;
 
@@ -136,31 +144,19 @@ describe("RegisterPage component", () => {
         resolveRegister();
     });
 
-    it("on form submit triggers register method with successfull call", async () => {
-        const user = userEvent.setup();
-        setup();
-
-        await user.click(screen.getByRole("button", { name: "Register" }));
-
-        await waitFor(() => {
-            expect(useUserServicesMock.register).toHaveBeenCalled();
-        });
-    });
-
-    it("on form submit triggers setAlert on rejected register method call", async () => {
+    it("shows alert message on a failed register call", async () => {
         const user = userEvent.setup();
         setup({
             registerRejectedCall: true
         });
 
         await user.click(screen.getByRole("button", { name: "Register" }));
-
         await waitFor(() => {
-            expect(setAlert).toHaveBeenCalled();
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.REGISTER);
         });
     });
 
-    it("triggers abortAll on unmount", () => {
+    it("aborts all ongoing calls on unmount", () => {
         const { unmount } = setup();
 
         unmount();
