@@ -39,7 +39,7 @@ vi.mock("../../ui/headings/SectionHeading", () => ({
 
 vi.mock("./image-upload/ImageUpload", () => ({
     default: ({ imageUrl, setImageUpload }) => <>
-        <img src={imageUrl} data-testid="image-upload" />
+        <img src={imageUrl} />
         <input
             data-testid="image-upload-input"
             type="file"
@@ -62,11 +62,9 @@ vi.mock("../../shared/input-fields/input-fields-list/InputFieldsList", () => ({
     default: ({ inputFields }) => inputFields.map(field => (
         <React.Fragment key={field.inputName}>
             <label
-                data-testid="label-el"
                 htmlFor={field.inputName}
             >{field.fieldName}</label>
             <input
-                data-testid="input-el"
                 type={field.inputType}
                 id={field.inputName}
                 defaultValue={field.value}
@@ -82,19 +80,13 @@ vi.mock("./profile-bio-textarea/ProfileBioTextArea", () => ({
 vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
     default: () => (
         <ActionsContext.Consumer>
-            {actions => <>
-                <button
-                    data-testid="edit-profile-cancel-button"
-                    onClick={(e) => actions.onCancelEditClickHandler(e)}
-                >
-                </button>
-                <button
-                    data-testid="edit-profile-submit-button"
-                    type="submit"
-                >
-                </button>
-            </>
-            }
+            {actions => (
+                <>
+                    <button onClick={(e) => actions.onCancelEditClickHandler(e)}>Cancel</button>
+
+                    <button type="submit" >Submit</button>
+                </>
+            )}
         </ActionsContext.Consumer>
     )
 }));
@@ -183,14 +175,14 @@ function setup(
 describe("ProfileEditPage component", () => {
     it("renders section heading with correct text", () => {
         setup();
-        
+
         expect(screen.getByTestId("section-heading")).toHaveTextContent("Edit Profile");
     });
 
     it("renders the user avatar", async () => {
         setup();
 
-        expect(await screen.findByTestId("image-upload")).toHaveAttribute("src", userData.imageUrl);
+        expect(await screen.findByRole("img")).toHaveAttribute("src", userData.imageUrl);
     });
 
     it("renders the user's chosen gender", async () => {
@@ -199,22 +191,12 @@ describe("ProfileEditPage component", () => {
         expect(await screen.findByTestId("gender-details")).toHaveValue(userData.gender);
     });
 
-    it("renders the correct profile input fields", async () => {
+    it("renders and connects the correct amount of profile input fields with the correct type and value attributes", async () => {
         setup();
 
-        const labelsEl = screen.getAllByTestId("label-el");
-        const inputsEl = screen.getAllByTestId("input-el");
-        const inputs = await screen.findAllByTestId("input-el");
-
         for (let i = 0; i < formProfileInputs.length; i++) {
-            const pattern = new RegExp(`^${formProfileInputs[i].fieldName}$`);
-
-            expect(labelsEl[i]).toHaveTextContent(pattern);
-            expect(labelsEl[i]).toHaveAttribute("for", formProfileInputs[i].inputName);
-
-            expect(inputsEl[i]).toHaveAttribute("type", formProfileInputs[i].inputType);
-            expect(inputsEl[i]).toHaveAttribute("id", formProfileInputs[i].inputName);
-            expect(inputs[i]).toHaveValue(formProfileInputs[i].value);
+            expect(screen.getByLabelText(formProfileInputs[i].fieldName)).toHaveAttribute("type", formProfileInputs[i].inputType);
+            expect( await screen.findByLabelText(formProfileInputs[i].fieldName)).toHaveValue(formProfileInputs[i].value);
         };
     });
 
@@ -227,7 +209,7 @@ describe("ProfileEditPage component", () => {
     it("on cancel button click redirects to the user's profile", () => {
         setup();
 
-        const cancelButton = screen.getByTestId("edit-profile-cancel-button");
+        const cancelButton = screen.getByRole("button", { name: "Cancel" });
 
         expect(cancelButton).toBeInTheDocument();
 
@@ -262,7 +244,7 @@ describe("ProfileEditPage component", () => {
         setup();
 
         fireEvent.click(
-            screen.getByTestId("edit-profile-submit-button")
+            screen.getByRole("button", { name: "Submit" })
         );
 
         await waitFor(() => {
@@ -279,7 +261,7 @@ describe("ProfileEditPage component", () => {
         });
 
         fireEvent.click(
-            screen.getByTestId("edit-profile-submit-button")
+            screen.getByRole("button", { name: "Submit" })
         );
 
         await waitFor(() => {
@@ -300,7 +282,7 @@ describe("ProfileEditPage component", () => {
         const fileInput = screen.getByTestId("image-upload-input");
 
         fireEvent.change(fileInput, { target: { files: [mockFile] } });
-        fireEvent.click(screen.getByTestId("edit-profile-submit-button"));
+        fireEvent.click(screen.getByRole("button", { name: "Submit" }));
 
         await waitFor(() => {
             expect(ref).toHaveBeenCalledWith(storage, `/images/${isUser}/avatar`);
