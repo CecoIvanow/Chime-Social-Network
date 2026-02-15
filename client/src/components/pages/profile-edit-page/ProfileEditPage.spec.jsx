@@ -183,34 +183,25 @@ function setup(
 };
 
 describe("ProfileEditPage component", () => {
-    it("renders SectionHeading with props", () => {
-        const pattern = /^Edit Profile:$/
-
+    it("renders section heading with correct text", () => {
         setup();
-
-        expect(screen.getByTestId("section-heading")).toHaveTextContent(pattern);
+        
+        expect(screen.getByTestId("section-heading")).toHaveTextContent("Edit Profile");
     });
 
-    it("renders ImageUpload with passed props", async () => {
+    it("renders the user avatar", async () => {
         setup();
 
         expect(await screen.findByTestId("image-upload")).toHaveAttribute("src", userData.imageUrl);
     });
 
-    it("renders GenderDetails with passed defaultValue", async () => {
+    it("renders the user's chosen gender", async () => {
         setup();
 
         expect(await screen.findByTestId("gender-details")).toHaveValue(userData.gender);
     });
 
-    it("renders ProfileBioTextArea with passed props", async () => {
-        setup();
-
-        expect(await screen.findByTestId("profile-bio")).toHaveValue(userData.bio);
-    });
-
-    it("renders InputFieldsList with passed props", async () => {
-
+    it("renders the correct profile input fields", async () => {
         setup();
 
         const labelsEl = screen.getAllByTestId("label-el");
@@ -227,6 +218,12 @@ describe("ProfileEditPage component", () => {
             expect(inputsEl[i]).toHaveAttribute("id", formProfileInputs[i].inputName);
             expect(inputs[i]).toHaveValue(formProfileInputs[i].value);
         };
+    });
+
+    it("renders the user's profile bio with correct data", async () => {
+        setup();
+
+        expect(await screen.findByTestId("profile-bio")).toHaveValue(userData.bio);
     });
 
     it("on cancel edit click handler triggers on ProfileEditButtons cancellation", () => {
