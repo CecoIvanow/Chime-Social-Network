@@ -10,9 +10,13 @@ import { ActionsContext } from "../../../contexts/actions-context"
 import { AlertContext } from "../../../contexts/alert-context"
 import { UserContext } from "../../../contexts/user-context"
 
-import useUserServices from "../../../hooks/useUserServices"
-
 import ProfileEditPage from "./ProfileEditPage";
+
+vi.mock("../../../hooks/useUserServices", () => ({
+    default: () => ({
+        ...userUserServicesMock
+    })
+}));
 
 vi.mock("../../shared/user-details/gender-details/GenderDetails", () => ({
     default: ({ userGender }) => <input
@@ -93,8 +97,6 @@ vi.mock("../../../firebase/firebase-storage/config", () => ({
     storage: {},
 }))
 
-vi.mock("../../../hooks/useUserServices");
-
 vi.mock("react-router", () => ({
     useNavigate: () => navigateMock,
     useParams: () => useParamsMock(),
@@ -103,9 +105,6 @@ vi.mock("react-router", () => ({
 const useParamsMock = vi.fn();
 const navigateMock = vi.fn();
 
-const updateUser = vi.fn();
-const getUserData = vi.fn();
-const abortAll = vi.fn();
 const setAlert = vi.fn();
 const isUser = "curUserId";
 
@@ -118,6 +117,12 @@ uploadBytes.mockResolvedValue({
 getDownloadURL.mockResolvedValue(
     "https://firebase.mock/avatar.webp"
 );
+
+const userUserServicesMock = {
+    updateUser: vi.fn(),
+    getUserData: vi.fn(),
+    abortAll: vi.fn(),
+};
 
 const userData = {
     gender: "Male",
@@ -151,19 +156,13 @@ function setup(
 ) {
     useParamsMock.mockReturnValue({ userId: options.useParamsMockValue });
 
-    const updateUserMock = options.updateUserResult ?
-        updateUser.mockResolvedValue(true) :
-        updateUser.mockRejectedValue(new Error("Successfully rejected updateUser!"));
+    userUserServicesMock.updateUser = options.updateUserResult ?
+        userUserServicesMock.updateUser.mockResolvedValue(true) :
+        userUserServicesMock.updateUser.mockRejectedValue(new Error("Successfully rejected updateUser!"));
 
-    const getUserDataMock = options.getUserDataResult ?
-        getUserData.mockResolvedValue(userData) :
-        getUserData.mockRejectedValue(new Error("Successfully rejected getUserData!"));
-
-    useUserServices.mockReturnValue({
-        updateUser: updateUserMock,
-        getUserData: getUserDataMock,
-        abortAll,
-    })
+    userUserServicesMock.getUserData = options.getUserDataResult ?
+        userUserServicesMock.getUserData.mockResolvedValue(userData) :
+        userUserServicesMock.getUserData.mockRejectedValue(new Error("Successfully rejected getUserData!"));
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -277,7 +276,7 @@ describe("ProfileEditPage component", () => {
         );
 
         await waitFor(() => {
-            expect(updateUser).toHaveBeenCalled();
+            expect(userUserServicesMock.updateUser).toHaveBeenCalled();
             expect(navigateMock).toHaveBeenCalledWith(`/profile/${isUser}`);
         });
     });
@@ -294,7 +293,7 @@ describe("ProfileEditPage component", () => {
         );
 
         await waitFor(() => {
-            expect(updateUser).toHaveBeenCalled();
+            expect(userUserServicesMock.updateUser).toHaveBeenCalled();
             expect(navigateMock).not.toHaveBeenCalled();
             expect(setAlert).toHaveBeenCalled();
         });
@@ -306,7 +305,7 @@ describe("ProfileEditPage component", () => {
 
         unmount();
 
-        expect(abortAll).toHaveBeenCalled();
+        expect(userUserServicesMock.abortAll).toHaveBeenCalled();
     });
 
     it("uploads image to Firebase storage on form submit when image is selected", async () => {
