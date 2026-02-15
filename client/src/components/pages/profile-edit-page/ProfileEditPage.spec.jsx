@@ -95,7 +95,7 @@ vi.mock("firebase/storage", () => ({
 
 vi.mock("../../../firebase/firebase-storage/config", () => ({
     storage: {},
-}))
+}));
 
 vi.mock("react-router", () => ({
     useNavigate: () => navigateMock,
@@ -107,16 +107,6 @@ const navigateMock = vi.fn();
 
 const setAlert = vi.fn();
 const isUser = "curUserId";
-
-ref.mockReturnValue("mock-image-ref");
-
-uploadBytes.mockResolvedValue({
-    ref: "mock-image-ref",
-});
-
-getDownloadURL.mockResolvedValue(
-    "https://firebase.mock/avatar.webp"
-);
 
 const userUserServicesMock = {
     updateUser: vi.fn(),
@@ -154,6 +144,16 @@ function setup(
         useParamsMockValue: isUser,
     }
 ) {
+    ref.mockReturnValue("mock-image-ref");
+
+    uploadBytes.mockResolvedValue({
+        ref: "mock-image-ref",
+    });
+    
+    getDownloadURL.mockResolvedValue(
+        "https://firebase.mock/avatar.webp"
+    );
+
     useParamsMock.mockReturnValue({ userId: options.useParamsMockValue });
 
     userUserServicesMock.updateUser = options.updateUserResult ?
