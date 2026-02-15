@@ -61,41 +61,41 @@ vi.mock("../../shared/auth/auth-forms-list/AuthFormsList", () => ({
     </>
 }));
 
+const registerFields = [
+    { fieldName: 'First name', inputType: 'text', placeholderText: 'first name', inputName: 'firstName' },
+    { fieldName: 'Last name', inputType: 'text', placeholderText: 'last name', inputName: 'lastName' },
+    { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
+    { fieldName: 'Birthday', inputType: 'date', placeholderText: 'birthday', inputName: 'birthday' },
+    { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' },
+    { fieldName: 'Confirm Password', inputType: 'password', placeholderText: 'password', inputName: 'rePass' },
+];
+
+const abortAll = vi.fn();
+const register = vi.fn().mockResolvedValue(true);
+const setAlert = vi.fn();
+
+function renderComp(registerMockResolved = true) {
+    const registerMock = registerMockResolved ?
+        register :
+        vi.fn().mockRejectedValue(new Error("Successfully rejected register call!"));
+
+    useUserServices.mockReturnValue({
+        abortAll,
+        register: registerMock,
+    });
+
+    const { unmount } = render(
+        <MemoryRouter>
+            <AlertContext.Provider value={{ setAlert }}>
+                <RegisterPage />
+            </AlertContext.Provider>
+        </MemoryRouter>
+    );
+
+    return unmount;
+}
+
 describe("RegisterPage component", () => {
-    const abortAll = vi.fn();
-    const register = vi.fn().mockResolvedValue(true);
-    const setAlert = vi.fn();
-
-    const registerFields = [
-        { fieldName: 'First name', inputType: 'text', placeholderText: 'first name', inputName: 'firstName' },
-        { fieldName: 'Last name', inputType: 'text', placeholderText: 'last name', inputName: 'lastName' },
-        { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
-        { fieldName: 'Birthday', inputType: 'date', placeholderText: 'birthday', inputName: 'birthday' },
-        { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' },
-        { fieldName: 'Confirm Password', inputType: 'password', placeholderText: 'password', inputName: 'rePass' },
-    ]
-
-    function renderComp(registerMockResolved = true) {
-        const registerMock = registerMockResolved ?
-            register :
-            vi.fn().mockRejectedValue(new Error("Successfully rejected register call!"));
-
-        useUserServices.mockReturnValue({
-            abortAll,
-            register: registerMock,
-        });
-
-        const { unmount } = render(
-            <MemoryRouter>
-                <AlertContext.Provider value={{ setAlert }}>
-                    <RegisterPage />
-                </AlertContext.Provider>
-            </MemoryRouter>
-        );
-
-        return unmount;
-    }
-
     it("renders AuthHeaderTitle with passed prop", () => {
         const pattern = /^Register$/;
 
