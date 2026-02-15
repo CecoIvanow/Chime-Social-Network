@@ -12,13 +12,12 @@ vi.mock("../../../shared/input-fields/input-fields-list/InputFieldsList", () => 
     default: ({ inputFields }) => (
         inputFields.map(field =>
             <>
-                <label htmlFor={field.inputName} data-testid="label-el">{field.fieldName}</label>
+                <label htmlFor={field.inputName}>{field.fieldName}</label>
                 <input
                     key={field.inputName}
                     id={field.inputName}
-                    name={field.fieldName}
+                    name={field.inputName}
                     type={field.inputType}
-                    data-testid="input-el"
                 />
             </>
         )
@@ -26,7 +25,7 @@ vi.mock("../../../shared/input-fields/input-fields-list/InputFieldsList", () => 
 }));
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
-    default: ({ buttonName }) => <button data-testid="button">{buttonName}</button>
+    default: ({ buttonName }) => <button type="submit">{buttonName}</button>
 }));
 
 const onSubmitHandlerMock = vi.fn();
@@ -48,37 +47,24 @@ beforeEach(() => {
 
 describe("PasswordChangeForm component", () => {
     it("renders Button component with hardcoded values", () => {
-        const pattern = new RegExp("^Change Password$");
-
-        expect(screen.getByTestId("button")).toHaveTextContent(pattern);
+        expect(screen.getByRole("button", { name: "Change Password" })).toBeInTheDocument();
     });
 
     it("renders SectionHeading component with hardcoded values", () => {
-        const pattern = /^Account Password - \*\*\*\*\*\*$/;
-
-        expect(screen.getByTestId("section-heading")).toHaveTextContent(pattern);
+        expect(screen.getByTestId("section-heading")).toHaveTextContent("Account Password - ******");
     });
 
     it("renders InputFieldsList with passed props", () => {
-        const labels = screen.getAllByTestId("label-el");
-        const inputs = screen.getAllByTestId('input-el');
-
         for (let i = 0; i < passwordChangeSettingsFields.length; i++) {
-            const pattern = new RegExp(`^${passwordChangeSettingsFields[i].fieldName}$`);
-
-            expect(labels[i]).toHaveTextContent(pattern);
-            expect(labels[i]).toHaveAttribute("for", passwordChangeSettingsFields[i].inputName);
-
-            expect(inputs[i]).toHaveAttribute("id", passwordChangeSettingsFields[i].inputName);
-            expect(inputs[i]).toHaveAttribute("name", passwordChangeSettingsFields[i].fieldName);
-            expect(inputs[i]).toHaveAttribute("type", passwordChangeSettingsFields[i].inputType);
+            expect(screen.getByLabelText(passwordChangeSettingsFields[i].fieldName)).toHaveAttribute("name", passwordChangeSettingsFields[i].inputName);
+            expect(screen.getByLabelText(passwordChangeSettingsFields[i].fieldName)).toHaveAttribute("type", passwordChangeSettingsFields[i].inputType);
         };
     });
 
     it("on submit handler gets attached to PasswordChangeForm", async () => {
         const user = userEvent.setup();
 
-        await user.click(screen.getByTestId("button"));
+        await user.click(screen.getByRole("button", { name: "Change Password" }));
         expect(onSubmitHandlerMock).toHaveBeenCalledOnce();
     });
 });
