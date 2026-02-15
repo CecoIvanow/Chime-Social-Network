@@ -219,7 +219,7 @@ describe("ProfileEditPage component", () => {
         expect(await screen.findByTestId("profile-bio")).toHaveTextContent(userData.bio);
     });
 
-    it("on cancel edit click handler triggers on ProfileEditButtons cancellation", () => {
+    it("on cancel button click redirects to the user's profile", () => {
         setup();
 
         const cancelButton = screen.getByTestId("edit-profile-cancel-button");
@@ -231,7 +231,7 @@ describe("ProfileEditPage component", () => {
         expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
     });
 
-    it("triggers setAlert on rejected getUserData call", async () => {
+    it("shows error message on rejected user data call", async () => {
         setup({
             getUserDataResult: false,
             updateUserResult: true,
@@ -243,7 +243,7 @@ describe("ProfileEditPage component", () => {
         })
     });
 
-    it("on different useParams and userId triggers navigateTo with /404", () => {
+    it("if the logged in user is not the profile owner redirects to /404", () => {
         setup({
             getUserDataResult: true,
             updateUserResult: true,
@@ -253,7 +253,7 @@ describe("ProfileEditPage component", () => {
         expect(reactRouterMock.navigateTo).toHaveBeenCalledWith("/404");
     });
 
-    it("triggers navigateTo on successful form submit", async () => {
+    it("on successfull form submit redirects to the user's profile", async () => {
         setup();
 
         fireEvent.click(
@@ -266,7 +266,7 @@ describe("ProfileEditPage component", () => {
         });
     });
 
-    it("triggers setAlert on rejected form submit", async () => {
+    it("shows error message on a rejected form submit call", async () => {
         setup({
             updateUserResult: false,
             getUserDataResult: true,
@@ -284,16 +284,7 @@ describe("ProfileEditPage component", () => {
         });
     });
 
-
-    it("triggers abortAll on unmount", () => {
-        const unmount = setup();
-
-        unmount();
-
-        expect(userUserServicesMock.abortAll).toHaveBeenCalled();
-    });
-
-    it("uploads image to Firebase storage on form submit when image is selected", async () => {
+    it("uploads image to Firebase storage on form submit when image is uploaded", async () => {
         uploadBytes.mockResolvedValueOnce({
             ref: "mock-image-ref",
         });
@@ -311,5 +302,13 @@ describe("ProfileEditPage component", () => {
             expect(uploadBytes).toHaveBeenCalledWith("mock-image-ref", mockFile);
             expect(getDownloadURL).toHaveBeenCalledWith("mock-image-ref");
         });
+    });
+
+    it("stops all ongoing calls on unmount", () => {
+        const unmount = setup();
+
+        unmount();
+
+        expect(userUserServicesMock.abortAll).toHaveBeenCalled();
     });
 });
