@@ -28,24 +28,24 @@ vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ buttonName }) => <button data-testid="button">{buttonName}</button>
 }));
 
+const onSubmitHandlerMock = vi.fn();
+
+const passwordChangeSettingsFields = [
+    { fieldName: `Current Email`, inputType: 'text', inputName: 'curEmail' },
+    { fieldName: 'Current Password', inputType: 'password', inputName: 'curPass' },
+    { fieldName: 'New Password', inputType: 'password', inputName: 'newPass' },
+    { fieldName: 'Repeat New Password', inputType: 'password', inputName: 'rePass' },
+];
+
+function renderComp() {
+    render(
+        <PasswordChangeForm
+            onSubmitHandler={onSubmitHandlerMock}
+        />
+    );
+};
+
 describe("PasswordChangeForm component", () => {
-    const onSubmitHandlerMock = vi.fn();
-
-    const passwordChangeSettingsFields = [
-        { fieldName: `Current Email`, inputType: 'text', inputName: 'curEmail' },
-        { fieldName: 'Current Password', inputType: 'password', inputName: 'curPass' },
-        { fieldName: 'New Password', inputType: 'password', inputName: 'newPass' },
-        { fieldName: 'Repeat New Password', inputType: 'password', inputName: 'rePass' },
-    ];
-
-    function renderComp() {
-        render(
-            <PasswordChangeForm
-                onSubmitHandler={onSubmitHandlerMock}
-            />
-        );
-    }
-
     it("renders Button component with hardcoded values", () => {
         const pattern = new RegExp("^Change Password$");
 
