@@ -3,7 +3,8 @@ import React from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../firebase/firebase-storage/config";
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { ActionsContext } from "../../../contexts/actions-context"
@@ -204,14 +205,15 @@ describe("ProfileEditPage component", () => {
         expect(await screen.findByTestId("profile-bio")).toHaveTextContent(userData.bio);
     });
 
-    it("on cancel button click redirects to the user's profile", () => {
+    it("on cancel button click redirects to the user's profile", async () => {
+        const user = userEvent.setup();
         setup();
 
         const cancelButton = screen.getByRole("button", { name: "Cancel" });
 
         expect(cancelButton).toBeInTheDocument();
 
-        fireEvent.click(cancelButton);
+        await user.click(cancelButton);
 
         expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
     });
@@ -239,11 +241,10 @@ describe("ProfileEditPage component", () => {
     });
 
     it("on successfull form submit redirects to the user's profile", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(
-            screen.getByRole("button", { name: "Submit" })
-        );
+        await user.click(screen.getByRole("button", { name: "Submit" }));
 
         await waitFor(() => {
             expect(userUserServicesMock.updateUser).toHaveBeenCalled();
@@ -252,15 +253,14 @@ describe("ProfileEditPage component", () => {
     });
 
     it("shows error message on a rejected form submit call", async () => {
+        const user = userEvent.setup();
         setup({
             updateUserSuccessfullCall: false,
             getUserSuccessfullCall: true,
             chosenProfileId: isUser,
         });
 
-        fireEvent.click(
-            screen.getByRole("button", { name: "Submit" })
-        );
+        await user.click(screen.getByRole("button", { name: "Submit" }));
 
         await waitFor(() => {
             expect(userUserServicesMock.updateUser).toHaveBeenCalled();
@@ -270,17 +270,14 @@ describe("ProfileEditPage component", () => {
     });
 
     it("uploads image to Firebase storage on form submit when image is uploaded", async () => {
-        uploadBytes.mockResolvedValueOnce({
-            ref: "mock-image-ref",
-        });
-
+        const user = userEvent.setup();
         setup();
 
         const mockFile = new File(["mock-content"], "avatar.png", { type: "image/png" });
         const fileInput = screen.getByTestId("image-upload-input");
 
-        fireEvent.change(fileInput, { target: { files: [mockFile] } });
-        fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+        await user.upload(fileInput, mockFile);
+        await user.click(screen.getByRole("button", { name: "Submit" }));
 
         await waitFor(() => {
             expect(ref).toHaveBeenCalledWith(storage, `/images/${isUser}/avatar`);
