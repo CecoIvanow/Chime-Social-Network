@@ -56,17 +56,18 @@ const useUserServicesMock = {
     isLoading: false,
 };
 
+const userData = { firstName: "Petar" };
+
+const userPosts = {
+    createdPosts: [
+        { _id: 2 },
+        { _id: 1 },
+    ]
+};
+
+const setAlert = vi.fn();
+
 describe("ProfilePage component", () => {
-    const setAlert = vi.fn();
-
-    const userData = { firstName: "Petar" };
-    const userPosts = {
-        createdPosts: [
-            { _id: 2 },
-            { _id: 1 },
-        ]
-    }
-
     function renderComp(
         options = {
             isLoading: true,
