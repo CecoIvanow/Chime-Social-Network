@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import PasswordChangeForm from "./PasswordChangeForm";
 
@@ -37,32 +37,28 @@ const passwordChangeSettingsFields = [
     { fieldName: 'Repeat New Password', inputType: 'password', inputName: 'rePass' },
 ];
 
-function renderComp() {
+beforeEach(() => {
     render(
         <PasswordChangeForm
             onSubmitHandler={onSubmitHandlerMock}
         />
     );
-};
+});
 
 describe("PasswordChangeForm component", () => {
     it("renders Button component with hardcoded values", () => {
         const pattern = new RegExp("^Change Password$");
 
-        renderComp();
         expect(screen.getByTestId("button")).toHaveTextContent(pattern);
     });
 
     it("renders SectionHeading component with hardcoded values", () => {
         const pattern = /^Account Password - \*\*\*\*\*\*$/;
 
-        renderComp();
         expect(screen.getByTestId("section-heading")).toHaveTextContent(pattern);
     });
 
     it("renders InputFieldsList with passed props", () => {
-        renderComp();
-
         const labels = screen.getAllByTestId("label-el");
         const inputs = screen.getAllByTestId('input-el');
 
@@ -79,10 +75,7 @@ describe("PasswordChangeForm component", () => {
     });
 
     it("on submit handler gets attached to PasswordChangeForm", () => {
-        renderComp();
-
         fireEvent.click(screen.getByTestId("button"));
-
         expect(onSubmitHandlerMock).toHaveBeenCalledOnce();
     });
 });
