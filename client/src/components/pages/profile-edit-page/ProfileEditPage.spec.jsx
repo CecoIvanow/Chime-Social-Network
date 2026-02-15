@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../firebase/firebase-storage/config";
@@ -79,17 +79,16 @@ vi.mock("./profile-bio-textarea/ProfileBioTextArea", () => ({
 }));
 
 vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
-    default: () => (
-        <ActionsContext.Consumer>
-            {actions => (
-                <>
-                    <button onClick={(e) => actions.onCancelEditClickHandler(e)}>Cancel</button>
+    default: function ProfileEditButtons() {
+        const actions = useContext(ActionsContext);
 
-                    <button type="submit" >Submit</button>
-                </>
-            )}
-        </ActionsContext.Consumer>
-    )
+        return (
+            <>
+                <button type="submit" >Submit</button>
+                <button onClick={(e) => actions.onCancelEditClickHandler(e)}>Cancel</button>
+            </>
+        );
+    }
 }));
 
 const isUser = "curUserId";
