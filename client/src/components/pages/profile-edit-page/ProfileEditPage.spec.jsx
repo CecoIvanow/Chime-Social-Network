@@ -142,7 +142,7 @@ const formProfileInputs = [
     { fieldName: 'Status', inputType: 'text', inputName: 'status', value: userData?.status },
 ];
 
-function renderComp(
+function setup(
     options = {
         updateUserResult: true,
         getUserDataResult: true,
@@ -192,32 +192,32 @@ describe("ProfileEditPage component", () => {
     it("renders SectionHeading with props", () => {
         const pattern = /^Edit Profile:$/
 
-        renderComp();
+        setup();
 
         expect(screen.getByTestId("section-heading")).toHaveTextContent(pattern);
     });
 
     it("renders ImageUpload with passed props", async () => {
-        renderComp();
+        setup();
 
         expect(await screen.findByTestId("image-upload")).toHaveAttribute("src", userData.imageUrl);
     });
 
     it("renders GenderDetails with passed defaultValue", async () => {
-        renderComp();
+        setup();
 
         expect(await screen.findByTestId("gender-details")).toHaveValue(userData.gender);
     });
 
     it("renders ProfileBioTextArea with passed props", async () => {
-        renderComp();
+        setup();
 
         expect(await screen.findByTestId("profile-bio")).toHaveValue(userData.bio);
     });
 
     it("renders InputFieldsList with passed props", async () => {
 
-        renderComp();
+        setup();
 
         const labelsEl = screen.getAllByTestId("label-el");
         const inputsEl = screen.getAllByTestId("input-el");
@@ -236,7 +236,7 @@ describe("ProfileEditPage component", () => {
     });
 
     it("on cancel edit click handler triggers on ProfileEditButtons cancellation", () => {
-        renderComp();
+        setup();
 
         const cancelButton = screen.getByTestId("edit-profile-cancel-button");
 
@@ -248,7 +248,7 @@ describe("ProfileEditPage component", () => {
     });
 
     it("triggers setAlert on rejected getUserData call", async () => {
-        renderComp({
+        setup({
             getUserDataResult: false,
             updateUserResult: true,
             useParamsMockValue: isUser,
@@ -260,7 +260,7 @@ describe("ProfileEditPage component", () => {
     });
 
     it("on different useParams and userId triggers navigateTo with /404", () => {
-        renderComp({
+        setup({
             getUserDataResult: true,
             updateUserResult: true,
             useParamsMockValue: "differentId",
@@ -270,7 +270,7 @@ describe("ProfileEditPage component", () => {
     });
 
     it("triggers navigateTo on successful form submit", async () => {
-        renderComp();
+        setup();
 
         fireEvent.click(
             screen.getByTestId("edit-profile-submit-button")
@@ -283,7 +283,7 @@ describe("ProfileEditPage component", () => {
     });
 
     it("triggers setAlert on rejected form submit", async () => {
-        renderComp({
+        setup({
             updateUserResult: false,
             getUserDataResult: true,
             useParamsMockValue: isUser,
@@ -302,7 +302,7 @@ describe("ProfileEditPage component", () => {
 
 
     it("triggers abortAll on unmount", () => {
-        const unmount = renderComp();
+        const unmount = setup();
 
         unmount();
 
@@ -314,7 +314,7 @@ describe("ProfileEditPage component", () => {
             ref: "mock-image-ref",
         });
 
-        renderComp();
+        setup();
 
         const mockFile = new File(["mock-content"], "avatar.png", { type: "image/png" });
         const fileInput = screen.getByTestId("image-upload-input");
