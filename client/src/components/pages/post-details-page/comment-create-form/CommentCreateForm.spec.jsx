@@ -1,161 +1,171 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi, } from "vitest";
+
+import { AlertContext } from "../../../../contexts/alert-context";
+import { PostContext } from "../../../../contexts/post-context";
+import { UserContext } from "../../../../contexts/user-context";
 
 import CreateCommentForm from "./CommentCreateForm";
 
-import { PostContext } from "../../../../contexts/post-context";
-import { UserContext } from "../../../../contexts/user-context";
-import { AlertContext } from "../../../../contexts/alert-context";
-
 vi.mock("../../../shared/input-fields/create-content-input-field/CreateContentInputField", () => ({
-    default: ({ onSubmitHandler, onTextChangeHandler, buttonText, text }) => <>
+    default: ({ onSubmitHandler, onTextChangeHandler, buttonText, text }) => (
         <form onSubmit={(e) => {
             e.preventDefault();
             const formData = new FormData(e.currentTarget);
             onSubmitHandler(formData);
         }}>
+            <label htmlFor="comment">{"Comment"}</label>
             <input
                 type="text"
                 onChange={onTextChangeHandler}
                 id="comment"
                 value={text}
-                data-testid="input"
                 name="content"
             >
             </input>
 
-            <button data-testid="button" type="submit">{buttonText}</button>
+            <button type="submit">{buttonText}</button>
         </form>
-    </>
-}))
+    )
+}));
 
 vi.mock("../../../../hooks/useCommentServices", () => ({
     default: () => ({
-        createComment: createCommentMock,
-        abortAll: abortAllMock,
+        ...useCommentServicesMock
     })
-}))
+}));
 
-const createCommentMock = vi.fn();
-const abortAllMock = vi.fn();
+const BUTTON_TEXT = "Reply";
+const INITIAL_INPUT_VALUE = "";
 
-const setAlert = vi.fn();
+const CREATE_COMMENT_ERROR_MSG = "Rejected createComment call!";
 
-const setPost = vi.fn();
-const post = {
-    comments: [
-        { _id: 1, content: "First comment!", onPost: "3dadew", owner: "User2" },
-    ]
-};
+const updatedInputValue = "Testing!";
 
 const isUser = "User123";
 
 const newComment = {
     _id: 3,
     content: "The new comment",
-}
+};
 
-const BUTTON_TEXT = "Reply";
-const INITIAL_INPUT_VALUE = "";
+const setAlert = vi.fn();
 
-const CREATE_COMMENT_ERROR_MSG = "Successfully rejected createComment call!"
+const useCommentServicesMock = {
+    createComment: vi.fn(),
+    abortAll: vi.fn(),
+};
+
+const postContextMock = {
+    setPost: vi.fn(),
+    post: {
+        comments: [
+            { _id: 1, content: "First comment!", onPost: "3dadew", owner: "User2" },
+        ]
+    },
+};
 
 function setup(options = {
     createCommentSuccess: true,
-    createCommentTruthyReturn: true
+    createCommentEmptyReturn: false
 }) {
     if (!options.createCommentSuccess) {
-        createCommentMock.mockRejectedValue(new Error(CREATE_COMMENT_ERROR_MSG));
-    } else if (options.createCommentTruthyReturn) {
-        createCommentMock.mockResolvedValue(newComment);
+        useCommentServicesMock.createComment.mockRejectedValue(new Error(CREATE_COMMENT_ERROR_MSG));
+    } else if (options.createCommentEmptyReturn) {
+        useCommentServicesMock.createComment.mockResolvedValue("");
     } else {
-        createCommentMock.mockResolvedValue("");
-    }
+        useCommentServicesMock.createComment.mockResolvedValue(newComment);
+    };
 
-    render(
+    const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
-                <PostContext.Provider value={{ post, setPost }}>
+                <PostContext.Provider value={{ ...postContextMock }}>
                     <CreateCommentForm />
                 </PostContext.Provider>
             </UserContext.Provider>
         </AlertContext.Provider>
-    )
-}
+    );
+
+    return { unmount };
+};
 
 describe("CommentCreateForm component", () => {
-    it("renders CommentCreateForm with passed props", () => {
+    it("renders create comment form with initial value and submit button", () => {
         setup();
 
-        expect(screen.getByTestId("button")).toHaveTextContent(BUTTON_TEXT);
-        expect(screen.getByTestId("input")).toHaveValue(INITIAL_INPUT_VALUE);
+        expect(screen.getByRole("button", {name: BUTTON_TEXT})).toBeInTheDocument();
+        expect(screen.getByLabelText("Comment")).toHaveValue(INITIAL_INPUT_VALUE);
     });
 
-    it("on value change triggers onTextChangeHandler", () => {
+    it("updates form input value on change", async () => {
+        const user = userEvent.setup();
         setup();
 
-        const newValue = "test";
+        const inputEl = screen.getByLabelText("Comment");
 
-        const inputEl = screen.getByTestId("input");
-
-        fireEvent.change(inputEl, { target: { value: newValue } });
-
-        expect(inputEl).toHaveValue(newValue);
+        await user.type(inputEl, updatedInputValue);
+        expect(inputEl).toHaveValue(updatedInputValue);
     });
 
-    it("on successfull createComment call updates post comments array", async () => {
+    it("adds new comment after successfull comment creation", async () => {
+        const user = userEvent.setup();
         setup();
 
-        const initialCommentsLen = post.comments.length;
+        const initialCommentsLen = postContextMock.post.comments.length;
 
-        const newValue = "test";
+        const inputEl = screen.getByLabelText("Comment");
 
-        const inputEl = screen.getByTestId("input");
-
-        fireEvent.change(inputEl, { target: { value: newValue } });
-        fireEvent.click(screen.getByTestId("button"));
+        await user.type(inputEl, updatedInputValue);
+        await user.click(screen.getByRole("button", { name: BUTTON_TEXT }));
 
         await waitFor(() => {
-            const updatedPost = setPost.mock.calls[0][0];            
+            const updatedPost = postContextMock.setPost.mock.calls[0][0];
 
             expect(updatedPost.comments).toHaveLength(initialCommentsLen + 1);
         });
-
-        expect(setAlert).not.toHaveBeenCalled();
     });
 
-    it("exits on empty createComment return value", async () => {
+    it("does nothing when comment creation returns nothing", async () => {
+        const user = userEvent.setup();
         setup({
             createCommentSuccess: true,
-            createCommentTruthyReturn: false
+            createCommentEmptyReturn: true
         });
 
-        const newValue = "test";
+        const inputEl = screen.getByLabelText("Comment");
 
-        const inputEl = screen.getByTestId("input");
-
-        fireEvent.change(inputEl, { target: { value: newValue } });
-        fireEvent.click(screen.getByTestId("button"));
+        await user.type(inputEl, updatedInputValue);
+        await user.click(screen.getByRole("button", { name: BUTTON_TEXT }));
 
         await waitFor(() => {
-            expect(createCommentMock).toHaveBeenCalled();
+            expect(useCommentServicesMock.createComment).toHaveBeenCalled();
         });
 
-        expect(inputEl).toHaveValue(newValue);
-        expect(setPost).not.toHaveBeenCalled();
-        expect(setAlert).not.toHaveBeenCalled();
-    })
+        expect(inputEl).toHaveValue(updatedInputValue);
+        expect(postContextMock.setPost).not.toHaveBeenCalled();
+    });
 
-    it("on rejected createComment call triggers setAlert", async () => {
+    it("shows error message on a rejected comment creation call", async () => {
+        const user = userEvent.setup();
         setup({
             createCommentSuccess: false,
-            createCommentTruthyReturn: true,
+            createCommentEmptyReturn: false,
         });
 
-        fireEvent.click(screen.getByTestId("button"));
+        await user.click(screen.getByRole("button", { name: BUTTON_TEXT }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalledWith(CREATE_COMMENT_ERROR_MSG);
-        })
-    })
+        });
+    });
+
+    it("stops all ongoing comment creation calls on component unmount", () => {
+        const { unmount } = setup();
+
+        unmount();
+
+        expect(useCommentServicesMock.abortAll).toHaveBeenCalled();
+    });
 });

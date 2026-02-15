@@ -1,62 +1,69 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi, beforeAll } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi, beforeAll, beforeEach } from "vitest";
 
 import ImageUpload from "./ImageUpload";
 
-describe("ImageUpload component", () => {
-    const global = window;
-    const imageUrlMock = "https://firebase.mock/avatar.webp";
-    const setImageUploadMock = vi.fn();
-    const imageFile = new File(
-        ["bits"],
-        "avatar.png",
-        {type: "image/png"}
+const global = window;
+const imageFile1 = new File(
+    ["bits"],
+    "avatar.png",
+    { type: "image/png" }
+);
+
+const imageFile2 = new File(
+    ["bits"],
+    "avatar-two.png",
+    { type: "image/png" }
+);
+
+const mockProps = {
+    imageUrl: "https://example.com/avatar.webp",
+    setImageUpload: vi.fn(),
+};
+
+beforeAll(() => {
+    global.URL.createObjectURL = vi.fn(() => "blob:mock-image-url");
+    global.URL.revokeObjectURL = vi.fn();
+});
+
+beforeEach(() => {
+    render(
+        <ImageUpload
+            {...mockProps}
+        />
     );
+});
 
-
-    beforeAll(() => {
-        global.URL.createObjectURL = vi.fn(() => "blob:mock-image-url");
-        global.URL.revokeObjectURL = vi.fn();
-    })
-
-    function renderComp() {
-        render(
-            <ImageUpload
-                imageUrl={imageUrlMock}
-                setImageUpload={setImageUploadMock}
-            />
-        );
-    };
-
-    it("renders ImageUpload with passed props", () => {
-        renderComp();
-
-        expect(screen.getByAltText("Profile picture")).toHaveAttribute("src", imageUrlMock);
+describe("ImageUpload component", () => {
+    it("renders ImageUpload with correct alt attribute and src attribute with initial image url", () => {
+        expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.imageUrl);
+        expect(screen.getByRole("img")).toHaveAttribute("alt", "Profile picture");
     });
 
-    it("uploads image and shows image preview", () => {
-        renderComp();
+    it("uploads image and shows image preview", async () => {
+        const user = userEvent.setup();
 
-        fireEvent.change(screen.getByTestId("image-input"), {target: {files: [imageFile]}});
+        await user.upload(screen.getByTestId("image-input"), imageFile1);
 
-        expect(setImageUploadMock).toHaveBeenCalledWith(imageFile);
-        expect(screen.getByAltText("Profile picture")).toHaveAttribute("src", "blob:mock-image-url");
+        expect(mockProps.setImageUpload).toHaveBeenCalledWith(imageFile1);
+        expect(screen.getByRole("img")).toHaveAttribute("src", "blob:mock-image-url");
     });
 
-    it("renders original image preview on empty upload", () => {
-        renderComp();
+    it("renders original image preview on empty upload", async () => {
+        const user = userEvent.setup();
 
-        fireEvent.change(screen.getByTestId("image-input"), { target: { files: [] } });
+        await user.upload(screen.getByTestId("image-input"), []);
 
-        expect(setImageUploadMock).not.toHaveBeenCalled();
-        expect(screen.getByAltText("Profile picture")).toHaveAttribute("src", imageUrlMock);
+        expect(mockProps.setImageUpload).not.toHaveBeenCalled();
+        expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.imageUrl);
     });
 
-    it("revokes previous image on new upload", () => {
-        renderComp();
+    it("revokes previous image on new upload", async () => {
+        const user = userEvent.setup();
 
-        fireEvent.change(screen.getByTestId("image-input"), { target: { files: [imageFile] } });
-        fireEvent.change(screen.getByTestId("image-input"), { target: { files: [imageFile] } });
+        await user.upload(screen.getByTestId("image-input"), imageFile1);
+        await user.upload(screen.getByTestId("image-input"), imageFile2);
 
         expect(global.URL.revokeObjectURL).toHaveBeenCalled();
     })

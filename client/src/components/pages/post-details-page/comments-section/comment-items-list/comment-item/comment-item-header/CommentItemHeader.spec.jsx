@@ -1,38 +1,43 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router";
+
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, beforeEach } from "vitest";
 
 import CommentItemHeader from "./CommentItemHeader";
 
-
-
-const comment = {
-    owner: {
-        _id: "ownerId",
-        imageUrl: "https://example.org/avatar.webp",
-        firstName: "Petar",
-        lastName: "Ivanov",
+const mockProps = {
+    comment: {
+        owner: {
+            _id: "ownerId",
+            imageUrl: "https://example.org/avatar.webp",
+            firstName: "Petar",
+            lastName: "Ivanov",
+        },
+        postedOn: "23.12.2025",
     },
-    postedOn: "23.12.2025",
-}
+};
 
-function setup() {
+const commentOwnerNames = `${mockProps.comment.owner.firstName} ${mockProps.comment.owner.lastName}`;
+
+beforeEach(() => {
     render(
         <MemoryRouter>
-            <CommentItemHeader comment={comment} />
+            <CommentItemHeader {...mockProps} />
         </MemoryRouter>
     );
-}
+});
 
 describe("CommentItemHeader component", () => {
-    beforeEach(() => {
-        setup();
+    it("renders image with correct src and alt attributes", () => {
+        expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.comment.owner.imageUrl);
+        expect(screen.getByRole("img")).toHaveAttribute("alt", `${commentOwnerNames} avatar`);
     });
 
-    it("renders component with passed props", () => {
-        expect(screen.getByAltText(`${comment.owner.firstName} ${comment.owner.lastName} avatar`)).toHaveAttribute("src", comment.owner.imageUrl);
-        expect(screen.getByRole("link")).toHaveTextContent(`${comment.owner.firstName} ${comment.owner.lastName}`);
-        expect(screen.getByRole("link")).toHaveAttribute("href", `/profile/${comment.owner._id}`);
-        expect(screen.getByText(`Posted on ${ comment.postedOn }`)).toBeInTheDocument();
+    it("renders link with href attribute and owner name value", () => {
+        expect(screen.getByRole("link", { name: commentOwnerNames })).toHaveAttribute("href", `/profile/${mockProps.comment.owner._id}`);
+    });
+
+    it("renders with posted on date", () => {
+        expect(screen.getByText(`Posted on ${mockProps.comment.postedOn}`)).toBeInTheDocument();
     });
 });

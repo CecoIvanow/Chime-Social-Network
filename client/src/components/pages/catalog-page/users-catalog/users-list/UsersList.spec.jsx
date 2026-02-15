@@ -1,60 +1,61 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
-import { UserContext } from "../../../../../contexts/user-context";
 import { AlertContext } from "../../../../../contexts/alert-context";
+import { UserContext } from "../../../../../contexts/user-context";
 
 import UsersList from "./UsersList";
 
 vi.mock("./user-item/UserItem", () => ({
     default: ({ user, handleAddFriend, handleRemoveFriend }) => <>
-        <button data-testid="add-friend" onClick={() => handleAddFriend(user)}></button>
-        <button data-testid="remove-friend" onClick={() => handleRemoveFriend(user)}></button>
+        <button onClick={() => handleAddFriend(user)}>Add</button>
+        <button onClick={() => handleRemoveFriend(user)}>Remove</button>
     </>
 }));
 
 vi.mock("../../../../../hooks/useUserServices", () => ({
-    default: () => ({
-        addFriend: addFriendMock,
-        removeFriend: removeFriendMock,
-        abortAll: abortAllMock,
-    })
+    default: () => ({ ...useUserServicesMock }),
 }));
 
 const ERR_MSG = {
-    ADD_FRIEND: "Successfully rejected addFriend call",
-    REMOVE_FRIEND: "Successfully rejected removeFriend call",
+    ADD_FRIEND: "Rejected addFriend call",
+    REMOVE_FRIEND: "Rejected removeFriend call",
 };
 
 const isUser = "userId236";
 
+const mockProps = {
+    matchingUsers: [
+        { _id: "idOne" },
+        { _id: "idTwo" },
+    ],
+}
+
 const setAlert = vi.fn();
 
-const matchingUsers = [
-    { _id: "idOne" },
-    { _id: "idTwo" },
-];
-
-const addFriendMock = vi.fn();
-const removeFriendMock = vi.fn();
-const abortAllMock = vi.fn();
+const useUserServicesMock = {
+    addFriend: vi.fn(),
+    removeFriend: vi.fn(),
+    abortAll: vi.fn(),
+};
 
 function setup(options = {
     addFriendCallSuccess: true,
     removeFriendCallSuccess: true,
 }) {
     options.addFriendCallSuccess ?
-        addFriendMock.mockResolvedValue(true) :
-        addFriendMock.mockRejectedValue(new Error(ERR_MSG.ADD_FRIEND));
+        useUserServicesMock.addFriend.mockResolvedValue(true) :
+        useUserServicesMock.addFriend.mockRejectedValue(new Error(ERR_MSG.ADD_FRIEND));
 
     options.removeFriendCallSuccess ?
-        removeFriendMock.mockResolvedValue(true) :
-        removeFriendMock.mockRejectedValue(new Error(ERR_MSG.REMOVE_FRIEND));
+        useUserServicesMock.removeFriend.mockResolvedValue(true) :
+        useUserServicesMock.removeFriend.mockRejectedValue(new Error(ERR_MSG.REMOVE_FRIEND));
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
-                <UsersList matchingUsers={matchingUsers} />
+                <UsersList {...mockProps} />
             </UserContext.Provider>
         </AlertContext.Provider>
     );
@@ -63,72 +64,76 @@ function setup(options = {
 }
 
 describe("UsersList component", () => {
-    it("renders inner UserItem component correct number of times", () => {
+    it("renders users items based on number of users present", () => {
         setup();
 
-        expect(screen.getAllByTestId("add-friend")).toHaveLength(matchingUsers.length);
-        expect(screen.getAllByTestId("remove-friend")).toHaveLength(matchingUsers.length);
+        expect(screen.getAllByRole("button", { name: "Add" })).toHaveLength(mockProps.matchingUsers.length);
+        expect(screen.getAllByRole("button", { name: "Remove" })).toHaveLength(mockProps.matchingUsers.length);
     });
 
-    it("triggers addFriend with passed isUser and passed user._id prop", async () => {
+    it("triggers add friend logic on Add button click", async () => {
+        const user = userEvent.setup();
         setup();
 
-        const addFriendEls = screen.getAllByTestId("add-friend");
+        const addFriendEls = screen.getAllByRole("button", { name: "Add" });
 
         for (let i = 0; i < addFriendEls.length; i++) {
-            fireEvent.click(addFriendEls[i]);
+            await user.click(addFriendEls[i]);
 
             await waitFor(() => {
-                expect(addFriendMock).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
+                expect(useUserServicesMock.addFriend).toHaveBeenCalledWith(isUser, mockProps.matchingUsers[i]._id);
             });
         };
     });
 
-    it("triggers setAlert on rejected addFriend call", async () => {
+    it("shows error message on a failed add friend call", async () => {
+        const user = userEvent.setup();
         setup({
             addFriendCallSuccess: false,
             removeFriendCallSuccess: true,
         });
 
-        const addFriendEls = screen.getAllByTestId("add-friend");
+        const addFriendEls = screen.getAllByRole("button", { name: "Add" });
 
-        fireEvent.click(addFriendEls[0]);
+        await user.click(addFriendEls[0]);
 
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(ERR_MSG.ADD_FRIEND));
     });
 
-    it("triggers removeFriend with passed isUser and passed user._id prop", async () => {
+    it("triggers remove friend logic on Remove button click", async () => {
+        const user = userEvent.setup();
         setup();
 
-        const removeFriendEls = screen.getAllByTestId("remove-friend");
+        const removeFriendEls = screen.getAllByRole("button", { name: "Remove" });
 
         for (let i = 0; i < removeFriendEls.length; i++) {
-            fireEvent.click(removeFriendEls[i]);
+            await user.click(removeFriendEls[i]);
 
             await waitFor(() => {
-                expect(removeFriendMock).toHaveBeenCalledWith(isUser, matchingUsers[i]._id);
+                expect(useUserServicesMock.removeFriend).toHaveBeenCalledWith(isUser, mockProps.matchingUsers[i]._id);
             });
         };
     });
 
-    it("triggers setAlert on rejected removeFriend call", async () => {
+    it("shows error message on a failed remove friend call", async () => {
+        const user = userEvent.setup();
         setup({
             addFriendCallSuccess: true,
             removeFriendCallSuccess: false,
         });
 
-        const removeFriendEls = screen.getAllByTestId("remove-friend");
+        const removeFriendEls = screen.getAllByRole("button", { name: "Remove" });
 
-        fireEvent.click(removeFriendEls[0]);
+        await user.click(removeFriendEls[0]);
 
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(ERR_MSG.REMOVE_FRIEND));
     });
 
-    it("triggers setAlert on component unmount", () => {
+    it("stops all ongoing calls on component unmount", () => {
         const { unmount } = setup();
 
         unmount();
 
-        expect(abortAllMock).toHaveBeenCalled();
+        expect(useUserServicesMock.abortAll).toHaveBeenCalled();
     })
 });

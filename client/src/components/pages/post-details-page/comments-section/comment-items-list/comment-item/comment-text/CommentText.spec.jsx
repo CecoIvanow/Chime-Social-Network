@@ -1,26 +1,22 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
-
-import CommentText from "./CommentText";
+import { describe, expect, it, beforeEach } from "vitest";
 
 import { ActionsContext } from "../../../../../../../contexts/actions-context";
 
-const COMMENT_TEXT = "Comment text content!";
+import CommentText from "./CommentText";
 
-function setup() {
+const actionsCtxCommentText = "Comment text content!";
+
+beforeEach(() => {
     render(
-        <ActionsContext.Provider value={{ commentText: COMMENT_TEXT }}>
+        <ActionsContext.Provider value={{ commentText: actionsCtxCommentText }}>
             <CommentText />
         </ActionsContext.Provider>
     );
-};
+});
 
 describe("CommentText component", () => {
-    beforeEach(() => {
-        setup();
+    it("renders with correct comment text value", () => {
+        expect(screen.getByText(actionsCtxCommentText)).toBeInTheDocument();
     });
-
-    it("renders component with commentText context value", () => {
-        expect(screen.getByText(COMMENT_TEXT)).toBeInTheDocument();
-    })
 });

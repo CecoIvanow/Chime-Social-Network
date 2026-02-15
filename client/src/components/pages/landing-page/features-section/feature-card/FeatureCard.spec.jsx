@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, beforeEach } from "vitest";
 
 import FeatureCard from "./FeatureCard";
 
@@ -15,7 +15,7 @@ beforeEach(() => render(
     />));
 
 describe("FeatureCard component", () => {
-    it("renders component with passed props", () => {
+    it("renders feature card with title and description", () => {
 
         expect(screen.getByRole("heading", {level: 3})).toHaveTextContent(FEATURE_CARD_TITLE);
         

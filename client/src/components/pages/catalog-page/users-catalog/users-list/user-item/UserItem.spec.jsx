@@ -1,5 +1,6 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { UserContext } from "../../../../../../contexts/user-context";
 
@@ -10,25 +11,28 @@ vi.mock("./user-item-details/UserItemDetails", () => ({
 }));
 
 vi.mock("./add-friend-button/AddFriendButton", () => ({
-    default: ({ isAddedAsFriend, handleAddFriendClick, handleUnfriendClick }) => <div data-testid="add-friend-button-comp">
-        {isAddedAsFriend ? (
-            <button data-testid="unfriend" onClick={handleUnfriendClick}></button>
-        ) : (
-            <button data-testid="add-friend" onClick={handleAddFriendClick}></button>
-        )}
-    </div>
+    default: ({ isAddedAsFriend, handleAddFriendClick, handleUnfriendClick }) => (
+        <div data-testid="add-friend-button-comp">
+            {isAddedAsFriend ? (
+                <button onClick={handleUnfriendClick}>Unfriend</button>
+            ) : (
+                <button onClick={handleAddFriendClick}>Add</button>
+            )}
+        </div>
+    ),
 }));
 
 const isUser = "userId111";
 
-const user = {
-    _id: "userId123",
-    friends: ["userId4234"],
-    age: "28",
+const mockProps = {
+    user: {
+        _id: "userId123",
+        friends: ["userId4234"],
+        age: "28",
+    },
+    handleAddFriend: vi.fn(),
+    handleRemoveFriend: vi.fn(),
 };
-
-const handleAddFriendMock = vi.fn();
-const handleRemoveFriendMock = vi.fn();
 
 function setup(options = {
     isAddedAsFriend: false,
@@ -37,40 +41,41 @@ function setup(options = {
     handleRemoveFriendReturn: true,
 }) {
     const userWithFriends = {
-        ...user,
-        friends: options.isAddedAsFriend ? [...user.friends, isUser] : [...user.friends]
+        ...mockProps,
+        user: {
+            ...mockProps.user,
+            friends: options.isAddedAsFriend ? [...mockProps.user.friends, isUser] : [...mockProps.user.friends],
+        },
     };
 
     options.handleAddFriendReturn ?
-        handleAddFriendMock.mockResolvedValue(true) :
-        handleAddFriendMock.mockResolvedValue("");
+        mockProps.handleAddFriend.mockResolvedValue(true) :
+        mockProps.handleAddFriend.mockResolvedValue("");
 
     options.handleRemoveFriendReturn ?
-        handleRemoveFriendMock.mockResolvedValue(true) :
-        handleRemoveFriendMock.mockResolvedValue("");
+        mockProps.handleRemoveFriend.mockResolvedValue(true) :
+        mockProps.handleRemoveFriend.mockResolvedValue("");
 
     render(
         <UserContext.Provider value={{ isUser: options.isUserValue }}>
             <UserItem
-                handleAddFriend={handleAddFriendMock}
-                handleRemoveFriend={handleRemoveFriendMock}
-                user={userWithFriends}
+                {...userWithFriends}
             />
         </UserContext.Provider>
     );
 };
 
 describe("UserItem component", () => {
-    it("renders UserItenDeails with passed props", () => {
+    it("renders with user details", () => {
         setup();
 
-        expect(screen.getByTestId("user-item-details")).toHaveTextContent(user.age);
+        expect(screen.getByTestId("user-item-details")).toHaveTextContent(mockProps.user.age);
     });
 
     it.each([
-        { name: "renders AddFriendButton when isUser exists and is different from user._id", isUserValue: isUser, shouldRender: true },
-        { name: "does not render AddFriendButton when isUser exists and matches user._id", isUserValue: user._id, shouldRender: false },
-        { name: "does not render AddFriendButton when isUser is empty", isUserValue: "", shouldRender: false },
+        { name: "renders friend buttons when user is logged in and is not viewing their profile", isUserValue: isUser, shouldRender: true },
+        { name: "does not render friend buttons when user is logged in and is viewing their profile", isUserValue: mockProps.user._id, shouldRender: false },
+        { name: "does not render friend buttons when user is not logged in", isUserValue: "", shouldRender: false },
     ])("$name", ({ isUserValue, shouldRender }) => {
         setup({
             isAddedAsFriend: false,
@@ -87,8 +92,8 @@ describe("UserItem component", () => {
     });
 
     it.each([
-        { name: "passes props and renders add-friend button inside AddFriendButton on isAddedAsFriend true", isAddedAsFriend: true },
-        { name: "passes props and renders unfriend button inside AddFriendButton on isAddedAsFriend false", isAddedAsFriend: false },
+        { name: "renders Add friend button when the users are not added as friends", isAddedAsFriend: true },
+        { name: "renders Unfriend button when the users are added as friends", isAddedAsFriend: false },
     ])("$name", ({ isAddedAsFriend }) => {
         setup({
             isAddedAsFriend,
@@ -98,28 +103,30 @@ describe("UserItem component", () => {
         });
 
         if (isAddedAsFriend) {
-            expect(screen.queryByTestId("add-friend")).not.toBeInTheDocument();
-            expect(screen.getByTestId("unfriend")).toBeInTheDocument();
+            expect(screen.queryByRole("button", { name: "Add" })).not.toBeInTheDocument();
+            expect(screen.getByRole("button", { name: "Unfriend" })).toBeInTheDocument();
         } else {
-            expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
-            expect(screen.getByTestId("add-friend")).toBeInTheDocument();
+            expect(screen.queryByRole("button", { name: "Unfriend" })).not.toBeInTheDocument();
+            expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
         }
     });
 
-    it("triggers handleAddFriend and changes setIsAddedAsFriend to true on successfull call", async () => {
+    it("adds users as friends when the Add button is clicked", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getByTestId("add-friend"));
+        await user.click(screen.getByRole("button", { name: "Add" }));
 
         await waitFor(() => {
-            expect(handleAddFriendMock).toHaveBeenCalledWith(user);
+            expect(mockProps.handleAddFriend).toHaveBeenCalledWith(mockProps.user);
         });
 
-        expect(screen.queryByTestId("add-friend")).not.toBeInTheDocument();
-        expect(screen.getByTestId("unfriend")).toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Add" })).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Unfriend" })).toBeInTheDocument();
     });
 
-    it("triggers handleAddFriend and does not change setIsAddedAsFriend on empty call", async () => {
+    it("does not add users as friends on a failed add friend call", async () => {
+        const user = userEvent.setup();
         setup({
             isAddedAsFriend: false,
             isUserValue: isUser,
@@ -127,17 +134,18 @@ describe("UserItem component", () => {
             handleRemoveFriendReturn: true,
         });
 
-        fireEvent.click(screen.getByTestId("add-friend"));
+        await user.click(screen.getByRole("button", { name: "Add" }));
 
         await waitFor(() => {
-            expect(handleAddFriendMock).toHaveBeenCalledWith(user);
+            expect(mockProps.handleAddFriend).toHaveBeenCalledWith(mockProps.user);
         });
 
-        expect(screen.getByTestId("add-friend")).toBeInTheDocument();
-        expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Unfriend" })).not.toBeInTheDocument();
     });
 
-    it("triggers handleRemoveFriend and changes setIsAddedAsFriend to false on successfull call", async () => {
+    it("removes users as friends when the Unfriend button is clicked", async () => {
+        const user = userEvent.setup();
         setup({
             isAddedAsFriend: true,
             isUserValue: isUser,
@@ -146,21 +154,22 @@ describe("UserItem component", () => {
         });
 
         const userWithFriends = {
-            ...user,
-            friends: [...user.friends, isUser]
+            ...mockProps.user,
+            friends: [...mockProps.user.friends, isUser]
         }
 
-        fireEvent.click(screen.getByTestId("unfriend"));
+        await user.click(screen.getByRole("button", { name: "Unfriend" }));
 
         await waitFor(() => {
-            expect(handleRemoveFriendMock).toHaveBeenCalledWith(userWithFriends);
+            expect(mockProps.handleRemoveFriend).toHaveBeenCalledWith(userWithFriends);
         });
 
-        expect(screen.queryByTestId("unfriend")).not.toBeInTheDocument();
-        expect(screen.getByTestId("add-friend")).toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Unfriend" })).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
     });
 
-    it("triggers handleRemoveFriend and does not change setIsAddedAsFriend on empty call", async () => {
+    it("does not remove users as friends on a failed unfriend call", async () => {
+        const user = userEvent.setup();
         setup({
             isAddedAsFriend: true,
             isUserValue: isUser,
@@ -169,17 +178,17 @@ describe("UserItem component", () => {
         });
 
         const userWithFriends = {
-            ...user,
-            friends: [...user.friends, isUser]
+            ...mockProps.user,
+            friends: [...mockProps.user.friends, isUser]
         }
 
-        fireEvent.click(screen.getByTestId("unfriend"));
+        await user.click(screen.getByRole("button", { name: "Unfriend" }));
 
         await waitFor(() => {
-            expect(handleRemoveFriendMock).toHaveBeenCalledWith(userWithFriends);
+            expect(mockProps.handleRemoveFriend).toHaveBeenCalledWith(userWithFriends);
         });
 
-        expect(screen.getByTestId("unfriend")).toBeInTheDocument();
-        expect(screen.queryByTestId("add-friend")).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Unfriend" })).toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Add" })).not.toBeInTheDocument();
     });
 });

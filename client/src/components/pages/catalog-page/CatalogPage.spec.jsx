@@ -1,5 +1,6 @@
-import { fireEvent, getSuggestedQuery, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { AlertContext } from "../../../contexts/alert-context";
 
@@ -7,13 +8,13 @@ import CatalogPage from "./CatalogPage";
 
 vi.mock("../../../hooks/usePostServices", () => ({
     default: () => ({
-        ...usePostMocks
+        ...usePostServicesMock
     })
 }));
 
 vi.mock("../../../hooks/useUserServices", () => ({
     default: () => ({
-        ...useUserMocks
+        ...useUserServices
     })
 }));
 
@@ -40,8 +41,8 @@ vi.mock("./users-catalog/UsersCatalog", () => ({
 const UPDATED_POSTS_AMOUNT = 1;
 
 const ERR_MSG = {
-    GET_ALL_USERS: "Successfully rejected getAllUsers call",
-    GET_ALL_POSTS: "Successfully rejected getAllPosts call",
+    GET_ALL_USERS: "Rejected getAllUsers call",
+    GET_ALL_POSTS: "Rejected getAllPosts call",
 };
 
 const totalPosts = [
@@ -54,13 +55,13 @@ const totalUsers = [
     { _id: 2, fullName: "Willam Dafoe" },
 ];
 
-const usePostMocks = {
+const usePostServicesMock = {
     getAllPosts: vi.fn(),
     isLoading: false,
     abortAll: vi.fn(),
 };
 
-const useUserMocks = {
+const useUserServices = {
     getAllUsers: vi.fn(),
     isLoading: false,
     abortAll: vi.fn(),
@@ -75,15 +76,15 @@ function setup(options = {
     getAllUsersIsLoading: false,
 }) {
     options.getAllPostsSuccess ?
-        usePostMocks.getAllPosts.mockResolvedValue(totalPosts) :
-        usePostMocks.getAllPosts.mockRejectedValue(new Error(ERR_MSG.GET_ALL_POSTS));
+        usePostServicesMock.getAllPosts.mockResolvedValue(totalPosts) :
+        usePostServicesMock.getAllPosts.mockRejectedValue(new Error(ERR_MSG.GET_ALL_POSTS));
 
     options.getAllUsersSuccess ?
-        useUserMocks.getAllUsers.mockResolvedValue(totalUsers) :
-        useUserMocks.getAllUsers.mockRejectedValue(new Error(ERR_MSG.GET_ALL_USERS));
+        useUserServices.getAllUsers.mockResolvedValue(totalUsers) :
+        useUserServices.getAllUsers.mockRejectedValue(new Error(ERR_MSG.GET_ALL_USERS));
 
-    usePostMocks.isLoading = options.getAllPostsIsLoading;
-    useUserMocks.isLoading = options.getAllUsersIsLoading;
+    usePostServicesMock.isLoading = options.getAllPostsIsLoading;
+    useUserServices.isLoading = options.getAllUsersIsLoading;
 
     render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -93,7 +94,7 @@ function setup(options = {
 };
 
 describe("CatalogPage component", () => {
-    it("renders component with passed props", async () => {
+    it("renders users and posts catalogs", async () => {
         setup();
 
         await waitFor(() => {
@@ -108,19 +109,19 @@ describe("CatalogPage component", () => {
         expect(users).toHaveLength(totalUsers.length);
     });
 
-    it("setTotalPosts updates posts amount on click", async () => {
+    it("posts get updated on change", async () => {
+        const user = userEvent.setup();
         setup();
 
         const postsCatalog = await screen.findByTestId("posts-catalog");
 
-        fireEvent.click(postsCatalog);
-
+        await user.click(postsCatalog);
         expect(await screen.findAllByTestId("post")).toHaveLength(UPDATED_POSTS_AMOUNT);
     });
 
     it.each([
-        { name: "does not render UsersCatalog on getAllUsers isLoading true", isLoading: true },
-        { name: "renders UsersCatalog on getAllUsers isLoading false", isLoading: false },
+        { name: "does not render users  while data is loading", isLoading: true },
+        { name: "renders users on after data has loaded", isLoading: false },
     ])("$name", ({ isLoading }) => {
         setup({
             getAllPostsSuccess: true,
@@ -137,8 +138,8 @@ describe("CatalogPage component", () => {
     });
 
     it.each([
-        { name: "does not render PostsCatalog on getAllPosts isLoading true", isLoading: true },
-        { name: "renders PostsCatalog on getAllPosts isLoading false", isLoading: false },
+        { name: "does not render posts while data is loading", isLoading: true },
+        { name: "renders posts after data has loaded", isLoading: false },
     ])("$name", ({ isLoading }) => {
         setup({
             getAllPostsSuccess: true,
@@ -155,8 +156,8 @@ describe("CatalogPage component", () => {
     });
 
     it.each([
-        { name: "triggers setAlert on rejected getAllPosts call", getAllPostsSuccess: false, getAllUsersSuccess: true },
-        { name: "triggers setAlert on rejected getAllUsers call", getAllPostsSuccess: true, getAllUsersSuccess: false },
+        { name: "shows alert message on a failed posts data fetch", getAllPostsSuccess: false, getAllUsersSuccess: true },
+        { name: "shows alert message on a failed users data fetch", getAllPostsSuccess: true, getAllUsersSuccess: false },
     ])("$name", async ({ getAllPostsSuccess, getAllUsersSuccess }) => {
         setup({
             getAllPostsIsLoading: false,

@@ -1,5 +1,8 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { useContext } from "react";
+
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { TotalPostsContext } from "../../../../contexts/total-posts-context";
 
@@ -21,48 +24,51 @@ vi.mock("../../../ui/search-field/SearchField", () => ({
 }));
 
 vi.mock("../../../shared/post/posts-list/PostsList", () => ({
-    default: () =>
-        <TotalPostsContext.Consumer>
-            {ctx => (
-                <div data-testid="posts-list" onClick={ctx.setTotalPosts}>
-                    {ctx.totalPosts.map(post => (
-                        <div
-                            key={post._id}
-                            data-testid="post"
-                        >
-                            {post.text}
-                        </div>)
-                    )}
-                </div>
-            )}
-        </TotalPostsContext.Consumer>
+    default: () => <PostsListConsumer />
 }));
 
 vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
     default: () => <div data-testid="loading-spinner"></div>
 }));
 
-const totalPosts = [
-    { _id: "postOne", text: "First post!" },
-    { _id: "postTwo", text: "Second post!" },
-];
+const mockProps = {
+    setTotalPosts: vi.fn(),
+    totalPosts: [
+        { _id: "postOne", text: "First post!" },
+        { _id: "postTwo", text: "Second post!" },
+    ],
+};
 
-const setTotalPostsMock = vi.fn();
+function PostsListConsumer() {
+    const ctx = useContext(TotalPostsContext);
+
+    return (
+        <div data-testid="posts-list" onClick={ctx.setTotalPosts}>
+            {ctx.totalPosts.map(post => (
+                <div
+                    key={post._id}
+                    data-testid="post"
+                >
+                    {post.text}
+                </div>)
+            )}
+        </div>
+    );
+};
 
 function setup(options = {
     isLoading: true
 }) {
     render(
         <PostsCatalog
+            {...mockProps}
             isLoading={options.isLoading}
-            totalPosts={totalPosts}
-            setTotalPosts={setTotalPostsMock}
         />
     );
 };
 
 describe("PostsCatalog component", () => {
-    it("renders component with passed props", () => {
+    it("renders section heading and search field components", () => {
         setup();
 
         expect(screen.getByTestId("section-heading")).toHaveTextContent("All Posts:");
@@ -72,8 +78,8 @@ describe("PostsCatalog component", () => {
     });
 
     it.each([
-        { name: "renders LoadingSpinner on isLoading true", isLoading: true },
-        { name: "renders PostsList on isLoading false", isLoading: false },
+        { name: "renders load spinner while posts data is loading", isLoading: true },
+        { name: "renders posts after data has been loaded", isLoading: false },
     ])("$name", ({ isLoading }) => {
         setup({
             isLoading,
@@ -89,33 +95,36 @@ describe("PostsCatalog component", () => {
     });
 
     it.each([
-        { search: "First", resultLen: 1 },
-        { search: "Second", resultLen: 1 },
-        { search: "", resultLen: totalPosts.length },
-        { search: "post", resultLen: totalPosts.length },
-        { search: "Third post!", resultLen: "0" },
-    ])("renders $resultLen post elements with SearchField value $search", async ({ search, resultLen }) => {
+        { name: "matches only the first post", searchBy: "First", expectedCount: 1 },
+        { name: "matches only the second post", searchBy: "Second", expectedCount: 1 },
+        { name: "matches all posts with an empty string", searchBy: "", expectedCount: 2 },
+        { name: "matches all posts with 'post' string", searchBy: "post", expectedCount: 2 },
+        { name: "does not match posts with an invalid string", searchBy: "Invalid!", expectedCount: "0" },
+    ])("$name", async ({ searchBy, expectedCount }) => {
+        const user = userEvent.setup();
         setup({
             isLoading: false,
         });
 
-        fireEvent.change(screen.getByTestId("search-field-input"), { target: { value: search } });
+        if (searchBy) {
+            await user.type(screen.getByTestId("search-field-input"), searchBy);
+        };
 
-        if (resultLen > 0) {
-            expect(await screen.findAllByTestId("post")).toHaveLength(resultLen);
+        if (expectedCount > 0) {
+            expect(await screen.findAllByTestId("post")).toHaveLength(expectedCount);
         } else {
-            expect(screen.queryAllByTestId("post")).toHaveLength(Number(resultLen));
+            expect(screen.queryAllByTestId("post")).toHaveLength(Number(expectedCount));
         };
     });
 
-    it("passes setTotalPosts to TotalPostsContext", () => {
+    it("updates posts on change", async () => {
+        const user = userEvent.setup();
         setup({
             isLoading: false
         });
-        
-        fireEvent.click(screen.getByTestId("posts-list"));
 
-        expect(setTotalPostsMock).toHaveBeenCalled();
+        await user.click(screen.getByTestId("posts-list"));
+
+        expect(mockProps.setTotalPosts).toHaveBeenCalled();
     });
-
 });

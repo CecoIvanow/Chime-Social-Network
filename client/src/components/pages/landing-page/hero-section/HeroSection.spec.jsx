@@ -1,8 +1,9 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { MemoryRouter } from "react-router";
+
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, beforeEach } from "vitest";
 
 import HeroSection from "./HeroSection";
-import { MemoryRouter } from "react-router";
 
 const HERO_HEADING_TEXT = "Stay Connected with Your Social Circle";
 const HERO_SUBHEADING_TEXT = "Share moments, connect with friends, and discover new communities in a safe and welcoming environment.";
@@ -17,12 +18,12 @@ beforeEach(() => render(
 ));
 
 describe("HeroSection component", () => {
-    it("renders component with correct headings", () => {
+    it("renders hero section with title and description", () => {
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(HERO_HEADING_TEXT);
         expect(screen.getByRole("paragraph")).toHaveTextContent(HERO_SUBHEADING_TEXT);
     });
 
-    it("renders buttons with correct attributes", () => {
+    it("renders link buttons with correct href attributes", () => {
         expect(screen.getByText(REGISTER_TEXT)).toHaveAttribute("href", "/register");
         expect(screen.getByText(LOGIN_TEXT)).toHaveAttribute("href", "/login");
         expect(screen.getByText(CATALOG_TEXT)).toHaveAttribute("href", "/catalog");

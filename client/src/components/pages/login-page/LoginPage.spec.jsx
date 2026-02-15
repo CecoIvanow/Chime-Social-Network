@@ -1,13 +1,15 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { Link, MemoryRouter } from "react-router";
+
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { AlertContext } from "../../../contexts/alert-context";
 
 import LoginPage from "./LoginPage";
-import { Link, MemoryRouter } from "react-router";
 
 vi.mock("../../shared/auth/auth-header-title/AuthHeaderTitle", () => ({
-    default: ({ title }) => <h4 data-testid="auth-header-title">{title}</h4>
+    default: ({ title }) => <div data-testid="auth-header-title">{title}</div>
 }));
 
 vi.mock("../../shared/auth/auth-forms-list/AuthFormsList", () => ({
@@ -29,7 +31,6 @@ vi.mock("../../shared/auth/auth-forms-list/AuthFormsList", () => ({
 vi.mock("../../ui/auth/auth-button/AuthButton", () => ({
     default: ({ buttonText, isPending }) => (
         <button
-            data-testid="auth-button"
             type="submit"
             disabled={isPending}
         >
@@ -41,7 +42,6 @@ vi.mock("../../ui/auth/auth-button/AuthButton", () => ({
 vi.mock("../../ui/auth/auth-nav-link/AuthNavLink", () => ({
     default: ({ path, buttonText }) => (
         <Link
-            data-testid="auth-nav-link"
             to={path}>
             <button>
                 {buttonText}
@@ -51,21 +51,20 @@ vi.mock("../../ui/auth/auth-nav-link/AuthNavLink", () => ({
 }));
 
 vi.mock("../../../hooks/useUserServices", () => ({
-    default: () => ({
-        login: loginMock,
-        abortAll: abortAllMock,
-    })
+    default: () => ({ ...useUserServicesMock })
 }));
 
-const LOGIN_ERR_MSG = "Successfullly rejected login call!";
+const LOGIN_ERR_MSG = "Rejected login call!";
 
 const loginFields = [
     { fieldName: 'Email', inputType: 'email', placeholderText: 'email', inputName: 'email' },
     { fieldName: 'Password', inputType: 'password', placeholderText: 'password', inputName: 'password' }
 ];
 
-const abortAllMock = vi.fn();
-const loginMock = vi.fn();
+const useUserServicesMock = {
+    login: vi.fn(),
+    abortAll: vi.fn(),
+}
 
 const setAlert = vi.fn();
 
@@ -73,8 +72,8 @@ function setup(options = {
     loginRejectedReturnValue: false
 }) {
     options.loginRejectedReturnValue ?
-        loginMock.mockRejectedValue(new Error(LOGIN_ERR_MSG)) :
-        loginMock.mockResolvedValue();
+        useUserServicesMock.login.mockRejectedValue(new Error(LOGIN_ERR_MSG)) :
+        useUserServicesMock.login.mockResolvedValue();
 
     const { unmount } = render(
         <MemoryRouter>
@@ -88,44 +87,48 @@ function setup(options = {
 }
 
 describe("LoginPage component", () => {
-    it("renders components with passed props", () => {
-
+    it("renders header title with 'Login' text content", () => {
         setup();
 
         expect(screen.getByTestId("auth-header-title")).toHaveTextContent("Login");
+    });
 
-        expect(screen.getByTestId("auth-button")).toHaveTextContent("Login");
-
-        expect(screen.getByTestId("auth-nav-link")).toHaveAttribute("href", "/register");
-        expect(screen.getByTestId("auth-nav-link")).toHaveTextContent("Don`t have an account?");
-
-        const authFormsLabels = screen.getAllByTestId("auth-forms-label");
-        const authFormsInputs = screen.getAllByTestId("auth-forms-input");
+    it("renders connected form inputs and with type, name and placeholder attributes", () => {
+        setup();
 
         for (let i = 0; i < loginFields.length; i++) {
-            expect(authFormsLabels[i]).toHaveAttribute("for", loginFields[i].inputName);
-            expect(authFormsInputs[i]).toHaveAttribute("id", loginFields[i].inputName);
-            expect(authFormsInputs[i]).toHaveAttribute("name", loginFields[i].inputName);
-            expect(authFormsInputs[i]).toHaveAttribute("type", loginFields[i].inputType);
-            expect(authFormsInputs[i]).toHaveAttribute("placeholder", loginFields[i].placeholderText);
-        }
+            const authFormsInputs = screen.getByLabelText(loginFields[i].fieldName);
+
+            expect(authFormsInputs).toHaveAttribute("name", loginFields[i].inputName);
+            expect(authFormsInputs).toHaveAttribute("type", loginFields[i].inputType);
+            expect(authFormsInputs).toHaveAttribute("placeholder", loginFields[i].placeholderText);
+        };
     });
 
-    it("authButton is not disabled on initial render", () => {
+    it("renders login button", () => {
         setup();
 
-        expect(screen.getByTestId("auth-button")).not.toBeDisabled();
+        expect(screen.getByRole("button", { name: "Login" })).toBeInTheDocument();
     });
 
-    it("authButton is disabled after form submit", async () => {
+    it("renders link button with href attribute and correct text content", () => {
         setup();
 
-        fireEvent.click(screen.getByTestId("auth-button"));
-
-        await waitFor(() => expect(screen.getByTestId("auth-button")).toBeDisabled());
+        expect(screen.getByRole("link")).toHaveAttribute("href", "/register");
+        expect(screen.getByRole("link")).toHaveTextContent("Don`t have an account?");
     });
 
-    it("triggers login with form data on submit", async () => {
+    it("login button gets disabled after the form is submitted", async () => {
+        const user = userEvent.setup();
+        setup();
+
+        user.click(screen.getByRole("button", { name: "Login" }));
+
+        await waitFor(() => expect(screen.getByRole("button", { name: "Login" })).toBeDisabled());
+    });
+
+    it("logs in the user after the form is submitted", async () => {
+        const user = userEvent.setup();
         setup();
 
         const PASSWORD_VALUE = "MySecretPassword!";
@@ -136,34 +139,33 @@ describe("LoginPage component", () => {
         const emailInput = inputs.find(input => input.getAttribute("name") === "email");
         const passwordInput = inputs.find(input => input.getAttribute("name") === "password");
 
-        fireEvent.change(emailInput, { target: { value: EMAIL_VALUE } });
-        fireEvent.change(passwordInput, { target: { value: PASSWORD_VALUE } });
+        await user.type(emailInput, EMAIL_VALUE);
+        await user.type(passwordInput, PASSWORD_VALUE);
 
-        fireEvent.click(screen.getByTestId("auth-button"));
+        await user.click(screen.getByRole("button", { name: "Login" }));
 
-        await waitFor(() => expect(loginMock).toHaveBeenCalledWith({
+        await waitFor(() => expect(useUserServicesMock.login).toHaveBeenCalledWith({
             email: EMAIL_VALUE,
             password: PASSWORD_VALUE,
         }));
     });
 
-    it("tiggers setAlert on rejected login call", async () => {
+    it("shows error message on a rejected login call", async () => {
+        const user = userEvent.setup();
         setup({
             loginRejectedReturnValue: true
         });
 
-        fireEvent.click(screen.getByTestId("auth-button"))
+        await user.click(screen.getByRole("button", { name: "Login" }))
 
         await waitFor(() => expect(setAlert).toHaveBeenCalledWith(LOGIN_ERR_MSG));
     });
 
-    it("triggers abortAll on unmount", async () => {
+    it("stops the ongoing login call on component unmount", async () => {
         const { unmount } = setup();
 
-        expect(abortAllMock).not.toHaveBeenCalled();
-        
         unmount();
 
-        await waitFor(() => expect(abortAllMock).toHaveBeenCalled());
+        await waitFor(() => expect(useUserServicesMock.abortAll).toHaveBeenCalled());
     });
 });

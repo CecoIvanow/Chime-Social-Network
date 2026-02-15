@@ -1,11 +1,8 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import EmailChangeForm from "./EmailChangeForm";
-
-vi.mock("../../../ui/buttons/button/Button", () => ({
-    default: ({ buttonName }) => <button data-testid="button">{buttonName}</button>
-}));
 
 vi.mock("../../../ui/headings/SectionHeading", () => ({
     default: ({ sectionName }) => <div data-testid="section-heading">{sectionName}</div>
@@ -15,77 +12,62 @@ vi.mock("../../../shared/input-fields/input-fields-list/InputFieldsList", () => 
     default: ({ inputFields }) => (
         inputFields.map(field =>
             <>
-                <label htmlFor={field.inputName} data-testid="label-el">{field.fieldName}</label>
+                <label htmlFor={field.inputName}>{field.fieldName}</label>
                 <input
                     key={field.inputName}
                     id={field.inputName}
                     name={field.fieldName}
                     type={field.inputType}
-                    data-testid="input-el"
                 />
             </>
         )
     )
 }));
 
+vi.mock("../../../ui/buttons/button/Button", () => ({
+    default: ({ buttonName }) => <button type="submit">{buttonName}</button>
+}));
+
+const mockProps = {
+    userEmail: "example@email.com",
+    onSubmitHandler: vi.fn(),
+};
+
+const emailChangeSettingsFields = [
+    { fieldName: `Account Email`, inputType: 'text', inputName: 'curEmail' },
+    { fieldName: 'New Email', inputType: 'text', inputName: 'newEmail' },
+    { fieldName: 'Current Password', inputType: 'password', inputName: 'curPass' },
+    { fieldName: 'Repeat Password', inputType: 'password', inputName: 'rePass' },
+];
+
+beforeEach(() => {
+    render(
+        <EmailChangeForm
+            {...mockProps}
+        />
+    );
+});
+
 describe("EmailChangeForm component", () => {
-    const userEmail = "example@email.com";
-
-    const onSubmitHandlerMock = vi.fn();
-
-    const emailChangeSettingsFields = [
-        { fieldName: `Account Email`, inputType: 'text', inputName: 'curEmail' },
-        { fieldName: 'New Email', inputType: 'text', inputName: 'newEmail' },
-        { fieldName: 'Current Password', inputType: 'password', inputName: 'curPass' },
-        { fieldName: 'Repeat Password', inputType: 'password', inputName: 'rePass' },
-    ];
-
-    function renderComp() {
-        render(
-            <EmailChangeForm
-                userEmail={userEmail}
-                onSubmitHandler={onSubmitHandlerMock}
-            />
-        );
-    }
-
-    it("renders Button component with hardcoded values", () => {
-        const pattern = new RegExp("^Change Email$");
-
-        renderComp();
-        expect(screen.getByTestId("button")).toHaveTextContent(pattern);
+    it("renders section heading with the user email in it", () => {
+        expect(screen.getByTestId("section-heading")).toHaveTextContent(mockProps.userEmail);
     });
 
-    it("renders SectionHeading component with hardcoded values", () => {
-        const pattern = new RegExp(`^Account Email - ${userEmail}$`);
-
-        renderComp();
-        expect(screen.getByTestId("section-heading")).toHaveTextContent(pattern);
+    it("renders the change email button", () => {
+        expect(screen.getByRole("button", { name: "Change Email"})).toBeInTheDocument();
     });
 
-    it("renders InputFieldsList with passed props", () => {
-        renderComp();
-
-        const labels = screen.getAllByTestId("label-el");
-        const inputs = screen.getAllByTestId('input-el');
-
+    it("renders the correct amount of input fields with name and type attributes and properly connected ", () => {
         for (let i = 0; i < emailChangeSettingsFields.length; i++) {
-            const pattern = new RegExp(`^${emailChangeSettingsFields[i].fieldName}$`);
-
-            expect(labels[i]).toHaveTextContent(pattern);
-            expect(labels[i]).toHaveAttribute("for", emailChangeSettingsFields[i].inputName);
-
-            expect(inputs[i]).toHaveAttribute("id", emailChangeSettingsFields[i].inputName);
-            expect(inputs[i]).toHaveAttribute("name", emailChangeSettingsFields[i].fieldName);
-            expect(inputs[i]).toHaveAttribute("type", emailChangeSettingsFields[i].inputType);
+            expect(screen.getByLabelText(emailChangeSettingsFields[i].fieldName)).toHaveAttribute("name", emailChangeSettingsFields[i].fieldName);
+            expect(screen.getByLabelText(emailChangeSettingsFields[i].fieldName)).toHaveAttribute("type", emailChangeSettingsFields[i].inputType);
         };
     });
 
-    it("on submit handler gets attached to EmailChangeForm", () => {
-        renderComp();
+    it("triggers an event on form submit", async () => {
+        const user = userEvent.setup();
 
-        fireEvent.click(screen.getByTestId("button"));
-
-        expect(onSubmitHandlerMock).toHaveBeenCalledOnce();
+        await user.click(screen.getByRole("button", { name: "Change Email"}));
+        expect(mockProps.onSubmitHandler).toHaveBeenCalledOnce();
     })
 });

@@ -1,97 +1,110 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { useContext } from "react";
+
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
+import { ActionsContext } from "../../../../../contexts/actions-context";
+import { AlertContext } from "../../../../../contexts/alert-context";
+import { PostContext } from "../../../../../contexts/post-context";
 
 import CommentItemsList from "./CommentItemsList";
 
-import { ActionsContext } from "../../../../../contexts/actions-context";
-import { PostContext } from "../../../../../contexts/post-context";
-import { AlertContext } from "../../../../../contexts/alert-context";
-
 vi.mock("./comment-item/CommentItem", () => ({
-    default: ({ comment }) =>
-        <ActionsContext.Consumer>
-            {actions => <>
-                <input
-                    onChange={(e) => actions.onTextChangeHandler(e)}
-                    data-testid="comment-content"
-                    value={actions.onEditCommentText || comment.content}
-                />
-                {actions.isEditClicked ? <>
-                    <button
-                        onClick={() => actions.onSaveEditClickHandler(comment._id)}
-                        data-testid="save-button"
-                    >
-                        Save
-                    </button>
-                    <button
-                        onClick={() => actions.onCancelEditClickHandler()}
-                        data-testid="cancel-button"
-                    >
-                        Cancel
-                    </button>
-                </> : <>
-                    <button
-                        onClick={() => actions.onEditClickHandler()}
-                        data-testid="edit-button"
-                    >
-                        Edit
-                    </button>
-                </>
-                }
+    default: ({ comment }) => {
+        const actions = ActionsCtxConsumer();
+
+        return <>
+            <input
+                onChange={(e) => actions.onTextChangeHandler(e)}
+                data-testid="comment-content"
+                value={actions.onEditCommentText || comment.content}
+            />
+            {actions.isEditClicked ? <>
                 <button
-                    onClick={() => actions.onDeleteClickHandler(comment._id)}
-                    data-testid="delete-button"
+                    onClick={() => actions.onSaveEditClickHandler(comment._id)}
                 >
-                    Delete
+                    Save
+                </button>
+                <button
+                    onClick={() => actions.onCancelEditClickHandler()}
+                >
+                    Cancel
+                </button>
+            </> : <>
+                <button
+                    onClick={() => actions.onEditClickHandler()}
+                >
+                    Edit
                 </button>
             </>}
-        </ActionsContext.Consumer>
+
+            <button
+                onClick={() => actions.onDeleteClickHandler(comment._id)}
+            >
+                Delete
+            </button>
+        </>
+    }
 }));
 
 vi.mock("../../../../../hooks/useCommentServices", () => ({
     default: () => ({
-        updateComment: updateCommentMock,
-        deleteComment: deleteCommentMock,
-        abortAll: abortAllMock,
+        ...useCommentServicesMock
     })
 }));
 
-const updateCommentMock = vi.fn();
-const deleteCommentMock = vi.fn();
-const abortAllMock = vi.fn();
+const ActionsCtxConsumer = () => {
+    const actions = useContext(ActionsContext);
+
+    return actions;
+};
+
+const TEST_COMMENT_INDEX = 0;
+const ERR_MSG = {
+    UPDATE_COMMENT: "Rejected comment update!",
+    DELETE_COMMENT: "Rejected comment deletion!",
+};
+
+const commentTextAddition = ", testing!";
+
+const useCommentServicesMock = {
+    updateComment: vi.fn(),
+    deleteComment: vi.fn(),
+    abortAll: vi.fn(),
+};
 
 const setAlert = vi.fn();
 
-const setPost = vi.fn();
-let post = {
-    comments: [
-        { _id: 0, content: "Comment One" },
-    ],
+const postCtxMock = {
+    setPost: vi.fn(),
+    post: {
+        comments: [
+            { _id: 0, content: "Comment One" },
+        ],
+    }
 };
-
-const TEST_COMMENT = 0;
-const NEW_COMMENT_CONTENT = "The comment content has changed";
 
 function setup(options = {
     deleteCommentSuccess: true,
     updateCommentSuccess: true,
-    updateCommentTruthyReturn: true
+    updateCommentEmptyReturn: false
 }) {
     if (!options.updateCommentSuccess) {
-        updateCommentMock.mockRejectedValue(new Error("Successfully rejected comment update!"));
-    } else if (!options.updateCommentTruthyReturn) {
-        updateCommentMock.mockResolvedValue(""); // falsy value
+        useCommentServicesMock.updateComment.mockRejectedValue(new Error(ERR_MSG.UPDATE_COMMENT));
+    } else if (options.updateCommentEmptyReturn) {
+        useCommentServicesMock.updateComment.mockResolvedValue(null);
     } else {
-        updateCommentMock.mockResolvedValue(NEW_COMMENT_CONTENT);
+        useCommentServicesMock.updateComment.mockResolvedValue(commentTextAddition);
     }
 
     options.deleteCommentSuccess ?
-        deleteCommentMock.mockResolvedValue(TEST_COMMENT) :
-        deleteCommentMock.mockRejectedValue(new Error("Successfully rejected delete comment!"));
+        useCommentServicesMock.deleteComment.mockResolvedValue(TEST_COMMENT_INDEX) :
+        useCommentServicesMock.deleteComment.mockRejectedValue(new Error(ERR_MSG.DELETE_COMMENT));
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
-            <PostContext.Provider value={{ post, setPost }}>
+            <PostContext.Provider value={{ ...postCtxMock }}>
                 <CommentItemsList />
             </PostContext.Provider>
         </AlertContext.Provider>
@@ -101,170 +114,175 @@ function setup(options = {
 };
 
 describe("CommentItemsList", () => {
-    it("renders CommentItem with passed props", () => {
+    const finalCommentTextValue = postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content + commentTextAddition;
+
+    it("renders correct number of comments", () => {
         setup();
 
-        for (let i = 0; i < post.comments.length; i++) {
-            expect(screen.getAllByTestId("comment-content")[i]).toHaveValue(post.comments.at(i).content);
+        for (let i = 0; i < postCtxMock.post.comments.length; i++) {
+            expect(screen.getAllByTestId("comment-content")[i]).toHaveValue(postCtxMock.post.comments.at(i).content);
         };
     });
 
-    it("deletes comment on onDeleteClickHandler trigger with confirm true", async () => {
+    it("deletes chosen comment after delete confirm window", async () => {
+        const user = userEvent.setup();
         setup();
+
         vi.spyOn(window, "confirm").mockReturnValue(true);
 
-        fireEvent.click(screen.getAllByTestId("delete-button")[TEST_COMMENT]);
+        await user.click(screen.getAllByRole("button", { name: "Delete" })[TEST_COMMENT_INDEX]);
+
+        const updater = postCtxMock.setPost.mock.calls[0][0];
+        const result = updater(postCtxMock.post);
 
         await waitFor(() => {
-            const updater = setPost.mock.calls[0][0];
-            const result = updater(post);
-
-            expect(deleteCommentMock).toHaveBeenCalledWith(TEST_COMMENT);
-            expect(setPost).toHaveBeenCalledWith(updater);
-            expect(result.comments).toHaveLength(0);
+            expect(useCommentServicesMock.deleteComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX);
+            expect(postCtxMock.setPost).toHaveBeenCalledWith(updater);
         });
+
+        expect(result.comments).toHaveLength(0);
     });
 
-    it("does not delete comment on onDeleteClickHandler trigger with confirm false", async () => {
+    it("does not delete comment after rejected delete confirm window", async () => {
+        const user = userEvent.setup();
         setup();
+
         vi.spyOn(window, "confirm").mockReturnValue(false);
 
-        fireEvent.click(screen.getAllByTestId("delete-button")[TEST_COMMENT]);
+        await user.click(screen.getAllByRole("button", { name: "Delete" })[TEST_COMMENT_INDEX]);
 
-        await waitFor(() => {
-            expect(deleteCommentMock).not.toHaveBeenCalledWith();
-            expect(setPost).not.toHaveBeenCalled();
-        })
+        expect(useCommentServicesMock.deleteComment).not.toHaveBeenCalledWith();
+        expect(postCtxMock.setPost).not.toHaveBeenCalled();
     });
 
-    it("triggers setAlert on deleteComment rejectred call", async () => {
+    it("shows error message on a rejected comment deletion call", async () => {
+        const user = userEvent.setup();
         setup({
             deleteCommentSuccess: false,
             updateCommentSuccess: true,
-            updateCommentTruthyReturn: true
+            updateCommentEmptyReturn: false,
         });
 
         vi.spyOn(window, "confirm").mockReturnValue(true);
 
-        fireEvent.click(screen.getAllByTestId("delete-button")[TEST_COMMENT]);
+        await user.click(screen.getAllByRole("button", { name: "Delete" })[TEST_COMMENT_INDEX]);
 
         await waitFor(() => {
-            expect(deleteCommentMock).toHaveBeenCalledWith(TEST_COMMENT);
+            expect(useCommentServicesMock.deleteComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX);
             expect(setAlert).toHaveBeenCalled();
         });
     });
 
-    it("renders edit buttons when isEditClicked is false", () => {
+    it("renders edit button", () => {
         setup();
 
-        expect(screen.getByTestId("edit-button")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
 
-        expect(screen.queryByTestId("cancel-button")).not.toBeInTheDocument();
-        expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Cancel" })).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument();
     });
 
-    it("on edit button click sets isEditClicked to false and renders cancel and save buttons", () => {
+    it("hides edit button and renders input field and save and cancel buttons after edit has been clicked", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getByTestId("edit-button"));
+        await user.click(screen.getByRole("button", { name: "Edit" }));
 
-        expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(post.comments.at(0).content);
-        expect(screen.getByTestId("save-button")).toBeInTheDocument();
-        expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
+        expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(0).content);
+        expect(screen.getByRole("button", { name: "Save" })).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
     });
 
-    it("on input field change triggers onTextChangeHandler", async () => {
+    it("comment text gets updated on user typing", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_COMMENT_CONTENT } });
+        await user.click(screen.getByRole("button", { name: "Edit" }));
+        user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
         await waitFor(() => {
-            expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
+            expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
         })
     });
 
-    it("on cancel button click sets back original content", () => {
+    it("clicking on the cancel button reverts the comment text to the original content", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_COMMENT_CONTENT } });
+        await user.click(screen.getByRole("button", { name: "Edit" }));
+        await user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
+        expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
 
-        fireEvent.click(screen.getByTestId("cancel-button"));
+        await user.click(screen.getByRole("button", { name: "Cancel" }));
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(post.comments.at(0).content);
+        expect(screen.getByTestId("comment-content")).toHaveValue(postCtxMock.post.comments.at(TEST_COMMENT_INDEX).content);
     });
 
-    it("saves new content on successfull save button click", async () => {
+    it("updates comment text after clicking the save button", async () => {
+        const user = userEvent.setup();
         setup();
 
-        fireEvent.click(screen.getByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_COMMENT_CONTENT } });
+        await user.click(screen.getByRole("button", { name: "Edit" }));
+        await user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
+        expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
 
-        fireEvent.click(screen.getByTestId("save-button"));
+        await user.click(screen.getByRole("button", { name: "Save" }));
 
         await waitFor(() => {
-            expect(updateCommentMock).toHaveBeenCalledWith(TEST_COMMENT, NEW_COMMENT_CONTENT);
-            expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
-            expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
-            expect(screen.queryByTestId("cancel-button")).not.toBeInTheDocument();
-            expect(screen.getByTestId("edit-button")).toBeInTheDocument();
+            expect(useCommentServicesMock.updateComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX, finalCommentTextValue);
+            expect(screen.getByTestId("comment-content")).toHaveValue(commentTextAddition);
         });
     });
 
-    it("triggers setAlert on rejected updateComment call", async () => {
+    it("shows error message on a rejected comment update call", async () => {
+        const user = userEvent.setup();
         setup({
             deleteCommentSuccess: true,
             updateCommentSuccess: false,
-            updateCommentTruthyReturn: true
+            updateCommentEmptyReturn: false,
         });
 
-        fireEvent.click(screen.getByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_COMMENT_CONTENT } });
+        await user.click(screen.getByRole("button", { name: "Edit" }));
+        await user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
+        expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
 
-        fireEvent.click(screen.getByTestId("save-button"));
+        await user.click(screen.getByRole("button", { name: "Save" }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalled();
         });
     });
-    
-    it("does NOT exit edit mode when updateComment returns falsy value", async () => {
+
+    it("does nothing when updated comment returns empty", async () => {
+        const user = userEvent.setup();
         setup({
             deleteCommentSuccess: true,
             updateCommentSuccess: true,
-            updateCommentTruthyReturn: false
+            updateCommentEmptyReturn: true,
         });
 
-        fireEvent.click(screen.getByTestId("edit-button"));
-        fireEvent.change(screen.getByTestId("comment-content"), { target: { value: NEW_COMMENT_CONTENT } });
+        await user.click(screen.getByRole("button", { name: "Edit" }));
+        await user.type(screen.getByTestId("comment-content"), commentTextAddition);
 
-        expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
+        expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
 
-        fireEvent.click(screen.getByTestId("save-button"));
+        await user.click(screen.getByRole("button", { name: "Save" }));
 
         await waitFor(() => {
-            expect(updateCommentMock).toHaveBeenCalledWith(TEST_COMMENT, NEW_COMMENT_CONTENT);
-            expect(screen.getByTestId("comment-content")).toHaveValue(NEW_COMMENT_CONTENT);
-            expect(screen.getByTestId("save-button")).toBeInTheDocument();
-            expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
-            expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
+            expect(useCommentServicesMock.updateComment).toHaveBeenCalledWith(TEST_COMMENT_INDEX, finalCommentTextValue);
+            expect(screen.getByTestId("comment-content")).toHaveValue(finalCommentTextValue);
         });
     });
 
-    it("triggers abortAll on unmount", () => {
+    it("stops all ongoing calls on unmount", () => {
         const unmount = setup();
 
         unmount();
-
-        expect(abortAllMock).toHaveBeenCalled();
-    })
+        expect(useCommentServicesMock.abortAll).toHaveBeenCalled();
+    });
 });

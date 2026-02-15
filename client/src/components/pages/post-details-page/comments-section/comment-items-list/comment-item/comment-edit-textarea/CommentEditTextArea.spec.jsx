@@ -1,36 +1,37 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
-
-import CommentEditTextArea from "./CommentEditTextArea";
 
 import { ActionsContext } from "../../../../../../../contexts/actions-context";
 
+import CommentEditTextArea from "./CommentEditTextArea";
+
 const PLACEHOLDER_TEXT = "Edit your post content..."
 
-const onEditCommentText = "Comment content!";
-const onTextChangeHandler = vi.fn();
+const actionsContextMock = {
+    onEditCommentText: "Comment content!",
+    onTextChangeHandler: vi.fn(),
+};
 
-function setup() {
+beforeEach(() => {
     render(
-        <ActionsContext.Provider value={{ onEditCommentText, onTextChangeHandler, }}>
+        <ActionsContext.Provider value={{ ...actionsContextMock }}>
             <CommentEditTextArea />
         </ActionsContext.Provider>
     );
-};
+});
 
 describe("CommentEditTextArea component", () => {
-    beforeEach(() => {
-        setup();
+    it("renders textarea with placeholder attribute and correct value", () => {
+        expect(screen.getByRole("textbox", { value: actionsContextMock.onEditCommentText })).toHaveAttribute("placeholder", PLACEHOLDER_TEXT);
     });
 
-    it("renders component with context values", () => {
-        expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", PLACEHOLDER_TEXT);
-        expect(screen.getByRole("textbox")).toHaveValue(onEditCommentText);
-    });
+    it("triggers an event on user value change", async () => {
+        const user = userEvent.setup();
 
-    it("triggers onTextChangeHandler on value change", () => {
-        fireEvent.change(screen.getByRole("textbox"), {target: {value: "a"}});
-
-        expect(onTextChangeHandler).toHaveBeenCalled();
+        const newValue = "Test!";
+        
+        await user.type(screen.getByRole("textbox"), newValue);
+        expect(actionsContextMock.onTextChangeHandler).toHaveBeenCalled();
     });
 });

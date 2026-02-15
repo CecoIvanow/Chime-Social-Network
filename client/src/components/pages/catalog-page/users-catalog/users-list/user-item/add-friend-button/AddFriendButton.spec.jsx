@@ -1,12 +1,12 @@
-import { fireEvent, prettyDOM, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import AddFriendButton from "./AddFriendButton";
+import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../../../../ui/buttons/button/Button", () => ({
     default: ({ onClickHandler, buttonName }) => (
         <button
-            data-testid="button"
             onClick={onClickHandler}
         >
             {buttonName}
@@ -14,52 +14,53 @@ vi.mock("../../../../../../ui/buttons/button/Button", () => ({
     )
 }));
 
-const handleAddFriendClickMock = vi.fn();
-const handleUnfriendClickMock = vi.fn();
+const mockProps = {
+    handleUnfriendClick: vi.fn(),
+    handleAddFriendClick: vi.fn(),
+}
 
 function setup(options = {
     isAddedAsFriend: false
 }) {
-
     render(
         <AddFriendButton
             isAddedAsFriend={options.isAddedAsFriend}
-            handleAddFriendClick={handleAddFriendClickMock}
-            handleUnfriendClick={handleUnfriendClickMock}
+            {...mockProps}
         />
     );
 };
 
 describe("AddFriendButton component", () => {
     it.each([
-        { button: "Add", isAdded: false },
-        { button: "Unfriend", isAdded: true },
-    ])("renders $button button on isAddedAsFriend $isAdded", ({ isAdded }) => {
+        {name: "renders Add button when user is not added as friend", isAddedAsFriend: false},
+        {name: "renders Unfriend button when user is added as friend", isAddedAsFriend: true},
+    ])("$name", ({ isAddedAsFriend }) => {
         setup({
-            isAddedAsFriend: isAdded
+            isAddedAsFriend
         });
 
-        if (isAdded) {
-            expect(screen.getByTestId("button")).toHaveTextContent("Unfriend");
+        if (isAddedAsFriend) {
+            expect(screen.getByRole("button", { name: "Unfriend"})).toBeInTheDocument();
         } else {
-            expect(screen.getByTestId("button")).toHaveTextContent("Add");
-        }
+            expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
+        };
     });
 
-    it.each([
-        { button: "Add", handler: "handleAddFriendClick", isAdded: false },
-        { button: "Unfriend", handler: "handleUnfriendClick", isAdded: true },
-    ])("on $button button triggers $handler on click", ({ isAdded }) => {
+    it("Add button triggers an event when clicked", async () => {
+        const user = userEvent.setup();
+        setup();
+
+        await user.click(screen.getByRole("button"));
+        expect(mockProps.handleAddFriendClick).toHaveBeenCalled();
+    });
+
+    it("Unfriend button triggers an event when clicked", async () => {
+        const user = userEvent.setup();
         setup({
-            isAddedAsFriend: isAdded
+            isAddedAsFriend: true
         });
 
-        fireEvent.click(screen.getByTestId("button"));
-
-        if(isAdded) {
-            expect(handleUnfriendClickMock).toHaveBeenCalled();
-        }else{
-            expect(handleAddFriendClickMock).toHaveBeenCalled();
-        };
+        await user.click(screen.getByRole("button"));
+        expect(mockProps.handleUnfriendClick).toHaveBeenCalled();
     });
 });

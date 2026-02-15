@@ -1,9 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
-
-import CommentItem from "./CommentItem";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { ActionsContext } from "../../../../../../contexts/actions-context";
+
+import CommentItem from "./CommentItem";
 
 vi.mock("./comment-item-header/CommentItemHeader", () => ({
     default: ({ comment }) => <div data-testid="comment-item-header">{comment.text}</div>
@@ -21,47 +21,51 @@ vi.mock("./comment-buttons/CommentButtons", () => ({
     default: ({ comment }) => <div data-testid="comment-button">{comment.text}</div>
 }))
 
-const comment = {
-    text: "This is a comment."
+const mockProps = {
+    comment: {
+        text: "This is a comment."
+    },
 };
 
-const setCommentText = vi.fn();
-const setOnEditCommentText = vi.fn();
+const actionsCtxMock = {
+    setCommentText: vi.fn(),
+    setOnEditCommentText: vi.fn(),
+};
 
 function setup(options = {
     isEditClicked: true,
 }) {
     const isEditClicked = options.isEditClicked || false;
 
-    render(
+    const { rerender } = render(
         <ActionsContext.Provider value={{
             isEditClicked,
-            setCommentText,
-            setOnEditCommentText
+            ...actionsCtxMock
         }}>
-            <CommentItem comment={comment} />
-        </ActionsContext.Provider>
+            <CommentItem {...mockProps} />
+        </ActionsContext.Provider >
     );
+
+    return { rerender };
 };
 
 describe("CommentItem component", () => {
-    it("renders CommentItemHeader with passed props", () => {
+    it("renders comment header with comment info", () => {
         setup();
 
-        expect(screen.getByTestId("comment-item-header")).toHaveTextContent(comment.text);
+        expect(screen.getByTestId("comment-item-header")).toHaveTextContent(mockProps.comment.text);
     });
 
-    it("renders CommentButtons with passed props", () => {
+    it("renders comment buttons with comment info", () => {
         setup();
 
-        expect(screen.getByTestId("comment-button")).toHaveTextContent(comment.text);
+        expect(screen.getByTestId("comment-button")).toHaveTextContent(mockProps.comment.text);
     });
 
     it.each([
-        { renderedComp: "CommentText", isEditClicked: false },
-        { renderedComp: "CommentEditTextArea", isEditClicked: true },
-    ])("renders $renderedComp on isEditClicked $isEditClicked", ({ isEditClicked }) => {
-
+        { name: "renders comment text when editing is not chosen", isEditClicked: false },
+        { name: "renders comment text area when editing is chosen", isEditClicked: true },
+    ])("$name", ({ isEditClicked }) => {
         setup({
             isEditClicked
         });
@@ -73,5 +77,32 @@ describe("CommentItem component", () => {
             expect(screen.queryByTestId("comment-edit-text-area")).not.toBeInTheDocument();
             expect(screen.getByTestId("comment-text")).toBeInTheDocument();
         };
+    });
+
+    it("calls comment text setters on mount", () => {
+        setup();
+
+        expect(actionsCtxMock.setCommentText).toHaveBeenCalledWith(mockProps.comment.text);
+
+        expect(actionsCtxMock.setOnEditCommentText).toHaveBeenCalledWith(mockProps.comment.text);
+    });
+
+    it("calls setters again when comment text changes", () => {
+        const { rerender } = setup();
+
+        const newComment = { text: "Updated comment." };
+
+        rerender(
+            <ActionsContext.Provider value={{
+                isEditClicked: true,
+                ...actionsCtxMock
+            }}>
+                <CommentItem comment={newComment} />
+            </ActionsContext.Provider>
+        );
+
+        expect(actionsCtxMock.setCommentText).toHaveBeenLastCalledWith(newComment.text);
+
+        expect(actionsCtxMock.setOnEditCommentText).toHaveBeenLastCalledWith(newComment.text);
     });
 });

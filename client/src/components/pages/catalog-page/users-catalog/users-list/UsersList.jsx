@@ -37,8 +37,7 @@ export default function UsersList({ matchingUsers }) {
         },
         [isUser, removeFriend, setAlert] // Dependencies: will re-create the callback if these change
     );
-
-    // Cleanup on component unmount
+    
     useEffect(() => {
         return () => {
             abortAll();

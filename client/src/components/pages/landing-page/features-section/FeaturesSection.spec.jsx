@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import FeaturesSection from "./FeaturesSection";
@@ -21,15 +21,17 @@ const featureCards = [
 beforeEach(() => render(<FeaturesSection />));
 
 describe("FeaturesSection component", () => {
-    it("renders components with props", () => {
+    it("renders feature card with title", () => {
+        expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent("Key Features");
+    });
+
+    it("renders correct amount of feature cards with description and title", () => {
         const featureCardsTitles = screen.getAllByTestId("feature-card-title");
         const featureCardsContent = screen.getAllByTestId("feature-card-content");
 
         for (let i = 0; i < featureCards.length; i++) {
             expect(featureCardsTitles[i]).toHaveTextContent(featureCards[i].title);
             expect(featureCardsContent[i]).toHaveTextContent(featureCards[i].description);
-        }
-
-        expect(screen.getByRole("heading", {level: 2})).toHaveTextContent("Key Features");
+        };
     });
 });

@@ -1,36 +1,28 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import CommentsSection from "./CommentsSection";
 
-const COMMENT_CONTENT = "First comment!";
-
-const SECTION_HEADER_CONTENT = "Comments:";
-
 vi.mock("./comment-items-list/CommentItemsList", () => ({
-    default: () => <div data-testid="comment">{COMMENT_CONTENT}</div>
-}))
+    default: () => <div data-testid="comment-items-list"></div>
+}));
 
 vi.mock("./comments-section-header/CommentsSectionHeader", () => ({
-    default: () => <div data-testid="comments-section-header">{SECTION_HEADER_CONTENT}</div>
-}))
+    default: () => <div data-testid="comments-section-header"></div>
+}));
 
-function setup() {
+beforeEach(() => {
     render(
         <CommentsSection />
     );
-};
+});
 
 describe("CommentsSection component", () => {
-    beforeEach(() => {
-        setup();
-    })
-
-    it("renders CommentItemsList", () => {
-        expect(screen.getByTestId("comment")).toHaveTextContent(COMMENT_CONTENT);
+    it("renders comment items list", () => {
+        expect(screen.getByTestId("comment-items-list")).toBeInTheDocument();
     });
 
-    it("renders CommentsSectionHeader", () => {
-        expect(screen.getByTestId("comments-section-header")).toHaveTextContent(SECTION_HEADER_CONTENT);
+    it("renders comment header", () => {
+        expect(screen.getByTestId("comments-section-header")).toBeInTheDocument();
     });
 });

@@ -1,44 +1,47 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import CommentButtons from "./CommentButtons";
 import { UserContext } from "../../../../../../../contexts/user-context";
 
-vi.mock("../../../../../../shared/controls/owner-buttons/OwnerButtons", () => ({
-    default: ({ itemId }) => <button data-testid="owner-button">{itemId}</button>
-}))
+import CommentButtons from "./CommentButtons";
 
-const comment = {
-    _id: "commentId",
-    owner: {
-        _id: "ownerId",
-    },
+vi.mock("../../../../../../shared/controls/owner-buttons/OwnerButtons", () => ({
+    default: ({ itemId }) => <div data-testid="owner-buttons">{itemId}</div>
+}));
+
+const mockProps = {
+    comment: {
+        _id: "commentId",
+        owner: {
+            _id: "ownerId",
+        },
+    }
 };
 
 function setup(options = {
-    matchingIds: true
+    isTheOwner: true
 }) {
-    const isUser = options.matchingIds ? comment.owner._id : "userId";
+    const isUser = options.isTheOwner ? mockProps.comment.owner._id : "userId";
 
     render(
         <UserContext.Provider value={{ isUser }}>
-            <CommentButtons comment={comment} />
+            <CommentButtons {...mockProps} />
         </UserContext.Provider>
     );
 };
 
 describe("CommentButtons component", () => {
-    it("renders OwnerButtons with passed props on matchimg isUser and owner id", () => {
+    it("renders the owner buttons when the user is logged in and the owner", () => {
         setup();
 
-        expect(screen.getByTestId("owner-button")).toHaveTextContent(comment._id);
+        expect(screen.getByTestId("owner-buttons")).toHaveTextContent(mockProps.comment._id);
     });
 
-    it("does not render OwnerButtons on different isUser and owner id", () => {
+    it("does not render the owner buttons when the logged in user is not the owner", () => {
         setup({
-            matchingIds: false
+            isTheOwner: false
         });
 
-        expect(screen.queryByTestId("owner-button")).not.toBeInTheDocument();
+        expect(screen.queryByTestId("owner-buttons")).not.toBeInTheDocument();
     });
 });
