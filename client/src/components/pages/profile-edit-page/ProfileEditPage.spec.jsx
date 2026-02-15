@@ -12,19 +12,25 @@ import { UserContext } from "../../../contexts/user-context"
 
 import ProfileEditPage from "./ProfileEditPage";
 
+vi.mock("react-router", () => ({
+    useNavigate: () => reactRouterMock.navigateTo,
+    useParams: () => reactRouterMock.useParams(),
+}));
+
+vi.mock("firebase/storage", () => ({
+    ref: vi.fn(),
+    uploadBytes: vi.fn(),
+    getDownloadURL: vi.fn(),
+}));
+
+vi.mock("../../../firebase/firebase-storage/config", () => ({
+    storage: {},
+}));
+
 vi.mock("../../../hooks/useUserServices", () => ({
     default: () => ({
         ...userUserServicesMock
     })
-}));
-
-vi.mock("../../shared/user-details/gender-details/GenderDetails", () => ({
-    default: ({ userGender }) => <input
-        data-testid="gender-details"
-        name="gender"
-        type="text"
-        defaultValue={userGender}
-    />
 }));
 
 vi.mock("../../ui/headings/SectionHeading", () => ({
@@ -42,32 +48,15 @@ vi.mock("./image-upload/ImageUpload", () => ({
     </>
 }));
 
-vi.mock("./profile-bio-textarea/ProfileBioTextArea", () => ({
-    default: ({ userData }) => <textarea
-        data-testid="profile-bio"
-        name="bio"
-        defaultValue={userData.bio}
-    />
-}));
-
-vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
-    default: () => <>
-        <ActionsContext.Consumer>
-            {actions => <>
-                <button
-                    data-testid="edit-profile-cancel-button"
-                    onClick={(e) => actions.onCancelEditClickHandler(e)}
-                >
-                </button>
-                <button
-                    data-testid="edit-profile-submit-button"
-                    type="submit"
-                >
-                </button>
-            </>
-            }
-        </ActionsContext.Consumer>
-    </>
+vi.mock("../../shared/user-details/gender-details/GenderDetails", () => ({
+    default: ({ userGender }) => (
+        <input
+            data-testid="gender-details"
+            name="gender"
+            type="text"
+            defaultValue={userGender}
+        />
+    )
 }));
 
 vi.mock("../../shared/input-fields/input-fields-list/InputFieldsList", () => ({
@@ -87,20 +76,37 @@ vi.mock("../../shared/input-fields/input-fields-list/InputFieldsList", () => ({
     ))
 }));
 
-vi.mock("firebase/storage", () => ({
-    ref: vi.fn(),
-    uploadBytes: vi.fn(),
-    getDownloadURL: vi.fn(),
+vi.mock("./profile-bio-textarea/ProfileBioTextArea", () => ({
+    default: ({ userData }) => (
+        <textarea
+            data-testid="profile-bio"
+            name="bio"
+            defaultValue={userData.bio}
+        />
+    )
 }));
 
-vi.mock("../../../firebase/firebase-storage/config", () => ({
-    storage: {},
+vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
+    default: () => (
+        <ActionsContext.Consumer>
+            {actions => <>
+                <button
+                    data-testid="edit-profile-cancel-button"
+                    onClick={(e) => actions.onCancelEditClickHandler(e)}
+                >
+                </button>
+                <button
+                    data-testid="edit-profile-submit-button"
+                    type="submit"
+                >
+                </button>
+            </>
+            }
+        </ActionsContext.Consumer>
+    )
 }));
 
-vi.mock("react-router", () => ({
-    useNavigate: () => reactRouterMock.navigateTo,
-    useParams: () => reactRouterMock.useParams(),
-}));
+const isUser = "curUserId";
 
 const userData = {
     gender: "Male",
@@ -125,20 +131,18 @@ const formProfileInputs = [
     { fieldName: 'Status', inputType: 'text', inputName: 'status', value: userData?.status },
 ];
 
+const userUserServicesMock = {
+    updateUser: vi.fn(),
+    getUserData: vi.fn(),
+    abortAll: vi.fn(),
+};
+
 const reactRouterMock = {
     useParams: vi.fn(),
     navigateTo: vi.fn(),
 };
 
 const setAlert = vi.fn();
-
-const isUser = "curUserId";
-
-const userUserServicesMock = {
-    updateUser: vi.fn(),
-    getUserData: vi.fn(),
-    abortAll: vi.fn(),
-};
 
 function setup(
     options = {
