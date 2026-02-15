@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import EmailChangeForm from "./EmailChangeForm";
 
@@ -40,32 +40,29 @@ const emailChangeSettingsFields = [
     { fieldName: 'Repeat Password', inputType: 'password', inputName: 'rePass' },
 ];
 
-function renderComp() {
+beforeEach(() => {
     render(
         <EmailChangeForm
             userEmail={userEmail}
             onSubmitHandler={onSubmitHandlerMock}
         />
     );
-}
+});
 
 describe("EmailChangeForm component", () => {
     it("renders Button component with hardcoded values", () => {
         const pattern = new RegExp("^Change Email$");
 
-        renderComp();
         expect(screen.getByTestId("button")).toHaveTextContent(pattern);
     });
 
     it("renders SectionHeading component with hardcoded values", () => {
         const pattern = new RegExp(`^Account Email - ${userEmail}$`);
 
-        renderComp();
         expect(screen.getByTestId("section-heading")).toHaveTextContent(pattern);
     });
 
     it("renders InputFieldsList with passed props", () => {
-        renderComp();
 
         const labels = screen.getAllByTestId("label-el");
         const inputs = screen.getAllByTestId('input-el');
@@ -84,7 +81,6 @@ describe("EmailChangeForm component", () => {
 
     it("on submit handler gets attached to EmailChangeForm", async () => {
         const user = userEvent.setup();
-        renderComp();
 
         await user.click(screen.getByTestId("button"));
 
