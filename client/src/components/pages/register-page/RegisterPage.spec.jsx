@@ -3,13 +3,15 @@ import { Link, MemoryRouter } from "react-router";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import useUserServices from "../../../hooks/useUserServices";
-
 import { AlertContext } from "../../../contexts/alert-context";
 
 import RegisterPage from "./RegisterPage";
 
-vi.mock("../../../hooks/useUserServices");
+vi.mock("../../../hooks/useUserServices", () => ({
+    default: () => ({
+        ...useUserServicesMock
+    })
+}));
 
 vi.mock("../../ui/auth/auth-button/AuthButton", () => ({
     default: ({ buttonText, isPending }) =>
@@ -74,19 +76,17 @@ const registerFields = [
     { fieldName: 'Confirm Password', inputType: 'password', placeholderText: 'password', inputName: 'rePass' },
 ];
 
-const abortAll = vi.fn();
-const register = vi.fn().mockResolvedValue(true);
+const useUserServicesMock = {
+    register: vi.fn(),
+    abortAll: vi.fn(),
+}
+
 const setAlert = vi.fn();
 
 function setup(registerMockResolved = true) {
-    const registerMock = registerMockResolved ?
-        register :
+    useUserServicesMock.register = registerMockResolved ?
+        useUserServicesMock.register :
         vi.fn().mockRejectedValue(new Error(ERR_MSG.REGISTER));
-
-    useUserServices.mockReturnValue({
-        abortAll,
-        register: registerMock,
-    });
 
     return render(
         <MemoryRouter>
@@ -157,7 +157,7 @@ describe("RegisterPage component", () => {
         fireEvent.click(screen.getByTestId("auth-button"));
 
         await waitFor(() => {
-            expect(register).toHaveBeenCalled();
+            expect(useUserServicesMock.register).toHaveBeenCalled();
         });
     });
 
@@ -175,6 +175,6 @@ describe("RegisterPage component", () => {
         const { unmount } = setup();
 
         unmount();
-        expect(abortAll).toHaveBeenCalled();
+        expect(useUserServicesMock.abortAll).toHaveBeenCalled();
     });
 });
