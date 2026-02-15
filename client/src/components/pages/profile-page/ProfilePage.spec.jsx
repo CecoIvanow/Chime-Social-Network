@@ -3,14 +3,16 @@ import { useContext } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import useUserServices from "../../../hooks/useUserServices";
-
 import { AlertContext } from "../../../contexts/alert-context";
 import { TotalPostsContext } from "../../../contexts/total-posts-context";
 
 import ProfilePage from "./ProfilePage";
 
-vi.mock("../../../hooks/useUserServices");
+vi.mock("../../../hooks/useUserServices", () => ({
+    default: () => ({
+        ...useUserServicesMock
+    })
+}));
 
 vi.mock("../../shared/profile/profile-section/ProfileSection", () => ({
     default: ({ isLoading, userData }) => <>
@@ -42,11 +44,15 @@ vi.mock("../../shared/post/posts-section/PostsSection", () => ({
     }
 }));
 
+const useUserServicesMock = {
+    getUserData: vi.fn(),
+    getUserPosts: vi.fn(),
+    abortAll: vi.fn(),
+    isLoading: false,
+};
+
 describe("ProfilePage component", () => {
-    const abortAll = vi.fn();
     const setAlert = vi.fn();
-    const getUserData = vi.fn();
-    const getUserPosts = vi.fn();
 
     const userData = { firstName: "Petar" };
     const userPosts = {
@@ -63,20 +69,15 @@ describe("ProfilePage component", () => {
             getUserPosts: true,
         }
     ) {
-        const getUserDataMock = options.getUserData ?
-            getUserData.mockResolvedValue(userData) :
-            getUserData.mockRejectedValue(new Error("Successfully rejected getUserData!"));
+        useUserServicesMock.isLoading = options.isLoading;
 
-        const getUserPostsMock = options.getUserPosts ?
-            getUserPosts.mockResolvedValue(userPosts) :
-            getUserPosts.mockRejectedValue(new Error("Successfully rejected getUserPosts!"));
+        useUserServicesMock.getUserData = options.getUserData ?
+            useUserServicesMock.getUserData.mockResolvedValue(userData) :
+            useUserServicesMock.getUserData.mockRejectedValue(new Error("Successfully rejected getUserData!"));
 
-        useUserServices.mockReturnValue({
-            isLoading: options.isLoading,
-            getUserData: getUserDataMock,
-            getUserPosts: getUserPostsMock,
-            abortAll,
-        });
+        useUserServicesMock.getUserPosts = options.getUserPosts ?
+            useUserServicesMock.getUserPosts.mockResolvedValue(userPosts) :
+            useUserServicesMock.getUserPosts.mockRejectedValue(new Error("Successfully rejected getUserPosts!"));
 
         const { unmount } = render(
             <AlertContext.Provider value={{ setAlert }}>
@@ -154,6 +155,6 @@ describe("ProfilePage component", () => {
 
         unmount();
 
-        expect(abortAll).toHaveBeenCalled();
+        expect(useUserServicesMock.abortAll).toHaveBeenCalled();
     });
 });
