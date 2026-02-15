@@ -52,7 +52,6 @@ vi.mock("../../shared/user-details/gender-details/GenderDetails", () => ({
     default: ({ userGender }) => (
         <input
             data-testid="gender-details"
-            name="gender"
             type="text"
             defaultValue={userGender}
         />
@@ -77,13 +76,7 @@ vi.mock("../../shared/input-fields/input-fields-list/InputFieldsList", () => ({
 }));
 
 vi.mock("./profile-bio-textarea/ProfileBioTextArea", () => ({
-    default: ({ userData }) => (
-        <textarea
-            data-testid="profile-bio"
-            name="bio"
-            defaultValue={userData.bio}
-        />
-    )
+    default: ({ userData }) => <div data-testid="profile-bio"> {userData.bio} </div>
 }));
 
 vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
@@ -223,7 +216,7 @@ describe("ProfileEditPage component", () => {
     it("renders the user's profile bio with correct data", async () => {
         setup();
 
-        expect(await screen.findByTestId("profile-bio")).toHaveValue(userData.bio);
+        expect(await screen.findByTestId("profile-bio")).toHaveTextContent(userData.bio);
     });
 
     it("on cancel edit click handler triggers on ProfileEditButtons cancellation", () => {
