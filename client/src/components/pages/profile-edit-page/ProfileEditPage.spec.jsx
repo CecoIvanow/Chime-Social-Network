@@ -102,18 +102,6 @@ vi.mock("react-router", () => ({
     useParams: () => useParamsMock(),
 }));
 
-const useParamsMock = vi.fn();
-const navigateMock = vi.fn();
-
-const setAlert = vi.fn();
-const isUser = "curUserId";
-
-const userUserServicesMock = {
-    updateUser: vi.fn(),
-    getUserData: vi.fn(),
-    abortAll: vi.fn(),
-};
-
 const userData = {
     gender: "Male",
     imageUrl: "https://www.example.org/example-image.webp",
@@ -137,6 +125,19 @@ const formProfileInputs = [
     { fieldName: 'Status', inputType: 'text', inputName: 'status', value: userData?.status },
 ];
 
+const useParamsMock = vi.fn();
+const navigateMock = vi.fn();
+
+const setAlert = vi.fn();
+
+const isUser = "curUserId";
+
+const userUserServicesMock = {
+    updateUser: vi.fn(),
+    getUserData: vi.fn(),
+    abortAll: vi.fn(),
+};
+
 function setup(
     options = {
         updateUserResult: true,
@@ -149,7 +150,7 @@ function setup(
     uploadBytes.mockResolvedValue({
         ref: "mock-image-ref",
     });
-    
+
     getDownloadURL.mockResolvedValue(
         "https://firebase.mock/avatar.webp"
     );
@@ -174,18 +175,6 @@ function setup(
 
     return unmount;
 };
-
-beforeEach(() => {
-    ref.mockReturnValue("mock-image-ref");
-
-    uploadBytes.mockResolvedValue({
-        ref: "mock-image-ref",
-    });
-
-    getDownloadURL.mockResolvedValue(
-        "https://firebase.mock/avatar.webp"
-    );
-});
 
 describe("ProfileEditPage component", () => {
     it("renders SectionHeading with props", () => {
