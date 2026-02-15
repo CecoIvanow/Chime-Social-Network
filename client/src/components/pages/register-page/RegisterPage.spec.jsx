@@ -14,18 +14,6 @@ vi.mock("../../../hooks/useUserServices", () => ({
     })
 }));
 
-vi.mock("../../ui/auth/auth-button/AuthButton", () => ({
-    default: ({ buttonText, isPending }) => <button disabled={isPending}>{buttonText}</button>
-}));
-
-vi.mock("../../ui/auth/auth-nav-link/AuthNavLink", () => ({
-    default: ({ path, buttonText }) => <Link to={path}>{buttonText}</Link>
-}));
-
-vi.mock("../../shared/user-details/gender-details/GenderDetails", () => ({
-    default: () => <div data-testid="gender-details"></div>
-}));
-
 vi.mock("../../shared/auth/auth-header-title/AuthHeaderTitle", () => ({
     default: ({ title }) => <div data-testid="header-title">{title}</div>
 }));
@@ -44,6 +32,18 @@ vi.mock("../../shared/auth/auth-forms-list/AuthFormsList", () => ({
             )}
         </div>
     </>
+}));
+
+vi.mock("../../shared/user-details/gender-details/GenderDetails", () => ({
+    default: () => <div data-testid="gender-details"></div>
+}));
+
+vi.mock("../../ui/auth/auth-button/AuthButton", () => ({
+    default: ({ buttonText, isPending }) => <button disabled={isPending}>{buttonText}</button>
+}));
+
+vi.mock("../../ui/auth/auth-nav-link/AuthNavLink", () => ({
+    default: ({ path, buttonText }) => <Link to={path}>{buttonText}</Link>
 }));
 
 const ERR_MSG = {
