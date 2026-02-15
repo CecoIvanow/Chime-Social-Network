@@ -1,12 +1,12 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import ProfilePage from "./ProfilePage";
-
 import { AlertContext } from "../../../contexts/alert-context";
 import { TotalPostsContext } from "../../../contexts/total-posts-context";
 
 import useUserServices from "../../../hooks/useUserServices";
+
+import ProfilePage from "./ProfilePage";
 
 vi.mock("../../../hooks/useUserServices");
 
