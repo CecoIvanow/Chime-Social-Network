@@ -67,25 +67,32 @@ const setAlert = vi.fn();
 
 function setup(
     options = {
-        getUserFieldsMockResolved: true,
-        changeUserPasswordMockResolved: true,
-        changeUserEmailMockResolved: true,
-        changeUserPasswordReturnValue: true,
-        changeUserEmailReturnValue: true,
+        getUserFieldsResolved: true,
+        changeUserPasswordResolved: true,
+        changeUserEmailResolvedCall: true,
+        changeUserPasswordEmptyReturn: false,
+        changeUserEmailEmptyReturn: false,
     }
 ) {
+    if (options.changeUserEmailEmptyReturn) {
+        useUserServicesMock.changeUserEmail.mockResolvedValue(null);
+    } else if (!options.changeUserEmailResolvedCall) {
+        useUserServicesMock.changeUserEmail.mockRejectedValue(new Error("Successfully rejected changeUserEmail!"));
+    } else {
+        useUserServicesMock.changeUserEmail.mockResolvedValue(userData);
+    };
 
-    options.getUserFieldsMockResolved ?
+    if (options.changeUserPasswordEmptyReturn) {
+        useUserServicesMock.changeUserPassword.mockResolvedValue(null);
+    } else if (!options.changeUserPasswordResolved) {
+        useUserServicesMock.changeUserPassword.mockRejectedValue(new Error("Successfully rejected changeUserPassword!"));
+    } else {
+        useUserServicesMock.changeUserPassword.mockResolvedValue(true);
+    };
+
+    options.getUserFieldsResolved ?
         useUserServicesMock.getUserFields.mockResolvedValue(userData) :
         useUserServicesMock.getUserFields.mockRejectedValue(new Error("Successfully rejected getUserFields!"));
-
-    options.changeUserPasswordMockResolved ?
-        useUserServicesMock.changeUserPassword.mockResolvedValue(true) :
-        useUserServicesMock.changeUserPassword.mockRejectedValue(new Error("Successfully rejected changeUserPassword!"));
-
-    options.changeUserEmailMockResolved ?
-        useUserServicesMock.changeUserEmail.mockResolvedValue(true) :
-        useUserServicesMock.changeUserEmail.mockRejectedValue(new Error("Successfully rejected changeUserEmail!"));
 
     return render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -113,11 +120,11 @@ describe("SettingsPage component", () => {
 
     it("does not navigate when changeUserPassword returns false", async () => {
         setup({
-            getUserFieldsMockResolved: true,
-            changeUserPasswordMockResolved: true,
-            changeUserEmailMockResolved: true,
-            changeUserPasswordReturnValue: false,
-            changeUserEmailReturnValue: true,
+            getUserFieldsResolved: true,
+            changeUserPasswordResolved: true,
+            changeUserEmailResolvedCall: true,
+            changeUserPasswordEmptyReturn: true,
+            changeUserEmailEmptyReturn: false,
         });
 
         fireEvent.submit(screen.getByTestId("password-form"));
@@ -131,11 +138,11 @@ describe("SettingsPage component", () => {
 
     it("triggers set alert on rejected user password change", async () => {
         setup({
-            getUserFieldsMockResolved: true,
-            changeUserPasswordMockResolved: false,
-            changeUserEmailMockResolved: true,
-            changeUserPasswordReturnValue: true,
-            changeUserEmailReturnValue: true,
+            getUserFieldsResolved: true,
+            changeUserPasswordResolved: false,
+            changeUserEmailResolvedCall: true,
+            changeUserPasswordEmptyReturn: false,
+            changeUserEmailEmptyReturn: false,
         });
 
         expect(screen.getByTestId("password-form")).toBeInTheDocument();
@@ -167,11 +174,11 @@ describe("SettingsPage component", () => {
 
     it("does not navigate when changeUserEmail returns false", async () => {
         setup({
-            getUserFieldsMockResolved: true,
-            changeUserPasswordMockResolved: true,
-            changeUserEmailMockResolved: true,
-            changeUserPasswordReturnValue: true,
-            changeUserEmailReturnValue: false,
+            getUserFieldsResolved: true,
+            changeUserPasswordResolved: true,
+            changeUserEmailResolvedCall: true,
+            changeUserPasswordEmptyReturn: false,
+            changeUserEmailEmptyReturn: true,
         });
 
         fireEvent.submit(screen.getByTestId("email-form"));
@@ -185,11 +192,11 @@ describe("SettingsPage component", () => {
 
     it("triggers set alert on rejected user email change", async () => {
         setup({
-            getUserFieldsMockResolved: true,
-            changeUserPasswordMockResolved: true,
-            changeUserEmailMockResolved: false,
-            changeUserPasswordReturnValue: true,
-            changeUserEmailReturnValue: true,
+            getUserFieldsResolved: true,
+            changeUserPasswordResolved: true,
+            changeUserEmailResolvedCall: false,
+            changeUserPasswordEmptyReturn: false,
+            changeUserEmailEmptyReturn: false,
         });
 
         expect(screen.getByTestId("email-form")).toBeInTheDocument();
@@ -204,11 +211,11 @@ describe("SettingsPage component", () => {
 
     it("triggers set alert on rejected get user fields call", async () => {
         setup({
-            getUserFieldsMockResolved: false,
-            changeUserPasswordMockResolved: true,
-            changeUserEmailMockResolved: true,
-            changeUserPasswordReturnValue: true,
-            changeUserEmailReturnValue: true,
+            getUserFieldsResolved: false,
+            changeUserPasswordResolved: true,
+            changeUserEmailResolvedCall: true,
+            changeUserPasswordEmptyReturn: false,
+            changeUserEmailEmptyReturn: false,
         });
 
         await waitFor(() => {
@@ -221,7 +228,6 @@ describe("SettingsPage component", () => {
         const { unmount } = setup();
 
         unmount();
-
         await waitFor(() => {
             expect(useUserServicesMock.abortAll).toHaveBeenCalledOnce();
         });
