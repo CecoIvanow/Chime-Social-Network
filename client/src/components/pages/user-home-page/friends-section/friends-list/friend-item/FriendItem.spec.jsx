@@ -21,16 +21,23 @@ beforeEach(() => {
     );
 });
 
+
 describe("FrientItem component", () => {
-    it("renders FriendItem component with passed props", () => {
-        expect(screen.getByText(`${mockProps.friend.firstName} ${mockProps.friend.lastName}`)).toBeInTheDocument();
-        expect(screen.getByAltText("Profile Picture")).toHaveAttribute('src', mockProps.friend.imageUrl);
+    const friendName = `${mockProps.friend.firstName} ${mockProps.friend.lastName}`;
+    
+    it("renders the correct friend full name", () => {
+        expect(screen.getByRole("listitem", { value: friendName })).toBeInTheDocument();
     });
 
-    it("triggers onClickHandler on click", async () => {
+    it("renders profile picture image with correct src and alt attributes", () => {
+        expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.friend.imageUrl);
+        expect(screen.getByRole("img")).toHaveAttribute("alt", "Profile Picture");
+    });
+
+    it("triggers an event on click", async () => {
         const user = userEvent.setup();
 
-        await user.click(screen.getByText(`${mockProps.friend.firstName} ${mockProps.friend.lastName}`));
-        expect(mockProps.onClickHandler).toHaveBeenCalledOnce();
+        await user.click(screen.getByRole("listitem", { value: friendName }));
+        expect(mockProps.onClickHandler).toHaveBeenCalled();
     });
 });
