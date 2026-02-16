@@ -43,56 +43,56 @@ vi.mock("./email-change-form/EmailChangeForm", () => ({
     </>
 }));
 
+const userData = { email: "example@email.com" };
+
+const isUser = "userId";
+const navigateTo = vi.fn();
+const setAlert = vi.fn();
+const abortAll = vi.fn();
+
+function renderComp(
+    options = {
+        getUserFieldsMockResolved: true,
+        changeUserPasswordMockResolved: true,
+        changeUserEmailMockResolved: true,
+        changeUserPasswordReturnValue: true,
+        changeUserEmailReturnValue: true,
+    }
+) {
+
+    const getUserFieldsMock = options.getUserFieldsMockResolved ?
+        vi.fn().mockResolvedValue(userData) :
+        vi.fn().mockRejectedValue(new Error("Successfully rejected getUserFields!"));
+
+    useNavigate.mockReturnValue(navigateTo);
+
+    const changeUserPasswordMock = options.changeUserPasswordMockResolved ?
+        vi.fn().mockResolvedValue(options.changeUserPasswordReturnValue) :
+        vi.fn().mockRejectedValue(new Error("Successfully rejected changeUserPassword!"));
+
+    const changeUserEmailMock = options.changeUserEmailMockResolved ?
+        vi.fn().mockResolvedValue(options.changeUserEmailReturnValue) :
+        vi.fn().mockRejectedValue(new Error("Successfully rejected changeUserEmail!"));
+
+    useUserServices.mockReturnValue(({
+        changeUserEmail: changeUserEmailMock,
+        changeUserPassword: changeUserPasswordMock,
+        getUserFields: getUserFieldsMock,
+        abortAll,
+    }))
+
+    const { unmount } = render(
+        <AlertContext.Provider value={{ setAlert }}>
+            <UserContext.Provider value={{ isUser }}>
+                <SettingsPage />
+            </UserContext.Provider>
+        </AlertContext.Provider>
+    );
+
+    return { unmount, changeUserEmailMock, changeUserPasswordMock };
+};
+
 describe("SettingsPage component", () => {
-    const userData = { email: "example@email.com" };
-
-    const isUser = "userId";
-    const navigateTo = vi.fn();
-    const setAlert = vi.fn();
-    const abortAll = vi.fn();
-
-    function renderComp(
-        options = {
-            getUserFieldsMockResolved: true,
-            changeUserPasswordMockResolved: true,
-            changeUserEmailMockResolved: true,
-            changeUserPasswordReturnValue: true,
-            changeUserEmailReturnValue: true,
-        }
-    ) {
-
-        const getUserFieldsMock = options.getUserFieldsMockResolved ?
-            vi.fn().mockResolvedValue(userData) :
-            vi.fn().mockRejectedValue(new Error("Successfully rejected getUserFields!"));
-
-        useNavigate.mockReturnValue(navigateTo);
-
-        const changeUserPasswordMock = options.changeUserPasswordMockResolved ?
-            vi.fn().mockResolvedValue(options.changeUserPasswordReturnValue) :
-            vi.fn().mockRejectedValue(new Error("Successfully rejected changeUserPassword!"));
-
-        const changeUserEmailMock = options.changeUserEmailMockResolved ?
-            vi.fn().mockResolvedValue(options.changeUserEmailReturnValue) :
-            vi.fn().mockRejectedValue(new Error("Successfully rejected changeUserEmail!"));
-
-        useUserServices.mockReturnValue(({
-            changeUserEmail: changeUserEmailMock,
-            changeUserPassword: changeUserPasswordMock,
-            getUserFields: getUserFieldsMock,
-            abortAll,
-        }))
-
-        const { unmount } = render(
-            <AlertContext.Provider value={{ setAlert }}>
-                <UserContext.Provider value={{ isUser }}>
-                    <SettingsPage />
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
-
-        return { unmount, changeUserEmailMock, changeUserPasswordMock };
-    };
-
     it("renders password change form and passes props", async () => {
         const { changeUserPasswordMock } = renderComp();
 
