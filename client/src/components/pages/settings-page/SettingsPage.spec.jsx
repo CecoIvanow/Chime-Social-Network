@@ -1,10 +1,11 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { AlertContext } from "../../../contexts/alert-context";
 import { UserContext } from "../../../contexts/user-context";
 
 import SettingsPage from "./SettingsPage";
+import userEvent from "@testing-library/user-event";
 
 vi.mock("react-router", () => ({
     useNavigate: () => reactRouterMock.navigateTo
@@ -27,12 +28,14 @@ vi.mock("./password-change-form/PasswordChangeForm", () => ({
                 onSubmitHandler(new FormData(e.target))
             }}
         >
+            <button type="submit">Change Password</button>
         </form>
     </>
 }));
 
 vi.mock("./email-change-form/EmailChangeForm", () => ({
     default: ({ userEmail, onSubmitHandler }) => <>
+        <div data-testid="user-email">{userEmail}</div>
         <form
             action={onSubmitHandler}
             data-testid="email-form"
@@ -41,7 +44,7 @@ vi.mock("./email-change-form/EmailChangeForm", () => ({
                 onSubmitHandler(new FormData(e.target))
             }}
         >
-            <div data-testid="user-email">{userEmail}</div>
+            <button type="submit">Change Email</button>
         </form>
     </>
 }));
@@ -51,6 +54,8 @@ const isUser = "userId";
 const userData = {
     email: "example@email.com"
 };
+
+const setAlert = vi.fn();
 
 const reactRouterMock = {
     navigateTo: vi.fn(),
@@ -62,8 +67,6 @@ const useUserServicesMock = {
     changeUserPassword: vi.fn(),
     getUserFields: vi.fn(),
 }
-
-const setAlert = vi.fn();
 
 function setup(
     options = {
@@ -105,12 +108,13 @@ function setup(
 
 describe("SettingsPage component", () => {
     it("renders password change form and passes props", async () => {
+        const user = userEvent.setup();
         setup();
 
         expect(screen.getByTestId("password-form")).toBeInTheDocument();
         expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
 
-        fireEvent.submit(screen.getByTestId("password-form"));
+        await user.click(screen.getByRole("button", { name: "Change Password" }));
 
         await waitFor(() => {
             expect(useUserServicesMock.changeUserPassword).toHaveBeenCalled();
@@ -119,6 +123,7 @@ describe("SettingsPage component", () => {
     });
 
     it("does not navigate when changeUserPassword returns false", async () => {
+        const user = userEvent.setup();
         setup({
             getUserFieldsResolved: true,
             changeUserPasswordResolved: true,
@@ -127,7 +132,7 @@ describe("SettingsPage component", () => {
             changeUserEmailEmptyReturn: false,
         });
 
-        fireEvent.submit(screen.getByTestId("password-form"));
+        await user.click(screen.getByRole("button", { name: "Change Password" }));
 
         await waitFor(() => {
             expect(useUserServicesMock.changeUserPassword).toHaveBeenCalled();
@@ -137,6 +142,7 @@ describe("SettingsPage component", () => {
     });
 
     it("triggers set alert on rejected user password change", async () => {
+        const user = userEvent.setup();
         setup({
             getUserFieldsResolved: true,
             changeUserPasswordResolved: false,
@@ -148,7 +154,7 @@ describe("SettingsPage component", () => {
         expect(screen.getByTestId("password-form")).toBeInTheDocument();
         expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
 
-        fireEvent.submit(screen.getByTestId("password-form"));
+        await user.click(screen.getByRole("button", { name: "Change Password" }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalled();
@@ -157,13 +163,13 @@ describe("SettingsPage component", () => {
 
     it("renders email change form and passes props", async () => {
         const emailPattern = new RegExp(`^${userData.email}$`);
-
+        const user = userEvent.setup();
         setup();
 
         expect(screen.getByTestId("email-form")).toBeInTheDocument();
         expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
 
-        fireEvent.submit(screen.getByTestId("email-form"));
+        await user.click(screen.getByRole("button", { name: "Change Email" }));
 
         await waitFor(() => {
             expect(useUserServicesMock.changeUserEmail).toHaveBeenCalled();
@@ -173,6 +179,7 @@ describe("SettingsPage component", () => {
     });
 
     it("does not navigate when changeUserEmail returns false", async () => {
+        const user = userEvent.setup();
         setup({
             getUserFieldsResolved: true,
             changeUserPasswordResolved: true,
@@ -181,7 +188,7 @@ describe("SettingsPage component", () => {
             changeUserEmailEmptyReturn: true,
         });
 
-        fireEvent.submit(screen.getByTestId("email-form"));
+        await user.click(screen.getByRole("button", { name: "Change Email" }));
 
         await waitFor(() => {
             expect(useUserServicesMock.changeUserEmail).toHaveBeenCalled();
@@ -191,6 +198,7 @@ describe("SettingsPage component", () => {
     });
 
     it("triggers set alert on rejected user email change", async () => {
+        const user = userEvent.setup();
         setup({
             getUserFieldsResolved: true,
             changeUserPasswordResolved: true,
@@ -202,7 +210,7 @@ describe("SettingsPage component", () => {
         expect(screen.getByTestId("email-form")).toBeInTheDocument();
         expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
 
-        fireEvent.submit(screen.getByTestId("email-form"));
+        await user.click(screen.getByRole("button", { name: "Change Email" }));
 
         await waitFor(() => {
             expect(setAlert).toHaveBeenCalled();
