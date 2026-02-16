@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import FriendsSection from "./FriendsSection";
@@ -8,13 +8,14 @@ vi.mock("../../../ui/headings/SectionHeading", () => ({
 }));
 
 vi.mock("../../../ui/search-field/SearchField", () => ({
-    default: ({ setSearchParams, searchBy }) =>
+    default: ({ setSearchParams, searchBy }) => <>
+        <label data-testid="search-field-label">{searchBy}</label>
         <input
+            data-testid="search-field-input"
             type="text"
-            data-testid="search-field"
-            placeholder={`Search by ${searchBy}`}
-            onChange={(e) => setSearchParams(e.target.value)}
+            onChange={(e) => setSearchParams(e.currentTarget.value)}
         />
+    </>
 }));
 
 vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
@@ -52,50 +53,53 @@ function setup(options = {
 
 describe("FriendsSection component", () => {
     it.each([
-        { isLoading: true, renderedComp: "LoadingSpinner" },
-        { isLoading: false, renderedComp: "FriendsList" },
-    ])("passes props and renders $renderedComp on isLoading $isLoading", ({ isLoading }) => {
+        { name: "renders loading spinner while friends data is loading", isLoading: true },
+        { name: "renders friends after data has been loaded", isLoading: false },
+    ])("$name", ({ isLoading }) => {
         setup({
             isLoading,
-        })
+        });
 
         if (isLoading) {
-            expect(screen.getByTestId("spinner")).toBeInTheDocument();
             expect(screen.queryAllByTestId("friends-list")).toHaveLength(0);
+            expect(screen.getByTestId("spinner")).toBeInTheDocument();
         } else {
-            expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
             expect(screen.getAllByTestId("friends-list")).toHaveLength(mockProps.userFriends.length);
+            expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
         }
     });
 
-    it("renders SectionHeading with correct friends amount", () => {
+    it("renders friends section heading with correct content", () => {
         setup();
 
-        expect(screen.getByTestId("section-heading")).toHaveTextContent(`Friends (${mockProps.userFriends.length}):`)
+        expect(screen.getByText(`Friends (${mockProps.userFriends.length}):`)).toBeInTheDocument();
     });
 
-    it("renders SearchField with correct prop and triggers setFriendSearchParams on change", () => {
+    it("renders search field with correct search by content", () => {
         setup();
 
-        fireEvent.input(screen.getByPlaceholderText("Search by name"), { target: { value: "Ivan" } })
-
-        expect(screen.getByPlaceholderText("Search by name")).toBeInTheDocument();
-        expect(screen.getByPlaceholderText("Search by name")).toHaveValue("Ivan");
+        expect(screen.getByTestId("search-field-label")).toHaveTextContent("name");
     });
 
-    it("correctly updates SearchField value on change", async () => {
-        setup();
-
-        fireEvent.input(screen.getByPlaceholderText("Search by name"), { target: { value: "Ivan" } });
-
-        await waitFor(() => {
-            expect(screen.getAllByTestId("friends-list")).toHaveLength(1);
+    it.each([
+        { name: "matches the only 'Ivan' friend", searchBy: "Ivan", expectedCount: 1 },
+        { name: "matches the only 'Petrov' friend", searchBy: "Petrov", expectedCount: 1 },
+        { name: "matches all people with an empty search string", searchBy: "", expectedCount: mockProps.userFriends.length },
+        { name: "matches everyone using search string 'ov' in their names", searchBy: "ov", expectedCount: mockProps.userFriends.length },
+        { name: "matches no one on when searching with 'William'", searchBy: "William", expectedCount: "0" },
+    ])("$name", async ({ searchBy, expectedCount }) => {
+        setup({
+            isLoading: false,
         });
 
-        fireEvent.input(screen.getByPlaceholderText("Search by name"), { target: { value: "" } });
+        if (searchBy) {
+            fireEvent.input(screen.getByTestId("search-field-input"), { target: { value: searchBy } });
+        };
 
-        await waitFor(() => {
-            expect(screen.getAllByTestId("friends-list")).toHaveLength(mockProps.userFriends.length);
-        });
+        if (expectedCount > 0) {
+            expect(await screen.findAllByTestId("friends-list")).toHaveLength(expectedCount);
+        } else {
+            expect(screen.queryAllByTestId("friends-list")).toHaveLength(Number(expectedCount));
+        };
     });
 });
