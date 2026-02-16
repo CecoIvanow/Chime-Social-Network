@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router";
-
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -12,7 +10,9 @@ import SettingsPage from "./SettingsPage";
 
 vi.mock("../../../hooks/useUserServices");
 
-vi.mock("react-router");
+vi.mock("react-router", () => ({
+    useNavigate: () => reactRouterMock.navigateTo
+}));
 
 vi.mock("./password-change-form/PasswordChangeForm", () => ({
     default: ({ onSubmitHandler }) => <>
@@ -43,10 +43,15 @@ vi.mock("./email-change-form/EmailChangeForm", () => ({
     </>
 }));
 
-const userData = { email: "example@email.com" };
+const userData = {
+    email: "example@email.com"
+};
+
+const reactRouterMock = {
+    navigateTo: vi.fn(),
+}
 
 const isUser = "userId";
-const navigateTo = vi.fn();
 const setAlert = vi.fn();
 const abortAll = vi.fn();
 
@@ -63,8 +68,6 @@ function renderComp(
     const getUserFieldsMock = options.getUserFieldsMockResolved ?
         vi.fn().mockResolvedValue(userData) :
         vi.fn().mockRejectedValue(new Error("Successfully rejected getUserFields!"));
-
-    useNavigate.mockReturnValue(navigateTo);
 
     const changeUserPasswordMock = options.changeUserPasswordMockResolved ?
         vi.fn().mockResolvedValue(options.changeUserPasswordReturnValue) :
@@ -97,13 +100,13 @@ describe("SettingsPage component", () => {
         const { changeUserPasswordMock } = renderComp();
 
         expect(screen.getByTestId("password-form")).toBeInTheDocument();
-        expect(navigateTo).not.toHaveBeenCalled();
+        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
 
         fireEvent.submit(screen.getByTestId("password-form"));
 
         await waitFor(() => {
             expect(changeUserPasswordMock).toHaveBeenCalled();
-            expect(navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
+            expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
         });
     });
 
@@ -120,7 +123,7 @@ describe("SettingsPage component", () => {
 
         await waitFor(() => {
             expect(changeUserPasswordMock).toHaveBeenCalled();
-            expect(navigateTo).not.toHaveBeenCalled();
+            expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
             expect(setAlert).not.toHaveBeenCalled();
         });
     });
@@ -135,7 +138,7 @@ describe("SettingsPage component", () => {
         });
 
         expect(screen.getByTestId("password-form")).toBeInTheDocument();
-        expect(navigateTo).not.toHaveBeenCalled();
+        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
 
         fireEvent.submit(screen.getByTestId("password-form"));
 
@@ -150,13 +153,13 @@ describe("SettingsPage component", () => {
         const { changeUserEmailMock } = renderComp();
 
         expect(screen.getByTestId("email-form")).toBeInTheDocument();
-        expect(navigateTo).not.toHaveBeenCalled();
+        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
 
         fireEvent.submit(screen.getByTestId("email-form"));
 
         await waitFor(() => {
             expect(changeUserEmailMock).toHaveBeenCalled();
-            expect(navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
+            expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
             expect(screen.getByTestId("user-email")).toHaveTextContent(emailPattern);
         });
     });
@@ -174,7 +177,7 @@ describe("SettingsPage component", () => {
 
         await waitFor(() => {
             expect(changeUserEmailMock).toHaveBeenCalled();
-            expect(navigateTo).not.toHaveBeenCalled();
+            expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
             expect(setAlert).not.toHaveBeenCalled();
         });
     });
@@ -189,7 +192,7 @@ describe("SettingsPage component", () => {
         });
 
         expect(screen.getByTestId("email-form")).toBeInTheDocument();
-        expect(navigateTo).not.toHaveBeenCalled();
+        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
 
         fireEvent.submit(screen.getByTestId("email-form"));
 
