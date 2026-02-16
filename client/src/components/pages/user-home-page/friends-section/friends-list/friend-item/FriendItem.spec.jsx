@@ -3,32 +3,32 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import FriendItem from "./FriendItem";
 
-const friend = {
-    imageUrl: "https://fake-image.com/ThisIsAFakeImageUrl",
-    firstName: "Ivan",
-    lastName: "Ivanov"
-}
-
-const onClickHandler = vi.fn();
+const mockProps = {
+    friend: {
+        imageUrl: "https://fake-image.com/ThisIsAFakeImageUrl",
+        firstName: "Ivan",
+        lastName: "Ivanov"
+    },
+    onClickHandler: vi.fn(),
+};
 
 beforeEach(() => {
     render(
         <FriendItem
-            friend={friend}
-            onClickHandler={onClickHandler}
+            {...mockProps}
         />
     );
 });
 
 describe("FrientItem component", () => {
     it("renders FriendItem component with passed props", () => {
-        expect(screen.getByText(`${friend.firstName} ${friend.lastName}`)).toBeInTheDocument();
-        expect(screen.getByAltText("Profile Picture")).toHaveAttribute('src', friend.imageUrl);
+        expect(screen.getByText(`${mockProps.friend.firstName} ${mockProps.friend.lastName}`)).toBeInTheDocument();
+        expect(screen.getByAltText("Profile Picture")).toHaveAttribute('src', mockProps.friend.imageUrl);
     });
 
     it("triggers onClickHandler on click", () => {
-        fireEvent.click(screen.getByText(`${friend.firstName} ${friend.lastName}`));
+        fireEvent.click(screen.getByText(`${mockProps.friend.firstName} ${mockProps.friend.lastName}`));
 
-        expect(onClickHandler).toHaveBeenCalledOnce();
+        expect(mockProps.onClickHandler).toHaveBeenCalledOnce();
     });
 });
