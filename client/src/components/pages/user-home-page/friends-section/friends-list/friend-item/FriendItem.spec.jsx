@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import FriendItem from "./FriendItem";
@@ -26,9 +27,10 @@ describe("FrientItem component", () => {
         expect(screen.getByAltText("Profile Picture")).toHaveAttribute('src', mockProps.friend.imageUrl);
     });
 
-    it("triggers onClickHandler on click", () => {
-        fireEvent.click(screen.getByText(`${mockProps.friend.firstName} ${mockProps.friend.lastName}`));
+    it("triggers onClickHandler on click", async () => {
+        const user = userEvent.setup();
 
+        await user.click(screen.getByText(`${mockProps.friend.firstName} ${mockProps.friend.lastName}`));
         expect(mockProps.onClickHandler).toHaveBeenCalledOnce();
     });
 });
