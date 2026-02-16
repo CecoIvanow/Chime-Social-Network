@@ -1,7 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import FriendsSection from "./FriendsSection";
+import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../ui/headings/SectionHeading", () => ({
     default: ({ sectionName }) => <div data-testid="section-heading">{sectionName}</div>
@@ -88,12 +89,13 @@ describe("FriendsSection component", () => {
         { name: "matches everyone using search string 'ov' in their names", searchBy: "ov", expectedCount: mockProps.userFriends.length },
         { name: "matches no one on when searching with 'William'", searchBy: "William", expectedCount: "0" },
     ])("$name", async ({ searchBy, expectedCount }) => {
+        const user = userEvent.setup();
         setup({
             isLoading: false,
         });
 
         if (searchBy) {
-            fireEvent.input(screen.getByTestId("search-field-input"), { target: { value: searchBy } });
+            await user.type(screen.getByTestId("search-field-input"), searchBy);
         };
 
         if (expectedCount > 0) {
