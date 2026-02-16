@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event";
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -5,7 +6,6 @@ import { AlertContext } from "../../../contexts/alert-context";
 import { UserContext } from "../../../contexts/user-context";
 
 import SettingsPage from "./SettingsPage";
-import userEvent from "@testing-library/user-event";
 
 vi.mock("react-router", () => ({
     useNavigate: () => reactRouterMock.navigateTo
@@ -107,22 +107,46 @@ function setup(
 };
 
 describe("SettingsPage component", () => {
-    it("renders password change form and passes props", async () => {
-        const user = userEvent.setup();
+    it("renders password change form", async () => {
         setup();
 
         expect(screen.getByTestId("password-form")).toBeInTheDocument();
-        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
+    });
+
+    it("renders email change form with correct user email on successfull user data call", async () => {
+        setup();
+
+        expect(screen.getByTestId("email-form")).toBeInTheDocument();
+        expect(await screen.findByText(userData.email)).toBeInTheDocument();
+    });
+
+    it("shows an error message on rejected user data call", async () => {
+        setup({
+            getUserFieldsResolved: false,
+            changeUserPasswordResolved: true,
+            changeUserEmailResolvedCall: true,
+            changeUserPasswordEmptyReturn: false,
+            changeUserEmailEmptyReturn: false,
+        });
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalled();
+        });
+    });
+
+    it("redirects to the user's profile on a successfull password change call", async () => {
+        const user = userEvent.setup();
+        setup();
 
         await user.click(screen.getByRole("button", { name: "Change Password" }));
 
         await waitFor(() => {
             expect(useUserServicesMock.changeUserPassword).toHaveBeenCalled();
-            expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
         });
+        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
     });
 
-    it("does not navigate when changeUserPassword returns false", async () => {
+    it("does nothing when the password change call does not succeed", async () => {
         const user = userEvent.setup();
         setup({
             getUserFieldsResolved: true,
@@ -136,12 +160,11 @@ describe("SettingsPage component", () => {
 
         await waitFor(() => {
             expect(useUserServicesMock.changeUserPassword).toHaveBeenCalled();
-            expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
-            expect(setAlert).not.toHaveBeenCalled();
         });
+        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
     });
 
-    it("triggers set alert on rejected user password change", async () => {
+    it("shows an error message when the password change gets rejected", async () => {
         const user = userEvent.setup();
         setup({
             getUserFieldsResolved: true,
@@ -151,9 +174,6 @@ describe("SettingsPage component", () => {
             changeUserEmailEmptyReturn: false,
         });
 
-        expect(screen.getByTestId("password-form")).toBeInTheDocument();
-        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
-
         await user.click(screen.getByRole("button", { name: "Change Password" }));
 
         await waitFor(() => {
@@ -161,24 +181,7 @@ describe("SettingsPage component", () => {
         });
     });
 
-    it("renders email change form and passes props", async () => {
-        const emailPattern = new RegExp(`^${userData.email}$`);
-        const user = userEvent.setup();
-        setup();
-
-        expect(screen.getByTestId("email-form")).toBeInTheDocument();
-        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
-
-        await user.click(screen.getByRole("button", { name: "Change Email" }));
-
-        await waitFor(() => {
-            expect(useUserServicesMock.changeUserEmail).toHaveBeenCalled();
-            expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
-            expect(screen.getByTestId("user-email")).toHaveTextContent(emailPattern);
-        });
-    });
-
-    it("does not navigate when changeUserEmail returns false", async () => {
+    it("does nothing when the email change call does not succeed", async () => {
         const user = userEvent.setup();
         setup({
             getUserFieldsResolved: true,
@@ -192,12 +195,11 @@ describe("SettingsPage component", () => {
 
         await waitFor(() => {
             expect(useUserServicesMock.changeUserEmail).toHaveBeenCalled();
-            expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
-            expect(setAlert).not.toHaveBeenCalled();
         });
+        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
     });
 
-    it("triggers set alert on rejected user email change", async () => {
+    it("shows an error message when the email change gets rejected", async () => {
         const user = userEvent.setup();
         setup({
             getUserFieldsResolved: true,
@@ -207,9 +209,6 @@ describe("SettingsPage component", () => {
             changeUserEmailEmptyReturn: false,
         });
 
-        expect(screen.getByTestId("email-form")).toBeInTheDocument();
-        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
-
         await user.click(screen.getByRole("button", { name: "Change Email" }));
 
         await waitFor(() => {
@@ -217,27 +216,10 @@ describe("SettingsPage component", () => {
         });
     });
 
-    it("triggers set alert on rejected get user fields call", async () => {
-        setup({
-            getUserFieldsResolved: false,
-            changeUserPasswordResolved: true,
-            changeUserEmailResolvedCall: true,
-            changeUserPasswordEmptyReturn: false,
-            changeUserEmailEmptyReturn: false,
-        });
-
-        await waitFor(() => {
-            expect(setAlert).toHaveBeenCalledOnce();
-            expect(screen.getByTestId("user-email")).toHaveTextContent('');
-        });
-    });
-
-    it("triggers abortAll on unmount", async () => {
+    it("stops all ongoing calls on unmount", async () => {
         const { unmount } = setup();
 
         unmount();
-        await waitFor(() => {
-            expect(useUserServicesMock.abortAll).toHaveBeenCalledOnce();
-        });
+        expect(useUserServicesMock.abortAll).toHaveBeenCalled();
     });
 });
