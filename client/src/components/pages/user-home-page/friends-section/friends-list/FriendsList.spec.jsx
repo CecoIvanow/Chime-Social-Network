@@ -23,11 +23,11 @@ beforeEach(() => {
 });
 
 describe("FriendsList component", () => {
-    it("renders the correct number of FriendItem components", () => {
+    it("renders the correct number of friends", () => {
         expect(screen.getAllByTestId("friend-item")).toHaveLength(mockProps.matchingFriends.length);
     });
 
-    it("renders FriendItem with passed props", () => {
+    it("renders friends with the correct data", () => {
         expect(screen.getAllByTestId("friend-item").at(0)).toHaveTextContent(mockProps.matchingFriends[0]);
     });
 });
