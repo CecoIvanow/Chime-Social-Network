@@ -1,14 +1,14 @@
+import { useNavigate } from "react-router";
+
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import SettingsPage from "./SettingsPage";
-
-import { useNavigate } from "react-router";
+import useUserServices from "../../../hooks/useUserServices";
 
 import { AlertContext } from "../../../contexts/alert-context";
 import { UserContext } from "../../../contexts/user-context";
 
-import useUserServices from "../../../hooks/useUserServices";
+import SettingsPage from "./SettingsPage";
 
 vi.mock("../../../hooks/useUserServices");
 
