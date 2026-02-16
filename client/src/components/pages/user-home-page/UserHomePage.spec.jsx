@@ -1,3 +1,5 @@
+import { useContext } from "react";
+
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -22,22 +24,27 @@ vi.mock("../../shared/profile/profile-section/ProfileSection", () => ({
 }));
 
 vi.mock("../../shared/post/posts-section/PostsSection", () => ({
-    default: ({ userName, isLoading }) => <>
-        <TotalPostsContext.Consumer>
-            {TotalPostsContextValues => (
-                isLoading ? (
-                    <div data-testid="posts-loading-spinner" > Loading...</div>
-                ) : (
-                    <>
-                        <div data-testid="posts-section">
-                            {userName}
-                            {TotalPostsContextValues?.totalPosts?.map(post => <div data-testid="post" key={post._id}>{post.content}</div>)}
+    default: function PostsSection({ userName, isLoading }) {
+        const ctx = useContext(TotalPostsContext);
+
+        return <>
+            {isLoading ? (
+                <div data-testid="posts-loading-spinner" > Loading...</div>
+            ) : (
+                <div data-testid="posts-section">
+                    {userName}
+                    {ctx.totalPosts.map(post =>
+                        <div
+                            data-testid="post"
+                            key={post._id}
+                        >
+                            {post.content}
                         </div>
-                    </>
-                )
+                    )}
+                </div>
             )}
-        </TotalPostsContext.Consumer>
-    </>
+        </>
+    }
 }));
 
 vi.mock("./friends-section/FriendsSection", () => ({
@@ -45,7 +52,13 @@ vi.mock("./friends-section/FriendsSection", () => ({
         {isLoading ? (
             <div data-testid="friends-loading-spinner">Loading...</div>
         ) : (
-            userFriends.map(friend => <div data-testid="friends-section" key={friend._id} >{friend.name}</div>)
+            userFriends.map(friend =>
+                <div
+                    data-testid="friends-section"
+                    key={friend._id}
+                >
+                    {friend.name}
+                </div>)
         )}
     </>
 }));
