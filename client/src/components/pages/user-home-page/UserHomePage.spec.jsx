@@ -1,13 +1,15 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import UserHomePage from "./UserHomePage";
+import useUserServices from "../../../hooks/useUserServices";
 
 import { AlertContext } from "../../../contexts/alert-context";
 import { UserContext } from "../../../contexts/user-context";
 import { TotalPostsContext } from "../../../contexts/total-posts-context";
 
-import useUserServices from "../../../hooks/useUserServices";
+import UserHomePage from "./UserHomePage";
+
+vi.mock("../../../hooks/useUserServices");
 
 vi.mock("../../shared/profile/profile-section/ProfileSection", () => ({
     default: ({ userData, isLoading }) => <>
@@ -47,8 +49,6 @@ vi.mock("./friends-section/FriendsSection", () => ({
         )}
     </>
 }));
-
-vi.mock("../../../hooks/useUserServices");
 
 describe("UserHomePage component", () => {
     const isUser = "userId";
