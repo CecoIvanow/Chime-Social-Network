@@ -24,7 +24,22 @@ vi.mock("../../../ui/search-field/SearchField", () => ({
 }));
 
 vi.mock("../../../shared/post/posts-list/PostsList", () => ({
-    default: () => <PostsListConsumer />
+    default: function PostsList() {
+        const ctx = useContext(TotalPostsContext);
+
+        return (
+            <div data-testid="posts-list" onClick={ctx.setTotalPosts}>
+                {ctx.totalPosts.map(post => (
+                    <div
+                        key={post._id}
+                        data-testid="post"
+                    >
+                        {post.text}
+                    </div>)
+                )}
+            </div>
+        );
+    }
 }));
 
 vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
@@ -39,23 +54,6 @@ const mockProps = {
     ],
 };
 
-function PostsListConsumer() {
-    const ctx = useContext(TotalPostsContext);
-
-    return (
-        <div data-testid="posts-list" onClick={ctx.setTotalPosts}>
-            {ctx.totalPosts.map(post => (
-                <div
-                    key={post._id}
-                    data-testid="post"
-                >
-                    {post.text}
-                </div>)
-            )}
-        </div>
-    );
-};
-
 function setup(options = {
     isLoading: true
 }) {
@@ -68,10 +66,14 @@ function setup(options = {
 };
 
 describe("PostsCatalog component", () => {
-    it("renders section heading and search field components", () => {
+    it("renders section heading with correct name", () => {
         setup();
 
         expect(screen.getByTestId("section-heading")).toHaveTextContent("All Posts:");
+    });
+
+    it("renders search field with the search by property", () => {
+        setup();
 
         expect(screen.getByTestId("search-field-label")).toHaveTextContent("content");
         expect(screen.getByTestId("search-field-input")).toBeInTheDocument();
@@ -95,10 +97,10 @@ describe("PostsCatalog component", () => {
     });
 
     it.each([
-        { name: "matches only the first post", searchBy: "First", expectedCount: 1 },
-        { name: "matches only the second post", searchBy: "Second", expectedCount: 1 },
+        { name: "matches all posts with 'First' in their text content", searchBy: "First", expectedCount: 1 },
+        { name: "matches all posts with 'Second' in their text content", searchBy: "Second", expectedCount: 1 },
         { name: "matches all posts with an empty string", searchBy: "", expectedCount: 2 },
-        { name: "matches all posts with 'post' string", searchBy: "post", expectedCount: 2 },
+        { name: "matches all posts with 'post' in their text content", searchBy: "post", expectedCount: 2 },
         { name: "does not match posts with an invalid string", searchBy: "Invalid!", expectedCount: "0" },
     ])("$name", async ({ searchBy, expectedCount }) => {
         const user = userEvent.setup();
@@ -117,7 +119,7 @@ describe("PostsCatalog component", () => {
         };
     });
 
-    it("updates posts on change", async () => {
+    it("updates posts on post update action", async () => {
         const user = userEvent.setup();
         setup({
             isLoading: false

@@ -77,11 +77,11 @@ describe("UsersCatalog component", () => {
     });
 
     it.each([
-        { name: "matches the only 'John' user", searchBy: "John", expectedCount: 1 },
-        { name: "matches the only 'Petrov' user", searchBy: "Petrov", expectedCount: 1 },
-        { name: "matches all people with an empty search string", searchBy: "", expectedCount: mockProps.totalUsers.length },
-        { name: "matches everyone using search string 'e'", searchBy: "e", expectedCount: mockProps.totalUsers.length },
-        { name: "matches no one on when searching with 'William'", searchBy: "William", expectedCount: "0" },
+        { name: "matches the correct amount of users with 'John' in their names", searchBy: "John", expectedCount: 1 },
+        { name: "matches the correct amount of users with 'Petrov' in their names", searchBy: "Petrov", expectedCount: 1 },
+        { name: "matches all usesr using an empty search string", searchBy: "", expectedCount: mockProps.totalUsers.length },
+        { name: "matches the correct amount of users with 'e' in their names", searchBy: "e", expectedCount: mockProps.totalUsers.length },
+        { name: "matches no one on when using an invalid string name", searchBy: "William", expectedCount: "0" },
     ])("$name", async ({ searchBy, expectedCount }) => {
         const user = userEvent.setup();
         setup({

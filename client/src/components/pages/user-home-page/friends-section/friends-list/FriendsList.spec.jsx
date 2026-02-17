@@ -1,32 +1,33 @@
-import { fireEvent, getAllByTestId, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import FriendsList from "./FriendsList";
 
 vi.mock("./friend-item/FriendItem", () => ({
-    default: ({ friend }) => <div data-testid="friend-item">{friend}</div>
-}))
+    default: ({ friend }) => <div data-testid="friend-item">{friend.name}</div>
+}));
+
+const mockProps = {
+    matchingFriends: [
+        {name: "friend1", _id: 1},
+        {name: "friend2", _id: 2},
+    ]
+};
+
+beforeEach(() => {
+    render(
+        <FriendsList
+            {...mockProps}
+        />
+    );
+});
 
 describe("FriendsList component", () => {
-    const matchingFriends = ["friend1", "friend2"];
-
-    it("renders the correct number of FriendItem components", () => {
-        render(
-            <FriendsList
-                matchingFriends={matchingFriends}
-            />
-        );
-
-        expect(screen.getAllByTestId("friend-item")).toHaveLength(matchingFriends.length);
+    it("renders the correct number of friends", () => {
+        expect(screen.getAllByTestId("friend-item")).toHaveLength(mockProps.matchingFriends.length);
     });
 
-    it("renders FriendItem with passed props", () => {
-        render(
-            <FriendsList
-                matchingFriends={matchingFriends}
-            />
-        );
-
-        expect(screen.getAllByTestId("friend-item").at(0)).toHaveTextContent(matchingFriends[0]);
+    it("renders friends with the correct data", () => {
+        expect(screen.getAllByTestId("friend-item").at(0)).toHaveTextContent(mockProps.matchingFriends.at(0).name);
     });
 });

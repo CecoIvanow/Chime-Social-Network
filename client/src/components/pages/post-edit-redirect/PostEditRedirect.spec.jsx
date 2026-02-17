@@ -4,16 +4,18 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import PostEditRedirect from "./PostEditRedirect";
 
 vi.mock("react-router", () => ({
-    useNavigate: () => useNavigateMock,
-    useParams: () => useParamsMock(),
+    useNavigate: () => reactRouterMock.useNavigate,
+    useParams: () => reactRouterMock.useParams(),
 }));
 
 const POST_ID = "randomUserId";
 const REDIRECT_URL = `/post/${POST_ID}/details`;
 const REDIRECT_OPTIONS = { state: { shouldEdit: true } };
 
-const useNavigateMock = vi.fn();
-const useParamsMock = () => ({ postId: POST_ID });
+const reactRouterMock = {
+    useNavigate: vi.fn(),
+    useParams: () => ({ postId: POST_ID }),
+}
 
 beforeEach(() => {
     render(
@@ -23,6 +25,6 @@ beforeEach(() => {
 
 describe("PostEditRedirect component", () => {
     it("redirects to correct post url with correct state", () => {
-        expect(useNavigateMock).toHaveBeenCalledWith(REDIRECT_URL, REDIRECT_OPTIONS);
+        expect(reactRouterMock.useNavigate).toHaveBeenCalledWith(REDIRECT_URL, REDIRECT_OPTIONS);
     });
 });

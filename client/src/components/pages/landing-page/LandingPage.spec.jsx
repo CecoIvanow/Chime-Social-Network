@@ -11,7 +11,11 @@ vi.mock("./features-section/FeaturesSection", () => ({
     default: () => <div data-testid="features-section"></div>
 }));
 
-beforeEach(() => render(<LandingPage />));
+beforeEach(() => {
+    render(
+        <LandingPage />
+    );
+});
 
 describe("LandingPage component", () => {
     it("renders landing page with hero and features sections", () => {

@@ -1,3 +1,5 @@
+import React from "react";
+
 import userEvent from "@testing-library/user-event";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
@@ -11,7 +13,7 @@ vi.mock("../../../ui/headings/SectionHeading", () => ({
 vi.mock("../../../shared/input-fields/input-fields-list/InputFieldsList", () => ({
     default: ({ inputFields }) => (
         inputFields.map(field =>
-            <>
+            <React.Fragment key={field.inputName}>
                 <label htmlFor={field.inputName}>{field.fieldName}</label>
                 <input
                     key={field.inputName}
@@ -19,7 +21,7 @@ vi.mock("../../../shared/input-fields/input-fields-list/InputFieldsList", () => 
                     name={field.fieldName}
                     type={field.inputType}
                 />
-            </>
+            </React.Fragment>
         )
     )
 }));

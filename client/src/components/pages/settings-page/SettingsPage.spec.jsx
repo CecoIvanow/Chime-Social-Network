@@ -1,18 +1,22 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-
-import SettingsPage from "./SettingsPage";
-
-import { useNavigate } from "react-router";
 
 import { AlertContext } from "../../../contexts/alert-context";
 import { UserContext } from "../../../contexts/user-context";
 
-import useUserServices from "../../../hooks/useUserServices";
+import SettingsPage from "./SettingsPage";
 
-vi.mock("../../../hooks/useUserServices");
+vi.mock("react-router", () => ({
+    useNavigate: () => reactRouterMock.navigateTo
+}));
 
-vi.mock("react-router");
+vi.mock("../../../hooks/useUserServices", () => ({
+    default: () => ({
+        ...useUserServicesMock
+    })
+}));
+
 
 vi.mock("./password-change-form/PasswordChangeForm", () => ({
     default: ({ onSubmitHandler }) => <>
@@ -24,12 +28,14 @@ vi.mock("./password-change-form/PasswordChangeForm", () => ({
                 onSubmitHandler(new FormData(e.target))
             }}
         >
+            <button type="submit">Change Password</button>
         </form>
     </>
 }));
 
 vi.mock("./email-change-form/EmailChangeForm", () => ({
     default: ({ userEmail, onSubmitHandler }) => <>
+        <div data-testid="user-email">{userEmail}</div>
         <form
             action={onSubmitHandler}
             data-testid="email-form"
@@ -38,188 +44,188 @@ vi.mock("./email-change-form/EmailChangeForm", () => ({
                 onSubmitHandler(new FormData(e.target))
             }}
         >
-            <div data-testid="user-email">{userEmail}</div>
+            <button type="submit">Change Email</button>
         </form>
     </>
 }));
 
-describe("SettingsPage component", () => {
-    const userData = { email: "example@email.com" };
+const ERR_MSG = {
+    CHANGE_EMAIL: "Rejected changeUserEmail!",
+    CHANGE_PASSWORD: "Rejected changeUserPassword!",
+    GET_USER_FIELDS: "Rejected getUserFields!"
+}
 
-    const isUser = "userId";
-    const navigateTo = vi.fn();
-    const setAlert = vi.fn();
-    const abortAll = vi.fn();
+const isUser = "userId";
 
-    function renderComp(
-        options = {
-            getUserFieldsMockResolved: true,
-            changeUserPasswordMockResolved: true,
-            changeUserEmailMockResolved: true,
-            changeUserPasswordReturnValue: true,
-            changeUserEmailReturnValue: true,
-        }
-    ) {
+const userData = {
+    email: "example@email.com"
+};
 
-        const getUserFieldsMock = options.getUserFieldsMockResolved ?
-            vi.fn().mockResolvedValue(userData) :
-            vi.fn().mockRejectedValue(new Error("Successfully rejected getUserFields!"));
+const setAlert = vi.fn();
 
-        useNavigate.mockReturnValue(navigateTo);
+const reactRouterMock = {
+    navigateTo: vi.fn(),
+}
 
-        const changeUserPasswordMock = options.changeUserPasswordMockResolved ?
-            vi.fn().mockResolvedValue(options.changeUserPasswordReturnValue) :
-            vi.fn().mockRejectedValue(new Error("Successfully rejected changeUserPassword!"));
+const useUserServicesMock = {
+    abortAll: vi.fn(),
+    changeUserEmail: vi.fn(),
+    changeUserPassword: vi.fn(),
+    getUserFields: vi.fn(),
+}
 
-        const changeUserEmailMock = options.changeUserEmailMockResolved ?
-            vi.fn().mockResolvedValue(options.changeUserEmailReturnValue) :
-            vi.fn().mockRejectedValue(new Error("Successfully rejected changeUserEmail!"));
-
-        useUserServices.mockReturnValue(({
-            changeUserEmail: changeUserEmailMock,
-            changeUserPassword: changeUserPasswordMock,
-            getUserFields: getUserFieldsMock,
-            abortAll,
-        }))
-
-        const { unmount } = render(
-            <AlertContext.Provider value={{ setAlert }}>
-                <UserContext.Provider value={{ isUser }}>
-                    <SettingsPage />
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
-
-        return { unmount, changeUserEmailMock, changeUserPasswordMock };
+function setup(
+    options = {
+        getUserFieldsResolved: true,
+        changeUserPasswordResolved: true,
+        changeUserEmailResolvedCall: true,
+        changeUserPasswordEmptyReturn: false,
+        changeUserEmailEmptyReturn: false,
+    }
+) {
+    if (options.changeUserEmailEmptyReturn) {
+        useUserServicesMock.changeUserEmail.mockResolvedValue(null);
+    } else if (!options.changeUserEmailResolvedCall) {
+        useUserServicesMock.changeUserEmail.mockRejectedValue(new Error(ERR_MSG.CHANGE_EMAIL));
+    } else {
+        useUserServicesMock.changeUserEmail.mockResolvedValue(userData);
     };
 
-    it("renders password change form and passes props", async () => {
-        const { changeUserPasswordMock } = renderComp();
+    if (options.changeUserPasswordEmptyReturn) {
+        useUserServicesMock.changeUserPassword.mockResolvedValue(null);
+    } else if (!options.changeUserPasswordResolved) {
+        useUserServicesMock.changeUserPassword.mockRejectedValue(new Error(ERR_MSG.CHANGE_PASSWORD));
+    } else {
+        useUserServicesMock.changeUserPassword.mockResolvedValue(true);
+    };
+
+    options.getUserFieldsResolved ?
+        useUserServicesMock.getUserFields.mockResolvedValue(userData) :
+        useUserServicesMock.getUserFields.mockRejectedValue(new Error(ERR_MSG.GET_USER_FIELDS));
+
+    return render(
+        <AlertContext.Provider value={{ setAlert }}>
+            <UserContext.Provider value={{ isUser }}>
+                <SettingsPage />
+            </UserContext.Provider>
+        </AlertContext.Provider>
+    );
+};
+
+describe("SettingsPage component", () => {
+    it("renders password change form", async () => {
+        setup();
 
         expect(screen.getByTestId("password-form")).toBeInTheDocument();
-        expect(navigateTo).not.toHaveBeenCalled();
-
-        fireEvent.submit(screen.getByTestId("password-form"));
-
-        await waitFor(() => {
-            expect(changeUserPasswordMock).toHaveBeenCalled();
-            expect(navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
-        });
     });
 
-    it("does not navigate when changeUserPassword returns false", async () => {
-        const { changeUserPasswordMock } = renderComp({
-            getUserFieldsMockResolved: true,
-            changeUserPasswordMockResolved: true,
-            changeUserEmailMockResolved: true,
-            changeUserPasswordReturnValue: false,
-            changeUserEmailReturnValue: true,
-        });
-
-        fireEvent.submit(screen.getByTestId("password-form"));
-
-        await waitFor(() => {
-            expect(changeUserPasswordMock).toHaveBeenCalled();
-            expect(navigateTo).not.toHaveBeenCalled();
-            expect(setAlert).not.toHaveBeenCalled();
-        });
-    });
-
-    it("triggers set alert on rejected user password change", async () => {
-        renderComp({
-            getUserFieldsMockResolved: true,
-            changeUserPasswordMockResolved: false,
-            changeUserEmailMockResolved: true,
-            changeUserPasswordReturnValue: true,
-            changeUserEmailReturnValue: true,
-        });
-
-        expect(screen.getByTestId("password-form")).toBeInTheDocument();
-        expect(navigateTo).not.toHaveBeenCalled();
-
-        fireEvent.submit(screen.getByTestId("password-form"));
-
-        await waitFor(() => {
-            expect(setAlert).toHaveBeenCalledOnce();
-        });
-    });
-
-    it("renders email change form and passes props", async () => {
-        const emailPattern = new RegExp(`^${userData.email}$`);
-
-        const { changeUserEmailMock } = renderComp();
+    it("renders email change form with correct user email on successfull user data call", async () => {
+        setup();
 
         expect(screen.getByTestId("email-form")).toBeInTheDocument();
-        expect(navigateTo).not.toHaveBeenCalled();
-
-        fireEvent.submit(screen.getByTestId("email-form"));
-
-        await waitFor(() => {
-            expect(changeUserEmailMock).toHaveBeenCalled();
-            expect(navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
-            expect(screen.getByTestId("user-email")).toHaveTextContent(emailPattern);
-        });
+        expect(await screen.findByText(userData.email)).toBeInTheDocument();
     });
 
-    it("does not navigate when changeUserEmail returns false", async () => {
-        const { changeUserEmailMock } = renderComp({
-            getUserFieldsMockResolved: true,
-            changeUserPasswordMockResolved: true,
-            changeUserEmailMockResolved: true,
-            changeUserPasswordReturnValue: true,
-            changeUserEmailReturnValue: false,
-        });
-
-        fireEvent.submit(screen.getByTestId("email-form"));
-
-        await waitFor(() => {
-            expect(changeUserEmailMock).toHaveBeenCalled();
-            expect(navigateTo).not.toHaveBeenCalled();
-            expect(setAlert).not.toHaveBeenCalled();
-        });
-    });
-
-    it("triggers set alert on rejected user email change", async () => {
-        renderComp({
-            getUserFieldsMockResolved: true,
-            changeUserPasswordMockResolved: true,
-            changeUserEmailMockResolved: false,
-            changeUserPasswordReturnValue: true,
-            changeUserEmailReturnValue: true,
-        });
-
-        expect(screen.getByTestId("email-form")).toBeInTheDocument();
-        expect(navigateTo).not.toHaveBeenCalled();
-
-        fireEvent.submit(screen.getByTestId("email-form"));
-
-        await waitFor(() => {
-            expect(setAlert).toHaveBeenCalledOnce();
-        });
-    });
-
-    it("triggers set alert on rejected get user fields call", async () => {
-        renderComp({
-            getUserFieldsMockResolved: false,
-            changeUserPasswordMockResolved: true,
-            changeUserEmailMockResolved: true,
-            changeUserPasswordReturnValue: true,
-            changeUserEmailReturnValue: true,
+    it("shows an error message on rejected user data call", async () => {
+        setup({
+            getUserFieldsResolved: false,
+            changeUserPasswordResolved: true,
+            changeUserEmailResolvedCall: true,
+            changeUserPasswordEmptyReturn: false,
+            changeUserEmailEmptyReturn: false,
         });
 
         await waitFor(() => {
-            expect(setAlert).toHaveBeenCalledOnce();
-            expect(screen.getByTestId("user-email")).toHaveTextContent('');
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.GET_USER_FIELDS);
         });
     });
 
-    it("triggers abortAll on unmount", async () => {
-        const { unmount } = renderComp();
+    it("redirects to the user's profile on a successfull password change call", async () => {
+        const user = userEvent.setup();
+        setup();
+
+        await user.click(screen.getByRole("button", { name: "Change Password" }));
+
+        await waitFor(() => {
+            expect(useUserServicesMock.changeUserPassword).toHaveBeenCalled();
+        });
+        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
+    });
+
+    it("does nothing when the password change call does not succeed", async () => {
+        const user = userEvent.setup();
+        setup({
+            getUserFieldsResolved: true,
+            changeUserPasswordResolved: true,
+            changeUserEmailResolvedCall: true,
+            changeUserPasswordEmptyReturn: true,
+            changeUserEmailEmptyReturn: false,
+        });
+
+        await user.click(screen.getByRole("button", { name: "Change Password" }));
+
+        await waitFor(() => {
+            expect(useUserServicesMock.changeUserPassword).toHaveBeenCalled();
+        });
+        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
+    });
+
+    it("shows an error message when the password change gets rejected", async () => {
+        const user = userEvent.setup();
+        setup({
+            getUserFieldsResolved: true,
+            changeUserPasswordResolved: false,
+            changeUserEmailResolvedCall: true,
+            changeUserPasswordEmptyReturn: false,
+            changeUserEmailEmptyReturn: false,
+        });
+
+        await user.click(screen.getByRole("button", { name: "Change Password" }));
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.CHANGE_PASSWORD);
+        });
+    });
+
+    it("does nothing when the email change call does not succeed", async () => {
+        const user = userEvent.setup();
+        setup({
+            getUserFieldsResolved: true,
+            changeUserPasswordResolved: true,
+            changeUserEmailResolvedCall: true,
+            changeUserPasswordEmptyReturn: false,
+            changeUserEmailEmptyReturn: true,
+        });
+
+        await user.click(screen.getByRole("button", { name: "Change Email" }));
+
+        await waitFor(() => {
+            expect(useUserServicesMock.changeUserEmail).toHaveBeenCalled();
+        });
+        expect(reactRouterMock.navigateTo).not.toHaveBeenCalled();
+    });
+
+    it("shows an error message when the email change gets rejected", async () => {
+        const user = userEvent.setup();
+        setup({
+            getUserFieldsResolved: true,
+            changeUserPasswordResolved: true,
+            changeUserEmailResolvedCall: false,
+            changeUserPasswordEmptyReturn: false,
+            changeUserEmailEmptyReturn: false,
+        });
+
+        await user.click(screen.getByRole("button", { name: "Change Email" }));
+
+        await waitFor(() => {
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.CHANGE_EMAIL);
+        });
+    });
+
+    it("stops all ongoing calls on unmount", async () => {
+        const { unmount } = setup();
 
         unmount();
-
-        await waitFor(() => {
-            expect(abortAll).toHaveBeenCalledOnce();
-        });
+        expect(useUserServicesMock.abortAll).toHaveBeenCalled();
     });
 });

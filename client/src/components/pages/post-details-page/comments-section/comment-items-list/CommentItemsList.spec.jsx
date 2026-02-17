@@ -11,8 +11,8 @@ import { PostContext } from "../../../../../contexts/post-context";
 import CommentItemsList from "./CommentItemsList";
 
 vi.mock("./comment-item/CommentItem", () => ({
-    default: ({ comment }) => {
-        const actions = ActionsCtxConsumer();
+    default: function CommentItem({ comment }) {
+        const actions = useContext(ActionsContext);
 
         return <>
             <input
@@ -53,12 +53,6 @@ vi.mock("../../../../../hooks/useCommentServices", () => ({
         ...useCommentServicesMock
     })
 }));
-
-const ActionsCtxConsumer = () => {
-    const actions = useContext(ActionsContext);
-
-    return actions;
-};
 
 const TEST_COMMENT_INDEX = 0;
 const ERR_MSG = {
@@ -102,15 +96,13 @@ function setup(options = {
         useCommentServicesMock.deleteComment.mockResolvedValue(TEST_COMMENT_INDEX) :
         useCommentServicesMock.deleteComment.mockRejectedValue(new Error(ERR_MSG.DELETE_COMMENT));
 
-    const { unmount } = render(
+    return render(
         <AlertContext.Provider value={{ setAlert }}>
             <PostContext.Provider value={{ ...postCtxMock }}>
                 <CommentItemsList />
             </PostContext.Provider>
         </AlertContext.Provider>
     );
-
-    return unmount;
 };
 
 describe("CommentItemsList", () => {
@@ -280,7 +272,7 @@ describe("CommentItemsList", () => {
     });
 
     it("stops all ongoing calls on unmount", () => {
-        const unmount = setup();
+        const { unmount } = setup();
 
         unmount();
         expect(useCommentServicesMock.abortAll).toHaveBeenCalled();

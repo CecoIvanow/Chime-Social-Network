@@ -1,39 +1,43 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import FriendItem from "./FriendItem";
 
-describe("FrientItem component", () => {
-    const friend = {
+const mockProps = {
+    friend: {
         imageUrl: "https://fake-image.com/ThisIsAFakeImageUrl",
         firstName: "Ivan",
         lastName: "Ivanov"
-    }
+    },
+    onClickHandler: vi.fn(),
+};
 
-    const onClickHandler = vi.fn();
+beforeEach(() => {
+    render(
+        <FriendItem
+            {...mockProps}
+        />
+    );
+});
 
-    it("renders FriendItem component with passed props", () => {
-        render(
-            <FriendItem
-                friend={friend}
-                onClickHandler={onClickHandler}
-            />
-        );
 
-        expect(screen.getByText(`${friend.firstName} ${friend.lastName}`)).toBeInTheDocument();
-        expect(screen.getByAltText("Profile Picture")).toHaveAttribute('src', friend.imageUrl);
+describe("FrientItem component", () => {
+    const friendName = `${mockProps.friend.firstName} ${mockProps.friend.lastName}`;
+    
+    it("renders the correct friend full name", () => {
+        expect(screen.getByRole("listitem", { value: friendName })).toBeInTheDocument();
     });
 
-    it("triggers onClickHandler on click", () => {
-        render(
-            <FriendItem
-                friend={friend}
-                onClickHandler={onClickHandler}
-            />
-        );
+    it("renders profile picture image with correct src and alt attributes", () => {
+        expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.friend.imageUrl);
+        expect(screen.getByRole("img")).toHaveAttribute("alt", "Profile Picture");
+    });
 
-        fireEvent.click(screen.getByText(`${friend.firstName} ${friend.lastName}`));
+    it("triggers an event on click", async () => {
+        const user = userEvent.setup();
 
-        expect(onClickHandler).toHaveBeenCalledOnce();
+        await user.click(screen.getByRole("listitem", { value: friendName }));
+        expect(mockProps.onClickHandler).toHaveBeenCalled();
     });
 });

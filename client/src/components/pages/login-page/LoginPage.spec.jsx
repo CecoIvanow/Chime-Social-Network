@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, MemoryRouter } from "react-router";
 
 import userEvent from "@testing-library/user-event";
@@ -8,23 +9,28 @@ import { AlertContext } from "../../../contexts/alert-context";
 
 import LoginPage from "./LoginPage";
 
+vi.mock("../../../hooks/useUserServices", () => ({
+    default: () => ({ ...useUserServicesMock })
+}));
+
 vi.mock("../../shared/auth/auth-header-title/AuthHeaderTitle", () => ({
     default: ({ title }) => <div data-testid="auth-header-title">{title}</div>
 }));
 
 vi.mock("../../shared/auth/auth-forms-list/AuthFormsList", () => ({
     default: ({ authFieldsList }) => (
-        authFieldsList.map(field => <>
-            <label data-testid="auth-forms-label" htmlFor={field.inputName}>{field.fieldName}</label>
-            <input
-                data-testid="auth-forms-input"
-                id={field.inputName}
-                name={field.inputName}
-                type={field.inputType}
-                placeholder={field.placeholderText}
-            />
-        </>
-        )
+        authFieldsList.map(field => (
+            <React.Fragment key={field.inputName}>
+                <label data-testid="auth-forms-label" htmlFor={field.inputName}>{field.fieldName}</label>
+                <input
+                    data-testid="auth-forms-input"
+                    id={field.inputName}
+                    name={field.inputName}
+                    type={field.inputType}
+                    placeholder={field.placeholderText}
+                />
+            </React.Fragment>
+        ))
     )
 }))
 
@@ -50,10 +56,6 @@ vi.mock("../../ui/auth/auth-nav-link/AuthNavLink", () => ({
     )
 }));
 
-vi.mock("../../../hooks/useUserServices", () => ({
-    default: () => ({ ...useUserServicesMock })
-}));
-
 const LOGIN_ERR_MSG = "Rejected login call!";
 
 const loginFields = [
@@ -75,16 +77,14 @@ function setup(options = {
         useUserServicesMock.login.mockRejectedValue(new Error(LOGIN_ERR_MSG)) :
         useUserServicesMock.login.mockResolvedValue();
 
-    const { unmount } = render(
+    return render(
         <MemoryRouter>
             <AlertContext.Provider value={{ setAlert }}>
                 <LoginPage />
             </AlertContext.Provider>
         </MemoryRouter>
     );
-
-    return { unmount };
-}
+};
 
 describe("LoginPage component", () => {
     it("renders header title with 'Login' text content", () => {
@@ -114,8 +114,7 @@ describe("LoginPage component", () => {
     it("renders link button with href attribute and correct text content", () => {
         setup();
 
-        expect(screen.getByRole("link")).toHaveAttribute("href", "/register");
-        expect(screen.getByRole("link")).toHaveTextContent("Don`t have an account?");
+        expect(screen.getByRole("link", { name: "Don`t have an account?" })).toHaveAttribute("href", "/register");
     });
 
     it("login button gets disabled after the form is submitted", async () => {
@@ -165,7 +164,6 @@ describe("LoginPage component", () => {
         const { unmount } = setup();
 
         unmount();
-
         await waitFor(() => expect(useUserServicesMock.abortAll).toHaveBeenCalled());
     });
 });

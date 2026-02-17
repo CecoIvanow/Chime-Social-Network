@@ -34,9 +34,9 @@ vi.mock("../../shared/post/post-header/PostHeader", () => ({
 }));
 
 vi.mock("../../shared/post/post-interactions/PostInteractions", () => ({
-    default: () => {
-        const postCtx = PostCtxConsumer();
-        const actions = ActionsCtxConsumer();
+    default: function PostInteractions() {
+        const postCtx = useContext(PostContext);
+        const actions = useContext(ActionsContext);
 
         return (
             <div data-testid="post-interactions">
@@ -111,16 +111,6 @@ const navigateToMock = vi.fn();
 
 const setAlert = vi.fn();
 
-const ActionsCtxConsumer = () => {
-    const actions = useContext(ActionsContext);
-    return actions;
-}
-
-const PostCtxConsumer = () => {
-    const postCtx = useContext(PostContext);
-    return postCtx;
-};
-
 function setup(options = {
     getPostWithCommentsSuccess: true,
     deletePostSuccess: true,
@@ -153,15 +143,13 @@ function setup(options = {
         usePostServicesMock.getPostWithComments.mockResolvedValue(post) :
         usePostServicesMock.getPostWithComments.mockRejectedValue(new Error(ERR_MSG.GET_POST));
 
-    const { unmount } = render(
+    return render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
                 <PostDetailsPage />
             </UserContext.Provider>
         </AlertContext.Provider>
     );
-
-    return unmount;
 };
 
 describe("PostDetailsPage component", () => {
@@ -459,7 +447,7 @@ describe("PostDetailsPage component", () => {
     });
 
     it("stops all ongoing post calls on unmount", () => {
-        const unmount = setup();
+        const { unmount } = setup();
 
         unmount();
         expect(usePostServicesMock.abortAll).toHaveBeenCalled();

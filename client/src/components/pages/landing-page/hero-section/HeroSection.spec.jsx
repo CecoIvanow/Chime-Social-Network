@@ -11,11 +11,13 @@ const REGISTER_TEXT = "Join Free Today";
 const LOGIN_TEXT = "Log into your account";
 const CATALOG_TEXT = "Check public posts";
 
-beforeEach(() => render(
-    <MemoryRouter>
-        <HeroSection />
-    </MemoryRouter>
-));
+beforeEach(() => {
+    render(
+        <MemoryRouter>
+            <HeroSection />
+        </MemoryRouter>
+    )
+});
 
 describe("HeroSection component", () => {
     it("renders hero section with title and description", () => {

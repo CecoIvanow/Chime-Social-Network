@@ -52,16 +52,14 @@ function setup(options = {
         useUserServicesMock.removeFriend.mockResolvedValue(true) :
         useUserServicesMock.removeFriend.mockRejectedValue(new Error(ERR_MSG.REMOVE_FRIEND));
 
-    const { unmount } = render(
+    return render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
                 <UsersList {...mockProps} />
             </UserContext.Provider>
         </AlertContext.Provider>
     );
-
-    return { unmount };
-}
+};
 
 describe("UsersList component", () => {
     it("renders users items based on number of users present", () => {
