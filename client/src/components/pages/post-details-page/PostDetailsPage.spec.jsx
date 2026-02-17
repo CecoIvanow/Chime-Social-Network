@@ -34,9 +34,9 @@ vi.mock("../../shared/post/post-header/PostHeader", () => ({
 }));
 
 vi.mock("../../shared/post/post-interactions/PostInteractions", () => ({
-    default: () => {
-        const postCtx = PostCtxConsumer();
-        const actions = ActionsCtxConsumer();
+    default: function PostInteractions() {
+        const postCtx = useContext(PostContext);
+        const actions = useContext(ActionsContext);
 
         return (
             <div data-testid="post-interactions">
@@ -110,16 +110,6 @@ const usePostServicesMock = {
 const navigateToMock = vi.fn();
 
 const setAlert = vi.fn();
-
-const ActionsCtxConsumer = () => {
-    const actions = useContext(ActionsContext);
-    return actions;
-}
-
-const PostCtxConsumer = () => {
-    const postCtx = useContext(PostContext);
-    return postCtx;
-};
 
 function setup(options = {
     getPostWithCommentsSuccess: true,
