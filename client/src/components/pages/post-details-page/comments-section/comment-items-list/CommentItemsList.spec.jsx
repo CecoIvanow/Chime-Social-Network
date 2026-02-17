@@ -11,8 +11,8 @@ import { PostContext } from "../../../../../contexts/post-context";
 import CommentItemsList from "./CommentItemsList";
 
 vi.mock("./comment-item/CommentItem", () => ({
-    default: ({ comment }) => {
-        const actions = ActionsCtxConsumer();
+    default: function CommentItem({ comment }) {
+        const actions = useContext(ActionsContext);
 
         return <>
             <input
@@ -53,12 +53,6 @@ vi.mock("../../../../../hooks/useCommentServices", () => ({
         ...useCommentServicesMock
     })
 }));
-
-const ActionsCtxConsumer = () => {
-    const actions = useContext(ActionsContext);
-
-    return actions;
-};
 
 const TEST_COMMENT_INDEX = 0;
 const ERR_MSG = {
