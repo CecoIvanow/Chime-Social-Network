@@ -19,11 +19,13 @@ const mockProps = {
     },
 };
 
-beforeEach(() => render(
-    <MemoryRouter>
-        <UserItemDetails {...mockProps} />
-    </MemoryRouter>
-));
+beforeEach(() => {
+    render(
+        <MemoryRouter>
+            <UserItemDetails {...mockProps} />
+        </MemoryRouter>
+    );
+});
 
 describe("UserItemDetails component", () => {
     it("renders user details with correct member since date and posts count", () => {

@@ -18,7 +18,11 @@ const featureCards = [
     { iconClass: "fas fa-users", headingId: "groups-heading", title: "Friends", description: "Get in touch with your friends that share your passions and hobbies, from travel to music and beyond." },
 ];
 
-beforeEach(() => render(<FeaturesSection />));
+beforeEach(() => {
+    render(
+        <FeaturesSection />
+    );
+});
 
 describe("FeaturesSection component", () => {
     it("renders feature card with title", () => {
