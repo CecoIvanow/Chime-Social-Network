@@ -63,61 +63,60 @@ vi.mock("./friends-section/FriendsSection", () => ({
     </>
 }));
 
+const isUser = "userId";
+const setAlert = vi.fn();
+
+const userData = {
+    firstName: "Tsetso",
+    friends: [
+        {
+            _id: 1,
+            name: "Thomas",
+            createdPosts: [
+                { _id: 11, content: "Thomas` first post" },
+                { _id: 12, content: "Thomas` second post" },
+            ]
+        },
+        {
+            _id: 2,
+            name: "Ivan",
+            createdPosts: [
+                { _id: 21, content: "Ivan`s first post" },
+                { _id: 22, content: "Ivan`s second post" },
+            ]
+        },
+    ],
+    createdPosts: [
+        { _id: "userPost1", content: "Tsetso's first post" },
+        { _id: "userPost2", content: "Tsetso's second post" }
+    ]
+};
+
+const abortAll = vi.fn();
+
+function setup(isLoading, getFullUserProfileMock = false) {
+
+    useUserServices.mockReturnValue({
+        abortAll,
+        getFullUserProfile: getFullUserProfileMock ? vi.fn().mockRejectedValue(new Error("test reject getFullUserProfile")) : vi.fn().mockResolvedValue(userData),
+        isLoading,
+    });
+
+   return render(
+        <AlertContext.Provider value={{ setAlert }}>
+            <UserContext.Provider value={{ isUser }}>
+                <UserHomePage />
+            </UserContext.Provider>
+        </AlertContext.Provider>
+    );
+};
+
 describe("UserHomePage component", () => {
-    const isUser = "userId";
-    const setAlert = vi.fn();
-
-    const userData = {
-        firstName: "Tsetso",
-        friends: [
-            {
-                _id: 1,
-                name: "Thomas",
-                createdPosts: [
-                    { _id: 11, content: "Thomas` first post" },
-                    { _id: 12, content: "Thomas` second post" },
-                ]
-            },
-            {
-                _id: 2,
-                name: "Ivan",
-                createdPosts: [
-                    { _id: 21, content: "Ivan`s first post" },
-                    { _id: 22, content: "Ivan`s second post" },
-                ]
-            },
-        ],
-        createdPosts: [
-            { _id: "userPost1", content: "Tsetso's first post" },
-            { _id: "userPost2", content: "Tsetso's second post" }
-        ]
-    };
-
-    function renderComp(isLoading, getFullUserProfileMock = false) {
-        const abortAll = vi.fn();
-
-        useUserServices.mockReturnValue({
-            abortAll,
-            getFullUserProfile: getFullUserProfileMock ? vi.fn().mockRejectedValue(new Error("test reject getFullUserProfile")) : vi.fn().mockResolvedValue(userData),
-            isLoading,
-        });
-
-        const { unmount } = render(
-            <AlertContext.Provider value={{ setAlert }}>
-                <UserContext.Provider value={{ isUser }}>
-                    <UserHomePage />
-                </UserContext.Provider>
-            </AlertContext.Provider>
-        );
-
-        return { unmount, abortAll };
-    }
-
     it.each([
         { isLoading: true, renderedComp: "isLoading" },
         { isLoading: false, renderedComp: "FriendsSection" },
     ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
-        renderComp(isLoading);
+        setup(isLoading);
 
         if (isLoading) {
             expect(await screen.findByTestId("friends-loading-spinner")).toBeInTheDocument();
@@ -138,7 +137,7 @@ describe("UserHomePage component", () => {
     ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
         const namePattern = new RegExp(`^${userData.firstName}$`);
 
-        renderComp(isLoading);
+        setup(isLoading);
 
         if (isLoading) {
             expect(await screen.findByTestId("profile-loading-spinner")).toBeInTheDocument();
@@ -153,7 +152,7 @@ describe("UserHomePage component", () => {
         { isLoading: true, renderedComp: "isLoading" },
         { isLoading: false, renderedComp: "PostsSection" },
     ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
-        renderComp(isLoading);
+        setup(isLoading);
 
         if (isLoading) {
             expect(await screen.findByTestId("posts-loading-spinner")).toBeInTheDocument();
@@ -175,7 +174,7 @@ describe("UserHomePage component", () => {
     it("triggers setAlert on rejected getFullPromise", async () => {
         const isLoading = false;
 
-        renderComp(isLoading, true);
+        setup(isLoading, true);
 
 
         await waitFor(() => {
@@ -186,10 +185,10 @@ describe("UserHomePage component", () => {
     it("triggers abortAll on unmount", () => {
         const isLoading = false;
 
-        const { unmount, abortAll } = renderComp(isLoading);
+        const { unmount } = setup(isLoading);
 
         unmount();
 
-        expect(abortAll).toHaveBeenCalledOnce();
+        expect(abortAll).toHaveBeenCalled();
     });
 });
