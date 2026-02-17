@@ -114,8 +114,7 @@ describe("LoginPage component", () => {
     it("renders link button with href attribute and correct text content", () => {
         setup();
 
-        expect(screen.getByRole("link")).toHaveAttribute("href", "/register");
-        expect(screen.getByRole("link")).toHaveTextContent("Don`t have an account?");
+        expect(screen.getByRole("link", { name: "Don`t have an account?" })).toHaveAttribute("href", "/register");
     });
 
     it("login button gets disabled after the form is submitted", async () => {
@@ -165,7 +164,6 @@ describe("LoginPage component", () => {
         const { unmount } = setup();
 
         unmount();
-
         await waitFor(() => expect(useUserServicesMock.abortAll).toHaveBeenCalled());
     });
 });
