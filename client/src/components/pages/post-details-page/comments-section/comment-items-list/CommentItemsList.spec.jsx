@@ -96,15 +96,13 @@ function setup(options = {
         useCommentServicesMock.deleteComment.mockResolvedValue(TEST_COMMENT_INDEX) :
         useCommentServicesMock.deleteComment.mockRejectedValue(new Error(ERR_MSG.DELETE_COMMENT));
 
-    const { unmount } = render(
+    return render(
         <AlertContext.Provider value={{ setAlert }}>
             <PostContext.Provider value={{ ...postCtxMock }}>
                 <CommentItemsList />
             </PostContext.Provider>
         </AlertContext.Provider>
     );
-
-    return unmount;
 };
 
 describe("CommentItemsList", () => {
@@ -274,7 +272,7 @@ describe("CommentItemsList", () => {
     });
 
     it("stops all ongoing calls on unmount", () => {
-        const unmount = setup();
+        const { unmount } = setup();
 
         unmount();
         expect(useCommentServicesMock.abortAll).toHaveBeenCalled();
