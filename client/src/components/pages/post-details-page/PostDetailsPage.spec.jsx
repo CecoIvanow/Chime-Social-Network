@@ -143,15 +143,13 @@ function setup(options = {
         usePostServicesMock.getPostWithComments.mockResolvedValue(post) :
         usePostServicesMock.getPostWithComments.mockRejectedValue(new Error(ERR_MSG.GET_POST));
 
-    const { unmount } = render(
+    return render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
                 <PostDetailsPage />
             </UserContext.Provider>
         </AlertContext.Provider>
     );
-
-    return unmount;
 };
 
 describe("PostDetailsPage component", () => {
@@ -449,7 +447,7 @@ describe("PostDetailsPage component", () => {
     });
 
     it("stops all ongoing post calls on unmount", () => {
-        const unmount = setup();
+        const { unmount } = setup();
 
         unmount();
         expect(usePostServicesMock.abortAll).toHaveBeenCalled();
