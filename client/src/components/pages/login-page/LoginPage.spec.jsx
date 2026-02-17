@@ -8,6 +8,10 @@ import { AlertContext } from "../../../contexts/alert-context";
 
 import LoginPage from "./LoginPage";
 
+vi.mock("../../../hooks/useUserServices", () => ({
+    default: () => ({ ...useUserServicesMock })
+}));
+
 vi.mock("../../shared/auth/auth-header-title/AuthHeaderTitle", () => ({
     default: ({ title }) => <div data-testid="auth-header-title">{title}</div>
 }));
@@ -48,10 +52,6 @@ vi.mock("../../ui/auth/auth-nav-link/AuthNavLink", () => ({
             </button>
         </Link>
     )
-}));
-
-vi.mock("../../../hooks/useUserServices", () => ({
-    default: () => ({ ...useUserServicesMock })
 }));
 
 const LOGIN_ERR_MSG = "Rejected login call!";
