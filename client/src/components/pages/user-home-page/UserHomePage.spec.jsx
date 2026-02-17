@@ -65,6 +65,10 @@ vi.mock("./friends-section/FriendsSection", () => ({
     </>
 }));
 
+const ERR_MSG = {
+    GET_FULL_USER_PROFILE: "test reject getFullUserProfile",
+}
+
 const isUser = "userId";
 
 const userData = {
@@ -107,7 +111,7 @@ function setup(options = {
 }) {
     options.getFullUserProfileSuccess ?
         userUserServicesMock.getFullUserProfile.mockResolvedValue(userData) :
-        userUserServicesMock.getFullUserProfile.mockRejectedValue(new Error("test reject getFullUserProfile"));
+        userUserServicesMock.getFullUserProfile.mockRejectedValue(new Error(ERR_MSG.GET_FULL_USER_PROFILE));
 
     userUserServicesMock.isLoading = options.isLoading;
 
@@ -197,7 +201,7 @@ describe("UserHomePage component", () => {
 
 
         await waitFor(() => {
-            expect(setAlert).toHaveBeenCalledOnce();
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.GET_FULL_USER_PROFILE);
         });
     });
 
