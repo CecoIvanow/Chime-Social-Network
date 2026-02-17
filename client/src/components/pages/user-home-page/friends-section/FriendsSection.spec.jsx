@@ -1,8 +1,8 @@
+import userEvent from "@testing-library/user-event";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import FriendsSection from "./FriendsSection";
-import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../ui/headings/SectionHeading", () => ({
     default: ({ sectionName }) => <div data-testid="section-heading">{sectionName}</div>
