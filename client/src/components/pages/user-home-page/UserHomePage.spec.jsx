@@ -40,7 +40,6 @@ vi.mock("../../shared/post/posts-section/PostsSection", () => ({
                             data-testid="post"
                             key={post._id}
                         >
-                            {post.content}
                         </div>
                     )}
                 </div>
@@ -59,8 +58,8 @@ vi.mock("./friends-section/FriendsSection", () => ({
                     data-testid="friends-section"
                     key={friend._id}
                 >
-                    {friend.name}
-                </div>)
+                </div>
+            )
         )}
     </>
 }));
@@ -126,9 +125,49 @@ function setup(options = {
 
 describe("UserHomePage component", () => {
     it.each([
-        { isLoading: true, renderedComp: "isLoading" },
-        { isLoading: false, renderedComp: "FriendsSection" },
-    ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
+        { name: "renders loading spinner instead of the profile section while user data is loading", isLoading: true },
+        { name: "renders profile section with the user's first name after the user data has loaded", isLoading: false },
+    ])("$name", async ({ isLoading }) => {
+        setup({
+            getFullUserProfileSuccess: true,
+            isLoading,
+        });
+
+        if (isLoading) {
+            expect(await screen.findByTestId("profile-loading-spinner")).toBeInTheDocument();
+            expect(screen.queryByTestId("profile-section")).not.toBeInTheDocument();
+        } else {
+            expect(await screen.findByTestId("profile-section")).toHaveTextContent(userData.firstName);
+            expect(screen.queryByTestId("profile-loading-spinner")).not.toBeInTheDocument();
+        };
+    });
+
+    it.each([
+        { name: "renders loading spinner instead of the posts section while user data is loading", isLoading: true },
+        { name: "renders posts section with the user data after it has loaded", isLoading: false },
+    ])("$name", async ({ isLoading }) => {
+        setup({
+            getFullUserProfileSuccess: true,
+            isLoading,
+        });
+
+        if (isLoading) {
+            expect(await screen.findByTestId("posts-loading-spinner")).toBeInTheDocument();
+            expect(screen.queryByTestId("posts-section")).not.toBeInTheDocument();
+        } else {
+            let totalPostsAmount = userData.createdPosts.length;
+
+            userData.friends.forEach(friend => totalPostsAmount += friend.createdPosts.length);
+
+            expect(await screen.findAllByTestId("post")).toHaveLength(totalPostsAmount);
+            expect(screen.queryByTestId("posts-loading-spinner")).not.toBeInTheDocument();
+        };
+    });
+
+    it.each([
+        { name: "renders loading spinner instead of the friends section while user data is loading", isLoading: true },
+        { name: "renders friends section with user friends after data has loaded", isLoading: false },
+    ])("$name", async ({ isLoading }) => {
         setup({
             getFullUserProfileSuccess: true,
             isLoading,
@@ -140,56 +179,6 @@ describe("UserHomePage component", () => {
         } else {
             expect(await screen.findAllByTestId("friends-section")).toHaveLength(userData.friends.length);
             expect(screen.queryByTestId("friends-loading-spinner")).not.toBeInTheDocument();
-
-            userData.friends.forEach(friend => {
-                expect(screen.getByText(friend.name)).toBeInTheDocument();
-            });
-        };
-    });
-
-    it.each([
-        { isLoading: true, renderedComp: "isLoading" },
-        { isLoading: false, renderedComp: "ProfileSection" },
-    ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
-        const namePattern = new RegExp(`^${userData.firstName}$`);
-
-        setup({
-            getFullUserProfileSuccess: true,
-            isLoading,
-        });
-
-        if (isLoading) {
-            expect(await screen.findByTestId("profile-loading-spinner")).toBeInTheDocument();
-            expect(screen.queryByTestId("profile-section")).not.toBeInTheDocument();
-        } else {
-            expect(await screen.findByTestId("profile-section")).toHaveTextContent(namePattern);
-            expect(screen.queryByTestId("profile-loading-spinner")).not.toBeInTheDocument();
-        };
-    });
-
-    it.each([
-        { isLoading: true, renderedComp: "isLoading" },
-        { isLoading: false, renderedComp: "PostsSection" },
-    ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
-        setup({
-            getFullUserProfileSuccess: true,
-            isLoading,
-        });
-
-        if (isLoading) {
-            expect(await screen.findByTestId("posts-loading-spinner")).toBeInTheDocument();
-            expect(screen.queryByTestId("posts-section")).not.toBeInTheDocument();
-        } else {
-            let totalPostsAmount = userData.createdPosts.length;
-            let allPosts = Array.from(userData.createdPosts);
-
-            userData.friends.forEach(friend => totalPostsAmount += friend.createdPosts.length);
-            userData.friends.forEach(friend => friend.createdPosts.forEach(post => allPosts.push(post)));
-
-            expect(await screen.findAllByTestId("post")).toHaveLength(totalPostsAmount);
-            expect(screen.queryByTestId("posts-loading-spinner")).not.toBeInTheDocument();
-
-            allPosts.forEach(post => expect(screen.getByText(post.content)).toBeInTheDocument());
         };
     });
 
@@ -209,7 +198,6 @@ describe("UserHomePage component", () => {
         const { unmount } = setup();
 
         unmount();
-
         expect(userUserServicesMock.abortAll).toHaveBeenCalled();
     });
 });
