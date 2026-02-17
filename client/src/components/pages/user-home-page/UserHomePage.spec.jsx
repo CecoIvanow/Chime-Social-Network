@@ -3,15 +3,17 @@ import { useContext } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import useUserServices from "../../../hooks/useUserServices";
-
 import { AlertContext } from "../../../contexts/alert-context";
 import { UserContext } from "../../../contexts/user-context";
 import { TotalPostsContext } from "../../../contexts/total-posts-context";
 
 import UserHomePage from "./UserHomePage";
 
-vi.mock("../../../hooks/useUserServices");
+vi.mock("../../../hooks/useUserServices", () => ({
+    default: () => ({
+        ...userUserServicesMock
+    })
+}));
 
 vi.mock("../../shared/profile/profile-section/ProfileSection", () => ({
     default: ({ userData, isLoading }) => <>
@@ -64,7 +66,6 @@ vi.mock("./friends-section/FriendsSection", () => ({
 }));
 
 const isUser = "userId";
-const setAlert = vi.fn();
 
 const userData = {
     firstName: "Tsetso",
@@ -92,20 +93,25 @@ const userData = {
     ]
 };
 
-const abortAll = vi.fn();
+const userUserServicesMock = {
+    getFullUserProfile: vi.fn(),
+    abortAll: vi.fn(),
+    isLoading: false,
+}
+
+const setAlert = vi.fn();
 
 function setup(options = {
     isLoading: false,
-    getFullUserProfileMock: false
+    getFullUserProfileSuccess: true,
 }) {
+    options.getFullUserProfileSuccess ?
+        userUserServicesMock.getFullUserProfile.mockResolvedValue(userData) :
+        userUserServicesMock.getFullUserProfile.mockRejectedValue(new Error("test reject getFullUserProfile"));
 
-    useUserServices.mockReturnValue({
-        abortAll,
-        getFullUserProfile: options.getFullUserProfileMock ? vi.fn().mockRejectedValue(new Error("test reject getFullUserProfile")) : vi.fn().mockResolvedValue(userData),
-        isLoading: options.isLoading,
-    });
+    userUserServicesMock.isLoading = options.isLoading;
 
-   return render(
+    return render(
         <AlertContext.Provider value={{ setAlert }}>
             <UserContext.Provider value={{ isUser }}>
                 <UserHomePage />
@@ -120,7 +126,7 @@ describe("UserHomePage component", () => {
         { isLoading: false, renderedComp: "FriendsSection" },
     ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
         setup({
-            getFullUserProfileMock: false,
+            getFullUserProfileSuccess: true,
             isLoading,
         });
 
@@ -144,7 +150,7 @@ describe("UserHomePage component", () => {
         const namePattern = new RegExp(`^${userData.firstName}$`);
 
         setup({
-            getFullUserProfileMock: false,
+            getFullUserProfileSuccess: true,
             isLoading,
         });
 
@@ -162,7 +168,7 @@ describe("UserHomePage component", () => {
         { isLoading: false, renderedComp: "PostsSection" },
     ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
         setup({
-            getFullUserProfileMock: false,
+            getFullUserProfileSuccess: true,
             isLoading,
         });
 
@@ -185,7 +191,7 @@ describe("UserHomePage component", () => {
 
     it("triggers setAlert on rejected getFullPromise", async () => {
         setup({
-            getFullUserProfileMock: true,
+            getFullUserProfileSuccess: false,
             isLoading: false,
         });
 
@@ -200,6 +206,6 @@ describe("UserHomePage component", () => {
 
         unmount();
 
-        expect(abortAll).toHaveBeenCalled();
+        expect(userUserServicesMock.abortAll).toHaveBeenCalled();
     });
 });
