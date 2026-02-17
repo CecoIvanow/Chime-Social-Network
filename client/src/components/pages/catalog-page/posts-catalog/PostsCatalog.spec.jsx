@@ -24,7 +24,22 @@ vi.mock("../../../ui/search-field/SearchField", () => ({
 }));
 
 vi.mock("../../../shared/post/posts-list/PostsList", () => ({
-    default: () => <PostsListConsumer />
+    default: function PostsList() {
+        const ctx = useContext(TotalPostsContext);
+
+        return (
+            <div data-testid="posts-list" onClick={ctx.setTotalPosts}>
+                {ctx.totalPosts.map(post => (
+                    <div
+                        key={post._id}
+                        data-testid="post"
+                    >
+                        {post.text}
+                    </div>)
+                )}
+            </div>
+        );
+    }
 }));
 
 vi.mock("../../../ui/loading-spinner/LoadingSpinner", () => ({
@@ -37,23 +52,6 @@ const mockProps = {
         { _id: "postOne", text: "First post!" },
         { _id: "postTwo", text: "Second post!" },
     ],
-};
-
-function PostsListConsumer() {
-    const ctx = useContext(TotalPostsContext);
-
-    return (
-        <div data-testid="posts-list" onClick={ctx.setTotalPosts}>
-            {ctx.totalPosts.map(post => (
-                <div
-                    key={post._id}
-                    data-testid="post"
-                >
-                    {post.text}
-                </div>)
-            )}
-        </div>
-    );
 };
 
 function setup(options = {
