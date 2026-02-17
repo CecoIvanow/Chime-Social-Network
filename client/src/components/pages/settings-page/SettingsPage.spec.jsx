@@ -49,6 +49,12 @@ vi.mock("./email-change-form/EmailChangeForm", () => ({
     </>
 }));
 
+const ERR_MSG = {
+    CHANGE_EMAIL: "Rejected changeUserEmail!",
+    CHANGE_PASSWORD: "Rejected changeUserPassword!",
+    GET_USER_FIELDS: "Rejected getUserFields!"
+}
+
 const isUser = "userId";
 
 const userData = {
@@ -80,7 +86,7 @@ function setup(
     if (options.changeUserEmailEmptyReturn) {
         useUserServicesMock.changeUserEmail.mockResolvedValue(null);
     } else if (!options.changeUserEmailResolvedCall) {
-        useUserServicesMock.changeUserEmail.mockRejectedValue(new Error("Successfully rejected changeUserEmail!"));
+        useUserServicesMock.changeUserEmail.mockRejectedValue(new Error(ERR_MSG.CHANGE_EMAIL));
     } else {
         useUserServicesMock.changeUserEmail.mockResolvedValue(userData);
     };
@@ -88,14 +94,14 @@ function setup(
     if (options.changeUserPasswordEmptyReturn) {
         useUserServicesMock.changeUserPassword.mockResolvedValue(null);
     } else if (!options.changeUserPasswordResolved) {
-        useUserServicesMock.changeUserPassword.mockRejectedValue(new Error("Successfully rejected changeUserPassword!"));
+        useUserServicesMock.changeUserPassword.mockRejectedValue(new Error(ERR_MSG.CHANGE_PASSWORD));
     } else {
         useUserServicesMock.changeUserPassword.mockResolvedValue(true);
     };
 
     options.getUserFieldsResolved ?
         useUserServicesMock.getUserFields.mockResolvedValue(userData) :
-        useUserServicesMock.getUserFields.mockRejectedValue(new Error("Successfully rejected getUserFields!"));
+        useUserServicesMock.getUserFields.mockRejectedValue(new Error(ERR_MSG.GET_USER_FIELDS));
 
     return render(
         <AlertContext.Provider value={{ setAlert }}>
@@ -130,7 +136,7 @@ describe("SettingsPage component", () => {
         });
 
         await waitFor(() => {
-            expect(setAlert).toHaveBeenCalled();
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.GET_USER_FIELDS);
         });
     });
 
@@ -177,7 +183,7 @@ describe("SettingsPage component", () => {
         await user.click(screen.getByRole("button", { name: "Change Password" }));
 
         await waitFor(() => {
-            expect(setAlert).toHaveBeenCalled();
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.CHANGE_PASSWORD);
         });
     });
 
@@ -212,7 +218,7 @@ describe("SettingsPage component", () => {
         await user.click(screen.getByRole("button", { name: "Change Email" }));
 
         await waitFor(() => {
-            expect(setAlert).toHaveBeenCalled();
+            expect(setAlert).toHaveBeenCalledWith(ERR_MSG.CHANGE_EMAIL);
         });
     });
 
