@@ -152,6 +152,18 @@ describe("SettingsPage component", () => {
         expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
     });
 
+    it("redirects to the user's profile on a successfull email change call", async () => {
+        const user = userEvent.setup();
+        setup();
+
+        await user.click(screen.getByRole("button", { name: "Change Email" }));
+
+        await waitFor(() => {
+            expect(useUserServicesMock.changeUserEmail).toHaveBeenCalled();
+        });
+        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
+    });
+
     it("does nothing when the password change call does not succeed", async () => {
         const user = userEvent.setup();
         setup({
