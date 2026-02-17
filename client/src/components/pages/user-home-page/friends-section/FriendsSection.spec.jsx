@@ -104,4 +104,14 @@ describe("FriendsSection component", () => {
             expect(screen.queryAllByTestId("friends-list")).toHaveLength(Number(expectedCount));
         };
     });
+
+    it("uses an empty array as default when userFriends prop is not provided", () => {
+        render(
+            <FriendsSection
+                isLoading={false}
+            />
+        );
+
+        expect(screen.queryAllByTestId("friends-list")).toHaveLength(0);
+    });
 });

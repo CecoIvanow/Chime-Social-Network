@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeAll, beforeEach } from "vitest";
 
 import ImageUpload from "./ImageUpload";
@@ -51,9 +51,8 @@ describe("ImageUpload component", () => {
     });
 
     it("renders original image preview on empty upload", async () => {
-        const user = userEvent.setup();
 
-        await user.upload(screen.getByTestId("image-input"), []);
+        fireEvent.change(screen.getByTestId("image-input"), { target: { files: [] } });
 
         expect(mockProps.setImageUpload).not.toHaveBeenCalled();
         expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.imageUrl);
