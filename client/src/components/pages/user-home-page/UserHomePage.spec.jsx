@@ -94,12 +94,15 @@ const userData = {
 
 const abortAll = vi.fn();
 
-function setup(isLoading, getFullUserProfileMock = false) {
+function setup(options = {
+    isLoading: false,
+    getFullUserProfileMock: false
+}) {
 
     useUserServices.mockReturnValue({
         abortAll,
-        getFullUserProfile: getFullUserProfileMock ? vi.fn().mockRejectedValue(new Error("test reject getFullUserProfile")) : vi.fn().mockResolvedValue(userData),
-        isLoading,
+        getFullUserProfile: options.getFullUserProfileMock ? vi.fn().mockRejectedValue(new Error("test reject getFullUserProfile")) : vi.fn().mockResolvedValue(userData),
+        isLoading: options.isLoading,
     });
 
    return render(
@@ -116,7 +119,10 @@ describe("UserHomePage component", () => {
         { isLoading: true, renderedComp: "isLoading" },
         { isLoading: false, renderedComp: "FriendsSection" },
     ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
-        setup(isLoading);
+        setup({
+            getFullUserProfileMock: false,
+            isLoading,
+        });
 
         if (isLoading) {
             expect(await screen.findByTestId("friends-loading-spinner")).toBeInTheDocument();
@@ -137,7 +143,10 @@ describe("UserHomePage component", () => {
     ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
         const namePattern = new RegExp(`^${userData.firstName}$`);
 
-        setup(isLoading);
+        setup({
+            getFullUserProfileMock: false,
+            isLoading,
+        });
 
         if (isLoading) {
             expect(await screen.findByTestId("profile-loading-spinner")).toBeInTheDocument();
@@ -152,7 +161,10 @@ describe("UserHomePage component", () => {
         { isLoading: true, renderedComp: "isLoading" },
         { isLoading: false, renderedComp: "PostsSection" },
     ])("passes props and on isLoading $isLoading renders $renderedComp", async ({ isLoading }) => {
-        setup(isLoading);
+        setup({
+            getFullUserProfileMock: false,
+            isLoading,
+        });
 
         if (isLoading) {
             expect(await screen.findByTestId("posts-loading-spinner")).toBeInTheDocument();
@@ -172,9 +184,10 @@ describe("UserHomePage component", () => {
     });
 
     it("triggers setAlert on rejected getFullPromise", async () => {
-        const isLoading = false;
-
-        setup(isLoading, true);
+        setup({
+            getFullUserProfileMock: true,
+            isLoading: false,
+        });
 
 
         await waitFor(() => {
@@ -183,9 +196,7 @@ describe("UserHomePage component", () => {
     });
 
     it("triggers abortAll on unmount", () => {
-        const isLoading = false;
-
-        const { unmount } = setup(isLoading);
+        const { unmount } = setup();
 
         unmount();
 
