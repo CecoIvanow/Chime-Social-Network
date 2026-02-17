@@ -1,8 +1,8 @@
+import userEvent from "@testing-library/user-event";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import AddFriendButton from "./AddFriendButton";
-import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../../../../ui/buttons/button/Button", () => ({
     default: ({ onClickHandler, buttonName }) => (
