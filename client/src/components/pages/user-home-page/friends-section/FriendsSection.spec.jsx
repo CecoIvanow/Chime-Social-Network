@@ -28,7 +28,7 @@ vi.mock("./friends-list/FriendsList", () => ({
         matchingFriends.map(friendName =>
             <div
                 data-testid="friends-list"
-                key={friendName._id}
+                key={friendName.firstName}
             >
             </div>
         )
