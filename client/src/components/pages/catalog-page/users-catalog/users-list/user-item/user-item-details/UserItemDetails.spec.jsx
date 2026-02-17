@@ -26,20 +26,17 @@ beforeEach(() => render(
 ));
 
 describe("UserItemDetails component", () => {
-    it("renders component with correct member since date and posts amount", () => {
+    it("renders user details with correct member since date and posts count", () => {
         expect(screen.getByText(`Member since: ${mockProps.user.memberSince}`)).toBeInTheDocument();
         expect(screen.getByText(`Posts: ${mockProps.user.createdPosts.length}`)).toBeInTheDocument();
     });
 
-    it("renders component with correct src and alt image attributes", () => {
+    it("renders image with correct src and alt attributes", () => {
         expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.user.imageUrl);
         expect(screen.getByRole("img")).toHaveAttribute("alt", "User avatar");
     });
 
-    it("renders component with correct href and link text content attributes", () => {
-        expect(screen.getByRole("img")).toHaveAttribute("src", mockProps.user.imageUrl);
-        expect(screen.getByRole("img")).toHaveAttribute("alt", "User avatar");
-
+    it("renders user's name as link with correct href attribute", () => {
         expect(screen.getByRole("link")).toHaveAttribute("href", `/profile/${mockProps.user._id}`);
         expect(screen.getByRole("link")).toHaveTextContent(`${mockProps.user.firstName} ${mockProps.user.lastName}`);
     });
