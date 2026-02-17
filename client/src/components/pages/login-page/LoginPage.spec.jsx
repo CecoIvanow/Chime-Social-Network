@@ -75,16 +75,14 @@ function setup(options = {
         useUserServicesMock.login.mockRejectedValue(new Error(LOGIN_ERR_MSG)) :
         useUserServicesMock.login.mockResolvedValue();
 
-    const { unmount } = render(
+    return render(
         <MemoryRouter>
             <AlertContext.Provider value={{ setAlert }}>
                 <LoginPage />
             </AlertContext.Provider>
         </MemoryRouter>
     );
-
-    return { unmount };
-}
+};
 
 describe("LoginPage component", () => {
     it("renders header title with 'Login' text content", () => {
