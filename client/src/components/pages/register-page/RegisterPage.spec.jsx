@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, MemoryRouter } from "react-router";
 
 import userEvent from "@testing-library/user-event";
@@ -21,15 +22,16 @@ vi.mock("../../shared/auth/auth-header-title/AuthHeaderTitle", () => ({
 vi.mock("../../shared/auth/auth-forms-list/AuthFormsList", () => ({
     default: ({ authFieldsList }) => <>
         <div data-testid="forms-list">
-            {authFieldsList.map(field => <>
-                <label htmlFor={field.inputName}>{field.fieldName}</label>
-                <input
-                    id={field.inputName}
-                    type={field.inputType}
-                    placeholder={field.placeholderText}
-                />
-            </>
-            )}
+            {authFieldsList.map(field => (
+                <React.Fragment key={field.fieldName}>
+                    <label htmlFor={field.inputName}>{field.fieldName}</label>
+                    <input
+                        id={field.inputName}
+                        type={field.inputType}
+                        placeholder={field.placeholderText}
+                    />
+                </React.Fragment>
+            ))}
         </div>
     </>
 }));
