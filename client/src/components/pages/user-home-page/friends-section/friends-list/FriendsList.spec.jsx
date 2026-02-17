@@ -4,13 +4,13 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import FriendsList from "./FriendsList";
 
 vi.mock("./friend-item/FriendItem", () => ({
-    default: ({ friend }) => <div data-testid="friend-item">{friend}</div>
+    default: ({ friend }) => <div data-testid="friend-item">{friend.name}</div>
 }));
 
 const mockProps = {
     matchingFriends: [
-        "friend1",
-        "friend2"
+        {name: "friend1", _id: 1},
+        {name: "friend2", _id: 2},
     ]
 };
 
@@ -28,6 +28,6 @@ describe("FriendsList component", () => {
     });
 
     it("renders friends with the correct data", () => {
-        expect(screen.getAllByTestId("friend-item").at(0)).toHaveTextContent(mockProps.matchingFriends[0]);
+        expect(screen.getAllByTestId("friend-item").at(0)).toHaveTextContent(mockProps.matchingFriends.at(0).name);
     });
 });
