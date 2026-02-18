@@ -3,10 +3,14 @@ import { describe, expect, it, beforeEach } from "vitest";
 
 import HeaderMessage from "./HeaderMessage";
 
+beforeEach(() => {
+    render(
+        <HeaderMessage />
+    );
+});
+
 describe("HeaderMessage component", () => {
     it("renders component", () => {
-        render(<HeaderMessage />);
-
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Oops, something went wrong.");
     });
 });
