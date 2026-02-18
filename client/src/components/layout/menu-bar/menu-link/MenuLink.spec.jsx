@@ -1,5 +1,5 @@
-import { fireEvent, getSuggestedQuery, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import { MemoryRouter } from "react-router";
 
@@ -12,7 +12,7 @@ const IMAGE_ALT = "image";
 const LINK_TEXT = "Test123";
 
 describe("MenuLink component", () => {
-    it("renders component with passed props", () => {
+    it("renders menu link with correct href and title attributes", () => {
         render(
             <MemoryRouter>
                 <MenuLink
@@ -22,11 +22,10 @@ describe("MenuLink component", () => {
             </MemoryRouter>
         );
 
-        expect(screen.getByRole("link")).toHaveAttribute("href", LINK_URL);
-        expect(screen.getByRole("link")).toHaveAttribute("title", LINK_TITLE);
+        expect(screen.getByRole("link", { name: LINK_TITLE})).toHaveAttribute("href", LINK_URL);
     });
 
-    it("renders an image on passed linkImageUri", () => {
+    it("renders menu link image with correct text content and src and alt attributes instead of text content", () => {
         render(
             <MemoryRouter>
                 <MenuLink
@@ -36,13 +35,11 @@ describe("MenuLink component", () => {
             </MemoryRouter>
         );
 
-        expect(screen.getByRole("img")).toHaveAttribute("src", IMAGE_URI);
-        expect(screen.getByRole("img")).toHaveAttribute("alt", IMAGE_ALT);
-
+        expect(screen.getByRole("img", { name: IMAGE_ALT})).toHaveAttribute("src", IMAGE_URI);
         expect(screen.getByRole("link")).not.toHaveTextContent(LINK_TEXT);
     });
 
-    it("renders with text on passed linkText", () => {
+    it("renders menu link with correct text content instead of image", () => {
         render(
             <MemoryRouter>
                 <MenuLink
@@ -51,8 +48,7 @@ describe("MenuLink component", () => {
             </MemoryRouter>
         );
 
-        expect(screen.queryByRole("img")).not.toBeInTheDocument();
-
         expect(screen.getByRole("link")).toHaveTextContent(LINK_TEXT);
+        expect(screen.queryByRole("img")).not.toBeInTheDocument();
     });
 });
