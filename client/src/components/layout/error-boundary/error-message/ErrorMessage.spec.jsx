@@ -1,8 +1,9 @@
+import { MemoryRouter } from "react-router";
+
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import ErrorMessage from "./ErrorMessage";
-import { MemoryRouter } from "react-router";
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ onClickHandler, buttonName }) => (
