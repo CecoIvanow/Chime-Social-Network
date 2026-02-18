@@ -7,7 +7,7 @@ import ErrorMessage from "./ErrorMessage";
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ onClickHandler, buttonName }) => (
-        <button data-testid="error-message-button" onClick={onClickHandler}>{buttonName}</button>
+        <button onClick={onClickHandler}>{buttonName}</button>
     )
 }));
 
@@ -39,7 +39,7 @@ beforeEach(() => {
 
 describe("ErrorMessage component", () => {
     it("renders compnen with inner children", () => {
-        expect(screen.getByTestId("error-message-button")).toHaveTextContent("Reload");
+        expect(screen.getByRole("button", { name: "Reload" })).toBeInTheDocument();
 
         expect(screen.getByTestId("error-icon")).toBeInTheDocument();
         expect(screen.getByTestId("header-message")).toBeInTheDocument();
@@ -47,7 +47,7 @@ describe("ErrorMessage component", () => {
     });
 
     it("on button click calls window.location.reload", async () => {
-        fireEvent.click(screen.getByTestId("error-message-button"));
+        fireEvent.click(screen.getByRole("button", { name: "Reload" }));
 
         await waitFor(() => expect(window.location.reload).toHaveBeenCalled());
     });
