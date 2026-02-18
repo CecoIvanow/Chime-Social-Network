@@ -38,15 +38,17 @@ beforeEach(() => {
 });
 
 describe("ErrorMessage component", () => {
-    it("renders compnen with inner children", () => {
-        expect(screen.getByRole("button", { name: "Reload" })).toBeInTheDocument();
-
+    it("renders error icon, header message and paragraph message", () => {
         expect(screen.getByTestId("error-icon")).toBeInTheDocument();
         expect(screen.getByTestId("header-message")).toBeInTheDocument();
         expect(screen.getByTestId("paragraph-message")).toBeInTheDocument();
     });
 
-    it("on button click calls window.location.reload", async () => {
+    it("renders Reload button", () => {
+        expect(screen.getByRole("button", { name: "Reload" })).toBeInTheDocument();
+    });
+
+    it("on Reload button click reloads the page", async () => {
         fireEvent.click(screen.getByRole("button", { name: "Reload" }));
 
         await waitFor(() => expect(window.location.reload).toHaveBeenCalled());
