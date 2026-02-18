@@ -1,7 +1,7 @@
 import { Link, MemoryRouter } from "react-router";
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { UserContext } from "../../../../contexts/user-context";
 
@@ -20,7 +20,7 @@ const isUserMock = "userId";
 function setup(options = {
     isUserValid: false
 }) {
-    const isUser = options.isUserValid ? isUserMock : "";
+    const isUser = options.isUserValid ? isUserMock : null;
 
     render(
         <MemoryRouter>
@@ -32,31 +32,29 @@ function setup(options = {
 };
 
 describe("MainMenu component", () => {
-    it("renders Home and Catalog MenuLink navigational components with passed props", () => {
+    it("renders Catalog navigational image link with correct title and href and with src and alt image attributes", () => {
         setup();
 
-        const HomeLinkEl = screen.getByRole("link", { name: "Home" });
-        const HomeImgEl = screen.getByRole("img", { name: "Home" });
+        expect(screen.getByRole("link", { name: "Catalog" })).toBeInTheDocument();
+        expect(screen.getByRole("link", { name: "Catalog" })).toHaveAttribute("href", "/catalog");
 
-        expect(HomeLinkEl).toHaveAttribute("href", "/");
-        expect(HomeLinkEl).toHaveAttribute("title", "Home");
+        expect(screen.getByRole("img", { name: "Catalog" })).toBeInTheDocument();
+        expect(screen.getByRole("img", { name: "Catalog" })).toHaveAttribute("src", "\\images\\catalog-icon.png");
+    });
 
-        expect(HomeImgEl).toHaveAttribute("src", "\\images\\home-icon.png");
-        expect(HomeImgEl).toHaveAttribute("alt", "Home");
+    it("renders Home navigational image link with correct title and href and with src and alt image attributes", () => {
+        setup();
 
-        const catalogLinkEl = screen.getByRole("link", { name: "Catalog" });
-        const catalogImgEl = screen.getByRole("img", { name: "Catalog" });
-
-        expect(catalogLinkEl).toHaveAttribute("href", "/catalog");
-        expect(catalogLinkEl).toHaveAttribute("title", "Catalog");
-
-        expect(catalogImgEl).toHaveAttribute("src", "\\images\\catalog-icon.png");
-        expect(catalogImgEl).toHaveAttribute("alt", "Catalog");
+        expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
+        expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
+        
+        expect(screen.getByRole("img", { name: "Home" })).toBeInTheDocument();
+        expect(screen.getByRole("img", { name: "Home" })).toHaveAttribute("src", "\\images\\home-icon.png");
     });
 
     it.each([
-        { name: "renders Profile navigational component on valid isUser", isUserValid: true },
-        { name: "does not render Profile navigational component on empty isUser", isUserValid: false }
+        { name: "renders Profile navigational image link with correct title and href and with src and alt image attributes on logged in user", isUserValid: true },
+        { name: "does not render Profile navigational image link on logged out user", isUserValid: false },
     ])("$name", ({ isUserValid }) => {
         setup({
             isUserValid
@@ -64,14 +62,11 @@ describe("MainMenu component", () => {
 
         
         if (isUserValid) {
-            const profileLinkEl = screen.getByRole("link", { name: "Profile" });
-            const profileImgEl = screen.getByRole("img", { name: "Profile" });
+            expect(screen.getByRole("link", { name: "Profile" })).toBeInTheDocument();
+            expect(screen.getByRole("img", { name: "Profile" })).toBeInTheDocument();
 
-            expect(profileLinkEl).toHaveAttribute("href", `/profile/${isUserMock}`);
-            expect(profileLinkEl).toHaveAttribute("title", "Profile");
-
-            expect(profileImgEl).toHaveAttribute("src", "\\images\\profile-icon.png");
-            expect(profileImgEl).toHaveAttribute("alt", "Profile");
+            expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", `/profile/${isUserMock}`);
+            expect(screen.getByRole("img", { name: "Profile" })).toHaveAttribute("src", "\\images\\profile-icon.png");
         } else {
             expect(screen.queryByRole("link", {name: "Profile"})).not.toBeInTheDocument();
             expect(screen.queryByRole("img", {name: "Profile"})).not.toBeInTheDocument();
