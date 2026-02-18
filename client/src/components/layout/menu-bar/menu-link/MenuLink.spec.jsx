@@ -5,50 +5,54 @@ import { MemoryRouter } from "react-router";
 
 import MenuLink from "./MenuLink";
 
-const LINK_URL = "/";
-const LINK_TITLE = "Home";
-const IMAGE_URI = "image.png";
-const IMAGE_ALT = "image";
-const LINK_TEXT = "Test123";
+const mockProps = {
+    linkUrl: "/",
+    linkTitle: "Home",
+    linkImageUri: "image.png",
+    linkImageAlt: "image",
+    linkText: "Test123",
+};
+
+function setup(options = {
+    renderWithImage: true,
+}) {
+    const updatedProps = { ...mockProps };
+
+    if (options.renderWithImage) {
+        updatedProps.linkText = null;
+    } else {
+        updatedProps.linkImageUri = null;
+        updatedProps.linkImageAlt = null;
+    }
+
+    render(
+        <MemoryRouter>
+            <MenuLink {...updatedProps} />
+        </MemoryRouter>
+    );
+}
 
 describe("MenuLink component", () => {
     it("renders menu link with correct href and title attributes", () => {
-        render(
-            <MemoryRouter>
-                <MenuLink
-                    linkUrl={LINK_URL}
-                    linkTitle={LINK_TITLE}
-                />
-            </MemoryRouter>
-        );
+        setup();
 
-        expect(screen.getByRole("link", { name: LINK_TITLE})).toHaveAttribute("href", LINK_URL);
+        expect(screen.getByRole("link")).toHaveAttribute("href", mockProps.linkUrl);
+        expect(screen.getByRole("link")).toHaveAttribute("title", mockProps.linkTitle);
     });
 
     it("renders menu link image with correct text content and src and alt attributes instead of text content", () => {
-        render(
-            <MemoryRouter>
-                <MenuLink
-                    linkImageUri={IMAGE_URI}
-                    linkImageAlt={IMAGE_ALT}
-                />
-            </MemoryRouter>
-        );
+        setup();
 
-        expect(screen.getByRole("img", { name: IMAGE_ALT})).toHaveAttribute("src", IMAGE_URI);
-        expect(screen.getByRole("link")).not.toHaveTextContent(LINK_TEXT);
+        expect(screen.getByRole("img", { name: mockProps.linkImageAlt })).toHaveAttribute("src", mockProps.linkImageUri);
+        expect(screen.getByRole("link")).not.toHaveTextContent();
     });
 
     it("renders menu link with correct text content instead of image", () => {
-        render(
-            <MemoryRouter>
-                <MenuLink
-                    linkText={LINK_TEXT}
-                />
-            </MemoryRouter>
-        );
+        setup({
+            renderWithImage: false,
+        })
 
-        expect(screen.getByRole("link")).toHaveTextContent(LINK_TEXT);
+        expect(screen.getByRole("link")).toHaveTextContent(mockProps.linkText);
         expect(screen.queryByRole("img")).not.toBeInTheDocument();
     });
 });

@@ -1,8 +1,8 @@
 import { Link } from "react-router";
 
 export default function MenuLink({
-    linkUrl = "/",
-    linkTitle = "",
+    linkUrl,
+    linkTitle,
     linkImageUri = "",
     linkImageAlt = "",
     linkText = "",
