@@ -14,8 +14,7 @@ beforeEach(() => {
 });
 
 describe("Logo component", () => {
-    it("renders component hardcoded attributes", () => {
-        expect(screen.getByRole("link")).toHaveAttribute("href", "/");
-        expect(screen.getByRole("link")).toHaveTextContent("Chime");
+    it("renders clickable link with correct text content and href attribute", () => {
+        expect(screen.getByRole("link", { name: "Chime" })).toHaveAttribute("href", "/");
     });
 });
