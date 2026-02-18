@@ -22,16 +22,17 @@ beforeEach(() => {
 });
 
 describe("GuestAuthMenu component", () => {
-    it("renders Login and Register navigational links", () => {
-        const loginLinkEl = screen.getByRole("link", {name: "Login"});
+    it("renders Register navigational link with correct href and title attributes", () => {
         const registerLinkEl = screen.getByRole("link", {name: "Register"});
-    
-        expect(loginLinkEl).toHaveAttribute("href", "/login");
-        expect(loginLinkEl).toHaveAttribute("title", "Login");
-        expect(loginLinkEl).toHaveTextContent("Login");
 
         expect(registerLinkEl).toHaveAttribute("href", "/register");
         expect(registerLinkEl).toHaveAttribute("title", "Register");
-        expect(registerLinkEl).toHaveTextContent("Register");
+    });
+
+    it("renders Login navigational link with correct href and title attributes", () => {
+        const loginLinkEl = screen.getByRole("link", { name: "Login" });
+
+        expect(loginLinkEl).toHaveAttribute("href", "/login");
+        expect(loginLinkEl).toHaveAttribute("title", "Login");
     });
 });
