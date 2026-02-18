@@ -17,7 +17,7 @@ function setup(options={
 }) {
     const isUser = options.isLogged ?
         "userId" :
-        "";
+        null;
 
     render(
         <UserContext.Provider value={{ isUser }}>
@@ -27,14 +27,14 @@ function setup(options={
 }
 
 describe("AuthMenu component", () => {
-    it("renders UserAuthMenu on logged user and not GuestAuthMenu", () => {
+    it("renders user menu on logged user instead of guest menu", () => {
         setup();
 
         expect(screen.getByTestId("user-auth-menu")).toBeInTheDocument();
         expect(screen.queryByTestId("guest-auth-menu")).not.toBeInTheDocument();
     });
 
-    it("renders UserAuthMenu on logged user and not GuestAuthMenu", () => {
+    it("renders guest menu on logged out user instead of user menu", () => {
         setup({
             isLogged: false,
         });
