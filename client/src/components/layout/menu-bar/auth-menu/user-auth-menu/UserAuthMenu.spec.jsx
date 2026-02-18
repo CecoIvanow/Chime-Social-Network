@@ -22,23 +22,29 @@ beforeEach(() => {
 });
 
 describe("UserAuthMenu component", () => {
-    it("renders Catalog and Logouts navigational links", () => {
-        const settingsLinkEl = screen.getByRole("link", { name: "Settings" });
-        const settingsImgEl = screen.getByRole("img", { name: "Settings" });
-
-        expect(settingsLinkEl).toHaveAttribute("href", "/settings");
-        expect(settingsLinkEl).toHaveAttribute("title", "Settings");
-
-        expect(settingsImgEl).toHaveAttribute("src", "\\images\\settings-icon.png");
-        expect(settingsImgEl).toHaveAttribute("alt", "Settings");
-
+    it("renders Logout navigational link with correct href and title attributes", () => {
         const logoutLinkEl = screen.getByRole("link", { name: "Logout" });
-        const logoutImgEl = screen.getByRole("img", { name: "Logout" });
 
         expect(logoutLinkEl).toHaveAttribute("href", "/logout");
         expect(logoutLinkEl).toHaveAttribute("title", "Logout");
+    });
+
+    it("renders Logout image with correct src uri and alt attributes", () => {
+        const logoutImgEl = screen.getByRole("img", { name: "Logout" });
 
         expect(logoutImgEl).toHaveAttribute("src", "\\images\\logout-icon.png");
-        expect(logoutImgEl).toHaveAttribute("alt", "Logout");
+    });
+
+    it("renders Settings navigational link with correct href and title attributes", () => {
+        const settingsLinkEl = screen.getByRole("link", { name: "Settings" });
+
+        expect(settingsLinkEl).toHaveAttribute("href", "/settings");
+        expect(settingsLinkEl).toHaveAttribute("title", "Settings");
+    });
+
+    it("renders Settings image with correct src uri and alt attributes", () => {
+        const settingsImgEl = screen.getByRole("img", { name: "Settings" });
+
+        expect(settingsImgEl).toHaveAttribute("src", "\\images\\settings-icon.png");
     });
 });
