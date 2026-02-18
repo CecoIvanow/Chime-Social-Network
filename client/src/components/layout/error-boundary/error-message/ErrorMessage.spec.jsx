@@ -1,9 +1,10 @@
 import { MemoryRouter } from "react-router";
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import ErrorMessage from "./ErrorMessage";
+import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ onClickHandler, buttonName }) => (
@@ -49,8 +50,11 @@ describe("ErrorMessage component", () => {
     });
 
     it("on Reload button click reloads the page", async () => {
-        fireEvent.click(screen.getByRole("button", { name: "Reload" }));
+        const user = userEvent.setup();
 
-        await waitFor(() => expect(window.location.reload).toHaveBeenCalled());
+        await user.click(screen.getByRole("button", { name: "Reload" }));
+        await waitFor(() => {
+            expect(window.location.reload).toHaveBeenCalled();
+        });
     });
 });
