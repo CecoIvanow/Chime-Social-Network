@@ -1,8 +1,9 @@
-import { fireEvent, getSuggestedQuery, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { MemoryRouter } from "react-router";
+
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, beforeEach } from "vitest";
 
 import Logo from "./Logo";
-import { MemoryRouter } from "react-router";
 
 beforeEach(() => {
     render(
@@ -13,8 +14,7 @@ beforeEach(() => {
 });
 
 describe("Logo component", () => {
-    it("renders component hardcoded attributes", () => {
-        expect(screen.getByRole("link")).toHaveAttribute("href", "/");
-        expect(screen.getByRole("link")).toHaveTextContent("Chime");
+    it("renders clickable link with correct text content and href attribute", () => {
+        expect(screen.getByRole("link", { name: "Chime" })).toHaveAttribute("href", "/");
     });
 });

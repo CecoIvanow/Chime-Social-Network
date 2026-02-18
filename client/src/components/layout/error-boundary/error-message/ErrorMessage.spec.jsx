@@ -1,12 +1,14 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router";
+
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import ErrorMessage from "./ErrorMessage";
-import { MemoryRouter } from "react-router";
+import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../ui/buttons/button/Button", () => ({
     default: ({ onClickHandler, buttonName }) => (
-        <button data-testid="error-message-button" onClick={onClickHandler}>{buttonName}</button>
+        <button onClick={onClickHandler}>{buttonName}</button>
     )
 }));
 
@@ -37,17 +39,22 @@ beforeEach(() => {
 });
 
 describe("ErrorMessage component", () => {
-    it("renders compnen with inner children", () => {
-        expect(screen.getByTestId("error-message-button")).toHaveTextContent("Reload");
-
+    it("renders error icon, header message and paragraph message", () => {
         expect(screen.getByTestId("error-icon")).toBeInTheDocument();
         expect(screen.getByTestId("header-message")).toBeInTheDocument();
         expect(screen.getByTestId("paragraph-message")).toBeInTheDocument();
     });
 
-    it("on button click calls window.location.reload", async () => {
-        fireEvent.click(screen.getByTestId("error-message-button"));
+    it("renders Reload button", () => {
+        expect(screen.getByRole("button", { name: "Reload" })).toBeInTheDocument();
+    });
 
-        await waitFor(() => expect(window.location.reload).toHaveBeenCalled());
+    it("on Reload button click reloads the page", async () => {
+        const user = userEvent.setup();
+
+        await user.click(screen.getByRole("button", { name: "Reload" }));
+        await waitFor(() => {
+            expect(window.location.reload).toHaveBeenCalled();
+        });
     });
 });

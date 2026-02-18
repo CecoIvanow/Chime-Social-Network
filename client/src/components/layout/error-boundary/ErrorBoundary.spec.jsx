@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import ErrorBoundary from "./ErrorBoundary";
 
@@ -12,7 +12,7 @@ function ThrowError() {
 }
 
 describe("ErrorBoundary component", () => {
-    it("renders ErrorBoundary on error", () => {
+    it("shows an error message on render failure", () => {
         render(
             <ErrorBoundary>
                 <ThrowError />
@@ -22,7 +22,7 @@ describe("ErrorBoundary component", () => {
         expect(screen.getByTestId("error-message")).toBeInTheDocument();
     });
 
-    it("renders children when there is no error", () => {
+    it("renders children when there is no render error", () => {
         render(
             <ErrorBoundary>
                 <div data-testid="child-component">Child</div>
