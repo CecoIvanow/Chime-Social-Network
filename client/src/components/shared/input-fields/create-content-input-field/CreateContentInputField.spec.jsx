@@ -42,20 +42,22 @@ beforeEach(() => {
 });
 
 describe("CreateContentInputField component", () => {
-    it("renders Button and CreateContentInput with provided props", () => {
+    it("renders button with correct text value", () => {
         expect(screen.getByRole("button")).toHaveTextContent(mockProps.buttonText);
+    });
 
+    it("input for content creation with correct text and placeholder attributes", () => {
         expect(screen.getByPlaceholderText(mockProps.placeholderText)).toHaveValue(mockProps.text);
     });
 
-    it("calls onTextChangeHandler on input change", async () => {
+    it("triggers a text change event on user input typing", async () => {
         const user = userEvent.setup();
 
         await user.type(screen.getByPlaceholderText(mockProps.placeholderText), "Hello, there!");
         expect(mockProps.onTextChangeHandler).toHaveBeenCalled();
     });
 
-    it("onSubmitHandler gets called on submit", async () => {
+    it("triggers a submit event when the form gets submitted", async () => {
         const user = userEvent.setup();
 
         await user.click(screen.getByRole("button"));
