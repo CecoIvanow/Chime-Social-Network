@@ -6,23 +6,21 @@ import CreateContentInput from "./CreateContentInput";
 
 const DEFAULT_PLACEHOLDER_TEXT = "Share your thoughts...";
 
-const props = {
+const mockProps = {
     placeholderText: "Post your comment...",
-    text: "This is a test!"
+    text: "This is a test!",
+    onTextChangeHandler: vi.fn(),
 };
-
-const onTextChangeMock = vi.fn();
 
 function setup(options = {
     hasPlaceholderTextProp: true,
 }) {
-    const placeholderText = options.hasPlaceholderTextProp ? props.placeholderText : null;
+    const placeholderText = options.hasPlaceholderTextProp ? mockProps.placeholderText : null;
 
     render(
         <CreateContentInput
-            onTextChangeHandler={onTextChangeMock}
+            {...mockProps}
             placeholderText={placeholderText}
-            text={props.text}
         />
     );
 };
@@ -31,7 +29,7 @@ describe("CreateContentInput component", () => {
     it("renders the input with the passed text value", () => {
         setup();
 
-        expect(screen.getByRole("textbox")).toHaveValue(props.text);
+        expect(screen.getByRole("textbox")).toHaveValue(mockProps.text);
     });
 
     it.each([
@@ -43,7 +41,7 @@ describe("CreateContentInput component", () => {
         });
 
         if (hasPlaceholderTextProp) {
-            expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", props.placeholderText);
+            expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", mockProps.placeholderText);
         } else {
             expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", DEFAULT_PLACEHOLDER_TEXT);
         };
@@ -77,6 +75,6 @@ describe("CreateContentInput component", () => {
         setup();
 
         await user.type(screen.getByRole("textbox"), "Unit Test");
-        expect(onTextChangeMock).toHaveBeenCalled();
+        expect(mockProps.onTextChangeHandler).toHaveBeenCalled();
     });
 });
