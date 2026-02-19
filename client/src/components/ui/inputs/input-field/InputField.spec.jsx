@@ -19,11 +19,7 @@ beforeEach(() => {
 });
 
 describe("InputField component", () => {
-    it("links the label and input correctly via htmlFor and id attributes", () => {
-        expect(screen.getByLabelText(mockProps.fieldName)).toBeInTheDocument();
-    });
-
-    it("renders the input with correct value, name and type attributes", () => {
+    it("renders the input field with the correct value, name and type attributes", () => {
         const input = screen.getByLabelText(mockProps.fieldName);
 
         expect(input).toHaveValue(mockProps.initialValue);
