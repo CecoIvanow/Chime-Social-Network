@@ -10,8 +10,7 @@ import PostCreateForm from "./PostCreateForm";
 
 vi.mock("../../../../hooks/usePostServices", () => ({
     default: () => ({
-        abortAll: usePostServicesMock.abortAll,
-        createPost: usePostServicesMock.createPost,
+        ...usePostServicesMock
     })
 }));
 
@@ -75,7 +74,7 @@ function setup(options = {
         usePostServicesMock.createPost.mockResolvedValue(resolvedPostValue);
     }
 
-    const { unmount } = render(
+    return render(
         <AlertContext.Provider value={{ setAlert, }}>
             <UserContext.Provider value={{ isUser, }}>
                 <TotalPostsContext.Provider value={totalPostsCtxProps}>
@@ -84,8 +83,6 @@ function setup(options = {
             </UserContext.Provider>
         </AlertContext.Provider>
     );
-
-    return { unmount }
 };
 
 describe("PostCreateForm component", () => {
