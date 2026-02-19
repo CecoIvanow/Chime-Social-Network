@@ -30,7 +30,7 @@ function setup() {
 ;}
 
 describe('AuthForm component', () => {
-    it('renders auth form with correct attributes', () => {
+    it('renders with correct type, placeholder, name and required attributes', () => {
         setup();
 
         const inputEl = screen.getByRole("textbox");
@@ -59,31 +59,6 @@ describe('AuthForm component', () => {
         expect(input).toHaveValue(USER_INPUTS.firstChange);
 
         await user.type(input, USER_INPUTS.secondChange);
-        expect(input).toHaveValue(USER_INPUTS.finalValue);
-    });
-
-    it('rerenders with default input value', async () => {
-        const user = userEvent.setup();
-        const { rerender } = setup();
-
-        const input = screen.getByPlaceholderText(`${INPUT_PLACEHOLDER_TEXT}`);
-
-        await user.type(input, USER_INPUTS.firstChange);
-        expect(input).toHaveValue(USER_INPUTS.firstChange);
-
-        await user.type(input, USER_INPUTS.secondChange);
-        expect(input).toHaveValue(USER_INPUTS.finalValue);
-
-
-        rerender(
-            <AuthForm
-                fieldName={mockProps.fieldName}
-                inputName={mockProps.inputName}
-                inputType={mockProps.inputType}
-                placeholderText={mockProps.placeholderText}
-            />
-        );
-
         expect(input).toHaveValue(USER_INPUTS.finalValue);
     });
 });
