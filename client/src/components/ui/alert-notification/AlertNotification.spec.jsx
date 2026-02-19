@@ -26,8 +26,8 @@ function setup(options = {
 
 describe('AlertNotification component', () => {
     it.each([
-        { name: 'renders alert message on set alert', shouldRender: true },
-        { name: 'does not render alert message on not set alert', shouldRender: false }
+        { name: 'renders alert message on an error', shouldRender: true },
+        { name: 'does not render alert message when no error is set', shouldRender: false }
     ])('$name', ({ shouldRender }) => {
         setup({
             includeAlertMessage: shouldRender,
@@ -40,7 +40,7 @@ describe('AlertNotification component', () => {
         }
     });
 
-    it('triggers setAlert with null and clears the alert after 5000ms', () => {
+    it('removes the alert message after 5000ms', () => {
         setup();
 
         vi.advanceTimersByTime(4999);
@@ -52,7 +52,7 @@ describe('AlertNotification component', () => {
         expect(alertContextMock.setAlert).toHaveBeenCalled(null);
     });
 
-    it('updates alert with correct value when new alert is set', () => {
+    it('updates the alert message when a new alert is set', () => {
         const { rerender } = setup();
 
         const newAlert = 'Second error';
@@ -62,13 +62,13 @@ describe('AlertNotification component', () => {
             <AlertContext.Provider value={{ alert: newAlert, setAlert: alertContextMock.setAlert }}>
                 <AlertNotification />
             </AlertContext.Provider>
-        )
+        );
 
         vi.advanceTimersByTime(2000);
         expect(screen.getByText(newAlert)).toBeInTheDocument();
-    })
+    });
 
-    it('does not reset timer when alert changes from value to null', () => {
+    it('does not reset 5000ms timeout when alert is cleared beforehand', () => {
         const { rerender } = render(
             <AlertContext.Provider value={alertContextMock}>
                 <AlertNotification />
@@ -81,9 +81,9 @@ describe('AlertNotification component', () => {
             <AlertContext.Provider value={{ alert: null, setAlert: alertContextMock.setAlert }}>
                 <AlertNotification />
             </AlertContext.Provider>
-        )
+        );
 
         vi.advanceTimersByTime(5000);
         expect(alertContextMock.setAlert).toBeCalledTimes(1);
-    })
-})
+    });
+});
