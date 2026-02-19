@@ -7,10 +7,14 @@ const mockProps = {
     sectionName: "Friends",
 };
 
-beforeEach(() => render(<SectionHeading {...mockProps} />))
+beforeEach(() => {
+    render(
+        <SectionHeading {...mockProps} />
+    );
+});
 
 describe("SectionHeading component", () => {
-    it("renders heading with text value", () => {
+    it("renders heading with correct text value", () => {
         expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(mockProps.sectionName);
     });
 });
