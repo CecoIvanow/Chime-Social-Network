@@ -14,7 +14,6 @@ vi.mock("../../../ui/buttons/button/Button", () => ({
 
 vi.mock("../../../ui/create-content-input/CreateContentInput", () => ({
     default: ({ text, placeholderText, onTextChangeHandler }) => <>
-        <label htmlFor="input"></label>
         <input
             id="input"
             name="input"
@@ -43,7 +42,7 @@ beforeEach(() => {
 
 describe("CreateContentInputField component", () => {
     it("renders button with correct text value", () => {
-        expect(screen.getByRole("button")).toHaveTextContent(mockProps.buttonText);
+        expect(screen.getByRole("button", { name: mockProps.buttonText})).toBeInTheDocument();
     });
 
     it("input for content creation with correct text and placeholder attributes", () => {
@@ -60,7 +59,7 @@ describe("CreateContentInputField component", () => {
     it("triggers a submit event when the form gets submitted", async () => {
         const user = userEvent.setup();
 
-        await user.click(screen.getByRole("button"));
+        await user.click(screen.getByRole("button", { name: mockProps.buttonText }));
         expect(mockProps.onSubmitHandler).toHaveBeenCalled();
     });
 });
