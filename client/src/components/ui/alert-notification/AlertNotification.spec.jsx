@@ -6,7 +6,7 @@ import { AlertContext } from "../../../contexts/alert-context";
 import AlertNotification from "./AlertNotification";
 
 const alertContextMock = {
-    alert: 'Alert message!',
+    alert: "Alert message!",
     setAlert: vi.fn(),
 }
 
@@ -24,11 +24,11 @@ function setup(options = {
     );
 ;}
 
-describe('AlertNotification component', () => {
+describe("AlertNotification component", () => {
     it.each([
-        { name: 'renders alert message on an error', shouldRender: true },
-        { name: 'does not render alert message when no error is set', shouldRender: false }
-    ])('$name', ({ shouldRender }) => {
+        { name: "renders alert message on an error", shouldRender: true },
+        { name: "does not render alert message when no error is set", shouldRender: false }
+    ])("$name", ({ shouldRender }) => {
         setup({
             includeAlertMessage: shouldRender,
         });
@@ -40,7 +40,7 @@ describe('AlertNotification component', () => {
         }
     });
 
-    it('removes the alert message after 5000ms', () => {
+    it("removes the alert message after 5000ms", () => {
         setup();
 
         vi.advanceTimersByTime(4999);
@@ -52,10 +52,10 @@ describe('AlertNotification component', () => {
         expect(alertContextMock.setAlert).toHaveBeenCalled(null);
     });
 
-    it('updates the alert message when a new alert is set', () => {
+    it("updates the alert message when a new alert is set", () => {
         const { rerender } = setup();
 
-        const newAlert = 'Second error';
+        const newAlert = "Second error";
 
         vi.advanceTimersByTime(2000);
         rerender(
@@ -68,7 +68,7 @@ describe('AlertNotification component', () => {
         expect(screen.getByText(newAlert)).toBeInTheDocument();
     });
 
-    it('does not reset 5000ms timeout when alert is cleared beforehand', () => {
+    it("does not reset 5000ms timeout when alert is cleared beforehand", () => {
         const { rerender } = render(
             <AlertContext.Provider value={alertContextMock}>
                 <AlertNotification />
