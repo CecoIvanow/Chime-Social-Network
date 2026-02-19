@@ -16,7 +16,7 @@ beforeEach(() => {
 });
 
 describe("AuthHeaderTitle component", () => {
-    it("renders with with correct text value", () => {
+    it("renders with the correct text value", () => {
         expect(screen.getByText(mockProps.title)).toBeInTheDocument();
     });
 });
