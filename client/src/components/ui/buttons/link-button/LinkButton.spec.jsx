@@ -17,24 +17,25 @@ function setup(options = {
 
     render(
         <MemoryRouter>
-            <LinkButton urlLink={mockProps.urlLink} buttonName={label} />
+            <LinkButton {...mockProps} buttonName={label} />
         </MemoryRouter>
     );
 };
 
 describe('LinkButton component', () => {
-    it('renders button with passed label text', () => {
-        setup();
-
-        expect(screen.getByRole('button')).toHaveTextContent(mockProps.label);
-    });
-
-    it("renders button with no text label on missing prop", () => {
+    it.each([
+        { name: "renders link button with text content", includeButtonName: true },
+        { name: "renders link button without text content", includeButtonName: false },
+    ])("$name", ({ includeButtonName }) => {
         setup({
-            includeButtonName: false
+            includeButtonName,
         });
 
-        expect(screen.getByRole('button')).toHaveTextContent('');
+        if (includeButtonName) {
+            expect(screen.getByRole('button', { name: mockProps.label })).toBeInTheDocument();
+        } else {
+            expect(screen.getByRole('button')).not.toHaveTextContent();
+        };
     });
 
     it('renders link with correct href attribute value', () => {
