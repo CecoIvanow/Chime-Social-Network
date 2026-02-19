@@ -21,7 +21,7 @@ describe("AuthButton component", () => {
     it("renders button with text label", () => {
         setup();
 
-        expect(screen.getByRole("button")).toHaveValue(mockProps.buttonText);
+        expect(screen.getByRole("button", { value: mockProps.buttonText })).toBeInTheDocument();
     });
 
     it.each([
@@ -33,9 +33,9 @@ describe("AuthButton component", () => {
         });
 
         if (isPending) {
-            expect(screen.getByRole("button")).toBeDisabled();
+            expect(screen.getByRole("button", { value: mockProps.buttonText })).toBeDisabled();
         } else {
-            expect(screen.getByRole("button")).toBeEnabled();
+            expect(screen.getByRole("button", { value: mockProps.buttonText })).toBeEnabled();
         };
     });
 });
