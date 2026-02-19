@@ -7,13 +7,13 @@ const mockProps = {
     buttonText: "Login",
 };
 
-function setup(options={
+function setup(options = {
     isPending: false,
 }) {
     const isPendingState = options.isPending ? options.isPending : null;
 
     render(
-        <AuthButton buttonText={mockProps.buttonText} isPending={isPendingState} />
+        <AuthButton {...mockProps} isPending={isPendingState} />
     );
 };
 
@@ -24,16 +24,10 @@ describe("AuthButton component", () => {
         expect(screen.getByRole("button")).toHaveValue(mockProps.buttonText);
     });
 
-    it("isPending defaults to false on missing prop", () => {
-        setup();
-
-        expect(screen.getByRole("button")).toBeEnabled();
-    });
-
     it.each([
-        {name: "button is not disabled on isPending false", isPending: false},
-        {name: "button is disabled on isPending true", isPending: true},
-    ])("$name", ({isPending}) => {
+        { name: "button is not disabled on isPending false", isPending: false },
+        { name: "button is disabled on isPending true", isPending: true },
+    ])("$name", ({ isPending }) => {
         setup({
             isPending,
         });
