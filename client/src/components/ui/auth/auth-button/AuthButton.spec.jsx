@@ -25,8 +25,8 @@ describe("AuthButton component", () => {
     });
 
     it.each([
-        { name: "button is not disabled on isPending false", isPending: false },
-        { name: "button is disabled on isPending true", isPending: true },
+        { name: "button is not disabled after data has loaded", isPending: false },
+        { name: "button is disabled while data is loading", isPending: true },
     ])("$name", ({ isPending }) => {
         setup({
             isPending,
