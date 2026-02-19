@@ -6,46 +6,44 @@ import CreateContentInput from "./CreateContentInput";
 
 const DEFAULT_PLACEHOLDER_TEXT = "Share your thoughts...";
 
-const props = {
+const mockProps = {
     placeholderText: "Post your comment...",
-    text: "This is a test!"
+    text: "This is a test!",
+    onTextChangeHandler: vi.fn(),
 };
-
-const onTextChangeMock = vi.fn();
 
 function setup(options = {
     hasPlaceholderTextProp: true,
 }) {
-    const placeholderText = options.hasPlaceholderTextProp ? props.placeholderText : null;
+    const placeholderText = options.hasPlaceholderTextProp ? mockProps.placeholderText : null;
 
     render(
         <CreateContentInput
-            onTextChangeHandler={onTextChangeMock}
+            {...mockProps}
             placeholderText={placeholderText}
-            text={props.text}
         />
     );
 };
 
 describe("CreateContentInput component", () => {
-    it("renders the input with the passed text value", () => {
+    it("renders the input with the correct text value", () => {
         setup();
 
-        expect(screen.getByRole("textbox")).toHaveValue(props.text);
+        expect(screen.getByRole("textbox", { value: mockProps.text })).toBeInTheDocument();
     });
 
     it.each([
-        { name: "renders the input with the passed placeholderText when provided", hasPlaceholderTextProp: true },
-        { name: "renders the input with the default placeholder text when placeholderText is missing", hasPlaceholderTextProp: false },
+        { name: "renders the input with the given placeholder", hasPlaceholderTextProp: true },
+        { name: "renders the input with the default hardcoded placeholder text when no other text is given", hasPlaceholderTextProp: false },
     ])("$name", ({ hasPlaceholderTextProp }) => {
         setup({
             hasPlaceholderTextProp,
         });
 
         if (hasPlaceholderTextProp) {
-            expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", props.placeholderText);
+            expect(screen.getByRole("textbox", { value: mockProps.text })).toHaveAttribute("placeholder", mockProps.placeholderText);
         } else {
-            expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", DEFAULT_PLACEHOLDER_TEXT);
+            expect(screen.getByRole("textbox", { value: mockProps.text })).toHaveAttribute("placeholder", DEFAULT_PLACEHOLDER_TEXT);
         };
     });
 
@@ -54,29 +52,24 @@ describe("CreateContentInput component", () => {
 
         const defaultLinkingValue = "entry";
 
-        const label = screen.getByTestId("entry-label");
-        const input = screen.getByRole("textbox");
-
-        expect(label).toHaveAttribute("for", defaultLinkingValue);
-        expect(input).toHaveAttribute("id", defaultLinkingValue);
+        expect(screen.getByTestId("entry-label")).toHaveAttribute("for", defaultLinkingValue);
+        expect(screen.getByRole("textbox", { value: mockProps.text })).toHaveAttribute("id", defaultLinkingValue);
     });
 
-    it("renders the input with correct name and type attributes", () => {
+    it("renders the input with the correct name and type attributes", () => {
         setup();
 
         const defaultTypeValue = "text";
 
-        const input = screen.getByRole("textbox");
-
-        expect(input).toHaveAttribute("name", defaultTypeValue);
-        expect(input).toHaveAttribute("type", defaultTypeValue);
+        expect(screen.getByRole("textbox", { value: mockProps.text })).toHaveAttribute("name", defaultTypeValue);
+        expect(screen.getByRole("textbox", { value: mockProps.text })).toHaveAttribute("type", defaultTypeValue);
     });
 
-    it("calls onTextChangeHandler when user types in the input", async () => {
+    it("triggers an event on user typing", async () => {
         const user = userEvent.setup();
         setup();
 
-        await user.type(screen.getByRole("textbox"), "Unit Test");
-        expect(onTextChangeMock).toHaveBeenCalled();
+        await user.type(screen.getByRole("textbox", { value: mockProps.text }), "Unit Test");
+        expect(mockProps.onTextChangeHandler).toHaveBeenCalled();
     });
 });

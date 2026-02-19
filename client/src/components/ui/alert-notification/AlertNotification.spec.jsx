@@ -5,7 +5,7 @@ import { AlertContext } from "../../../contexts/alert-context";
 
 import AlertNotification from "./AlertNotification";
 
-const alertCtxProps = {
+const alertContextMock = {
     alert: 'Alert message!',
     setAlert: vi.fn(),
 }
@@ -13,66 +13,64 @@ const alertCtxProps = {
 function setup(options = {
     includeAlertMessage: true
 }) {
-    const alertMessage = options.includeAlertMessage ? alertCtxProps.alert : null;
-
     vi.useFakeTimers();
 
-    const { rerender } = render(
-        <AlertContext.Provider value={{ alert: alertMessage, setAlert: alertCtxProps.setAlert }}>
+    const alertMessage = options.includeAlertMessage ? alertContextMock.alert : null;
+
+    return render(
+        <AlertContext.Provider value={{ alert: alertMessage, setAlert: alertContextMock.setAlert }}>
             <AlertNotification />
         </AlertContext.Provider>
     );
-
-    return { rerender };
-}
+;}
 
 describe('AlertNotification component', () => {
     it.each([
-        { name: 'renders alert message on set alert', shouldRender: true },
-        { name: 'does not render alert message on not set alert', shouldRender: false }
+        { name: 'renders alert message on an error', shouldRender: true },
+        { name: 'does not render alert message when no error is set', shouldRender: false }
     ])('$name', ({ shouldRender }) => {
         setup({
             includeAlertMessage: shouldRender,
         });
 
         if (shouldRender) {
-            expect(screen.getByText(alertCtxProps.alert)).toBeInTheDocument();
+            expect(screen.getByText(alertContextMock.alert)).toBeInTheDocument();
         } else {
-            expect(screen.queryByText(alertCtxProps.alert)).not.toBeInTheDocument();
+            expect(screen.queryByText(alertContextMock.alert)).not.toBeInTheDocument();
         }
     });
 
-    it('triggers setAlert with null and clears the alert after 5000ms', () => {
+    it('removes the alert message after 5000ms', () => {
         setup();
 
         vi.advanceTimersByTime(4999);
-        expect(alertCtxProps.setAlert).not.toHaveBeenCalled();
-        expect(screen.getByText(alertCtxProps.alert)).toBeInTheDocument();
+        expect(alertContextMock.setAlert).not.toHaveBeenCalled();
+        expect(screen.getByText(alertContextMock.alert)).toBeInTheDocument();
 
         vi.advanceTimersByTime(1);
-        expect(alertCtxProps.setAlert).toHaveBeenCalledTimes(1);
-        expect(alertCtxProps.setAlert).toHaveBeenCalled(null);
+        expect(alertContextMock.setAlert).toHaveBeenCalledTimes(1);
+        expect(alertContextMock.setAlert).toHaveBeenCalled(null);
     });
 
-    it('updates alert with correct value when new alert is set', () => {
+    it('updates the alert message when a new alert is set', () => {
         const { rerender } = setup();
 
         const newAlert = 'Second error';
 
         vi.advanceTimersByTime(2000);
         rerender(
-            <AlertContext.Provider value={{ alert: newAlert, setAlert: alertCtxProps.setAlert }}>
+            <AlertContext.Provider value={{ alert: newAlert, setAlert: alertContextMock.setAlert }}>
                 <AlertNotification />
             </AlertContext.Provider>
-        )
+        );
 
         vi.advanceTimersByTime(2000);
         expect(screen.getByText(newAlert)).toBeInTheDocument();
-    })
+    });
 
-    it('does not reset timer when alert changes from value to null', () => {
+    it('does not reset 5000ms timeout when alert is cleared beforehand', () => {
         const { rerender } = render(
-            <AlertContext.Provider value={alertCtxProps}>
+            <AlertContext.Provider value={alertContextMock}>
                 <AlertNotification />
             </AlertContext.Provider>
         );
@@ -80,12 +78,12 @@ describe('AlertNotification component', () => {
         vi.advanceTimersByTime(2000);
 
         rerender(
-            <AlertContext.Provider value={{ alert: null, setAlert: alertCtxProps.setAlert }}>
+            <AlertContext.Provider value={{ alert: null, setAlert: alertContextMock.setAlert }}>
                 <AlertNotification />
             </AlertContext.Provider>
-        )
+        );
 
         vi.advanceTimersByTime(5000);
-        expect(alertCtxProps.setAlert).toBeCalledTimes(1);
-    })
-})
+        expect(alertContextMock.setAlert).toBeCalledTimes(1);
+    });
+});

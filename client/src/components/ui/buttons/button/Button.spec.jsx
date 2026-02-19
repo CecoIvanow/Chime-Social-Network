@@ -6,45 +6,40 @@ import Button from "./Button";
 
 const mockProps = {
     label: "Save",
-    clickHandler: vi.fn(),
+    onClickHandler: vi.fn(),
 }
 
-function setup(options={
+function setup(options = {
     hasTextContent: true
 }) {
-    const label = options.hasTextContent ?
-    mockProps.label :
-    null;
+    const label = options.hasTextContent ? mockProps.label : null;
 
     render(
-        <Button onClickHandler={mockProps.clickHandler} buttonName={label} />
+        <Button {...mockProps} buttonName={label} />
     );
 }
 
 describe('Button component', () => {
-    it('renders button with passed text label', () => {
-        setup();
-
-        expect(screen.getByRole('button')).toHaveTextContent(mockProps.label);
-    });
-
-    it("renders button with empty text label on missing prop", () => {
+    it.each([
+        { name: "renders button with text content", hasTextContent: true },
+        { name: "renders button without text content", hasTextContent: false },
+    ])("$name", ({ hasTextContent }) => {
         setup({
-            hasTextContent: false
+            hasTextContent,
         });
 
-        expect(screen.getByRole('button')).toHaveTextContent("");
-
+        if (hasTextContent) {
+            expect(screen.getByRole('button', { name: mockProps.label })).toBeInTheDocument()
+        } else {
+            expect(screen.getByRole('button')).not.toHaveTextContent();
+        };
     });
 
-    it('triggers click handler on click', async () => {
-        setup();
-        
+    it('triggers an event on user click', async () => {
         const user = userEvent.setup();
-        const buttonElement = screen.getByRole('button');
-        
-        user.click(buttonElement);
+        setup();
 
-        await waitFor(() => expect(mockProps.clickHandler).toHaveBeenCalled());
+        await user.click(screen.getByRole('button', { name: mockProps.label }));
+        await waitFor(() => expect(mockProps.onClickHandler).toHaveBeenCalled());
     });
 });

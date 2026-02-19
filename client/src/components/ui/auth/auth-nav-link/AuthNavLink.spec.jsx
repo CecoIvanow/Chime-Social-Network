@@ -21,10 +21,9 @@ beforeEach(() => {
 });
 
 describe('AuthNavLink component', () => {
-    it('renders link with path and buttonText props', () => {
-        const link = screen.getByRole("link");
+    it('renders link with correct href and text attributes', () => {
+        const link = screen.getByRole("link", { name: mockProps.buttonText });
 
-        expect(link).toHaveTextContent(mockProps.buttonText);
         expect(link).toHaveAttribute('href', mockProps.path);
     })
 })

@@ -22,12 +22,12 @@ beforeEach(() => {
 // * https://github.com/testing-library/user-event/issues/1115
 
 describe("SearchField component", () => {
-    it("renders input with the placeholder and type attributes", () => {
+    it("renders input with the correct placeholder and type attributes", () => {
         expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", `Search by ${mockProps.searchBy}...`);
         expect(screen.getByRole("textbox")).toHaveAttribute("type", "text");
     });
 
-    it("calls setSearchParams after 1250 ms have passed on value change", () => {
+    it("updates the search parameters after 1250 ms have passed on user typing", () => {
         const newValue = "React";
 
         fireEvent.change(screen.getByRole("textbox"), { target: { value: newValue } });
@@ -39,7 +39,7 @@ describe("SearchField component", () => {
         expect(mockProps.setSearchParams).toHaveBeenCalledWith(newValue);
     });
 
-    it("resets timer and does not call setSearchParams after value changes before 1250ms have passed", () => {
+    it("resets timer and does not set the new search params after value changes before 1250ms have passed", () => {
         const input = screen.getByRole("textbox");
 
         fireEvent.change(input, { target: { value: "Test" } });

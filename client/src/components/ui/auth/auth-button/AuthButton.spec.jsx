@@ -7,13 +7,13 @@ const mockProps = {
     buttonText: "Login",
 };
 
-function setup(options={
+function setup(options = {
     isPending: false,
 }) {
     const isPendingState = options.isPending ? options.isPending : null;
 
     render(
-        <AuthButton buttonText={mockProps.buttonText} isPending={isPendingState} />
+        <AuthButton {...mockProps} isPending={isPendingState} />
     );
 };
 
@@ -21,27 +21,21 @@ describe("AuthButton component", () => {
     it("renders button with text label", () => {
         setup();
 
-        expect(screen.getByRole("button")).toHaveValue(mockProps.buttonText);
-    });
-
-    it("isPending defaults to false on missing prop", () => {
-        setup();
-
-        expect(screen.getByRole("button")).toBeEnabled();
+        expect(screen.getByRole("button", { value: mockProps.buttonText })).toBeInTheDocument();
     });
 
     it.each([
-        {name: "button is not disabled on isPending false", isPending: false},
-        {name: "button is disabled on isPending true", isPending: true},
-    ])("$name", ({isPending}) => {
+        { name: "button is not disabled after data has loaded", isPending: false },
+        { name: "button is disabled while data is loading", isPending: true },
+    ])("$name", ({ isPending }) => {
         setup({
             isPending,
         });
 
         if (isPending) {
-            expect(screen.getByRole("button")).toBeDisabled();
+            expect(screen.getByRole("button", { value: mockProps.buttonText })).toBeDisabled();
         } else {
-            expect(screen.getByRole("button")).toBeEnabled();
+            expect(screen.getByRole("button", { value: mockProps.buttonText })).toBeEnabled();
         };
     });
 });
