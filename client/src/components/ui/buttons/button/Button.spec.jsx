@@ -29,20 +29,17 @@ describe('Button component', () => {
         });
 
         if (hasTextContent) {
-            expect(screen.getByRole('button')).toHaveTextContent(mockProps.label);
+            expect(screen.getByRole('button', { name: mockProps.label })).toBeInTheDocument()
         } else {
             expect(screen.getByRole('button')).not.toHaveTextContent();
         };
     });
 
-    it('triggers click handler on click', async () => {
+    it('triggers an event on user click', async () => {
+        const user = userEvent.setup();
         setup();
 
-        const user = userEvent.setup();
-        const buttonElement = screen.getByRole('button');
-
-        user.click(buttonElement);
-
+        await user.click(screen.getByRole('button', { name: mockProps.label }));
         await waitFor(() => expect(mockProps.onClickHandler).toHaveBeenCalled());
     });
 });
