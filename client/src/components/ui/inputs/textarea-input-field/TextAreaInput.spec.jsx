@@ -18,11 +18,7 @@ beforeEach(() => {
 });
 
 describe("TextAreaInput component", () => {
-    it("links label and textarea correctly via htmlFor and id attributes", () => {
-        expect(screen.getByLabelText(mockProps.fieldName));
-    });
-
-    it("renders textarea with correct value and name attributes", () => {
+    it("renders textarea with the correct value and name attributes", () => {
         const textarea = screen.getByLabelText(mockProps.fieldName);
 
         expect(textarea).toHaveValue(mockProps.initialValue);
