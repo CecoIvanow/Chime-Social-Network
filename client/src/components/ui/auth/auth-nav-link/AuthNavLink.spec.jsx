@@ -20,10 +20,10 @@ beforeEach(() => {
     );
 });
 
-describe('AuthNavLink component', () => {
-    it('renders link with correct href and text attributes', () => {
+describe("AuthNavLink component", () => {
+    it("renders link with correct href and text attributes", () => {
         const link = screen.getByRole("link", { name: mockProps.buttonText });
 
-        expect(link).toHaveAttribute('href', mockProps.path);
+        expect(link).toHaveAttribute("href", mockProps.path);
     })
 })

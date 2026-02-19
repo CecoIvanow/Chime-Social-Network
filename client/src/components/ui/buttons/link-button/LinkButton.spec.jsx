@@ -22,7 +22,7 @@ function setup(options = {
     );
 };
 
-describe('LinkButton component', () => {
+describe("LinkButton component", () => {
     it.each([
         { name: "renders link button with text content", includeButtonName: true },
         { name: "renders link button without text content", includeButtonName: false },
@@ -32,15 +32,15 @@ describe('LinkButton component', () => {
         });
 
         if (includeButtonName) {
-            expect(screen.getByRole('button', { name: mockProps.label })).toBeInTheDocument();
+            expect(screen.getByRole("button", { name: mockProps.label })).toBeInTheDocument();
         } else {
-            expect(screen.getByRole('button')).not.toHaveTextContent();
+            expect(screen.getByRole("button")).not.toHaveTextContent();
         };
     });
 
-    it('renders link with correct href attribute value', () => {
+    it("renders link with correct href attribute value", () => {
         setup();
 
-        expect(screen.getByRole('link')).toHaveAttribute('href', mockProps.urlLink);
+        expect(screen.getByRole("link")).toHaveAttribute("href", mockProps.urlLink);
     });
 });
