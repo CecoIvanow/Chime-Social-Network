@@ -22,14 +22,12 @@ const USER_INPUTS = {
 };
 
 function setup() {
-    const { rerender } = render(
+    return render(
         <AuthForm
             {...mockProps}
         />
     );
-
-    return { rerender };
-}
+;}
 
 describe('AuthForm component', () => {
     it('renders auth form with correct attributes', () => {
