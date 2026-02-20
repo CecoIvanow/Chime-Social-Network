@@ -49,23 +49,23 @@ function setup(options = {
 };
 
 describe("PostLikeButtons component", () => {
-    it("unlike button is rendered when user has liked the post", () => {
+    it("Unlike button is rendered when user has liked the post", () => {
         setup();
 
-        expect(screen.getByRole("button")).toHaveTextContent('Unlike');
+        expect(screen.getByRole("button", { name: "Unlike" })).toBeInTheDocument();
     });
 
-    it("like button is rendered when user has not liked the post", () => {
+    it("Like button is rendered when user has not liked the post", () => {
         setup({
             isLikedByUser: false,
             onLikeEmptyReturn: true,
             onUnlikeEmptyReturn: true,
         });
 
-        expect(screen.getByRole("button")).toHaveTextContent('Like');
+        expect(screen.getByRole("button", { name: "Like" })).toBeInTheDocument();
     });
 
-    it("calls setLikes when onLikeClickHandler resolves successfully", async () => {
+    it("likes the post on Like button click", async () => {
         const user = userEvent.setup();
         setup({
             isLikedByUser: false,
@@ -81,7 +81,7 @@ describe("PostLikeButtons component", () => {
         expect(setLikes).toHaveBeenCalled();
     });
 
-    it("calls setLikes when onUnlikeClickHandler resolves successfully", async () => {
+    it("removes like form the post on Unlike button click", async () => {
         const user = userEvent.setup();
         setup({
             isLikedByUser: true,
@@ -97,8 +97,8 @@ describe("PostLikeButtons component", () => {
         expect(setLikes).toHaveBeenCalled();
     });
 
-    it("does not call setLikes when onLikeClickHandler resolves with empty value", async () => {
-        const user = userEvent.setup(); 
+    it("does nothing when the post like call fails", async () => {
+        const user = userEvent.setup();
         setup({
             isLikedByUser: false,
             onLikeEmptyReturn: true,
@@ -113,7 +113,7 @@ describe("PostLikeButtons component", () => {
         expect(setLikes).not.toHaveBeenCalled();
     });
 
-    it("does not call setLikes to remove user when onUnlikeClickHandler does not resolves", async () => {
+    it("does nothing when the post unlike call fails", async () => {
         const user = userEvent.setup();
         setup({
             isLikedByUser: true,
@@ -129,7 +129,7 @@ describe("PostLikeButtons component", () => {
         expect(setLikes).not.toHaveBeenCalled();
     });
 
-    it("updates likes array correctly when onLikeClickHandler resolves successfully", async () => {
+    it("updates the amount of post likes on successful like", async () => {
         const user = userEvent.setup();
         const likes = ["User2"];
 
@@ -156,7 +156,7 @@ describe("PostLikeButtons component", () => {
 
         expect(setLikes).toHaveBeenCalled();
     });
-    it("updates likes array correctly when onUnlikeClickHandler resolves successfully", async () => {
+    it("updates the amount of post likes on successful unlike", async () => {
         const user = userEvent.setup();
         const likes = [isUser, "User2"];
 
