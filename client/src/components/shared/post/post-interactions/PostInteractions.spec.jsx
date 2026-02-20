@@ -9,11 +9,15 @@ import { LikesContext } from "../../../../contexts/likes-context";
 import PostInteractions from "./PostInteractions";
 
 vi.mock("./post-interactions-amount/PostInteractionsAmount", () => ({
-    default: () => (
-        <div data-testid='post-interactions-amount'>
-            <LikesConsumer />
-        </div>
-    )
+    default: function PostInteractionsAmount() {
+        const {likes} = useContext(LikesContext);
+
+        return (
+            <div data-testid='post-interactions-amount'>
+                <div data-testid="likes-count">{likes.length}</div>
+            </div>
+        );
+    }
 }));
 
 vi.mock("./post-buttons/PostButtons", () => ({
@@ -22,12 +26,6 @@ vi.mock("./post-buttons/PostButtons", () => ({
 
 const postMock = {
     likes: ["like1", "like2"],
-};
-
-function LikesConsumer() {
-    const { likes } = useContext(LikesContext);
-
-    return <div data-testid="likes-count">{likes.length}</div>
 };
 
 function setup(options = {
