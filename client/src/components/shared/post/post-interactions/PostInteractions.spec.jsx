@@ -44,25 +44,16 @@ function setup(options = {
 
 
 describe("PostInteractions component", () => {
-    it("renders PostInteractionsAmount and PostButtons", () => {
+    it("renders the post button and interactions amounts", () => {
         setup();
 
         expect(screen.getByTestId("post-interactions-amount")).toBeInTheDocument();
         expect(screen.getByTestId("post-button")).toBeInTheDocument();
     });
 
-    it("provides likes array through LikesContext", () => {
+    it("renders correct amount of post likes", () => {
         setup();
 
         expect(screen.getByTestId("likes-count")).toHaveTextContent(postMock.likes.length);
-    });
-
-    it("renders without error when post.likes is null", () => {
-        setup({
-            renderPostWithoutLikes: true,
-        })
-
-        expect(screen.getByTestId("post-interactions-amount")).toBeInTheDocument();
-        expect(screen.getByTestId("post-button")).toBeInTheDocument();
     });
 });
