@@ -28,8 +28,7 @@ beforeEach(() => {
 });
 
 describe("PostCommentButton component", () => {
-    it("renders LinkButton with correct urlLink prop", () => {
-        expect(screen.getByRole("link")).toHaveAttribute("href", `/post/${post._id}/details`);
-        expect(screen.getByRole("link")).toHaveTextContent("Comment");
+    it("renders LinkButton with correct text and href attribute", () => {
+        expect(screen.getByRole("link", { name: "Comment" })).toHaveAttribute("href", `/post/${post._id}/details`);
     });
 });
