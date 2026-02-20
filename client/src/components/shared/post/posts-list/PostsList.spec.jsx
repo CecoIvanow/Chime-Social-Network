@@ -11,8 +11,14 @@ import { UserContext } from "../../../../contexts/user-context";
 
 import PostsList from "./PostsList";
 
+vi.mock("../../../../hooks/usePostServices", () => ({
+    default: () => ({
+        ...usePostServicesMock
+    })
+}));
+
 vi.mock("./post-item/PostItem", () => ({
-    default: function PostItemMock({ postItem }) {
+    default: function PostItem({ postItem }) {
         const actions = useContext(ActionsContext);
 
         return (
@@ -23,12 +29,6 @@ vi.mock("./post-item/PostItem", () => ({
             </div>
         )
     }
-}));
-
-vi.mock("../../../../hooks/usePostServices", () => ({
-    default: () => ({
-        ...usePostServicesMock
-    })
 }));
 
 const FIRST_POST = 0;
