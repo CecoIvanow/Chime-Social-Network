@@ -31,7 +31,7 @@ function setup(options = {
 };
 
 describe("PostItem component", () => {
-    it("renders PostItem component on valid post id", () => {
+    it("renders the post header, post interactions and correct post text when the post exists", () => {
         setup();
 
         expect(screen.getByTestId("post-header")).toBeInTheDocument();
@@ -39,7 +39,7 @@ describe("PostItem component", () => {
         expect(screen.getByTestId("post-text")).toHaveTextContent(postItemMock.text);
     });
 
-    it("does not render PostItem on empty postItem", () => {
+    it("does not render when the post does not exist", () => {
         setup({
             emptyPostItem: true,
         });
