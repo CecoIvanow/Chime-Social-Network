@@ -18,7 +18,7 @@ beforeEach(() => {
 });
 
 describe("PostInteractionsAmount component", () => {
-    it("renders PostLikesAmount and PostCommentsSmount", () => {
+    it("renders the amount of post likes and post comments", () => {
         expect(screen.getByTestId("comments-amount")).toBeInTheDocument();
         expect(screen.getByTestId("likes-amount")).toBeInTheDocument();
     });
