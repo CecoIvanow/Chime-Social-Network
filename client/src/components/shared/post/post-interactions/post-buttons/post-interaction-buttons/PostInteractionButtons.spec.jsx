@@ -46,7 +46,7 @@ function setup(options = {
 };
 
 describe("PostInteractionButtons component", () => {
-    it("renders like button on valid isUser and different post owner id", () => {
+    it("renders like buttons when user is logged in and is not the post owner", () => {
         setup({
             useParamsEmptyPostId: false,
             userIdEqualsPostOwnerId: false,
@@ -55,7 +55,7 @@ describe("PostInteractionButtons component", () => {
         expect(screen.getByRole("button", { name: "Like" })).toBeInTheDocument();
     });
 
-    it("does not render like button on valid isUser and matching post owner id", () => {
+    it("does not render like buttons when user is logged in and is the same post owner", () => {
         setup({
             useParamsEmptyPostId: false,
             userIdEqualsPostOwnerId: true,
@@ -64,7 +64,7 @@ describe("PostInteractionButtons component", () => {
         expect(screen.queryByRole("button", { name: "Like" })).not.toBeInTheDocument();
     });
 
-    it("renders comment button on empty postId", () => {
+    it("renders comment button on empty when no post id is present in link", () => {
         setup({
             useParamsEmptyPostId: true,
             userIdEqualsPostOwnerId: false,
@@ -73,10 +73,10 @@ describe("PostInteractionButtons component", () => {
         expect(screen.getByRole("button", { name: "Comment" })).toBeInTheDocument();
     });
 
-    it("does not render comment button on valid postId", () => {
+    it("does not render comment button on valid post id in link", () => {
         setup();
 
         expect(screen.queryByRole("button", { name: "Comment" })).not.toBeInTheDocument();
 
     });
-})
+});
