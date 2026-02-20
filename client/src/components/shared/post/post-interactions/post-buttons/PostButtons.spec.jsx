@@ -3,8 +3,8 @@ import { Link, MemoryRouter } from "react-router";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { UserContext } from '../../../../../contexts/user-context'
 import { PostContext } from '../../../../../contexts/post-context';
+import { UserContext } from '../../../../../contexts/user-context'
 
 import PostButtons from "./PostButtons";
 

@@ -1,7 +1,7 @@
+import { useContext } from "react";
+
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-
-import { useContext } from "react";
 
 import { PostContext } from "../../../../contexts/post-context";
 import { LikesContext } from "../../../../contexts/likes-context";
