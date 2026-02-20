@@ -22,8 +22,11 @@ const post = {
 const isUser = "User1";
 
 const setLikes = vi.fn();
-const onLikeClickHandler = vi.fn();
-const onUnlikeClickHandler = vi.fn();
+
+const actioncCtxMock = {
+    onLikeClickHandler: vi.fn(),
+    onUnlikeClickHandler: vi.fn(),
+}
 
 function setup(options = {
     isLikedByUser: true,
@@ -32,13 +35,13 @@ function setup(options = {
 }) {
     const likes = options.isLikedByUser ? [isUser, "User2"] : ["User2"];
 
-    options.onLikeEmptyReturn ? onLikeClickHandler.mockResolvedValue(null) : onLikeClickHandler.mockResolvedValue(true);
-    options.onUnlikeEmptyReturn ? onUnlikeClickHandler.mockResolvedValue(null) : onUnlikeClickHandler.mockResolvedValue(true);
+    options.onLikeEmptyReturn ? actioncCtxMock.onLikeClickHandler.mockResolvedValue(null) : actioncCtxMock.onLikeClickHandler.mockResolvedValue(true);
+    options.onUnlikeEmptyReturn ? actioncCtxMock.onUnlikeClickHandler.mockResolvedValue(null) : actioncCtxMock.onUnlikeClickHandler.mockResolvedValue(true);
 
     render(
         <UserContext.Provider value={{ isUser }}>
             <PostContext.Provider value={{ post }}>
-                <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler }}>
+                <ActionsContext.Provider value={{ ...actioncCtxMock }}>
                     <LikesContext.Provider value={{ likes, setLikes }}>
                         <PostLikeButtons />
                     </LikesContext.Provider>
@@ -76,7 +79,7 @@ describe("PostLikeButtons component", () => {
         await user.click(screen.getByRole("button", { name: "Like" }));
 
         await waitFor(() => {
-            expect(onLikeClickHandler).toHaveBeenCalledWith(post);
+            expect(actioncCtxMock.onLikeClickHandler).toHaveBeenCalledWith(post);
         });
         expect(setLikes).toHaveBeenCalled();
     });
@@ -92,7 +95,7 @@ describe("PostLikeButtons component", () => {
         await user.click((screen.getByRole("button", { name: "Unlike" })));
 
         await waitFor(() => {
-            expect(onUnlikeClickHandler).toHaveBeenCalledWith(post);
+            expect(actioncCtxMock.onUnlikeClickHandler).toHaveBeenCalledWith(post);
         });
         expect(setLikes).toHaveBeenCalled();
     });
@@ -108,7 +111,7 @@ describe("PostLikeButtons component", () => {
         await user.click(screen.getByRole("button", { name: "Like" }));
 
         await waitFor(() => {
-            expect(onLikeClickHandler).toHaveBeenCalledWith(post);
+            expect(actioncCtxMock.onLikeClickHandler).toHaveBeenCalledWith(post);
         });
         expect(setLikes).not.toHaveBeenCalled();
     });
@@ -124,7 +127,7 @@ describe("PostLikeButtons component", () => {
         await user.click((screen.getByRole("button", { name: "Unlike" })));
 
         await waitFor(() => {
-            expect(onUnlikeClickHandler).toHaveBeenCalledWith(post);
+            expect(actioncCtxMock.onUnlikeClickHandler).toHaveBeenCalledWith(post);
         });
         expect(setLikes).not.toHaveBeenCalled();
     });
@@ -143,7 +146,7 @@ describe("PostLikeButtons component", () => {
         render(
             <UserContext.Provider value={{ isUser }}>
                 <PostContext.Provider value={{ post }}>
-                    <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler }}>
+                    <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler: actioncCtxMock.onUnlikeClickHandler }}>
                         <LikesContext.Provider value={{ likes, setLikes }}>
                             <PostLikeButtons />
                         </LikesContext.Provider>
@@ -170,7 +173,7 @@ describe("PostLikeButtons component", () => {
         render(
             <UserContext.Provider value={{ isUser }}>
                 <PostContext.Provider value={{ post }}>
-                    <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler }}>
+                    <ActionsContext.Provider value={{ onLikeClickHandler: actioncCtxMock.onLikeClickHandler, onUnlikeClickHandler }}>
                         <LikesContext.Provider value={{ likes, setLikes }}>
                             <PostLikeButtons />
                         </LikesContext.Provider>
