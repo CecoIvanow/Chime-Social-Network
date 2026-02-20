@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 describe("PostText component", () => {
-    it("renders component with passed postText", () => {
+    it("renders with correct text content", () => {
         expect(screen.getByText(text)).toBeInTheDocument();
     });
 });
