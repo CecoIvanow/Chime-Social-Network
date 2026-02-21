@@ -1,11 +1,13 @@
-import { useParams } from "react-router";
-
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { UserContext } from "../../../../../../contexts/user-context.js";
 
 import ProfileInfo from "./ProfileInfo.jsx";
+
+vi.mock("react-router", () => ({
+    useParams: () => reactRouterMock.useParams(),
+}));
 
 vi.mock("./profile-fullname/ProfileFullname", () => ({
     default: ({userData}) => (
@@ -30,13 +32,13 @@ vi.mock("./edit-profile-button/EditProfileButton", () => ({
     )
 }));
 
-vi.mock("react-router", () => ({
-    useParams: vi.fn(),
-}));
-
 const userData ={
     fullName: "Fullname test",
     info: "Info test"
+};
+
+const reactRouterMock = {
+    useParams: vi.fn(),
 };
 
 function setup(options={
@@ -54,7 +56,7 @@ function setup(options={
         isUser = "randomId";
     };
 
-    useParams.mockReturnValue({ userId, });
+    reactRouterMock.useParams.mockReturnValue({ userId, });
 
     render(
         <UserContext.Provider value={{ isUser, }}>
