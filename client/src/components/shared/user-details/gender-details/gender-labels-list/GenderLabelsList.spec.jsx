@@ -18,9 +18,11 @@ beforeEach(() => {
 });
 
 describe("GenderLabelsList", () => {
-    it("correcctly passes genderLabels attributes to its child component", () => {
+    it("renders the correct amount of gender labels", () => {
         expect(screen.getAllByTestId("gender-label")).toHaveLength(2);
+    });
 
+    it("renders the gender labels with the correct values", () => {
         expect(screen.getByText("Male")).toBeInTheDocument();
         expect(screen.getByText("Female")).toBeInTheDocument();
 
