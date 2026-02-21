@@ -1,11 +1,13 @@
-import { useParams } from "react-router";
-
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { UserContext } from "../../../../contexts/user-context.js";
 
 import PostsSection from "./PostsSection.jsx";
+
+vi.mock("react-router", () => ({
+    useParams: () => reactRouterMock.useParams(),
+}));
 
 vi.mock("../../../ui/headings/SectionHeading", () => ({
     default: ({ sectionName }) => <h3>{sectionName}</h3>
@@ -23,12 +25,12 @@ vi.mock("../posts-list/PostsList", () => ({
     default: () => <div data-testid="posts-list"></div>
 }));
 
-vi.mock("react-router", () => ({
-    useParams: vi.fn(),
-}));
-
 const isUser = "loggedInUserId";
 const userId = "profileUserId";
+
+const reactRouterMock = {
+    useParams: vi.fn(),
+};
 
 const mockProps = {
     userName: "John",
@@ -38,7 +40,7 @@ function setup(options = {
     userId: null,
     isLoading: false,
 }) {
-    useParams.mockReturnValue({ userId: options.userId })
+    reactRouterMock.useParams.mockReturnValue({ userId: options.userId });
 
     render(
         <UserContext.Provider value={{ isUser }}>
@@ -48,13 +50,13 @@ function setup(options = {
             />
         </UserContext.Provider>
     );
-}
+};
 
 describe("PostsSection component", () => {
     it.each([
-        { name: "renders SectionHeading with 'Friends Posts:' text content on invalid userProfileId", result: "Friends Posts:", userId: null },
-        { name: `renders SectionHeading with '${mockProps.userName}'s Posts:' text content on not matching userProfileId and userId`, result: `${mockProps.userName}'s Posts:`, userId, },
-        { name: `renders SectionHeading 'with My Posts:' text content on matching userProfileId and userId`, result: "My Posts:", userId: isUser },
+        { name: "renders the section with 'Friends Posts:' text content when not in a user profile", result: "Friends Posts:", userId: null },
+        { name: `renders the section with '${mockProps.userName}'s Posts:' text content when the user is logged in and in another user's profile`, result: `${mockProps.userName}'s Posts:`, userId, },
+        { name: `renders the section with 'My Posts:' text content when the user is logged in and in their profile`, result: "My Posts:", userId: isUser },
     ])("$name", ({ result, userId }) => {
         setup({
             userId,
@@ -62,11 +64,11 @@ describe("PostsSection component", () => {
         });
 
         expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent(result);
-    })
+    });
 
     it.each([
-        { name: "renders PostCreateForm on matching isUser and userId", userId: isUser },
-        { name: "does not render PostCreateForm on not matching isUser and userId", userId, },
+        { name: "renders the post creation form on when the user is logged in and is in their profile", userId: isUser },
+        { name: "does not render the post creation form on when the user is either not logged in or is but not in their profile", userId, },
     ])("$name", ({ userId }) => {
         setup({
             userId,
@@ -77,12 +79,12 @@ describe("PostsSection component", () => {
             expect(screen.getByTestId("post-form")).toBeInTheDocument();
         } else {
             expect(screen.queryByTestId("post-form")).not.toBeInTheDocument();
-        }
-    })
+        };
+    });
 
     it.each([
-        { name: "renders LoadingSpinner when component is still loading", isLoading: true },
-        { name: "renders PostsList when component is not loading", isLoading: false },
+        { name: "renders a loading spinner instead of posts while data is still loading", isLoading: true },
+        { name: "renders posts instead of a loading spinner after data has loaded", isLoading: false },
     ])("$name", ({ isLoading }) => {
         setup({
             userId,
@@ -95,6 +97,6 @@ describe("PostsSection component", () => {
         } else {
             expect(screen.getByTestId("posts-list")).toBeInTheDocument();
             expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
-        }
-    })
+        };
+    });
 });

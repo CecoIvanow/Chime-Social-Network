@@ -38,11 +38,11 @@ beforeEach(() => {
 });
 
 describe("AuthFormsList component", () => {
-    it("renders with correct number of AuthForm components", () => {
+    it("renders with correct number of components", () => {
         expect(screen.getAllByTestId("auth-form")).toHaveLength(mockFields.length);
     });
 
-    it("renders AuthForm component with correct props", () => {
+    it("renders with correct auth fields props", () => {
         for (const field of mockFields) {
             expect(screen.getByText(field.fieldName)).toBeInTheDocument();
             expect(screen.getByText(field.inputName)).toBeInTheDocument();

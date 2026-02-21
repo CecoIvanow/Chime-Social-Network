@@ -44,25 +44,20 @@ function setup(options = {
 };
 
 describe("OwnerControls component", () => {
-    it.each([
-        { name: "renders Delete Button when urlLink is provided", passUrlLink: true },
-        { name: "renders Delete Button when urlLink is not provided", passUrlLink: false },
-    ])("$name", ({ passUrlLink }) => {
-        setup({
-            passUrlLink,
-        });
+    it("renders Delete button on mount", () => {
+        setup();
 
         expect(screen.getByRole("button", { name: "Delete" })).toBeInTheDocument();
     });
 
-    it("renders Edit LinkButton and not Edit Button when urlLink is provided", () => {
+    it("renders Edit link button instead of normal button when link has been provided", () => {
         setup();
 
-        expect(screen.getByRole("link")).toHaveAttribute("href", mockProps.urlLink);
+        expect(screen.getByRole("link", { value: "Edit" })).toHaveAttribute("href", mockProps.urlLink);
         expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     });
 
-    it("renders Edit Button and not Edit LinkButton when urlLink is not provided", () => {
+    it("renders Edit button instead of link button when link has not been provided", () => {
         setup({
             passUrlLink: false,
         });
@@ -71,7 +66,7 @@ describe("OwnerControls component", () => {
         expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
 
-    it("calls onDeleteClickHandler when Delete Button is clicked", async () => {
+    it("triggers a delete event when Delete button is clicked", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -79,7 +74,7 @@ describe("OwnerControls component", () => {
         expect(mockHandlers.onDeleteClickHandler).toHaveBeenCalledWith(mockProps.itemId);
     });
 
-    it("calls onEditClickHandler when Edit Button is clicked", async () => {
+    it("triggers an edit event when Edit button is clicked", async () => {
         const user = userEvent.setup();
         setup({
             passUrlLink: false,

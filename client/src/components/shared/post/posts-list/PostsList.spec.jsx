@@ -11,8 +11,14 @@ import { UserContext } from "../../../../contexts/user-context";
 
 import PostsList from "./PostsList";
 
+vi.mock("../../../../hooks/usePostServices", () => ({
+    default: () => ({
+        ...usePostServicesMock
+    })
+}));
+
 vi.mock("./post-item/PostItem", () => ({
-    default: function PostItemMock({ postItem }) {
+    default: function PostItem({ postItem }) {
         const actions = useContext(ActionsContext);
 
         return (
@@ -23,12 +29,6 @@ vi.mock("./post-item/PostItem", () => ({
             </div>
         )
     }
-}));
-
-vi.mock("../../../../hooks/usePostServices", () => ({
-    default: () => ({
-        ...usePostServicesMock
-    })
 }));
 
 const FIRST_POST = 0;
@@ -88,15 +88,15 @@ function setup(options = {
 };
 
 describe("PostsList component", () => {
-    it("renders PostItem for each post ", () => {
+    it("renders correct amount of posts", () => {
         setup();
 
         expect(screen.getAllByTestId("post-item")).toHaveLength(2);
     });
 
     it.each([
-        { name: "deletes post after deletePost user confirmation", shouldTrigger: true, deleteConfirmation: true },
-        { name: "does not delete post after deletePost user rejection", shouldTrigger: false, deleteConfirmation: false },
+        { name: "deletes post after delete popup confirmation", shouldTrigger: true, deleteConfirmation: true },
+        { name: "does not delete post after delete popup rejection", shouldTrigger: false, deleteConfirmation: false },
     ])("$name", async ({ shouldTrigger, deleteConfirmation }) => {
         const user = userEvent.setup();
         setup({
@@ -118,7 +118,7 @@ describe("PostsList component", () => {
         };
     });
 
-    it("shows alert when delete action is rejected", async () => {
+    it("shows alert message when post deletion is rejected", async () => {
         const user = userEvent.setup();
         setup({
             deleteConfirmation: true,
@@ -134,7 +134,7 @@ describe("PostsList component", () => {
         });
     });
 
-    it("triggers like action when Like button is clicked", async () => {
+    it("likes post whe nuser clicks on Like button", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -145,7 +145,7 @@ describe("PostsList component", () => {
         });
     });
 
-    it("shows alert when like action is rejected", async () => {
+    it("shows alert message when post like gets rejected", async () => {
         const user = userEvent.setup();
         setup({
             deleteConfirmation: true,
@@ -161,7 +161,7 @@ describe("PostsList component", () => {
         });
     });
 
-    it("triggers unlike action when Unlike button is clicked", async () => {
+    it("removes post like when user clicks on Unlike button", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -172,7 +172,7 @@ describe("PostsList component", () => {
         });
     });
 
-    it("shows alert when unlike action is rejected", async () => {
+    it("shows alert message when post unlike gets rejected", async () => {
         const user = userEvent.setup();
         setup({
             deleteConfirmation: true,
@@ -188,7 +188,7 @@ describe("PostsList component", () => {
         });
     });
 
-    it("stops all actions when component is unmounted", async () => {
+    it("stops all ongoing calls on unmount", async () => {
         const user = userEvent.setup();
         const { unmount } = setup();
 

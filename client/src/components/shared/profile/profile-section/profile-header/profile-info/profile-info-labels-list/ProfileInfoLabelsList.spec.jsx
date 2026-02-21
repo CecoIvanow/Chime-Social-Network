@@ -41,13 +41,13 @@ beforeEach(() => {
 });
 
 describe("profileInfoLabelsList", () => {
-    it("renders the correct number of ProfileInfoLabel components", () => {
+    it("renders the correct number of profile info labels", () => {
         const amountOfChildComponents = Object.keys(mockProps.userData).length;
 
         expect(screen.getAllByTestId("profile-info-label")).toHaveLength(amountOfChildComponents);
     });
 
-    it("renders ProfileInfoLabel component with user data values", () => {
+    it("renders the profile info labels with the correct text content", () => {
         for (const label of labelTextArr) {
             expect(screen.getByText(label)).toBeInTheDocument();
         };

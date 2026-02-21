@@ -1,7 +1,7 @@
+import { useContext } from "react";
+
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-
-import { useContext } from "react";
 
 import { PostContext } from "../../../../contexts/post-context";
 import { LikesContext } from "../../../../contexts/likes-context";
@@ -9,11 +9,15 @@ import { LikesContext } from "../../../../contexts/likes-context";
 import PostInteractions from "./PostInteractions";
 
 vi.mock("./post-interactions-amount/PostInteractionsAmount", () => ({
-    default: () => (
-        <div data-testid='post-interactions-amount'>
-            <LikesConsumer />
-        </div>
-    )
+    default: function PostInteractionsAmount() {
+        const {likes} = useContext(LikesContext);
+
+        return (
+            <div data-testid='post-interactions-amount'>
+                <div data-testid="likes-count">{likes.length}</div>
+            </div>
+        );
+    }
 }));
 
 vi.mock("./post-buttons/PostButtons", () => ({
@@ -22,12 +26,6 @@ vi.mock("./post-buttons/PostButtons", () => ({
 
 const postMock = {
     likes: ["like1", "like2"],
-};
-
-function LikesConsumer() {
-    const { likes } = useContext(LikesContext);
-
-    return <div data-testid="likes-count">{likes.length}</div>
 };
 
 function setup(options = {
@@ -42,29 +40,29 @@ function setup(options = {
             </LikesContext.Provider>
         </PostContext.Provider>
     );
-}
+};
 
 
 describe("PostInteractions component", () => {
-    it("renders PostInteractionsAmount and PostButtons", () => {
+    it("renders the post button and interactions amounts", () => {
         setup();
 
         expect(screen.getByTestId("post-interactions-amount")).toBeInTheDocument();
         expect(screen.getByTestId("post-button")).toBeInTheDocument();
     });
 
-    it("provides likes array through LikesContext", () => {
+    it("renders correct amount of post likes", () => {
         setup();
 
         expect(screen.getByTestId("likes-count")).toHaveTextContent(postMock.likes.length);
     });
 
-    it("renders without error when post.likes is null", () => {
+    it("renders no post likes when the post hasnt been liked yet", () => {
         setup({
-            renderPostWithoutLikes: true,
-        })
+            renderPostWithoutLikes: true
+        });
 
-        expect(screen.getByTestId("post-interactions-amount")).toBeInTheDocument();
-        expect(screen.getByTestId("post-button")).toBeInTheDocument();
+        expect(screen.getByTestId("likes-count")).toHaveTextContent(0);
+
     });
 });

@@ -40,7 +40,7 @@ function setup(options = {
 };
 
 describe("OwnerButtons component", () => {
-    it("renders EditControls and not OwnerControls when isEditClicked context is true", () => {
+    it("renders edit comtrols instead of owner controls when edit is clicked", () => {
         setup();
 
         expect(screen.getByTestId("edit-controls")).toBeInTheDocument();
@@ -49,7 +49,7 @@ describe("OwnerButtons component", () => {
         expect(screen.queryByTestId("owner-controls")).not.toBeInTheDocument();
     });
 
-    it("renders OwnerControls and not EditControls when isEditClicked context is false", () => {
+    it("renders owner controls instead of edit controls when edit has not been clicked", () => {
         setup({
             isEditClicked: false,
         });

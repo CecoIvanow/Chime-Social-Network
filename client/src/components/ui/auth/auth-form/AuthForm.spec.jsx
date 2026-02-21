@@ -29,8 +29,8 @@ function setup() {
     );
 ;}
 
-describe('AuthForm component', () => {
-    it('renders with correct type, placeholder, name and required attributes', () => {
+describe("AuthForm component", () => {
+    it("renders with correct type, placeholder, name and required attributes", () => {
         setup();
 
         const inputEl = screen.getByRole("textbox");
@@ -49,7 +49,7 @@ describe('AuthForm component', () => {
         expect(screen.getByRole("textbox")).toHaveAttribute("id", mockProps.inputName);
     });
 
-    it('input updates value on user text typing', async () => {
+    it("input updates value on user text typing", async () => {
         const user = userEvent.setup();
         setup();
 

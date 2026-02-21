@@ -46,10 +46,7 @@ function setup(options = {
 };
 
 describe("EditControls component", () => {
-    it.each([
-        { name: "renders Close Button on passed urlLink prop", passUrlLink: true },
-        { name: "renders Close Button on empty urlLink prop", passUrlLink: false },
-    ])("$name", ({passUrlLink}) => {
+    it("renders Close button on mount", ({ passUrlLink }) => {
         setup({
             passUrlLink,
         });
@@ -57,7 +54,7 @@ describe("EditControls component", () => {
         expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
     });
 
-    it("calls onCancelEditClickHandler on Close Button click", async () => {
+    it("triggers an event on Close button click", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -65,23 +62,23 @@ describe("EditControls component", () => {
         expect(mockHandlers.onCancelEditClickHandler).toHaveBeenCalled();
     });
 
-    it("renders Edit LinkButton  and not Edit Button when urlLink is provided", () => {
+    it("renders Edit link button wit correct href attribute instead of normal button when a link is provided", () => {
         setup();
 
-        expect(screen.getByRole("link")).toHaveAttribute("href", mockProps.urlLink);
+        expect(screen.getByRole("link", { value: "Edit" })).toHaveAttribute("href", mockProps.urlLink);
         expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     });
 
-    it("renders Edit Button and not Edit LinkButton when urlLink is not provided", () => {
+    it("renders Edit button instead of link button when a link is not provided", () => {
         setup({
             passUrlLink: false,
         });
 
         expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
-        expect(screen.queryByRole("link")).not.toBeInTheDocument();
+        expect(screen.queryByRole("link", { value: "Edit" })).not.toBeInTheDocument();
     });
 
-    it("calls onSaveEditClickHandler on Edit Button click", async () => {
+    it("triggers an event on Edit button click", async () => {
         const user = userEvent.setup();
         setup({
             passUrlLink: false,

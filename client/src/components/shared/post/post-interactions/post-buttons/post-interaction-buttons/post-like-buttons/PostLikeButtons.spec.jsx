@@ -22,8 +22,11 @@ const post = {
 const isUser = "User1";
 
 const setLikes = vi.fn();
-const onLikeClickHandler = vi.fn();
-const onUnlikeClickHandler = vi.fn();
+
+const actioncCtxMock = {
+    onLikeClickHandler: vi.fn(),
+    onUnlikeClickHandler: vi.fn(),
+}
 
 function setup(options = {
     isLikedByUser: true,
@@ -32,13 +35,13 @@ function setup(options = {
 }) {
     const likes = options.isLikedByUser ? [isUser, "User2"] : ["User2"];
 
-    options.onLikeEmptyReturn ? onLikeClickHandler.mockResolvedValue(null) : onLikeClickHandler.mockResolvedValue(true);
-    options.onUnlikeEmptyReturn ? onUnlikeClickHandler.mockResolvedValue(null) : onUnlikeClickHandler.mockResolvedValue(true);
+    options.onLikeEmptyReturn ? actioncCtxMock.onLikeClickHandler.mockResolvedValue(null) : actioncCtxMock.onLikeClickHandler.mockResolvedValue(true);
+    options.onUnlikeEmptyReturn ? actioncCtxMock.onUnlikeClickHandler.mockResolvedValue(null) : actioncCtxMock.onUnlikeClickHandler.mockResolvedValue(true);
 
     render(
         <UserContext.Provider value={{ isUser }}>
             <PostContext.Provider value={{ post }}>
-                <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler }}>
+                <ActionsContext.Provider value={{ ...actioncCtxMock }}>
                     <LikesContext.Provider value={{ likes, setLikes }}>
                         <PostLikeButtons />
                     </LikesContext.Provider>
@@ -49,23 +52,23 @@ function setup(options = {
 };
 
 describe("PostLikeButtons component", () => {
-    it("unlike button is rendered when user has liked the post", () => {
+    it("Unlike button is rendered when user has liked the post", () => {
         setup();
 
-        expect(screen.getByRole("button")).toHaveTextContent('Unlike');
+        expect(screen.getByRole("button", { name: "Unlike" })).toBeInTheDocument();
     });
 
-    it("like button is rendered when user has not liked the post", () => {
+    it("Like button is rendered when user has not liked the post", () => {
         setup({
             isLikedByUser: false,
             onLikeEmptyReturn: true,
             onUnlikeEmptyReturn: true,
         });
 
-        expect(screen.getByRole("button")).toHaveTextContent('Like');
+        expect(screen.getByRole("button", { name: "Like" })).toBeInTheDocument();
     });
 
-    it("calls setLikes when onLikeClickHandler resolves successfully", async () => {
+    it("likes the post on Like button click", async () => {
         const user = userEvent.setup();
         setup({
             isLikedByUser: false,
@@ -76,12 +79,12 @@ describe("PostLikeButtons component", () => {
         await user.click(screen.getByRole("button", { name: "Like" }));
 
         await waitFor(() => {
-            expect(onLikeClickHandler).toHaveBeenCalledWith(post);
+            expect(actioncCtxMock.onLikeClickHandler).toHaveBeenCalledWith(post);
         });
         expect(setLikes).toHaveBeenCalled();
     });
 
-    it("calls setLikes when onUnlikeClickHandler resolves successfully", async () => {
+    it("removes like form the post on Unlike button click", async () => {
         const user = userEvent.setup();
         setup({
             isLikedByUser: true,
@@ -92,13 +95,13 @@ describe("PostLikeButtons component", () => {
         await user.click((screen.getByRole("button", { name: "Unlike" })));
 
         await waitFor(() => {
-            expect(onUnlikeClickHandler).toHaveBeenCalledWith(post);
+            expect(actioncCtxMock.onUnlikeClickHandler).toHaveBeenCalledWith(post);
         });
         expect(setLikes).toHaveBeenCalled();
     });
 
-    it("does not call setLikes when onLikeClickHandler resolves with empty value", async () => {
-        const user = userEvent.setup(); 
+    it("does nothing when the post like call fails", async () => {
+        const user = userEvent.setup();
         setup({
             isLikedByUser: false,
             onLikeEmptyReturn: true,
@@ -108,12 +111,12 @@ describe("PostLikeButtons component", () => {
         await user.click(screen.getByRole("button", { name: "Like" }));
 
         await waitFor(() => {
-            expect(onLikeClickHandler).toHaveBeenCalledWith(post);
+            expect(actioncCtxMock.onLikeClickHandler).toHaveBeenCalledWith(post);
         });
         expect(setLikes).not.toHaveBeenCalled();
     });
 
-    it("does not call setLikes to remove user when onUnlikeClickHandler does not resolves", async () => {
+    it("does nothing when the post unlike call fails", async () => {
         const user = userEvent.setup();
         setup({
             isLikedByUser: true,
@@ -124,12 +127,12 @@ describe("PostLikeButtons component", () => {
         await user.click((screen.getByRole("button", { name: "Unlike" })));
 
         await waitFor(() => {
-            expect(onUnlikeClickHandler).toHaveBeenCalledWith(post);
+            expect(actioncCtxMock.onUnlikeClickHandler).toHaveBeenCalledWith(post);
         });
         expect(setLikes).not.toHaveBeenCalled();
     });
 
-    it("updates likes array correctly when onLikeClickHandler resolves successfully", async () => {
+    it("updates the amount of post likes on successful like", async () => {
         const user = userEvent.setup();
         const likes = ["User2"];
 
@@ -143,7 +146,7 @@ describe("PostLikeButtons component", () => {
         render(
             <UserContext.Provider value={{ isUser }}>
                 <PostContext.Provider value={{ post }}>
-                    <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler }}>
+                    <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler: actioncCtxMock.onUnlikeClickHandler }}>
                         <LikesContext.Provider value={{ likes, setLikes }}>
                             <PostLikeButtons />
                         </LikesContext.Provider>
@@ -156,7 +159,7 @@ describe("PostLikeButtons component", () => {
 
         expect(setLikes).toHaveBeenCalled();
     });
-    it("updates likes array correctly when onUnlikeClickHandler resolves successfully", async () => {
+    it("updates the amount of post likes on successful unlike", async () => {
         const user = userEvent.setup();
         const likes = [isUser, "User2"];
 
@@ -170,7 +173,7 @@ describe("PostLikeButtons component", () => {
         render(
             <UserContext.Provider value={{ isUser }}>
                 <PostContext.Provider value={{ post }}>
-                    <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler }}>
+                    <ActionsContext.Provider value={{ onLikeClickHandler: actioncCtxMock.onLikeClickHandler, onUnlikeClickHandler }}>
                         <LikesContext.Provider value={{ likes, setLikes }}>
                             <PostLikeButtons />
                         </LikesContext.Provider>

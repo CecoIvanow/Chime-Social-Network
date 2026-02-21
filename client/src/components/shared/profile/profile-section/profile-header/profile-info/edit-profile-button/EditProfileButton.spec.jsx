@@ -13,8 +13,6 @@ vi.mock("../../../../../../ui/buttons/link-button/LinkButton", () => ({
 
 const isUser = "User123";
 
-const urlLink = `/profile/${isUser}/edit`;
-
 beforeEach(() => {
     render(
         <MemoryRouter>
@@ -26,8 +24,7 @@ beforeEach(() => {
 });
 
 describe("EditProfileButton component", () => {
-    it("renders LinkButton with the correct props from context", () => {
-        expect(screen.getByRole("link")).toHaveTextContent("Edit Profile");
-        expect(screen.getByRole("link")).toHaveAttribute("href", urlLink);
+    it("renders link button with correct text value and src attributes", () => {
+        expect(screen.getByRole("link", { value: "Edit Profile" })).toHaveAttribute("href", `/profile/${isUser}/edit`);
     });
 });

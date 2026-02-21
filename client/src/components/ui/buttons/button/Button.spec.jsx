@@ -1,4 +1,4 @@
-import userEvent from '@testing-library/user-event'
+import userEvent from "@testing-library/user-event"
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -19,7 +19,7 @@ function setup(options = {
     );
 }
 
-describe('Button component', () => {
+describe("Button component", () => {
     it.each([
         { name: "renders button with text content", hasTextContent: true },
         { name: "renders button without text content", hasTextContent: false },
@@ -29,17 +29,17 @@ describe('Button component', () => {
         });
 
         if (hasTextContent) {
-            expect(screen.getByRole('button', { name: mockProps.label })).toBeInTheDocument()
+            expect(screen.getByRole("button", { name: mockProps.label })).toBeInTheDocument()
         } else {
-            expect(screen.getByRole('button')).not.toHaveTextContent();
+            expect(screen.getByRole("button")).not.toHaveTextContent();
         };
     });
 
-    it('triggers an event on user click', async () => {
+    it("triggers an event on user click", async () => {
         const user = userEvent.setup();
         setup();
 
-        await user.click(screen.getByRole('button', { name: mockProps.label }));
+        await user.click(screen.getByRole("button", { name: mockProps.label }));
         await waitFor(() => expect(mockProps.onClickHandler).toHaveBeenCalled());
     });
 });

@@ -1,11 +1,13 @@
-import { useParams } from "react-router";
-
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { UserContext } from "../../../../../../contexts/user-context.js";
 
 import ProfileInfo from "./ProfileInfo.jsx";
+
+vi.mock("react-router", () => ({
+    useParams: () => reactRouterMock.useParams(),
+}));
 
 vi.mock("./profile-fullname/ProfileFullname", () => ({
     default: ({userData}) => (
@@ -30,13 +32,13 @@ vi.mock("./edit-profile-button/EditProfileButton", () => ({
     )
 }));
 
-vi.mock("react-router", () => ({
-    useParams: vi.fn(),
-}));
-
 const userData ={
     fullName: "Fullname test",
     info: "Info test"
+};
+
+const reactRouterMock = {
+    useParams: vi.fn(),
 };
 
 function setup(options={
@@ -54,7 +56,7 @@ function setup(options={
         isUser = "randomId";
     };
 
-    useParams.mockReturnValue({ userId, });
+    reactRouterMock.useParams.mockReturnValue({ userId, });
 
     render(
         <UserContext.Provider value={{ isUser, }}>
@@ -64,14 +66,14 @@ function setup(options={
 };
 
 describe("ProfileInfo Component", () => {
-    it("renders user full name and profile information on passed user data", () => {
+    it("renders the user's full name and profile information", () => {
         setup();
 
         expect(screen.getByTestId("profile-fullname")).toHaveTextContent(userData.fullName);
         expect(screen.getByTestId("profile-info")).toHaveTextContent(userData.info);
     });
 
-    it("does not render profile edit button when user is not logged in", () => {
+    it("does not render the profile edit button when user is not logged in or is logged in and not in their profile", () => {
         setup({
             isUserIsMatching: false,
             isUserIsNull: true,
@@ -80,7 +82,7 @@ describe("ProfileInfo Component", () => {
         expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
     });
 
-    it("renders profile edit button with matching user is logged in and in his profile page", () => {
+    it("renders profile edit button when the user is logged in and in their profile page", () => {
         setup({
             isUserIsMatching: true,
             isUserIsNull: false,

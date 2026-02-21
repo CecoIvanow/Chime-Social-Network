@@ -34,21 +34,21 @@ function setup(options={
 };
 
 describe('ProfileSection component', () => {
-    it("shows profile header when not loading", () => {
-        setup();
-
-        expect(screen.getByTestId("profile-header")).toHaveTextContent(mockProps.userData);
-
-        expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
-    });
-
-    it("shows a loading spinner while loading", () => {
+    it("renders a loading spinner instead of the profile header while data is loading", () => {
         setup({
             isLoading: true,
         });
 
         expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
-        
+
         expect(screen.queryByTestId("profile-header")).not.toBeInTheDocument();
+    });
+
+    it("renders the profile header instea of a loading spinner after the data has loaded", () => {
+        setup();
+
+        expect(screen.getByTestId("profile-header")).toHaveTextContent(mockProps.userData);
+
+        expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
     });
 });

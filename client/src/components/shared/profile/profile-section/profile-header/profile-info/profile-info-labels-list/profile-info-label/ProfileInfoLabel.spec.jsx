@@ -26,7 +26,7 @@ function setup(options={
 };
 
 describe("ProfileInfoLabel component", () => {
-    it("renders component with passed label and userData", () => {
+    it("renders component with label text and paragraph text instead of N\\A", () => {
         setup();
 
         expect(screen.getByText(mockProps.label.labelText)).toBeInTheDocument();
@@ -35,7 +35,7 @@ describe("ProfileInfoLabel component", () => {
         expect(screen.queryByText(MISSING_DATA)).not.toBeInTheDocument();
     });
 
-    it("renders with N\\A text content if no userData is passed", () => {
+    it("renders the paragraph text with N\\A if the information is empty", () => {
         setup({
             isUserDataUndefined: true,
         });

@@ -3,8 +3,8 @@ import { Link, MemoryRouter } from "react-router";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { UserContext } from '../../../../../contexts/user-context'
 import { PostContext } from '../../../../../contexts/post-context';
+import { UserContext } from '../../../../../contexts/user-context'
 
 import PostButtons from "./PostButtons";
 
@@ -42,19 +42,19 @@ function setup(options = {
 };
 
 describe("PostButtons component", () => {
-    it("renders PostInteractionButtons component", () => {
+    it("renders the post interaction buttons", () => {
         setup();
 
         expect(screen.getByRole("button"), { name: "Comment" }).toBeInTheDocument();
     });
 
-    it("renders OwberButtons on matching isUser and post owner id", () => {
+    it("renders the owner buttons when the user is logged in and is the post owner", () => {
         setup();
 
         expect(screen.getByRole("link")).toHaveAttribute("href", `/post/${post._id}/edit`);
     });
 
-    it("does not render OwberButtons on empty isUser", () => {
+    it("does not render the owner buttons when the user is not logged in", () => {
         setup({
             isUserValueIsEmpty: true,
         });

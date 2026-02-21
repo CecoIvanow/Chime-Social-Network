@@ -20,13 +20,12 @@ beforeEach(() => {
 });
 
 describe("GenderDetails component", () => {
-    it("renders GenderInputsLabel, GenderHeaderTitle and GenderLabelsList child components", () => {
-        expect(screen.getByTestId("gender-inputs-label")).toBeInTheDocument();
+    it("renders the gender header title and gender labels", () => {
         expect(screen.getByTestId("gender-header-title")).toBeInTheDocument();
         expect(screen.getByTestId("gender-labels-list")).toBeInTheDocument();
     });
 
-    it("renders GenderInputsLabel with correct user gender", () => {
-        expect(screen.getByText("Male")).toBeInTheDocument();
+    it("renders the gender input labels with the chosen user gender", () => {
+        expect(screen.getByTestId("gender-inputs-label")).toHaveTextContent("Male");
     });
 });

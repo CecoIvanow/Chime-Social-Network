@@ -10,8 +10,7 @@ import PostCreateForm from "./PostCreateForm";
 
 vi.mock("../../../../hooks/usePostServices", () => ({
     default: () => ({
-        abortAll: usePostServicesMock.abortAll,
-        createPost: usePostServicesMock.createPost,
+        ...usePostServicesMock
     })
 }));
 
@@ -75,7 +74,7 @@ function setup(options = {
         usePostServicesMock.createPost.mockResolvedValue(resolvedPostValue);
     }
 
-    const { unmount } = render(
+    return render(
         <AlertContext.Provider value={{ setAlert, }}>
             <UserContext.Provider value={{ isUser, }}>
                 <TotalPostsContext.Provider value={totalPostsCtxProps}>
@@ -84,19 +83,17 @@ function setup(options = {
             </UserContext.Provider>
         </AlertContext.Provider>
     );
-
-    return { unmount }
 };
 
 describe("PostCreateForm component", () => {
-    it("renders post creation form", () => {
+    it("renders post creation form with Post button", () => {
         setup();
 
         expect(screen.getByRole("textbox")).toBeInTheDocument();
         expect(screen.getByRole("button", { name: "Post" })).toBeInTheDocument();
     });
 
-    it("updates postText on input text change", async () => {
+    it("updates input text on user typing", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -108,7 +105,7 @@ describe("PostCreateForm component", () => {
         expect(inputField).toHaveValue(newInputValue);
     });
 
-    it("calls createPost on form submit", async () => {
+    it("creates a new post on form submission", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -123,7 +120,7 @@ describe("PostCreateForm component", () => {
         });
     });
 
-    it("calls setAlert on rejected createPost call", async () => {
+    it("shows alert message on rejected post creation", async () => {
         const user = userEvent.setup();
         setup({
             createPostEmptyReturn: false,
@@ -138,7 +135,7 @@ describe("PostCreateForm component", () => {
         });
     });
 
-    it("calls createPost and sets totalPosts and postText on resolved value", async () => {
+    it("adds the newly created post and resets the input text field to empty", async () => {
         const user = userEvent.setup();
         setup();
 
@@ -157,7 +154,7 @@ describe("PostCreateForm component", () => {
         expect(input).toHaveValue("");
     });
 
-    it("submit handler returns on empty resolved createPost value", async () => {
+    it("does nothing when the post creation fails", async () => {
         const user = userEvent.setup();
         setup({
             createPostEmptyReturn: true,
@@ -180,7 +177,7 @@ describe("PostCreateForm component", () => {
         expect(input).toHaveValue(newInputValue);
     });
 
-    it("calls abortAll on unmount", async () => {
+    it("stops all ongoing calls on unmount", async () => {
         const { unmount } = setup({
             createPostEmptyReturn: false,
             createPostReturnSuccess: true,

@@ -30,7 +30,7 @@ beforeEach(() => {
 });
 
 describe("ProfileHeader component", () => {
-    it("renders the profile avatar and profile info with passed user data", () => {
+    it("renders the profile avatar and profile info with correct information", () => {
         expect(screen.getByTestId("profile-avatar")).toHaveTextContent(mockProps.userData);
         expect(screen.getByTestId("profile-info")).toBeInTheDocument(mockProps.userData);
     });

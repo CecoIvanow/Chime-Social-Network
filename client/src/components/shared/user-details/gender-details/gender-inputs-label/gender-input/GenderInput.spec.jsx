@@ -1,7 +1,6 @@
+import userEvent from "@testing-library/user-event";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-
-import userEvent from "@testing-library/user-event";
 
 import GenderInput from "./GenderInput.jsx";
 
@@ -31,8 +30,8 @@ describe("GenderInput component", () => {
     });
 
     it.each([
-        { name: "default Male gender is checked on render", chosenGender: "Male", shouldBeChecked: false },
-        { name: "default Female gender is checked on render", chosenGender: "Female", shouldBeChecked: true },
+        { name: "default Male gender is chosern on render", chosenGender: "Male", shouldBeChecked: false },
+        { name: "default Female gender is chosern on render", chosenGender: "Female", shouldBeChecked: true },
     ])("$name", ({ chosenGender, shouldBeChecked }) => {
         setup(chosenGender);
 
@@ -45,7 +44,7 @@ describe("GenderInput component", () => {
         }
     })
 
-    it("radio input triggers event action after being clicked", async () => {
+    it("radio input triggers an event after user click", async () => {
         const user = userEvent.setup();
         setup("Male");
 
