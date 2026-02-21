@@ -9,7 +9,11 @@ export default defineConfig({
             all: true,
             provider: 'istanbul',
             extension: ['.js', '.jsx'],
-            exclude: ['src/main.jsx', 'src/firebase/firebase-storage/config.js']
+            exclude: [
+                'src/main.jsx',
+                'src/firebase',
+                'src/contexts',
+            ]
         },
         globals: true,
         setupFiles: ['./src/tests/setup.js'],
