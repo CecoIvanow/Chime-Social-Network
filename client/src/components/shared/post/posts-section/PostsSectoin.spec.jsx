@@ -1,11 +1,13 @@
-import { useParams } from "react-router";
-
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { UserContext } from "../../../../contexts/user-context.js";
 
 import PostsSection from "./PostsSection.jsx";
+
+vi.mock("react-router", () => ({
+    useParams: () => reactRouterMock.useParams(),
+}));
 
 vi.mock("../../../ui/headings/SectionHeading", () => ({
     default: ({ sectionName }) => <h3>{sectionName}</h3>
@@ -23,12 +25,12 @@ vi.mock("../posts-list/PostsList", () => ({
     default: () => <div data-testid="posts-list"></div>
 }));
 
-vi.mock("react-router", () => ({
-    useParams: vi.fn(),
-}));
-
 const isUser = "loggedInUserId";
 const userId = "profileUserId";
+
+const reactRouterMock = {
+    useParams: vi.fn(),
+};
 
 const mockProps = {
     userName: "John",
@@ -38,7 +40,7 @@ function setup(options = {
     userId: null,
     isLoading: false,
 }) {
-    useParams.mockReturnValue({ userId: options.userId })
+    reactRouterMock.useParams.mockReturnValue({ userId: options.userId });
 
     render(
         <UserContext.Provider value={{ isUser }}>
