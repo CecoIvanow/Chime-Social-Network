@@ -86,7 +86,7 @@ function setup(options = {
     usePostServicesMock.isLoading = options.getAllPostsIsLoading;
     useUserServices.isLoading = options.getAllUsersIsLoading;
 
-    render(
+    return render(
         <AlertContext.Provider value={{ setAlert }}>
             <CatalogPage />
         </AlertContext.Provider>
@@ -175,5 +175,14 @@ describe("CatalogPage component", () => {
                 expect(setAlert).toHaveBeenCalledWith(ERR_MSG.GET_ALL_USERS);
             };
         });
+    });
+
+    it("stops all ongoing user and post calls on unmount", () => {
+        const { unmount } = setup();
+
+        unmount();
+
+        expect(useUserServices.abortAll).toHaveBeenCalled();
+        expect(usePostServicesMock.abortAll).toHaveBeenCalled();
     });
 });
