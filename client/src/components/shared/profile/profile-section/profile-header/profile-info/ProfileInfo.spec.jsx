@@ -73,7 +73,7 @@ describe("ProfileInfo Component", () => {
         expect(screen.getByTestId("profile-info")).toHaveTextContent(userData.info);
     });
 
-    it("does not render profile edit button when user is not logged in", () => {
+    it("does not render the profile edit button when user is not logged in or is logged in and not in their profile", () => {
         setup({
             isUserIsMatching: false,
             isUserIsNull: true,
@@ -82,7 +82,7 @@ describe("ProfileInfo Component", () => {
         expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
     });
 
-    it("renders profile edit button with matching user is logged in and in his profile page", () => {
+    it("renders profile edit button when the user is logged in and in their profile page", () => {
         setup({
             isUserIsMatching: true,
             isUserIsNull: false,
