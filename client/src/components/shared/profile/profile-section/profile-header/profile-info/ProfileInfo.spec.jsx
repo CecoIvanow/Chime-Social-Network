@@ -66,7 +66,7 @@ function setup(options={
 };
 
 describe("ProfileInfo Component", () => {
-    it("renders user full name and profile information on passed user data", () => {
+    it("renders the user's full name and profile information", () => {
         setup();
 
         expect(screen.getByTestId("profile-fullname")).toHaveTextContent(userData.fullName);
