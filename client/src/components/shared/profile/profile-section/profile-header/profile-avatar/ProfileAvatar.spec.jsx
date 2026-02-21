@@ -17,9 +17,6 @@ beforeEach(() => {
 
 describe("ProfileAvatar component", () => {
     it("renders profile avatar with correct alt and src attributes", () => {
-        const img = screen.getByRole("img");
-
-        expect(img).toHaveAttribute("alt", "Profile picture");
-        expect(img).toHaveAttribute("src", mockProps.userData.imageUrl);
+        expect(screen.getByRole("img", { name: "Profile picture" })).toHaveAttribute("src", mockProps.userData.imageUrl);
     });
 });
