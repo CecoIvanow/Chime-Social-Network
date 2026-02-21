@@ -40,7 +40,7 @@ function setup(options = {
             </LikesContext.Provider>
         </PostContext.Provider>
     );
-}
+};
 
 
 describe("PostInteractions component", () => {
@@ -55,5 +55,14 @@ describe("PostInteractions component", () => {
         setup();
 
         expect(screen.getByTestId("likes-count")).toHaveTextContent(postMock.likes.length);
+    });
+
+    it("renders no post likes when the post hasnt been liked yet", () => {
+        setup({
+            renderPostWithoutLikes: true
+        });
+
+        expect(screen.getByTestId("likes-count")).toHaveTextContent(0);
+
     });
 });
