@@ -9,6 +9,8 @@ vi.mock("./useFetchApiCall.js", () => ({
     })
 }));
 
+const url = "/comments";
+
 const useFetchApiCallMock = {
     fetchExecute: vi.fn(),
     isLoading: false,
@@ -17,41 +19,44 @@ const useFetchApiCallMock = {
 
 describe("useCommentServices tests", () => {
     it.each([
-        { name: "creates a comment with 'Random comment content' as text content", text: "Random comment content"},
-        { name: "does not create a comment with empty text content", text: ""},
-        { name: "does not create a comment with only spaces as text content", text: " "},
+        { name: "creates a comment with 'Random comment content' as text content", text: "Random comment content" },
+        { name: "does not create a comment with empty text content", text: "" },
+        { name: "does not create a comment with only spaces as text content", text: " " },
     ])("$name", ({ text }) => {
         const { result } = renderHook(() => useCommentServices());
-
-        const trimmedText = text.trim();
+        const fullUrl = url;
+        const method = "POST";
 
         act(() => {
             result.current.createComment({ text });
         });
 
+        const trimmedText = text.trim();
         if (trimmedText) {
-            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalled();
+            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method, { text: trimmedText, });
         } else {
             expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
         };
     });
 
     it.each([
-        { name: "updates a comment with 'Random comment content' as text content", text: "Random comment content"},
-        { name: "does not update a comment with empty text content", text: ""},
-        { name: "does not update a comment with only spaces as text content", text: " "},
+        { name: "updates a comment with 'Random comment content' as text content", text: "Random comment content" },
+        { name: "does not update a comment with empty text content", text: "" },
+        { name: "does not update a comment with only spaces as text content", text: " " },
     ])("$name", ({ text }) => {
         const { result } = renderHook(() => useCommentServices());
 
         const commentId = "123";
-        const trimmedText = text.trim();
+        const fullUrl = url + `/${commentId}`;
+        const method = "PATCH";
 
         act(() => {
-            result.current.updateComment( commentId, text );
+            result.current.updateComment(commentId, text);
         });
 
+        const trimmedText = text.trim();
         if (trimmedText) {
-            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalled();
+            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method, { text: trimmedText, });
         } else {
             expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
         };
@@ -60,27 +65,47 @@ describe("useCommentServices tests", () => {
     it("deletes a comment", () => {
         const { result } = renderHook(() => useCommentServices());
 
-        const commentId = "123";;
+        const commentId = "123";
+        const fullUrl = url + `/${commentId}`;
+        const method = "DELETE";
 
         act(() => {
-            result.current.deleteComment( commentId );
+            result.current.deleteComment(commentId);
         });
 
-        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalled();
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
     });
 
     it("aborts all ongoing calls", () => {
         const { result } = renderHook(() => useCommentServices());
 
         const commentId = "123";
-        const text = "123";
+        const text = "Random comment content";
 
         act(() => {
-            result.current.deleteComment( commentId );
-            result.current.updateComment( commentId, text );
-            result.current.createComment({ text });      
-            result.current.abortAll();      
+            result.current.deleteComment(commentId);
+            result.current.updateComment(commentId, text);
+            result.current.createComment({ text });
+            result.current.abortAll();
         });
+
+        expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
+            1,
+            `${url}/${commentId}`,
+            "DELETE"
+        );
+
+        expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
+            2,
+            `${url}/${commentId}`,
+            "PATCH"
+        );
+
+        expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
+            3,
+            `${url}`,
+            "POST"
+        );
 
         expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenCalledTimes(3);
     });
