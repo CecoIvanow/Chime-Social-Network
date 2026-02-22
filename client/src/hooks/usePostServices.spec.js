@@ -122,6 +122,19 @@ describe("usePostServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
     });
 
+    it("gets post with comments", () => {
+        const { result } = renderHook(() => usePostServices());
+
+        const postId = "123";
+        const fullUrl = `${url}/${postId}/with-comments`;
+
+        act(() => {
+            result.current.getPostWithComments(postId);
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
+    });
+
     it.skip("aborts all ongoing calls", () => {
         const { result } = renderHook(() => usePostServices());
 
