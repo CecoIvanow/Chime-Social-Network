@@ -22,7 +22,7 @@ describe("useCommentServices tests", () => {
         { name: "does not create a comment with only spaces as text content", text: " "},
     ])("$name", ({ text }) => {
         const { result } = renderHook(() => useCommentServices());
-        
+
         const trimmedText = text.trim();
 
         act(() => {
@@ -55,5 +55,17 @@ describe("useCommentServices tests", () => {
         } else {
             expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
         };
+    });
+
+    it("deletes a comment", () => {
+        const { result } = renderHook(() => useCommentServices());
+
+        const commentId = "123";;
+
+        act(() => {
+            result.current.deleteComment( commentId );
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalled();
     });
 });
