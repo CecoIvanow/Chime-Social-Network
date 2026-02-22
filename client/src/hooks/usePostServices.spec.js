@@ -135,7 +135,7 @@ describe("usePostServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
     });
 
-    it.skip("aborts all ongoing calls", () => {
+    it("aborts all ongoing calls", () => {
         const { result } = renderHook(() => usePostServices());
 
         const postId = "123";
