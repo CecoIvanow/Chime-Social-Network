@@ -32,6 +32,20 @@ describe("useUserServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
     });
 
+    it("gets user data", () => {
+        const { result } = renderHook(() => useUserServices());
+
+        const userId = "123";
+
+        const fullUrl = url + `/${userId}`;
+
+        act(() => {
+            result.current.getUserData(userId);
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
+    });
+
     it.skip("aborts all ongoing calls", () => {
         const { result } = renderHook(() => useUserServices());
 
