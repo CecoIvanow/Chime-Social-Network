@@ -39,7 +39,7 @@ describe("usePostServices tests", () => {
         };
     });
 
-    it.only("likes a post", () => {
+    it("likes a post", () => {
         const { result } = renderHook(() => usePostServices());
 
         const userId = "userId"
@@ -55,10 +55,27 @@ describe("usePostServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
     });
 
+    it("unlikes a post", () => {
+        const { result } = renderHook(() => usePostServices());
+
+        const userId = "userId"
+        const postId = "123";
+
+        const fullUrl = url + `/${postId}/like/${userId}`;
+        const method = "DELETE";
+
+        act(() => {
+            result.current.unlikePost(userId, postId);
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
+    });
+
     it("deletes a post", () => {
         const { result } = renderHook(() => usePostServices());
 
         const postId = "123";
+
         const fullUrl = url + `/${postId}`;
         const method = "DELETE";
 
@@ -77,6 +94,7 @@ describe("usePostServices tests", () => {
         const { result } = renderHook(() => usePostServices());
 
         const postId = "123";
+
         const fullUrl = url + `/${postId}`;
         const method = "PATCH";
 
