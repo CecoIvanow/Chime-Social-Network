@@ -39,6 +39,20 @@ describe("usePostServices tests", () => {
         };
     });
 
+    it("deletes a post", () => {
+        const { result } = renderHook(() => usePostServices());
+
+        const postId = "123";
+        const fullUrl = url + `/${postId}`;
+        const method = "DELETE";
+
+        act(() => {
+            result.current.deletePost(postId);
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
+    });
+
     it.each([
         { name: "updates a post with 'Random post content' as text content", text: "Random post content" },
         { name: "does not update a post with empty text content", text: "" },
