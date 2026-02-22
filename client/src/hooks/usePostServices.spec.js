@@ -39,6 +39,21 @@ describe("usePostServices tests", () => {
         };
     });
 
+    it("deletes a post", () => {
+        const { result } = renderHook(() => usePostServices());
+
+        const postId = "123";
+
+        const fullUrl = url + `/${postId}`;
+        const method = "DELETE";
+
+        act(() => {
+            result.current.deletePost(postId);
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
+    });
+
     it("likes a post", () => {
         const { result } = renderHook(() => usePostServices());
 
@@ -71,25 +86,10 @@ describe("usePostServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
     });
 
-    it("deletes a post", () => {
-        const { result } = renderHook(() => usePostServices());
-
-        const postId = "123";
-
-        const fullUrl = url + `/${postId}`;
-        const method = "DELETE";
-
-        act(() => {
-            result.current.deletePost(postId);
-        });
-
-        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
-    });
-
     it.each([
-        { name: "updates a post with 'Random post content' as text content", text: "Random post content" },
-        { name: "does not update a post with empty text content", text: "" },
-        { name: "does not update a post with only spaces as text content", text: " " },
+        { name: "edits a post with 'Random post content' as text content", text: "Random post content" },
+        { name: "does not edit a post with empty text content", text: "" },
+        { name: "does not edit a post with only spaces as text content", text: " " },
     ])("$name", ({ text }) => {
         const { result } = renderHook(() => usePostServices());
 
@@ -108,6 +108,18 @@ describe("usePostServices tests", () => {
         } else {
             expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
         };
+    });
+
+    it("gets all posts", () => {
+        const { result } = renderHook(() => usePostServices());
+
+        const fullUrl = url;
+
+        act(() => {
+            result.current.getAllPosts();
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
     });
 
     it.skip("aborts all ongoing calls", () => {
