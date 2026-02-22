@@ -9,6 +9,16 @@ vi.mock("./useFetchApiCall.js", () => ({
     })
 }));
 
+vi.mock("firebase/storage", () => ({
+    ref: vi.fn(),
+    uploadBytes: vi.fn(),
+    getDownloadURL: vi.fn(),
+}));
+
+vi.mock("../firebase/firebase-storage/config", () => ({
+    storage: {},
+}));
+
 const url = "/users";
 
 const useFetchApiCallMock = {
@@ -19,7 +29,7 @@ const useFetchApiCallMock = {
 
 describe("useUserServices tests", () => {
     it("gets all user posts", () => {
-        const { result } = renderHook(() => useUserServices());
+        const { result } = renderHook(() => useUserServices(),);
 
         const userId = "123";
 
