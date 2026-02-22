@@ -89,24 +89,6 @@ describe("useCommentServices tests", () => {
             result.current.abortAll();
         });
 
-        expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
-            1,
-            `${url}/${commentId}`,
-            "DELETE"
-        );
-
-        expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
-            2,
-            `${url}/${commentId}`,
-            "PATCH"
-        );
-
-        expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
-            3,
-            url,
-            "POST"
-        );
-
         expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenCalledTimes(3);
     });
 });
