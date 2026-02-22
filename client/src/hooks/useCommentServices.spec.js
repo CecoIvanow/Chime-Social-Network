@@ -68,4 +68,20 @@ describe("useCommentServices tests", () => {
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalled();
     });
+
+    it("aborts all ongoing calls", () => {
+        const { result } = renderHook(() => useCommentServices());
+
+        const commentId = "123";
+        const text = "123";
+
+        act(() => {
+            result.current.deleteComment( commentId );
+            result.current.updateComment( commentId, text );
+            result.current.createComment({ text });      
+            result.current.abortAll();      
+        });
+
+        expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenCalledTimes(3);
+    });
 });
