@@ -39,6 +39,29 @@ describe("usePostServices tests", () => {
         };
     });
 
+    it.each([
+        { name: "updates a post with 'Random post content' as text content", text: "Random post content" },
+        { name: "does not update a post with empty text content", text: "" },
+        { name: "does not update a post with only spaces as text content", text: " " },
+    ])("$name", ({ text }) => {
+        const { result } = renderHook(() => usePostServices());
+
+        const postId = "123";
+        const fullUrl = url + `/${postId}`;
+        const method = "PATCH";
+
+        act(() => {
+            result.current.editPost(postId, text);
+        });
+
+        const trimmedText = text.trim();
+        if (trimmedText) {
+            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method, { text: trimmedText, });
+        } else {
+            expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
+        };
+    });
+
     it.skip("aborts all ongoing calls", () => {
         const { result } = renderHook(() => usePostServices());
 
