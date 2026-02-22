@@ -39,6 +39,22 @@ describe("usePostServices tests", () => {
         };
     });
 
+    it.only("likes a post", () => {
+        const { result } = renderHook(() => usePostServices());
+
+        const userId = "userId"
+        const postId = "123";
+
+        const fullUrl = url + `/${postId}/like/${userId}`;
+        const method = "POST";
+
+        act(() => {
+            result.current.likePost(userId, postId);
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
+    });
+
     it("deletes a post", () => {
         const { result } = renderHook(() => usePostServices());
 
