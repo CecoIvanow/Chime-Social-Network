@@ -22,13 +22,13 @@ describe("usePostServices tests", () => {
         { name: "creates a post with 'Random post content' as text content", text: "Random post content" },
         { name: "does not create a post with empty text content", text: "" },
         { name: "does not create a post with only spaces as text content", text: " " },
-    ])("$name", ({ text }) => {
+    ])("$name", async ({ text }) => {
         const { result } = renderHook(() => usePostServices());
         const fullUrl = url;
         const method = "POST";
 
-        act(() => {
-            result.current.createPost({ text });
+        await act(async () => {
+            await result.current.createPost({ text });
         });
 
         const trimmedText = text.trim();
@@ -39,7 +39,7 @@ describe("usePostServices tests", () => {
         };
     });
 
-    it("deletes a post", () => {
+    it("deletes a post", async () => {
         const { result } = renderHook(() => usePostServices());
 
         const postId = "123";
@@ -47,14 +47,14 @@ describe("usePostServices tests", () => {
         const fullUrl = url + `/${postId}`;
         const method = "DELETE";
 
-        act(() => {
-            result.current.deletePost(postId);
+        await act(async () => {
+            await result.current.deletePost(postId);
         });
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
     });
 
-    it("likes a post", () => {
+    it("likes a post", async () => {
         const { result } = renderHook(() => usePostServices());
 
         const userId = "userId"
@@ -63,14 +63,14 @@ describe("usePostServices tests", () => {
         const fullUrl = url + `/${postId}/like/${userId}`;
         const method = "POST";
 
-        act(() => {
-            result.current.likePost(userId, postId);
+        await act(async () => {
+            await result.current.likePost(userId, postId);
         });
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
     });
 
-    it("unlikes a post", () => {
+    it("unlikes a post", async () => {
         const { result } = renderHook(() => usePostServices());
 
         const userId = "userId"
@@ -79,8 +79,8 @@ describe("usePostServices tests", () => {
         const fullUrl = url + `/${postId}/like/${userId}`;
         const method = "DELETE";
 
-        act(() => {
-            result.current.unlikePost(userId, postId);
+        await act(async () => {
+            await result.current.unlikePost(userId, postId);
         });
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
@@ -90,7 +90,7 @@ describe("usePostServices tests", () => {
         { name: "edits a post with 'Random post content' as text content", text: "Random post content" },
         { name: "does not edit a post with empty text content", text: "" },
         { name: "does not edit a post with only spaces as text content", text: " " },
-    ])("$name", ({ text }) => {
+    ])("$name", async ({ text }) => {
         const { result } = renderHook(() => usePostServices());
 
         const postId = "123";
@@ -98,8 +98,8 @@ describe("usePostServices tests", () => {
         const fullUrl = url + `/${postId}`;
         const method = "PATCH";
 
-        act(() => {
-            result.current.editPost(postId, text);
+        await act(async () => {
+            await result.current.editPost(postId, text);
         });
 
         const trimmedText = text.trim();
@@ -110,39 +110,39 @@ describe("usePostServices tests", () => {
         };
     });
 
-    it("gets all posts", () => {
+    it("gets all posts", async () => {
         const { result } = renderHook(() => usePostServices());
 
         const fullUrl = url;
 
-        act(() => {
-            result.current.getAllPosts();
+        await act(async () => {
+            await result.current.getAllPosts();
         });
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
     });
 
-    it("gets post with comments", () => {
+    it("gets post with comments", async () => {
         const { result } = renderHook(() => usePostServices());
 
         const postId = "123";
         const fullUrl = `${url}/${postId}/with-comments`;
 
-        act(() => {
-            result.current.getPostWithComments(postId);
+        await act(async () => {
+            await result.current.getPostWithComments(postId);
         });
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
     });
 
-    it("aborts all ongoing calls", () => {
+    it("aborts all ongoing calls", async () => {
         const { result } = renderHook(() => usePostServices());
 
         const postId = "123";
         const text = "Random comment content";
 
-        act(() => {
-            result.current.deletePost(postId);
+        await act(async () => {
+            await result.current.deletePost(postId);
             result.current.editPost(postId, text);
             result.current.createPost({ text });
             result.current.abortAll();
