@@ -219,7 +219,23 @@ describe("useUserServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
     });
 
+    it("gets all user fields", async () => {
+        const { result } = renderHook(() => useUserServices(),);
 
+        const testParams = {
+            userId: "123",
+            fields: "firstName",
+            get fullUrl() {
+                return `${url}/${this.userId}/fields?${this.fields}`;
+            },
+        };
+
+        await act(async () => {
+            await result.current.getUserFields(testParams.userId, testParams.fields);
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
+    });
 
     it.skip("aborts all ongoing calls", () => {
         const { result } = renderHook(() => useUserServices());
