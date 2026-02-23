@@ -124,6 +124,27 @@ describe("useUserServices tests", () => {
         expect(setIsUser).toHaveBeenCalledWith(false);
     });
 
+    it("gets all users and reverses the result", async () => {
+        const { result } = renderHook(() => useUserServices());
+        
+        let response;
+        const testParams = {
+            fullUrl: url,
+            responseParams: ["userOne", "userTwo", "userThree"],
+        };
+
+        useFetchApiCallMock.fetchExecute.mockResolvedValue([...testParams.responseParams]);
+
+        await act(async () => {
+            response = await result.current.getAllUsers();
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
+        for (let i = 0; i < testParams.responseParams.length; i++) {
+            expect(response[i]).toBe(testParams.responseParams[testParams.responseParams.length - 1 - i]);
+        };
+    });
+
     it("updates the user's information", async () => {
         const { result } = renderHook(() => useUserServices(), { wrapper: userContextWrapper });
 
@@ -197,6 +218,8 @@ describe("useUserServices tests", () => {
 
         expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
     });
+
+
 
     it.skip("aborts all ongoing calls", () => {
         const { result } = renderHook(() => useUserServices());
