@@ -518,37 +518,29 @@ describe("useUserServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
     });
 
-    it.skip("aborts all ongoing calls", () => {
+    it("aborts all ongoing calls", async () => {
         const { result } = renderHook(() => useUserServices());
 
-        const postId = "123";
-        const text = "Random comment content";
+        const userId = "123";
 
-        act(() => {
-            result.current.deletePost(postId);
-            result.current.editPost(postId, text);
-            result.current.createPost({ text });
+        await act(async () => {
+            await result.current.getUserPosts(userId);
+            await result.current.getUserData(userId);
             result.current.abortAll();
         });
 
         expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
             1,
-            `${url}/${postId}`,
-            "DELETE"
+            `${url}/${userId}/posts`,
+            "GET",
         );
 
         expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
             2,
-            `${url}/${postId}`,
-            "PATCH"
+            `${url}/${userId}`,
+            "GET",
         );
 
-        expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
-            3,
-            url,
-            "POST"
-        );
-
-        expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenCalledTimes(3);
+        expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenCalledTimes(2);
     });
 });
