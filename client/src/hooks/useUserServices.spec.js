@@ -146,7 +146,7 @@ describe("useUserServices tests", () => {
     });
 
     it("updates the user's information", async () => {
-        const { result } = renderHook(() => useUserServices(), { wrapper: userContextWrapper });
+        const { result } = renderHook(() => useUserServices());
 
         const testParams = {
             userId: "123",
@@ -197,7 +197,7 @@ describe("useUserServices tests", () => {
             errorMessage: "Birthday field must not be empty!",
         },
     ])("$name", async ({ payload, errorMessage }) => {
-        const { result } = renderHook(() => useUserServices(), { wrapper: userContextWrapper });
+        const { result } = renderHook(() => useUserServices());
 
         const testParams = {
             userId: "123",
@@ -220,7 +220,7 @@ describe("useUserServices tests", () => {
     });
 
     it("gets all user fields", async () => {
-        const { result } = renderHook(() => useUserServices(),);
+        const { result } = renderHook(() => useUserServices());
 
         const testParams = {
             userId: "123",
@@ -238,7 +238,7 @@ describe("useUserServices tests", () => {
     });
 
     it("changes the user email", async () => {
-        const { result } = renderHook(() => useUserServices(),);
+        const { result } = renderHook(() => useUserServices());
 
         const testParams = {
             userId: "123",
@@ -356,7 +356,7 @@ describe("useUserServices tests", () => {
     });
 
     it("changes the user password", async () => {
-        const { result } = renderHook(() => useUserServices(),);
+        const { result } = renderHook(() => useUserServices());
 
         const testParams = {
             userId: "123",
@@ -464,7 +464,7 @@ describe("useUserServices tests", () => {
     });
 
     it("gets user full profile information", async () => {
-        const { result } = renderHook(() => useUserServices(),);
+        const { result } = renderHook(() => useUserServices());
 
         const testParams = {
             userId: "123",
@@ -481,7 +481,7 @@ describe("useUserServices tests", () => {
     });
 
     it("adds another user as friend", async () => {
-        const { result } = renderHook(() => useUserServices(),);
+        const { result } = renderHook(() => useUserServices());
 
         const testParams = {
             userId: "123",
@@ -500,7 +500,7 @@ describe("useUserServices tests", () => {
     });
 
     it("removes another user from friends", async () => {
-        const { result } = renderHook(() => useUserServices(),);
+        const { result } = renderHook(() => useUserServices());
 
         const testParams = {
             userId: "123",
