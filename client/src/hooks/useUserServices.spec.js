@@ -39,63 +39,79 @@ describe("useUserServices tests", () => {
     it("gets all user posts", () => {
         const { result } = renderHook(() => useUserServices(),);
 
-        const userId = "123";
-        const fullUrl = url + `/${userId}/posts`;
+        const testParams = {
+            userId: "123",
+            get fullUrl() {
+                return `${url}/${this.userId}/posts`;
+            },
+        };
 
         act(() => {
-            result.current.getUserPosts(userId);
+            result.current.getUserPosts(testParams.userId);
         });
 
-        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
 
     it("gets user data", () => {
         const { result } = renderHook(() => useUserServices());
 
-        const userId = "123";
-        const fullUrl = url + `/${userId}`;
+        const testParams = {
+            userId: "123",
+            get fullUrl() {
+                return `${url}/${this.userId}`;
+            },
+        };
 
         act(() => {
-            result.current.getUserData(userId);
+            result.current.getUserData(testParams.userId);
         });
 
-        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
 
     it("registers the user and sets the user id", async () => {
         const { result } = renderHook(() => useUserServices(), { wrapper: userContextWrapper });
 
+        const testParams = {
+            userId: "123",
+            method: "POST",
+            fullUrl: "/register",
+            payload: {
+                imageUrl: "/image-uri.jpeg",
+            },
+        };
+
         ref.mockReturnValue("mock-image-ref");
-        getDownloadURL.mockResolvedValue("/image-uri.jpeg");
-        useFetchApiCallMock.fetchExecute.mockResolvedValue("123");
+        getDownloadURL.mockResolvedValue(testParams.payload.imageUrl);
+        useFetchApiCallMock.fetchExecute.mockResolvedValue(testParams.userId);
 
-        const payload = {};
-        const fullUrl = "/register";
-        const method = "POST";
-
-        await act( async() => {
-            await result.current.register(payload);
+        await act(async () => {
+            await result.current.register(testParams.payload);
         });
 
-        expect(setIsUser).toHaveBeenCalledWith("123");
-        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method, { imageUrl: "/image-uri.jpeg" });
+        expect(setIsUser).toHaveBeenCalledWith(testParams.userId);
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.payload);
     });
 
     it("logs in the user and sets the user id", async () => {
         const { result } = renderHook(() => useUserServices(), { wrapper: userContextWrapper });
 
-        useFetchApiCallMock.fetchExecute.mockResolvedValue("123");
+        const testParams = {
+            userId: "123",
+            method: "POST",
+            fullUrl: "/login",
+            payload: {},
+        };
 
-        const payload = {};
-        const fullUrl = "/login";
-        const method = "POST";
+        useFetchApiCallMock.fetchExecute.mockResolvedValue(testParams.userId);
 
         await act(async () => {
-            await result.current.login(payload);
+            await result.current.login(testParams.payload);
         });
 
-        expect(setIsUser).toHaveBeenCalledWith("123");
-        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method, payload);
+        expect(setIsUser).toHaveBeenCalledWith(testParams.userId);
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.payload);
     });
 
     it.skip("aborts all ongoing calls", () => {
