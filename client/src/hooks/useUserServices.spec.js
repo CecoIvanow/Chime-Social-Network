@@ -251,7 +251,6 @@ describe("useUserServices tests", () => {
                 curPass: "user-password",
                 newEmail: "john.doe2@email.com",
                 curEmail: "john.doe@email.com",
-
             },
             userUpdatePayload: {
                 validationData: {
@@ -270,6 +269,90 @@ describe("useUserServices tests", () => {
         });
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.userUpdatePayload);
+    });
+
+    it.each([
+        {
+            name: "on user email change throws an error on not entered current email",
+            userData: {
+                rePass: "user-password",
+                curPass: "user-password",
+                newEmail: "john.doe2@email.com",
+                curEmail: "",
+            },
+            errorMessage: "Current email field must be entered!",
+        },
+        {
+            name: "on user email change throws an error on not entered new email",
+            userData: {
+                rePass: "user-password",
+                curPass: "user-password",
+                newEmail: "",
+                curEmail: "john.doe@email.com",
+            },
+            errorMessage: "New email field must be entered!",
+        },
+        {
+            name: "on user email change throws an error on not entered current password",
+            userData: {
+                rePass: "user-password",
+                curPass: "",
+                newEmail: "john.doe2@email.com",
+                curEmail: "john.doe@email.com",
+            },
+            errorMessage: "Password fields are missing values!",
+        },
+        {
+            name: "on user email change throws an error on not entered repeat password",
+            userData: {
+                rePass: "",
+                curPass: "user-password",
+                newEmail: "john.doe2@email.com",
+                curEmail: "john.doe@email.com",
+            },
+            errorMessage: "Password fields are missing values!",
+        },
+        {
+            name: "on user email change throws an error on different currect and repeat apsswords",
+            userData: {
+                rePass: "user-password",
+                curPass: "other-user-password",
+                newEmail: "john.doe2@email.com",
+                curEmail: "john.doe@email.com",
+            },
+            errorMessage: "Repeat password does not match!",
+        },
+    ])("$name", async ({ userData, errorMessage }) => {
+        const { result } = renderHook(() => useUserServices());
+
+        const testParams = {
+            userId: "123",
+            method: "PATCH",
+            get fullUrl() {
+                return `${url}/${this.userId}/credentials`;
+            },
+            userData,
+            userUpdatePayload: {
+                validationData: {
+                    rePass: "user-password",
+                    curPass: "user-password",
+                    curEmail: "john.doe@email.com",
+                },
+                newValues: {
+                    email: "john.doe2@email.com",
+                },
+            },
+        };
+
+        await act(async () => {
+            try {
+                await result.current.changeUserEmail(testParams.userId, testParams.userData);
+            } catch (error) {
+                expect(error.message).toBe(errorMessage);
+            };
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
     });
 
     it("changes the user password", async () => {
@@ -374,7 +457,7 @@ describe("useUserServices tests", () => {
                 await result.current.changeUserPassword(testParams.userId, testParams.userData);
             } catch (error) {
                 expect(error.message).toBe(errorMessage);
-            }
+            };
         });
 
         expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
