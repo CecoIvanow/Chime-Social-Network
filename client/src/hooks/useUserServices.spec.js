@@ -124,6 +124,29 @@ describe("useUserServices tests", () => {
         expect(setIsUser).toHaveBeenCalledWith(false);
     });
 
+    it("updates the user's information", async () => {
+        const { result } = renderHook(() => useUserServices(), { wrapper: userContextWrapper });
+
+        const testParams = {
+            userId: "123",
+            method: "PUT",
+            get fullUrl() {
+                return `/users/${this.userId}`;
+            },
+            payload: {
+                firstName: "John",
+                lastName: "Doe",
+                birthday: "01.01.1991",
+            },
+        };
+
+        await act(async () => {
+            await result.current.updateUser(testParams.userId, testParams.payload);
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.payload);
+    });
+
     it.skip("aborts all ongoing calls", () => {
         const { result } = renderHook(() => useUserServices());
 
