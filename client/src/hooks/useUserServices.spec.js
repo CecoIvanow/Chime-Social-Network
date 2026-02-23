@@ -237,6 +237,23 @@ describe("useUserServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
 
+    it("gets user full profile information", async () => {
+        const { result } = renderHook(() => useUserServices(),);
+
+        const testParams = {
+            userId: "123",
+            get fullUrl() {
+                return `${url}/${this.userId}/full-profile`;
+            },
+        };
+
+        await act(async () => {
+            await result.current.getFullUserProfile(testParams.userId);
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
+    });
+
     it.skip("aborts all ongoing calls", () => {
         const { result } = renderHook(() => useUserServices());
 
