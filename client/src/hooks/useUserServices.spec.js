@@ -81,6 +81,23 @@ describe("useUserServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method, { imageUrl: "/image-uri.jpeg" });
     });
 
+    it("logs in the user and sets the user id", async () => {
+        const { result } = renderHook(() => useUserServices(), { wrapper: userContextWrapper });
+
+        useFetchApiCallMock.fetchExecute.mockResolvedValue("123");
+
+        const payload = {};
+        const fullUrl = "/login";
+        const method = "POST";
+
+        await act(async () => {
+            await result.current.login(payload);
+        });
+
+        expect(setIsUser).toHaveBeenCalledWith("123");
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method, payload);
+    });
+
     it.skip("aborts all ongoing calls", () => {
         const { result } = renderHook(() => useUserServices());
 
