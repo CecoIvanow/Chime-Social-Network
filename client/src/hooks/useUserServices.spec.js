@@ -36,7 +36,7 @@ const useFetchApiCallMock = {
 const userContextWrapper = ({ children }) => React.createElement(UserContext.Provider, { value: { setIsUser } }, children);
 
 describe("useUserServices tests", () => {
-    it("gets all user posts", () => {
+    it("gets all user posts", async () => {
         const { result } = renderHook(() => useUserServices(),);
 
         const testParams = {
@@ -46,14 +46,14 @@ describe("useUserServices tests", () => {
             },
         };
 
-        act(() => {
-            result.current.getUserPosts(testParams.userId);
+        await act(async () => {
+            await result.current.getUserPosts(testParams.userId);
         });
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
 
-    it("gets user data", () => {
+    it("gets user data", async () => {
         const { result } = renderHook(() => useUserServices());
 
         const testParams = {
@@ -63,8 +63,8 @@ describe("useUserServices tests", () => {
             },
         };
 
-        act(() => {
-            result.current.getUserData(testParams.userId);
+        await act(async () => {
+            await result.current.getUserData(testParams.userId);
         });
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
