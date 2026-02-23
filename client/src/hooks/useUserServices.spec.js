@@ -254,6 +254,25 @@ describe("useUserServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
 
+    it("adds another user as friend", async () => {
+        const { result } = renderHook(() => useUserServices(),);
+
+        const testParams = {
+            userId: "123",
+            newFriendId: "4453",
+            method: "PATCH",
+            get fullUrl() {
+                return `${url}/${this.userId}/friends/${this.newFriendId}`;
+            },
+        };
+
+        await act(async () => {
+            await result.current.addFriend(testParams.userId, testParams.newFriendId);
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
+    });
+
     it.skip("aborts all ongoing calls", () => {
         const { result } = renderHook(() => useUserServices());
 
