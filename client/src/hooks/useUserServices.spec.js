@@ -1,7 +1,12 @@
+import { getDownloadURL, ref } from "firebase/storage";
+
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { UserContext } from "../contexts/user-context";
+
 import useUserServices from "./useUserServices";
+import React from "react";
 
 vi.mock("./useFetchApiCall.js", () => ({
     default: () => ({
@@ -11,7 +16,6 @@ vi.mock("./useFetchApiCall.js", () => ({
 
 vi.mock("firebase/storage", () => ({
     ref: vi.fn(),
-    uploadBytes: vi.fn(),
     getDownloadURL: vi.fn(),
 }));
 
@@ -21,18 +25,21 @@ vi.mock("../firebase/firebase-storage/config", () => ({
 
 const url = "/users";
 
+const setIsUser = vi.fn();
+
 const useFetchApiCallMock = {
     fetchExecute: vi.fn(),
     isLoading: false,
     abortFetchRequest: vi.fn(),
 };
 
+const userContextWrapper = ({ children }) => React.createElement(UserContext.Provider, { value: { setIsUser } }, children);
+
 describe("useUserServices tests", () => {
     it("gets all user posts", () => {
         const { result } = renderHook(() => useUserServices(),);
 
         const userId = "123";
-
         const fullUrl = url + `/${userId}/posts`;
 
         act(() => {
@@ -46,7 +53,6 @@ describe("useUserServices tests", () => {
         const { result } = renderHook(() => useUserServices());
 
         const userId = "123";
-
         const fullUrl = url + `/${userId}`;
 
         act(() => {
@@ -54,6 +60,25 @@ describe("useUserServices tests", () => {
         });
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
+    });
+
+    it("registers the user and sets the user id", async () => {
+        const { result } = renderHook(() => useUserServices(), { wrapper: userContextWrapper });
+
+        ref.mockReturnValue("mock-image-ref");
+        getDownloadURL.mockResolvedValue("/image-uri.jpeg");
+        useFetchApiCallMock.fetchExecute.mockResolvedValue("123");
+
+        const payload = {};
+        const fullUrl = "/register";
+        const method = "POST";
+
+        await act( async() => {
+            await result.current.register(payload);
+        });
+
+        expect(setIsUser).toHaveBeenCalledWith("123");
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method, { imageUrl: "/image-uri.jpeg" });
     });
 
     it.skip("aborts all ongoing calls", () => {
