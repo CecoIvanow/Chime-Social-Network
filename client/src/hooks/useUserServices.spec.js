@@ -271,6 +271,80 @@ describe("useUserServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.userUpdatePayload);
     });
 
+    it.only.each([
+        {
+            name: "on user password change throws an error on not entered new password",
+            userData: {
+                newPass: "",
+                rePass: "new-password",
+                curPass: "old-password",
+                curEmail: "john.doe@email.com",
+            },
+            errorMessage: "Password fields are missing values!",
+        },
+        {
+            name: "on user password change throws an error on not entered repeat password",
+            userData: {
+                newPass: "new-password",
+                rePass: "",
+                curPass: "old-password",
+                curEmail: "john.doe@email.com",
+            },
+            errorMessage: "Password fields are missing values!",
+        },
+        {
+            name: "on user password change throws an error on not entered current password",
+            userData: {
+                newPass: "new-password",
+                rePass: "new-password",
+                curPass: "",
+                curEmail: "john.doe@email.com",
+            },
+            errorMessage: "Password fields are missing values!",
+        },
+        {
+            name: "on user password change throws an error on not entered email",
+            userData: {
+                newPass: "new-password",
+                rePass: "new-password",
+                curPass: "old-password",
+                curEmail: "",
+            },
+            errorMessage: "Current email field must be entered!",
+        },
+        {
+            name: "on user password change throws an error on new and repeat passwords not matching",
+            userData: {
+                newPass: "new-password",
+                rePass: "different-password",
+                curPass: "old-password",
+                curEmail: "john.doe@email.com",
+            },
+            errorMessage: "Repeat password does not match!",
+        },
+    ])("$name", async ({ userData, errorMessage }) => {
+        const { result } = renderHook(() => useUserServices());
+
+        const testParams = {
+            userId: "123",
+            method: "PATCH",
+            userData,
+            get fullUrl() {
+                return `${url}/${this.userId}/credentials`;
+            },
+        };
+
+        await act(async () => {
+            try {
+                await result.current.changeUserPassword(testParams.userId, testParams.userData);
+            } catch (error) {
+                expect(error.message).toBe(errorMessage);
+            }
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
+    });
+
     it("gets user full profile information", async () => {
         const { result } = renderHook(() => useUserServices(),);
 
