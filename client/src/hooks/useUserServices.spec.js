@@ -147,6 +147,57 @@ describe("useUserServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.payload);
     });
 
+    it.each([
+        {
+            name: "on user information update throws an error when first name is not entered",
+            payload: {
+                firstName: "",
+                lastName: "Doe",
+                birthday: "01.01.1991",
+            },
+            errorMessage: "First name field must not be empty!",
+        },
+        {
+            name: "on user information update throws an error when last name is not entered",
+            payload: {
+                firstName: "John",
+                lastName: "",
+                birthday: "01.01.1991",
+            },
+            errorMessage: "Last name field must not be empty!",
+        },
+        {
+            name: "on user information update throws an error when birthday is not entered",
+            payload: {
+                firstName: "John",
+                lastName: "Doe",
+                birthday: "",
+            },
+            errorMessage: "Birthday field must not be empty!",
+        },
+    ])("$name", async ({ payload, errorMessage }) => {
+        const { result } = renderHook(() => useUserServices(), { wrapper: userContextWrapper });
+
+        const testParams = {
+            userId: "123",
+            method: "PUT",
+            get fullUrl() {
+                return `/users/${this.userId}`;
+            },
+            payload,
+        };
+
+        await act(async () => {
+            try {
+                await result.current.updateUser(testParams.userId, testParams.payload);
+            } catch (error) {
+                expect(error.message).toEqual(errorMessage);
+            };
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
+    });
+
     it.skip("aborts all ongoing calls", () => {
         const { result } = renderHook(() => useUserServices());
 
