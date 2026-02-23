@@ -237,20 +237,55 @@ describe("useUserServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
 
+    it("changes the user email", async () => {
+        const { result } = renderHook(() => useUserServices(),);
+
+        const testParams = {
+            userId: "123",
+            method: "PATCH",
+            get fullUrl() {
+                return `${url}/${this.userId}/credentials`;
+            },
+            userData: {
+                rePass: "user-password",
+                curPass: "user-password",
+                newEmail: "john.doe2@email.com",
+                curEmail: "john.doe@email.com",
+
+            },
+            userUpdatePayload: {
+                validationData: {
+                    rePass: "user-password",
+                    curPass: "user-password",
+                    curEmail: "john.doe@email.com",
+                },
+                newValues: {
+                    email: "john.doe2@email.com",
+                },
+            },
+        };
+
+        await act(async () => {
+            await result.current.changeUserEmail(testParams.userId, testParams.userData);
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.userUpdatePayload);
+    });
+
     it("changes the user password", async () => {
         const { result } = renderHook(() => useUserServices(),);
 
         const testParams = {
             userId: "123",
             method: "PATCH",
+            get fullUrl() {
+                return `${url}/${this.userId}/credentials`;
+            },
             userData: {
                 newPass: "new-password",
                 rePass: "new-password",
                 curPass: "old-password",
                 curEmail: "john.doe@email.com",
-            },
-            get fullUrl() {
-                return `${url}/${this.userId}/credentials`;
             },
             userUpdatePayload: {
                 validationData: {
@@ -271,7 +306,7 @@ describe("useUserServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.userUpdatePayload);
     });
 
-    it.only.each([
+    it.each([
         {
             name: "on user password change throws an error on not entered new password",
             userData: {
@@ -328,10 +363,10 @@ describe("useUserServices tests", () => {
         const testParams = {
             userId: "123",
             method: "PATCH",
-            userData,
             get fullUrl() {
                 return `${url}/${this.userId}/credentials`;
             },
+            userData,
         };
 
         await act(async () => {
