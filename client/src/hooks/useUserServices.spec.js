@@ -273,6 +273,25 @@ describe("useUserServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
     });
 
+    it("removes another user from friends", async () => {
+        const { result } = renderHook(() => useUserServices(),);
+
+        const testParams = {
+            userId: "123",
+            friendId: "4453",
+            method: "DELETE",
+            get fullUrl() {
+                return `${url}/${this.userId}/friends/${this.friendId}`;
+            },
+        };
+
+        await act(async () => {
+            await result.current.removeFriend(testParams.userId, testParams.friendId);
+        });
+
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
+    });
+
     it.skip("aborts all ongoing calls", () => {
         const { result } = renderHook(() => useUserServices());
 
