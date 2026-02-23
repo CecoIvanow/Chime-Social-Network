@@ -114,6 +114,16 @@ describe("useUserServices tests", () => {
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.payload);
     });
 
+    it("logs out the user", async () => {
+        const { result } = renderHook(() => useUserServices(), { wrapper: userContextWrapper });
+
+        await act(async () => {
+            await result.current.logout();
+        });
+
+        expect(setIsUser).toHaveBeenCalledWith(false);
+    });
+
     it.skip("aborts all ongoing calls", () => {
         const { result } = renderHook(() => useUserServices());
 
