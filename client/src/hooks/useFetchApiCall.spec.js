@@ -133,4 +133,26 @@ describe("useFetchApiCall tests", () => {
 
         expect(api.delete).toHaveBeenCalledWith(testParams.url, testParams.signal);
     });
+
+    it("returns data from the api response", async () => {
+        const { result } = renderHook(() => useFetchApiCall(), { wrapper: alertContextWrapper });
+
+        const testParams = {
+            url: "https://www.example.com",
+            method: "GET",
+            response: {
+                data: "Response",
+            }
+        };
+
+        api.get.mockResolvedValue(testParams.response)
+
+        let response;
+
+        await act(async () => {
+            response = await result.current.fetchExecute(testParams.url, testParams.method);
+        });
+
+        expect(response).toEqual(testParams.response.data);
+    });
 });
