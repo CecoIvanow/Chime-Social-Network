@@ -208,4 +208,26 @@ describe("useFetchApiCall tests", () => {
         });
         expect(setAlert).toHaveBeenCalledWith(alertMessage);
     });
+
+    it("does nothing when error name is AbortError", async () => {
+        const { result } = renderHook(() => useFetchApiCall(), { wrapper: alertContextWrapper });
+
+        const testParams = {
+            url: "https://www.example.com",
+            method: "GET",
+            response: {
+                error: "Invalid post!",
+            }
+        };
+
+        const abortError = new Error("Aborted");
+        abortError.name = "AbortError";
+
+        api.get.mockRejectedValue(abortError);
+
+        await act(async () => {
+            await result.current.fetchExecute(testParams.url, testParams.method);
+        });
+        expect(setAlert).not.toHaveBeenCalled();
+    });
 });
