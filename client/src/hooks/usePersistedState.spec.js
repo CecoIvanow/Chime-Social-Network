@@ -72,4 +72,23 @@ describe("usePersistedState tests", () => {
         expect(getItem).toHaveBeenCalledWith("user");
         expect(result.current.state).toBe(testParams.initialData);
     });
+
+    it("sets initial user persisted information on mount", async () => {
+        const testParams = {
+            get initialData() {
+                return JSON.stringify("userId");
+            },
+            newUserData: "newUserData"
+        };
+        getItem.mockReturnValue(testParams.initialData);
+
+        const { result } = renderHook(() => {
+            const [state, setPersistedState] = usePersistedState(testParams.newUserData);
+
+            return { state, setPersistedState };
+        });
+
+        expect(getItem).toHaveBeenCalledWith("user");
+        expect(result.current.state).toBe(JSON.parse(testParams.initialData));
+    });
 });
