@@ -3,15 +3,11 @@ import { describe, expect, it, vi } from "vitest";
 
 import usePersistedState from "./usePersistedState";
 
-// const locaStorageMock = {
-//     getItem,
-//     removeItem,
-//     setItem,
-// };
-
-const getItem = vi.spyOn(Storage.prototype, "getItem");
-const removeItem = vi.spyOn(Storage.prototype, "removeItem");
-const setItem = vi.spyOn(Storage.prototype, "setItem");
+const locaStorageMock = {
+    getItem: vi.spyOn(Storage.prototype, "getItem"),
+    removeItem: vi.spyOn(Storage.prototype, "removeItem"),
+    setItem: vi.spyOn(Storage.prototype, "setItem"),
+};
 
 describe("usePersistedState tests", () => {
     it("manually sets persisted user information on user login", async () => {
@@ -32,7 +28,7 @@ describe("usePersistedState tests", () => {
             result.current.setPersistedState(testParams.userData);
         });
 
-        expect(setItem).toHaveBeenCalledWith("user", testParams.persistedData);
+        expect(locaStorageMock.setItem).toHaveBeenCalledWith("user", testParams.persistedData);
         expect(result.current.state).toBe(testParams.userData);
     });
 
@@ -51,9 +47,9 @@ describe("usePersistedState tests", () => {
             result.current.setPersistedState(testParams.userData);
         });
 
-        expect(setItem).not.toHaveBeenCalled();
+        expect(locaStorageMock.setItem).not.toHaveBeenCalled();
 
-        expect(removeItem).toHaveBeenCalledWith("user");
+        expect(locaStorageMock.removeItem).toHaveBeenCalledWith("user");
         expect(result.current.state).toBe(testParams.userData);
     });
 
@@ -61,7 +57,7 @@ describe("usePersistedState tests", () => {
         const testParams = {
             initialData: "userId",
         };
-        getItem.mockReturnValue(null);
+        locaStorageMock.getItem.mockReturnValue(null);
 
         const { result } = renderHook(() => {
             const [state, setPersistedState] = usePersistedState(testParams.initialData);
@@ -69,7 +65,7 @@ describe("usePersistedState tests", () => {
             return { state, setPersistedState };
         });
 
-        expect(getItem).toHaveBeenCalledWith("user");
+        expect(locaStorageMock.getItem).toHaveBeenCalledWith("user");
         expect(result.current.state).toBe(testParams.initialData);
     });
 
@@ -80,7 +76,7 @@ describe("usePersistedState tests", () => {
             },
             newUserData: "newUserData"
         };
-        getItem.mockReturnValue(testParams.initialData);
+        locaStorageMock.getItem.mockReturnValue(testParams.initialData);
 
         const { result } = renderHook(() => {
             const [state, setPersistedState] = usePersistedState(testParams.newUserData);
@@ -88,7 +84,7 @@ describe("usePersistedState tests", () => {
             return { state, setPersistedState };
         });
 
-        expect(getItem).toHaveBeenCalledWith("user");
+        expect(locaStorageMock.getItem).toHaveBeenCalledWith("user");
         expect(result.current.state).toBe(JSON.parse(testParams.initialData));
     });
 });
