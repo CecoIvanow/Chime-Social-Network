@@ -14,7 +14,7 @@ const removeItem = vi.spyOn(Storage.prototype, "removeItem");
 const setItem = vi.spyOn(Storage.prototype, "setItem");
 
 describe("usePersistedState tests", () => {
-    it("sets persisted user information", async () => {
+    it("sets persisted user information on user login", async () => {
         const testParams = {
             userData: "userId",
             get persistedData() {
@@ -36,7 +36,7 @@ describe("usePersistedState tests", () => {
         expect(result.current.state).toBe(testParams.userData);
     });
 
-    it("removes persisted user information", async () => {
+    it("removes persisted user information on logout", async () => {
         const testParams = {
             userData: null,
         };
@@ -52,8 +52,10 @@ describe("usePersistedState tests", () => {
         });
 
         expect(setItem).not.toHaveBeenCalled();
-        
+
         expect(removeItem).toHaveBeenCalledWith("user");
         expect(result.current.state).toBe(testParams.userData);
     });
+
+
 });
