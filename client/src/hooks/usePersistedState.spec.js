@@ -35,4 +35,25 @@ describe("usePersistedState tests", () => {
         expect(setItem).toHaveBeenCalledWith("user", testParams.persistedData);
         expect(result.current.state).toBe(testParams.userData);
     });
+
+    it("removes persisted user information", async () => {
+        const testParams = {
+            userData: null,
+        };
+
+        const { result } = renderHook(() => {
+            const [state, setPersistedState] = usePersistedState();
+
+            return { state, setPersistedState };
+        });
+
+        await act(async () => {
+            result.current.setPersistedState(testParams.userData);
+        });
+
+        expect(setItem).not.toHaveBeenCalled();
+        
+        expect(removeItem).toHaveBeenCalledWith("user");
+        expect(result.current.state).toBe(testParams.userData);
+    });
 });
