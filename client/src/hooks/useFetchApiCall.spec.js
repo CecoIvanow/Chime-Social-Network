@@ -65,7 +65,7 @@ describe("useFetchApiCall tests", () => {
             await result.current.fetchExecute(testParams.url, testParams.method, testParams.payload);
         });
 
-        expect(api.post).toHaveBeenCalledWith(testParams.url, testParams.payload ,testParams.signal);
+        expect(api.post).toHaveBeenCalledWith(testParams.url, testParams.payload, testParams.signal);
     });
 
     it("calls api.put when given a url and the method is PUT", async () => {
@@ -110,5 +110,27 @@ describe("useFetchApiCall tests", () => {
         });
 
         expect(api.patch).toHaveBeenCalledWith(testParams.url, testParams.payload, testParams.signal);
+    });
+
+
+    it("calls api.delete when given a url and the method is DELETE", async () => {
+        const { result } = renderHook(() => useFetchApiCall(), { wrapper: alertContextWrapper });
+
+        const testParams = {
+            url: "https://www.example.com",
+            method: "DELETE",
+            get signal() {
+                const abortController = new AbortController();
+                const signal = abortController.signal;
+
+                return { signal };
+            }
+        };
+
+        await act(async () => {
+            await result.current.fetchExecute(testParams.url, testParams.method);
+        });
+
+        expect(api.delete).toHaveBeenCalledWith(testParams.url, testParams.signal);
     });
 });
