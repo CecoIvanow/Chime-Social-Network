@@ -44,4 +44,27 @@ describe("useFetchApiCall tests", () => {
 
         expect(api.get).toHaveBeenCalledWith(testParams.url, testParams.signal);
     });
+
+
+    it("calls api.post when given a url and the method is POST", async () => {
+        const { result } = renderHook(() => useFetchApiCall(), { wrapper: alertContextWrapper });
+
+        const testParams = {
+            url: "https://www.example.com",
+            method: "POST",
+            payload: "Random Data Mock",
+            get signal() {
+                const abortController = new AbortController();
+                const signal = abortController.signal;
+
+                return { signal };
+            }
+        };
+
+        await act(async () => {
+            await result.current.fetchExecute(testParams.url, testParams.method, testParams.payload);
+        });
+
+        expect(api.post).toHaveBeenCalledWith(testParams.url, testParams.payload ,testParams.signal);
+    });
 });
