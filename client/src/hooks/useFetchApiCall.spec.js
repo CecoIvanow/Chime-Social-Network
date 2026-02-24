@@ -153,6 +153,26 @@ describe("useFetchApiCall tests", () => {
             response = await result.current.fetchExecute(testParams.url, testParams.method);
         });
 
-        expect(response).toEqual(testParams.response.data);
+        expect(response).toBe(testParams.response.data);
+    });
+
+    it("returns nothing when the api response has no data", async () => {
+        const { result } = renderHook(() => useFetchApiCall(), { wrapper: alertContextWrapper });
+
+        const testParams = {
+            url: "https://www.example.com",
+            method: "GET",
+            response: {}
+        };
+
+        api.get.mockResolvedValue(testParams.response)
+
+        let response;
+
+        await act(async () => {
+            response = await result.current.fetchExecute(testParams.url, testParams.method);
+        });
+
+        expect(response).toBeUndefined();
     });
 });
