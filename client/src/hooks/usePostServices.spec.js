@@ -24,8 +24,14 @@ describe("usePostServices tests", () => {
         { name: "does not create a post with only spaces as text content", text: " " },
     ])("$name", async ({ text }) => {
         const { result } = renderHook(() => usePostServices());
-        const fullUrl = url;
-        const method = "POST";
+
+        const testParams = {
+            method: "POST",
+            fullUrl: url,
+            get text() {
+                return text.trim();
+            }
+        };
 
         await act(async () => {
             await result.current.createPost({ text });
@@ -33,7 +39,7 @@ describe("usePostServices tests", () => {
 
         const trimmedText = text.trim();
         if (trimmedText) {
-            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method, { text: trimmedText, });
+            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, { text: testParams.text });
         } else {
             expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
         };
@@ -42,48 +48,57 @@ describe("usePostServices tests", () => {
     it("deletes a post", async () => {
         const { result } = renderHook(() => usePostServices());
 
-        const postId = "123";
-
-        const fullUrl = url + `/${postId}`;
-        const method = "DELETE";
+        const testParams = {
+            postId: "123",
+            method: "DELETE",
+            get fullUrl() {
+                return `${url}/${this.postId}`;
+            },
+        };
 
         await act(async () => {
-            await result.current.deletePost(postId);
+            await result.current.deletePost(testParams.postId);
         });
 
-        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
     });
 
     it("likes a post", async () => {
         const { result } = renderHook(() => usePostServices());
 
-        const userId = "userId"
-        const postId = "123";
-
-        const fullUrl = url + `/${postId}/like/${userId}`;
-        const method = "POST";
+        const testParams = {
+            postId: "123",
+            userId: "userId",
+            method: "POST",
+            get fullUrl() {
+                return `${url}/${this.postId}/like/${this.userId}`;
+            },
+        };
 
         await act(async () => {
-            await result.current.likePost(userId, postId);
+            await result.current.likePost(testParams.userId, testParams.postId);
         });
 
-        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
     });
 
     it("unlikes a post", async () => {
         const { result } = renderHook(() => usePostServices());
 
-        const userId = "userId"
-        const postId = "123";
-
-        const fullUrl = url + `/${postId}/like/${userId}`;
-        const method = "DELETE";
+        const testParams = {
+            postId: "123",
+            userId: "userId",
+            method: "DELETE",
+            get fullUrl() {
+                return `${url}/${this.postId}/like/${this.userId}`;
+            },
+        };
 
         await act(async () => {
-            await result.current.unlikePost(userId, postId);
+            await result.current.unlikePost(testParams.userId, testParams.postId);
         });
 
-        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
     });
 
     it.each([
@@ -93,18 +108,23 @@ describe("usePostServices tests", () => {
     ])("$name", async ({ text }) => {
         const { result } = renderHook(() => usePostServices());
 
-        const postId = "123";
-
-        const fullUrl = url + `/${postId}`;
-        const method = "PATCH";
+        const testParams = {
+            postId: "123",
+            method: "PATCH",
+            get fullUrl() {
+                return `${url}/${this.postId}`;
+            },
+            get trimmedText() {
+                return text.trim();
+            },
+        };
 
         await act(async () => {
-            await result.current.editPost(postId, text);
+            await result.current.editPost(testParams.postId, text);
         });
 
-        const trimmedText = text.trim();
-        if (trimmedText) {
-            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method, { text: trimmedText, });
+        if (testParams.trimmedText) {
+            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, { text: testParams.trimmedText });
         } else {
             expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
         };
@@ -113,50 +133,58 @@ describe("usePostServices tests", () => {
     it("gets all posts", async () => {
         const { result } = renderHook(() => usePostServices());
 
-        const fullUrl = url;
+        const testParams = {
+            fullUrl: url,
+        };
 
         await act(async () => {
             await result.current.getAllPosts();
         });
 
-        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
 
     it("gets post with comments", async () => {
         const { result } = renderHook(() => usePostServices());
 
-        const postId = "123";
-        const fullUrl = `${url}/${postId}/with-comments`;
+        const testParams = {
+            postId: "123",
+            get fullUrl() {
+                return `${url}/${this.postId}/with-comments`;
+            },
+        };
 
         await act(async () => {
-            await result.current.getPostWithComments(postId);
+            await result.current.getPostWithComments(testParams.postId);
         });
 
-        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl);
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
 
     it("aborts all ongoing calls", async () => {
         const { result } = renderHook(() => usePostServices());
 
-        const postId = "123";
-        const text = "Random comment content";
+        const testParams = {
+            postId: "123",
+            text: "Random comment content"
+        };
 
         await act(async () => {
-            await result.current.deletePost(postId);
-            result.current.editPost(postId, text);
-            result.current.createPost({ text });
+            await result.current.deletePost(testParams.postId);
+            result.current.editPost(testParams.postId, testParams.text);
+            result.current.createPost({ text: testParams.text });
             result.current.abortAll();
         });
 
         expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
             1,
-            `${url}/${postId}`,
+            `${url}/${testParams.postId}`,
             "DELETE"
         );
 
         expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
             2,
-            `${url}/${postId}`,
+            `${url}/${testParams.postId}`,
             "PATCH"
         );
 
