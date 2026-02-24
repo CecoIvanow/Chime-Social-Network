@@ -24,16 +24,21 @@ describe("useCommentServices tests", () => {
         { name: "does not create a comment with only spaces as text content", text: " " },
     ])("$name", async ({ text }) => {
         const { result } = renderHook(() => useCommentServices());
-        const fullUrl = url;
-        const method = "POST";
+
+        const testParams = {
+            method: "POST",
+            fullUrl: url,
+            get trimmedText() {
+                return text.trim();
+            },
+        };
 
         await act(async () => {
             await result.current.createComment({ text });
         });
 
-        const trimmedText = text.trim();
-        if (trimmedText) {
-            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method, { text: trimmedText, });
+        if (testParams.trimmedText) {
+            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, { text: testParams.trimmedText, });
         } else {
             expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
         };
@@ -46,17 +51,23 @@ describe("useCommentServices tests", () => {
     ])("$name", async ({ text }) => {
         const { result } = renderHook(() => useCommentServices());
 
-        const commentId = "123";
-        const fullUrl = url + `/${commentId}`;
-        const method = "PATCH";
+        const testParams = {
+            commentId: "123",
+            method: "PATCH",
+            get fullUrl() {
+                return `${url}/${this.commentId}`
+            },
+            get trimmedText() {
+                return text.trim();
+            },
+        };
 
         await act(async () => {
-            await result.current.updateComment(commentId, text);
+            await result.current.updateComment(testParams.commentId, text);
         });
 
-        const trimmedText = text.trim();
-        if (trimmedText) {
-            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method, { text: trimmedText, });
+        if (testParams.trimmedText) {
+            expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, { text: testParams.trimmedText, });
         } else {
             expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
         };
@@ -65,39 +76,45 @@ describe("useCommentServices tests", () => {
     it("deletes a comment", async () => {
         const { result } = renderHook(() => useCommentServices());
 
-        const commentId = "123";
-        const fullUrl = url + `/${commentId}`;
-        const method = "DELETE";
+        const testParams = {
+            commentId: "123",
+            method: "DELETE",
+            get fullUrl() {
+                return `${url}/${this.commentId}`
+            },
+        };
 
         await act(async () => {
-            await result.current.deleteComment(commentId);
+            await result.current.deleteComment(testParams.commentId);
         });
 
-        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(fullUrl, method);
+        expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
     });
 
     it("aborts all ongoing calls", async () => {
         const { result } = renderHook(() => useCommentServices());
 
-        const commentId = "123";
-        const text = "Random comment content";
+        const testParams = {
+            commentId: "123",
+            text: "Random comment content",
+        };
 
         await act(async () => {
-            await result.current.deleteComment(commentId);
-            result.current.updateComment(commentId, text);
-            result.current.createComment({ text });
+            await result.current.deleteComment(testParams.commentId);
+            result.current.updateComment(testParams.commentId, testParams.text);
+            result.current.createComment({ text: testParams.text });
             result.current.abortAll();
         });
 
         expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
             1,
-            `${url}/${commentId}`,
+            `${url}/${testParams.commentId}`,
             "DELETE"
         );
 
         expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
             2,
-            `${url}/${commentId}`,
+            `${url}/${testParams.commentId}`,
             "PATCH"
         );
 
