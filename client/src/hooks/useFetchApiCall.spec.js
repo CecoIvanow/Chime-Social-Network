@@ -175,4 +175,37 @@ describe("useFetchApiCall tests", () => {
 
         expect(response).toBeUndefined();
     });
+
+    it.each([
+        {
+            name: "shows alert message on failed fetch error",
+            response: {
+                name: "ConnectionError",
+                error: "Failed to fetch",
+            },
+            alertMessage: "Failed to fetch, please try again!",
+        },
+        {
+            name: "shows custom alert message on non AbortError errors",
+            response: {
+                name: "ServerError",
+                error: "Invalid login credentials!",
+            },
+            alertMessage: "Invalid login credentials!",
+        },
+    ])("$name", async ({ response, alertMessage }) => {
+        const { result } = renderHook(() => useFetchApiCall(), { wrapper: alertContextWrapper });
+
+        const testParams = {
+            url: "https://www.example.com",
+            method: "GET",
+        };
+
+        api.get.mockResolvedValue(response);
+
+        await act(async () => {
+            await result.current.fetchExecute(testParams.url, testParams.method);
+        });
+        expect(setAlert).toHaveBeenCalledWith(alertMessage);
+    });
 });
