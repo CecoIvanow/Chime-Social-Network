@@ -246,7 +246,7 @@ describe("useFetchApiCall tests", () => {
 
         api.get.mockReturnValue(fetchPromise);
 
-        act(() => {
+        await act(async () => {
             result.current.fetchExecute(testParams.url, testParams.method);
         });
         expect(result.current.isLoading).toBe(true);
@@ -276,11 +276,45 @@ describe("useFetchApiCall tests", () => {
         });
         expect(result.current.isLoading).toBe(true);
 
-
         await act(async () => {
             await resolver();
         });
         expect(result.current.isLoading).toBe(false);
     });
 
+    it("aborts a specific ongoing data request", async () => {
+        const abortFetch = vi.spyOn(AbortController.prototype, "abort");
+
+        const { result } = renderHook(() => useFetchApiCall(), { wrapper: alertContextWrapper });
+
+        const testParams = {
+            url: "https://www.example.com",
+            method: "GET",
+        };
+
+        let rejectPromise;
+        let fetchPromise = new Promise((_, reject) => {
+            rejectPromise = reject;
+        });
+
+        api.get.mockImplementation((_, { signal }) => {
+            signal.addEventListener("abort", () => {
+                const abortError = new Error("Aborted call!");
+                abortError.name = "AbortError";
+                rejectPromise(abortError);
+            });
+
+            return fetchPromise;
+        });
+
+        await act(async () => {
+            result.current.fetchExecute(testParams.url, testParams.method);
+        });
+        expect(abortFetch).not.toHaveBeenCalled();
+
+        await act(async () => {
+            result.current.abortFetchRequest(testParams.url, testParams.method);
+        });
+        expect(abortFetch).toHaveBeenCalled();
+    });
 });

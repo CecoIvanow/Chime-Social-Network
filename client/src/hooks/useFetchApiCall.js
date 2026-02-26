@@ -68,7 +68,7 @@ export default function useFetchApiCall() {
 
         } catch (error) {
             if (error.message === 'Failed to fetch') {
-                console.error(error);
+                console.error(error);              
                 setAlert('Failed to fetch, please try again!');
             } else if (error.name !== 'AbortError') {
                 console.error(error);
