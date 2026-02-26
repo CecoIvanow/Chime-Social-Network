@@ -230,4 +230,27 @@ describe("useFetchApiCall tests", () => {
         });
         expect(setAlert).not.toHaveBeenCalled();
     });
+
+    it.only("sets the loading state to true while data is loading", async () => {
+        const { result } = renderHook(() => useFetchApiCall(), { wrapper: alertContextWrapper });
+
+        const testParams = {
+            url: "https://www.example.com",
+            method: "GET",
+        };
+
+        let resolver;
+        let fetchPromise = new Promise(resolve => {
+            resolver = resolve;
+        });
+
+        api.get.mockReturnValue(fetchPromise);
+
+        act(() => {
+            result.current.fetchExecute(testParams.url, testParams.method);
+        });
+        expect(result.current.isLoading).toBe(true);
+
+        resolver();
+    });
 });
