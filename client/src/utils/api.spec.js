@@ -31,7 +31,7 @@ function fetchSetup(options = {
         };
         resp = new Response(JSON.stringify(fetchBody), headersOptions);
     }
-    
+
     if (options.responceBody) {
         headersOptions.headers = {
             "Content-type": "application/json",
@@ -116,7 +116,16 @@ describe("API util tests", () => {
         expect(window.fetch).toHaveBeenCalledWith(FULL_PATH, fetchOptions);
     });
 
-    // it("name", () => {
-    //     const { fetchOptions } = fetchSetup();
-    // });
+    it("fetch request returns responce with processed data", async () => {
+        fetchSetup({
+            responceBody: fetchBody,
+            options: {},
+            method: "GET",
+            requestBody: null,
+        });
+
+        const resp = await api.get(pathname);
+
+        expect(resp).toEqual(fetchBody);
+    });
 });
