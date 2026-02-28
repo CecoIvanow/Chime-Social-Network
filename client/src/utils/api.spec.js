@@ -125,7 +125,13 @@ describe("API util tests", () => {
         });
 
         const resp = await api.get(pathname);
-
         expect(resp).toEqual(fetchBody);
+    });
+
+    it("fetch request returns empty responce", async () => {
+        fetchSetup();
+
+        const resp = await api.get(pathname);
+        expect(resp).toBeUndefined();
     });
 });
