@@ -1,6 +1,6 @@
 import { getDownloadURL, ref } from "firebase/storage";
 
-import { act, renderHook } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { UserContext } from "../contexts/user-context";
@@ -46,9 +46,7 @@ describe("useUserServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.getUserPosts(testParams.userId);
-        });
+        await result.current.getUserPosts(testParams.userId);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
@@ -63,9 +61,7 @@ describe("useUserServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.getUserData(testParams.userId);
-        });
+        await result.current.getUserData(testParams.userId);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
@@ -86,9 +82,7 @@ describe("useUserServices tests", () => {
         getDownloadURL.mockResolvedValue(testParams.payload.imageUrl);
         useFetchApiCallMock.fetchExecute.mockResolvedValue(testParams.userId);
 
-        await act(async () => {
-            await result.current.register(testParams.payload);
-        });
+        await result.current.register(testParams.payload);
 
         expect(setIsUser).toHaveBeenCalledWith(testParams.userId);
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.payload);
@@ -106,9 +100,7 @@ describe("useUserServices tests", () => {
 
         useFetchApiCallMock.fetchExecute.mockResolvedValue(testParams.userId);
 
-        await act(async () => {
-            await result.current.login(testParams.payload);
-        });
+        await result.current.login(testParams.payload);
 
         expect(setIsUser).toHaveBeenCalledWith(testParams.userId);
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.payload);
@@ -117,9 +109,7 @@ describe("useUserServices tests", () => {
     it("logs out the user", async () => {
         const { result } = renderHook(() => useUserServices(), { wrapper: userContextWrapper });
 
-        await act(async () => {
-            await result.current.logout();
-        });
+        await result.current.logout();
 
         expect(setIsUser).toHaveBeenCalledWith(false);
     });
@@ -127,7 +117,6 @@ describe("useUserServices tests", () => {
     it("gets all users and reverses the result", async () => {
         const { result } = renderHook(() => useUserServices());
 
-        let response;
         const testParams = {
             fullUrl: url,
             responseParams: ["userOne", "userTwo", "userThree"],
@@ -135,9 +124,7 @@ describe("useUserServices tests", () => {
 
         useFetchApiCallMock.fetchExecute.mockResolvedValue([...testParams.responseParams]);
 
-        await act(async () => {
-            response = await result.current.getAllUsers();
-        });
+        const response = await result.current.getAllUsers();
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
         for (let i = 0; i < testParams.responseParams.length; i++) {
@@ -161,9 +148,7 @@ describe("useUserServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.updateUser(testParams.userId, testParams.payload);
-        });
+        await result.current.updateUser(testParams.userId, testParams.payload);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.payload);
     });
@@ -208,14 +193,11 @@ describe("useUserServices tests", () => {
             payload,
         };
 
-        await act(async () => {
-            try {
-                await result.current.updateUser(testParams.userId, testParams.payload);
-            } catch (error) {
-                expect(error.message).toEqual(errorMessage);
-            };
-        });
-
+        try {
+            await result.current.updateUser(testParams.userId, testParams.payload);
+        } catch (error) {
+            expect(error.message).toEqual(errorMessage);
+        };
         expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
     });
 
@@ -230,9 +212,7 @@ describe("useUserServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.getUserFields(testParams.userId, testParams.fields);
-        });
+        await result.current.getUserFields(testParams.userId, testParams.fields);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
@@ -264,9 +244,7 @@ describe("useUserServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.changeUserEmail(testParams.userId, testParams.userData);
-        });
+        await result.current.changeUserEmail(testParams.userId, testParams.userData);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.userUpdatePayload);
     });
@@ -344,13 +322,11 @@ describe("useUserServices tests", () => {
             },
         };
 
-        await act(async () => {
-            try {
-                await result.current.changeUserEmail(testParams.userId, testParams.userData);
-            } catch (error) {
-                expect(error.message).toBe(errorMessage);
-            };
-        });
+        try {
+            await result.current.changeUserEmail(testParams.userId, testParams.userData);
+        } catch (error) {
+            expect(error.message).toBe(errorMessage);
+        };
 
         expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
     });
@@ -382,9 +358,7 @@ describe("useUserServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.changeUserPassword(testParams.userId, testParams.userData);
-        });
+        await result.current.changeUserPassword(testParams.userId, testParams.userData);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.userUpdatePayload);
     });
@@ -452,13 +426,11 @@ describe("useUserServices tests", () => {
             userData,
         };
 
-        await act(async () => {
-            try {
-                await result.current.changeUserPassword(testParams.userId, testParams.userData);
-            } catch (error) {
-                expect(error.message).toBe(errorMessage);
-            };
-        });
+        try {
+            await result.current.changeUserPassword(testParams.userId, testParams.userData);
+        } catch (error) {
+            expect(error.message).toBe(errorMessage);
+        };
 
         expect(useFetchApiCallMock.fetchExecute).not.toHaveBeenCalled();
     });
@@ -473,9 +445,7 @@ describe("useUserServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.getFullUserProfile(testParams.userId);
-        });
+        await result.current.getFullUserProfile(testParams.userId);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
@@ -492,9 +462,7 @@ describe("useUserServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.addFriend(testParams.userId, testParams.newFriendId);
-        });
+        await result.current.addFriend(testParams.userId, testParams.newFriendId);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
     });
@@ -511,9 +479,7 @@ describe("useUserServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.removeFriend(testParams.userId, testParams.friendId);
-        });
+        await result.current.removeFriend(testParams.userId, testParams.friendId);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
     });
@@ -523,11 +489,9 @@ describe("useUserServices tests", () => {
 
         const userId = "123";
 
-        await act(async () => {
-            await result.current.getUserPosts(userId);
-            await result.current.getUserData(userId);
-            result.current.abortAll();
-        });
+        result.current.getUserPosts(userId);
+        result.current.getUserData(userId);
+        result.current.abortAll();
 
         expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
             1,

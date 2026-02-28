@@ -1,4 +1,4 @@
-import { act, renderHook } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import usePostServices from "./usePostServices";
@@ -33,9 +33,7 @@ describe("usePostServices tests", () => {
             }
         };
 
-        await act(async () => {
-            await result.current.createPost({ text });
-        });
+        await result.current.createPost({ text });
 
         const trimmedText = text.trim();
         if (trimmedText) {
@@ -56,9 +54,7 @@ describe("usePostServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.deletePost(testParams.postId);
-        });
+        await result.current.deletePost(testParams.postId);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
     });
@@ -75,9 +71,7 @@ describe("usePostServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.likePost(testParams.userId, testParams.postId);
-        });
+        await result.current.likePost(testParams.userId, testParams.postId);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
     });
@@ -94,9 +88,7 @@ describe("usePostServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.unlikePost(testParams.userId, testParams.postId);
-        });
+        await result.current.unlikePost(testParams.userId, testParams.postId);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
     });
@@ -119,9 +111,7 @@ describe("usePostServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.editPost(testParams.postId, text);
-        });
+        await result.current.editPost(testParams.postId, text);
 
         if (testParams.trimmedText) {
             expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, { text: testParams.trimmedText });
@@ -137,9 +127,7 @@ describe("usePostServices tests", () => {
             fullUrl: url,
         };
 
-        await act(async () => {
-            await result.current.getAllPosts();
-        });
+        await result.current.getAllPosts();
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
@@ -154,9 +142,7 @@ describe("usePostServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.getPostWithComments(testParams.postId);
-        });
+        await result.current.getPostWithComments(testParams.postId);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl);
     });
@@ -169,12 +155,10 @@ describe("usePostServices tests", () => {
             text: "Random comment content"
         };
 
-        await act(async () => {
-            await result.current.deletePost(testParams.postId);
-            result.current.editPost(testParams.postId, testParams.text);
-            result.current.createPost({ text: testParams.text });
-            result.current.abortAll();
-        });
+        result.current.deletePost(testParams.postId);
+        result.current.editPost(testParams.postId, testParams.text);
+        result.current.createPost({ text: testParams.text });
+        result.current.abortAll();
 
         expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
             1,

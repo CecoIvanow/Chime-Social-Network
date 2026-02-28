@@ -1,4 +1,4 @@
-import { act, renderHook } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import useCommentServices from "./useCommentServices";
@@ -33,9 +33,7 @@ describe("useCommentServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.createComment({ text });
-        });
+        await result.current.createComment({ text });
 
         if (testParams.trimmedText) {
             expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, { text: testParams.trimmedText, });
@@ -62,9 +60,7 @@ describe("useCommentServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.updateComment(testParams.commentId, text);
-        });
+        await result.current.updateComment(testParams.commentId, text);
 
         if (testParams.trimmedText) {
             expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, { text: testParams.trimmedText, });
@@ -84,9 +80,7 @@ describe("useCommentServices tests", () => {
             },
         };
 
-        await act(async () => {
-            await result.current.deleteComment(testParams.commentId);
-        });
+        await result.current.deleteComment(testParams.commentId);
 
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method);
     });
@@ -99,12 +93,10 @@ describe("useCommentServices tests", () => {
             text: "Random comment content",
         };
 
-        await act(async () => {
-            await result.current.deleteComment(testParams.commentId);
-            result.current.updateComment(testParams.commentId, testParams.text);
-            result.current.createComment({ text: testParams.text });
-            result.current.abortAll();
-        });
+        result.current.deleteComment(testParams.commentId);
+        result.current.updateComment(testParams.commentId, testParams.text);
+        result.current.createComment({ text: testParams.text });
+        result.current.abortAll();
 
         expect(useFetchApiCallMock.abortFetchRequest).toHaveBeenNthCalledWith(
             1,
