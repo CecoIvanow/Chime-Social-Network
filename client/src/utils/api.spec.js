@@ -18,14 +18,21 @@ function fetchSetup(options = {
     responceBody: null,
     method: "GET",
     options: {},
-    responce: false,
+    requestBody: null,
 }) {
     const headersOptions = {};
     let resp;
 
-    if (options.responceBody) {
-        options.options.body = JSON.stringify(options.responceBody);
+    if (options.requestBody) {
+        options.options.body = JSON.stringify(options.requestBody);
 
+        headersOptions.headers = {
+            "Content-type": "application/json",
+        };
+        resp = new Response(JSON.stringify(fetchBody), headersOptions);
+    }
+    
+    if (options.responceBody) {
         headersOptions.headers = {
             "Content-type": "application/json",
         };
@@ -63,9 +70,10 @@ describe("API util tests", () => {
 
     it("makes a basic PUT fetch request", async () => {
         const { fetchOptions } = fetchSetup({
-            responceBody: fetchBody,
+            responceBody: null,
             options: {},
             method: "PUT",
+            requestBody: fetchBody
         });
 
         await api.put(pathname, fetchBody);
@@ -74,23 +82,41 @@ describe("API util tests", () => {
 
     it("makes a basic POST fetch request", async () => {
         const { fetchOptions } = fetchSetup({
-            responceBody: fetchBody,
+            responceBody: null,
             options: {},
             method: "POST",
+            requestBody: fetchBody
         });
 
         await api.post(pathname, fetchBody);
         expect(window.fetch).toHaveBeenCalledWith(FULL_PATH, fetchOptions);
     });
-    
+
     it("makes a basic PATCH fetch request", async () => {
         const { fetchOptions } = fetchSetup({
-            responceBody: fetchBody,
+            responceBody: null,
             options: {},
             method: "PATCH",
+            requestBody: fetchBody
         });
 
         await api.patch(pathname, fetchBody);
         expect(window.fetch).toHaveBeenCalledWith(FULL_PATH, fetchOptions);
     });
+
+    it("makes a basic DELETE fetch request", async () => {
+        const { fetchOptions } = fetchSetup({
+            responceBody: null,
+            options: {},
+            method: "DELETE",
+            requestBody: null,
+        });
+
+        await api.delete(pathname);
+        expect(window.fetch).toHaveBeenCalledWith(FULL_PATH, fetchOptions);
+    });
+
+    // it("name", () => {
+    //     const { fetchOptions } = fetchSetup();
+    // });
 });
