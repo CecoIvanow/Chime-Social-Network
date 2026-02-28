@@ -82,4 +82,15 @@ describe("API util tests", () => {
         await api.post(pathname, fetchBody);
         expect(window.fetch).toHaveBeenCalledWith(FULL_PATH, fetchOptions);
     });
+    
+    it("makes a basic PATCH fetch request", async () => {
+        const { fetchOptions } = fetchSetup({
+            responceBody: fetchBody,
+            options: {},
+            method: "PATCH",
+        });
+
+        await api.patch(pathname, fetchBody);
+        expect(window.fetch).toHaveBeenCalledWith(FULL_PATH, fetchOptions);
+    });
 });
