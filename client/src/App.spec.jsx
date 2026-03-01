@@ -1,11 +1,11 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach, should } from "vitest";
+import { MemoryRouter } from "react-router";
+
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { AlertContext } from "./contexts/alert-context";
-import { UserContext } from "./contexts/user-context";
 
 import App from "./App";
-import { MemoryRouter } from "react-router";
 
 vi.mock("./hooks/usePersistedState.js", () => ({
     default: () => userPersistedStateMock
@@ -21,44 +21,16 @@ vi.mock("./components/layout/menu-bar/MenuBar.jsx", () => ({
     )
 }));
 
-vi.mock("./components/pages/landing-page/LandingPage.jsx", () => ({
-    default: () => <div data-testid="landing-page"></div>
+vi.mock("./components/ui/alert-notification/AlertNotification.jsx", () => ({
+    default: () => <div data-testid="alert-notification"></div>
 }));
 
 vi.mock("./components/pages/user-home-page/UserHomePage.jsx", () => ({
     default: () => <div data-testid="user-home-page"></div>
 }));
 
-vi.mock("./components/pages/login-page/LoginPage.jsx", () => ({
-    default: () => <div data-testid="login-page"></div>
-}));
-
-vi.mock("./components/pages/register-page/RegisterPage.jsx", () => ({
-    default: () => <div data-testid="register-page"></div>
-}));
-
-vi.mock("./components/pages/not-found-page/NotFoundPage.jsx", () => ({
-    default: () => <div data-testid="not-found-page"></div>
-}));
-
-vi.mock("./components/pages/catalog-page/CatalogPage.jsx", () => ({
-    default: () => <div data-testid="catalog-page"></div>
-}));
-
-vi.mock("./components/pages/settings-page/SettingsPage.jsx", () => ({
-    default: () => <div data-testid="settings-page"></div>
-}));
-
-vi.mock("./components/pages/profile-page/ProfilePage.jsx", () => ({
-    default: () => <div data-testid="profile-page"></div>
-}));
-
-vi.mock("./components/pages/logout/Logout.jsx", () => ({
-    default: () => <div data-testid="logout"></div>
-}));
-
-vi.mock("./components/pages/post-details-page/PostDetailsPage.jsx", () => ({
-    default: () => <div data-testid="post-details-page"></div>
+vi.mock("./components/pages/landing-page/LandingPage.jsx", () => ({
+    default: () => <div data-testid="landing-page"></div>
 }));
 
 vi.mock("./components/pages/profile-edit-page/ProfileEditPage.jsx", () => ({
@@ -69,8 +41,36 @@ vi.mock("./components/pages/post-edit-redirect/PostEditRedirect.jsx", () => ({
     default: () => <div data-testid="post-edit-redirect"></div>
 }));
 
-vi.mock("./components/ui/alert-notification/AlertNotification.jsx", () => ({
-    default: () => <div data-testid="alert-notification"></div>
+vi.mock("./components/pages/settings-page/SettingsPage.jsx", () => ({
+    default: () => <div data-testid="settings-page"></div>
+}));
+
+vi.mock("./components/pages/logout/Logout.jsx", () => ({
+    default: () => <div data-testid="logout"></div>
+}));
+
+vi.mock("./components/pages/register-page/RegisterPage.jsx", () => ({
+    default: () => <div data-testid="register-page"></div>
+}));
+
+vi.mock("./components/pages/login-page/LoginPage.jsx", () => ({
+    default: () => <div data-testid="login-page"></div>
+}));
+
+vi.mock("./components/pages/post-details-page/PostDetailsPage.jsx", () => ({
+    default: () => <div data-testid="post-details-page"></div>
+}));
+
+vi.mock("./components/pages/profile-page/ProfilePage.jsx", () => ({
+    default: () => <div data-testid="profile-page"></div>
+}));
+
+vi.mock("./components/pages/catalog-page/CatalogPage.jsx", () => ({
+    default: () => <div data-testid="catalog-page"></div>
+}));
+
+vi.mock("./components/pages/not-found-page/NotFoundPage.jsx", () => ({
+    default: () => <div data-testid="not-found-page"></div>
 }));
 
 vi.mock("./components/layout/error-boundary/ErrorBoundary.jsx", () => ({
