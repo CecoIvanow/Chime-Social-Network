@@ -104,16 +104,15 @@ describe("ProfilePage component", () => {
             getUserPosts: true,
         });
 
-        if (isLoading) {
-            expect(screen.queryByTestId("profile-section")).not.toBeInTheDocument();
-            expect(screen.getByTestId("profile-loading-spinner")).toBeInTheDocument();
-        } else {
-            await waitFor(() => {
+        await waitFor(() => {
+            if (isLoading) {
+                expect(screen.queryByTestId("profile-section")).not.toBeInTheDocument();
+                expect(screen.getByTestId("profile-loading-spinner")).toBeInTheDocument();
+            } else {
                 expect(screen.getByTestId("profile-section")).toHaveTextContent(pattern);
-            });
-
-            expect(screen.queryByTestId("profile-loading-spinner")).not.toBeInTheDocument();
-        };
+                expect(screen.queryByTestId("profile-loading-spinner")).not.toBeInTheDocument();
+            };
+        });
     });
 
     it.each([
@@ -128,17 +127,16 @@ describe("ProfilePage component", () => {
             getUserPosts: true,
         });
 
-        if (isLoading) {
-            expect(screen.queryByTestId("posts-section")).not.toBeInTheDocument();
-            expect(screen.getByTestId("posts-loading-spinner")).toBeInTheDocument();
-        } else {
-            await waitFor(() => {
+        await waitFor(() => {
+            if (isLoading) {
+                expect(screen.queryByTestId("posts-section")).not.toBeInTheDocument();
+                expect(screen.getByTestId("posts-loading-spinner")).toBeInTheDocument();
+            } else {
                 expect(screen.getByTestId("posts-section")).toHaveTextContent(pattern);
-            });
-
-            expect(screen.getAllByTestId("post")).toHaveLength(userPosts.createdPosts.length);
-            expect(screen.queryByTestId("posts-loading-spinner")).not.toBeInTheDocument();
-        };
+                expect(screen.getAllByTestId("post")).toHaveLength(userPosts.createdPosts.length);
+                expect(screen.queryByTestId("posts-loading-spinner")).not.toBeInTheDocument();
+            };
+        });
     });
 
     it("shows error message on rejected user data call", async () => {
