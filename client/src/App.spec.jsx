@@ -6,19 +6,20 @@ import { describe, expect, it, vi } from "vitest";
 import { AlertContext } from "./contexts/alert-context";
 
 import App from "./App";
+import { useContext } from "react";
 
 vi.mock("./hooks/usePersistedState.js", () => ({
     default: () => userPersistedStateMock
 }));
 
 vi.mock("./components/layout/menu-bar/MenuBar.jsx", () => ({
-    default: () => (
-        <AlertContext.Consumer>
-            {({ setAlert }) => (
-                <div onClick={() => setAlert(true)} data-testid="menu-bar"></div>
-            )}
-        </AlertContext.Consumer>
-    )
+    default: function MenuBar() {
+        const { setAlert } = useContext(AlertContext);
+
+        return (
+            <div onClick={() => setAlert(true)} data-testid="menu-bar"></div>
+        );
+    }
 }));
 
 vi.mock("./components/ui/alert-notification/AlertNotification.jsx", () => ({
@@ -294,7 +295,7 @@ describe("App component", () => {
 
         if (shouldRender) {
             expect(screen.queryByTestId("alert-notification")).not.toBeInTheDocument();
-            
+
             fireEvent.click(screen.getByTestId("menu-bar"));
 
             expect(await screen.findByTestId("alert-notification")).toBeInTheDocument();
