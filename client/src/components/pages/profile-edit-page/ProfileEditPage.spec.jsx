@@ -171,10 +171,10 @@ function setup(
 };
 
 describe("ProfileEditPage component", () => {
-    it("renders section heading with correct text", () => {
+    it("renders section heading with correct text", async () => {
         setup();
 
-        expect(screen.getByTestId("section-heading")).toHaveTextContent("Edit Profile");
+        expect(await screen.findByTestId("section-heading")).toHaveTextContent("Edit Profile");
     });
 
     it("renders the user avatar on a successfull user data call", async () => {
@@ -224,14 +224,16 @@ describe("ProfileEditPage component", () => {
         })
     });
 
-    it("if the logged in user is not the profile owner redirects to /404", () => {
+    it("if the logged in user is not the profile owner redirects to /404", async () => {
         setup({
             getUserSuccessfullCall: true,
             updateUserSuccessfullCall: true,
             chosenProfileId: "differentId",
         });
 
-        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith("/404");
+        await waitFor(() => {
+            expect(reactRouterMock.navigateTo).toHaveBeenCalledWith("/404");
+        });
     });
 
     it("on successfull form submit redirects to the user's profile", async () => {
