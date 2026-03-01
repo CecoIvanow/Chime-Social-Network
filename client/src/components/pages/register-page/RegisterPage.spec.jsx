@@ -1,4 +1,4 @@
-import React from "react";
+import React, { act } from "react";
 import { Link, MemoryRouter } from "react-router";
 
 import userEvent from "@testing-library/user-event";
@@ -130,7 +130,7 @@ describe("RegisterPage component", () => {
 
     it("disables the register button while the register call is being executed", async () => {
         const user = userEvent.setup();
-        let resolveRegister = () => null;
+        let resolveRegister = null;
 
         useUserServicesMock.register.mockImplementation(() => {
             return new Promise((resolve) => {
@@ -143,7 +143,9 @@ describe("RegisterPage component", () => {
         await user.click(screen.getByRole("button", { name: "Register" }));
         expect(screen.getByRole("button", { name: "Register" })).toBeDisabled();
 
-        resolveRegister();
+        await act(async () => {
+            resolveRegister();
+        })
     });
 
     it("shows alert message on a failed register call", async () => {

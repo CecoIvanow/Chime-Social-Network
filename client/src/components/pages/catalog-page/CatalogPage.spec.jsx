@@ -122,7 +122,7 @@ describe("CatalogPage component", () => {
     it.each([
         { name: "does not render users  while data is loading", isLoading: true },
         { name: "renders users on after data has loaded", isLoading: false },
-    ])("$name", ({ isLoading }) => {
+    ])("$name", async ({ isLoading }) => {
         setup({
             getAllPostsSuccess: true,
             getAllUsersSuccess: true,
@@ -130,17 +130,19 @@ describe("CatalogPage component", () => {
             getAllUsersIsLoading: isLoading,
         });
 
-        if (isLoading) {
-            expect(screen.queryByTestId("users-catalog")).not.toBeInTheDocument();
-        } else {
-            expect(screen.getByTestId("users-catalog")).toBeInTheDocument();
-        };
+        await waitFor(() => {
+            if (isLoading) {
+                expect(screen.queryByTestId("users-catalog")).not.toBeInTheDocument();
+            } else {
+                expect(screen.getByTestId("users-catalog")).toBeInTheDocument();
+            };
+        });
     });
 
     it.each([
         { name: "does not render posts while data is loading", isLoading: true },
         { name: "renders posts after data has loaded", isLoading: false },
-    ])("$name", ({ isLoading }) => {
+    ])("$name", async ({ isLoading }) => {
         setup({
             getAllPostsSuccess: true,
             getAllUsersSuccess: true,
@@ -148,11 +150,13 @@ describe("CatalogPage component", () => {
             getAllUsersIsLoading: false,
         });
 
-        if (isLoading) {
-            expect(screen.queryByTestId("posts-catalog")).not.toBeInTheDocument();
-        } else {
-            expect(screen.getByTestId("posts-catalog")).toBeInTheDocument();
-        };
+        await waitFor(() => {
+            if (isLoading) {
+                expect(screen.queryByTestId("posts-catalog")).not.toBeInTheDocument();
+            } else {
+                expect(screen.getByTestId("posts-catalog")).toBeInTheDocument();
+            };
+        });
     });
 
     it.each([

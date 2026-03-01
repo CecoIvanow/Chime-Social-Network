@@ -116,14 +116,14 @@ describe("SettingsPage component", () => {
     it("renders password change form", async () => {
         setup();
 
-        expect(screen.getByTestId("password-form")).toBeInTheDocument();
+        expect(await screen.findByTestId("password-form")).toBeInTheDocument();
     });
 
     it("renders email change form with correct user email on successfull user data call", async () => {
         setup();
 
-        expect(screen.getByTestId("email-form")).toBeInTheDocument();
         expect(await screen.findByText(userData.email)).toBeInTheDocument();
+        expect(screen.getByTestId("email-form")).toBeInTheDocument();
     });
 
     it("shows an error message on rejected user data call", async () => {
