@@ -5,7 +5,6 @@ import {
     Routes,
     Route,
     useLocation,
-    Navigate
 } from 'react-router';
 
 import { AlertContext } from './contexts/alert-context.js';
@@ -30,6 +29,7 @@ import ProfileEditPage from './components/pages/profile-edit-page/ProfileEditPag
 import PostEditRedirect from './components/pages/post-edit-redirect/PostEditRedirect.jsx';
 import AlertNotification from './components/ui/alert-notification/AlertNotification.jsx';
 import ErrorBoundary from './components/layout/error-boundary/ErrorBoundary.jsx';
+import GuestGuard from './routes/guest-guard/GuestGuard';
 
 export default function App() {
     const [loggedInUserId, setLoggedInUserId] = usePersistedState(false);
@@ -70,8 +70,10 @@ export default function App() {
                             <Route path='/logout' element={<Logout />} />
                         </Route>
 
-                        <Route path='/register' element={!loggedInUserId ? <RegisterPage /> : <Navigate to="/" />} />
-                        <Route path='/login' element={!loggedInUserId ? <LoginPage /> : <Navigate to="/" />} />
+                        <Route element={<GuestGuard />}>
+                            <Route path='/register' element={<RegisterPage />} />
+                            <Route path='/login' element={<LoginPage />} />
+                        </Route>
 
                         <Route path='/post/:postId/details' element={<PostDetailsPage />} />
                         <Route path='/profile/:profileId' element={<ProfilePage />} />
