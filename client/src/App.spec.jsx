@@ -199,7 +199,7 @@ describe("App component", () => {
 
     it.each([
         { name: "renders Logout on a logged in user being in the logout page", loggedInUserIdIsValid: true, shouldRender: true },
-        { name: "does not render Logout and redirects to home page on logged out user trying to access the logout page", loggedInUserIdIsValid: false, shouldRender: false },
+        { name: "does not render Logout and redirects to login page on logged out user trying to access the logout page", loggedInUserIdIsValid: false, shouldRender: false },
     ])("$name", ({ loggedInUserIdIsValid, shouldRender }) => {
         setup({
             initialEntries: "/logout",
@@ -210,7 +210,7 @@ describe("App component", () => {
             expect(screen.getByTestId("logout")).toBeInTheDocument();
             expect(screen.queryByTestId("landing-page")).not.toBeInTheDocument();
         } else {
-            expect(screen.getByTestId("landing-page")).toBeInTheDocument();
+            expect(screen.getByTestId("login-page")).toBeInTheDocument();
             expect(screen.queryByTestId("logout")).not.toBeInTheDocument();
         };
     });
