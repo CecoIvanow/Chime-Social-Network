@@ -11,7 +11,7 @@ import ProfileSection from "../../shared/profile/profile-section/ProfileSection"
 import useUserServices from "../../../hooks/useUserServices";
 
 export default function UserHomePage() {
-    const { isUser } = useContext(UserContext)
+    const { loggedInUserId } = useContext(UserContext)
     const { setAlert } = useContext(AlertContext);
 
     const [userData, setUserData] = useState({});
@@ -21,7 +21,7 @@ export default function UserHomePage() {
     const { getFullUserProfile, isLoading, abortAll } = useUserServices();
 
     useEffect(() => {
-        getFullUserProfile(isUser)
+        getFullUserProfile(loggedInUserId)
             .then(userData => {
                 setUserData(userData);
                 setUserFriends(userData?.friends);
@@ -43,7 +43,7 @@ export default function UserHomePage() {
         return () => {
             abortAll();
         }
-    }, [isUser, setAlert, getFullUserProfile, abortAll]);
+    }, [loggedInUserId, setAlert, getFullUserProfile, abortAll]);
 
     const totalPostsContextValues = {
         totalPosts,

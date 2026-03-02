@@ -10,9 +10,9 @@ export default function UserItem({
     handleAddFriend,
     handleRemoveFriend,
 }) {
-    const { isUser } = useContext(UserContext);
+    const { loggedInUserId } = useContext(UserContext);
 
-    const [isAddedAsFriend, setIsAddedAsFriend] = useState(user.friends?.includes(isUser));
+    const [isAddedAsFriend, setIsAddedAsFriend] = useState(user.friends?.includes(loggedInUserId));
 
     const handleUnfriendClick = async () => {
         const isSuccessfull = await handleRemoveFriend(user);
@@ -36,7 +36,7 @@ export default function UserItem({
                 user={user}
             />
 
-            {(isUser && isUser !== user._id) && (
+            {(loggedInUserId && loggedInUserId !== user._id) && (
                 <AddFriendButton
                     isAddedAsFriend={isAddedAsFriend}
                     handleAddFriendClick={handleAddFriendClick}

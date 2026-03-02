@@ -10,7 +10,7 @@ import { UserContext } from "../contexts/user-context.js";
 export default function useUserServices() {
     const { fetchExecute, isLoading, abortFetchRequest } = useFetchApiCall();
 
-    const { setIsUser } = useContext(UserContext);
+    const { setLoggedInUserId } = useContext(UserContext);
 
     const userRequests = useMemo(() => [], []);
 
@@ -54,10 +54,10 @@ export default function useUserServices() {
 
         const userId = await fetchExecute(url, method, payload);
 
-        setIsUser(userId);
+        setLoggedInUserId(userId);
 
         return userId;
-    }, [fetchExecute, setIsUser, userRequests]);
+    }, [fetchExecute, setLoggedInUserId, userRequests]);
 
     const login = useCallback(async (payload) => {
         const url = '/login';
@@ -66,19 +66,19 @@ export default function useUserServices() {
 
         const userId = await fetchExecute(url, method, payload);
 
-        setIsUser(userId);
+        setLoggedInUserId(userId);
 
         return userId;
-    }, [fetchExecute, setIsUser, userRequests]);
+    }, [fetchExecute, setLoggedInUserId, userRequests]);
 
     const logout = useCallback(async () => {
         const url = '/logout';
         const method = 'GET';
         userRequests.push({ url, method, });
 
-        setIsUser(false);
+        setLoggedInUserId(false);
 
-    }, [setIsUser, userRequests]);
+    }, [setLoggedInUserId, userRequests]);
 
     const getAllUsers = useCallback(async () => {
         const url = '/users';

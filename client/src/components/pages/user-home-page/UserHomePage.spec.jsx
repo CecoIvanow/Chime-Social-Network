@@ -68,7 +68,7 @@ const ERR_MSG = {
     GET_FULL_USER_PROFILE: "test reject getFullUserProfile",
 }
 
-const isUser = "userId";
+const loggedInUserId = "userId";
 
 const userData = {
     firstName: "Tsetso",
@@ -116,7 +116,7 @@ function setup(options = {
 
     return render(
         <AlertContext.Provider value={{ setAlert }}>
-            <UserContext.Provider value={{ isUser }}>
+            <UserContext.Provider value={{ loggedInUserId }}>
                 <UserHomePage />
             </UserContext.Provider>
         </AlertContext.Provider>

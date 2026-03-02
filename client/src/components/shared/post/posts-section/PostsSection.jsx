@@ -12,12 +12,12 @@ export default function PostsSection({
     isLoading,
     userName,
 }) {
-    const { isUser } = useContext(UserContext);
+    const { loggedInUserId } = useContext(UserContext);
 
-    const { userId } = useParams();
+    const { profileId } = useParams();
 
-    const sectionName = userId ?
-        isUser === userId ?
+    const sectionName = profileId ?
+        loggedInUserId === profileId ?
             'My Posts:' :
             `${userName}'s Posts:` :
         'Friends Posts:';
@@ -28,7 +28,7 @@ export default function PostsSection({
                 sectionName={sectionName}
             />
 
-            {(isUser && isUser === userId) && (
+            {(loggedInUserId && loggedInUserId === profileId) && (
                 <PostCreateForm />
             )}
 

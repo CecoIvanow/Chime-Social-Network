@@ -43,7 +43,7 @@ const CREATE_COMMENT_ERROR_MSG = "Rejected createComment call!";
 
 const updatedInputValue = "Testing!";
 
-const isUser = "User123";
+const loggedInUserId = "User123";
 
 const newComment = {
     _id: 3,
@@ -80,7 +80,7 @@ function setup(options = {
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
-            <UserContext.Provider value={{ isUser }}>
+            <UserContext.Provider value={{ loggedInUserId }}>
                 <PostContext.Provider value={{ ...postContextMock }}>
                     <CreateCommentForm />
                 </PostContext.Provider>
@@ -95,7 +95,7 @@ describe("CommentCreateForm component", () => {
     it("renders create comment form with initial value and submit button", () => {
         setup();
 
-        expect(screen.getByRole("button", {name: BUTTON_TEXT})).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: BUTTON_TEXT })).toBeInTheDocument();
         expect(screen.getByLabelText("Comment")).toHaveValue(INITIAL_INPUT_VALUE);
     });
 

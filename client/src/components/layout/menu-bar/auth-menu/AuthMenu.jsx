@@ -6,11 +6,11 @@ import UserAuthMenu from "./user-auth-menu/UserAuthMenu";
 import GuestAuthMenu from "./guest-auth-menu/GuestAuthMenu";
 
 export default function AuthMenu() {
-    const { isUser } = useContext(UserContext);
+    const { loggedInUserId } = useContext(UserContext);
 
     return (
         <ul className='auth-menu'>
-            {isUser ? (
+            {loggedInUserId ? (
                 <UserAuthMenu />
             ) : (
                 <GuestAuthMenu />

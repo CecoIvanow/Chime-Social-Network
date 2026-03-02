@@ -15,16 +15,16 @@ vi.mock("../menu-link/MenuLink", () => ({
     )
 }));
 
-const isUserMock = "userId";
+const loggedInUserIdMock = "userId";
 
 function setup(options = {
-    isUserValid: false
+    loggedInUserIdValid: false
 }) {
-    const isUser = options.isUserValid ? isUserMock : null;
+    const loggedInUserId = options.loggedInUserIdValid ? loggedInUserIdMock : null;
 
     render(
         <MemoryRouter>
-            <UserContext.Provider value={{ isUser }}>
+            <UserContext.Provider value={{ loggedInUserId }}>
                 <MainMenu />
             </UserContext.Provider>
         </MemoryRouter>
@@ -47,29 +47,29 @@ describe("MainMenu component", () => {
 
         expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
         expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
-        
+
         expect(screen.getByRole("img", { name: "Home" })).toBeInTheDocument();
         expect(screen.getByRole("img", { name: "Home" })).toHaveAttribute("src", "\\images\\home-icon.png");
     });
 
     it.each([
-        { name: "renders Profile navigational image link with correct title and href and with src and alt image attributes on logged in user", isUserValid: true },
-        { name: "does not render Profile navigational image link on logged out user", isUserValid: false },
-    ])("$name", ({ isUserValid }) => {
+        { name: "renders Profile navigational image link with correct title and href and with src and alt image attributes on logged in user", loggedInUserIdValid: true },
+        { name: "does not render Profile navigational image link on logged out user", loggedInUserIdValid: false },
+    ])("$name", ({ loggedInUserIdValid }) => {
         setup({
-            isUserValid
+            loggedInUserIdValid
         });
 
-        
-        if (isUserValid) {
+
+        if (loggedInUserIdValid) {
             expect(screen.getByRole("link", { name: "Profile" })).toBeInTheDocument();
             expect(screen.getByRole("img", { name: "Profile" })).toBeInTheDocument();
 
-            expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", `/profile/${isUserMock}`);
+            expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", `/profile/${loggedInUserIdMock}`);
             expect(screen.getByRole("img", { name: "Profile" })).toHaveAttribute("src", "\\images\\profile-icon.png");
         } else {
-            expect(screen.queryByRole("link", {name: "Profile"})).not.toBeInTheDocument();
-            expect(screen.queryByRole("img", {name: "Profile"})).not.toBeInTheDocument();
+            expect(screen.queryByRole("link", { name: "Profile" })).not.toBeInTheDocument();
+            expect(screen.queryByRole("img", { name: "Profile" })).not.toBeInTheDocument();
         }
     });
 });

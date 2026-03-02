@@ -13,14 +13,14 @@ export default function PostCreateForm() {
 
     const { totalPosts, setTotalPosts } = useContext(TotalPostsContext);
     const { setAlert } = useContext(AlertContext);
-    const { isUser } = useContext(UserContext);
+    const { loggedInUserId } = useContext(UserContext);
 
     const { createPost, abortAll } = usePostServices();
 
     const onPostSubmitHandler = async (formData) => {
         const postData = Object.fromEntries(formData);
 
-        postData.owner = isUser;
+        postData.owner = loggedInUserId;
 
         try {
             const newPost = await createPost(postData);

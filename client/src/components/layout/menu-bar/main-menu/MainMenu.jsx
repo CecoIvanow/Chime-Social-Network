@@ -5,7 +5,7 @@ import { UserContext } from "../../../../contexts/user-context";
 import MenuLink from "../menu-link/MenuLink";
 
 export default function MainMenu() {
-    const { isUser } = useContext(UserContext);
+    const { loggedInUserId } = useContext(UserContext);
 
     return (
         <ul className="menu">
@@ -16,12 +16,12 @@ export default function MainMenu() {
                 linkUrl="/"
             />
 
-            {isUser && (
+            {loggedInUserId && (
                 <MenuLink
                     linkImageAlt="Profile"
                     linkImageUri="\images\profile-icon.png"
                     linkTitle="Profile"
-                    linkUrl={`/profile/${isUser}`}
+                    linkUrl={`/profile/${loggedInUserId}`}
                 />
             )}
 
@@ -32,7 +32,7 @@ export default function MainMenu() {
                 linkUrl="/catalog"
             />
 
-            {/* {isUser && (
+            {/* {loggedInUserId && (
                 <>
                     <MenuLink
                         linkImageAlt="Notifications"

@@ -14,7 +14,7 @@ export default function SettingsPage() {
 
     const [userEmail, setUserEmail] = useState('');
 
-    const { isUser } = useContext(UserContext);
+    const { loggedInUserId } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
     const { changeUserEmail, changeUserPassword, getUserFields, abortAll } = useUserServices();
@@ -23,10 +23,10 @@ export default function SettingsPage() {
         const data = Object.fromEntries(formData);
 
         try {
-            const isSuccessfull = await changeUserEmail(isUser, data);
+            const isSuccessfull = await changeUserEmail(loggedInUserId, data);
 
             if (isSuccessfull) {
-                navigateTo(`/profile/${isUser}`);
+                navigateTo(`/profile/${loggedInUserId}`);
             }
         } catch (error) {
             console.error(error);
@@ -38,10 +38,10 @@ export default function SettingsPage() {
         const data = Object.fromEntries(formData);
 
         try {
-            const isSuccessfull = await changeUserPassword(isUser, data, {});
+            const isSuccessfull = await changeUserPassword(loggedInUserId, data, {});
 
             if (isSuccessfull) {
-                navigateTo(`/profile/${isUser}`);
+                navigateTo(`/profile/${loggedInUserId}`);
             }
         } catch (error) {
             console.error(error);
@@ -52,7 +52,7 @@ export default function SettingsPage() {
     useEffect(() => {
         const userFields = 'email';
 
-        getUserFields(isUser, userFields)
+        getUserFields(loggedInUserId, userFields)
             .then(data => setUserEmail(data?.email))
             .catch(error => {
                 console.error(error);
@@ -62,7 +62,7 @@ export default function SettingsPage() {
         return () => {
             abortAll();
         }
-    }, [isUser, setAlert, getUserFields, abortAll]);
+    }, [loggedInUserId, setAlert, getUserFields, abortAll]);
 
     return <>
         <div className="settings-container">

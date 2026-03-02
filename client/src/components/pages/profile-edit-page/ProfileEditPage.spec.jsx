@@ -91,7 +91,7 @@ vi.mock("./profile-edit-buttons/ProfileEditButtons", () => ({
     }
 }));
 
-const isUser = "curUserId";
+const loggedInUserId = "curUserId";
 
 const ERR_MSG = {
     GET_USER_DATA: "Rejected getUserData call!",
@@ -138,7 +138,7 @@ function setup(
     options = {
         updateUserSuccessfullCall: true,
         getUserSuccessfullCall: true,
-        chosenProfileId: isUser,
+        profileId: loggedInUserId,
     }
 ) {
     ref.mockReturnValue("mock-image-ref");
@@ -151,7 +151,7 @@ function setup(
         "https://firebase.mock/avatar.webp"
     );
 
-    reactRouterMock.useParams.mockReturnValue({ userId: options.chosenProfileId });
+    reactRouterMock.useParams.mockReturnValue({ profileId: options.profileId });
 
     userUserServicesMock.updateUser = options.updateUserSuccessfullCall ?
         userUserServicesMock.updateUser.mockResolvedValue(true) :
@@ -163,7 +163,7 @@ function setup(
 
     return render(
         <AlertContext.Provider value={{ setAlert }}>
-            <UserContext.Provider value={{ isUser }}>
+            <UserContext.Provider value={{ loggedInUserId }}>
                 <ProfileEditPage />
             </UserContext.Provider>
         </AlertContext.Provider>
@@ -209,14 +209,14 @@ describe("ProfileEditPage component", () => {
         setup();
 
         await user.click(screen.getByRole("button", { name: "Cancel" }));
-        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
+        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${loggedInUserId}`);
     });
 
     it("shows error message on rejected user data call", async () => {
         setup({
             getUserSuccessfullCall: false,
             updateUserSuccessfullCall: true,
-            chosenProfileId: isUser,
+            profileId: loggedInUserId,
         });
 
         await waitFor(() => {
@@ -228,7 +228,7 @@ describe("ProfileEditPage component", () => {
         setup({
             getUserSuccessfullCall: true,
             updateUserSuccessfullCall: true,
-            chosenProfileId: "differentId",
+            profileId: "differentId",
         });
 
         await waitFor(() => {
@@ -245,7 +245,7 @@ describe("ProfileEditPage component", () => {
             expect(userUserServicesMock.updateUser).toHaveBeenCalled();
         });
 
-        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
+        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${loggedInUserId}`);
     });
 
     it("shows error message on a rejected form submit call", async () => {
@@ -253,7 +253,7 @@ describe("ProfileEditPage component", () => {
         setup({
             updateUserSuccessfullCall: false,
             getUserSuccessfullCall: true,
-            chosenProfileId: isUser,
+            profileId: loggedInUserId,
         });
 
         await user.click(screen.getByRole("button", { name: "Submit" }));
@@ -275,7 +275,7 @@ describe("ProfileEditPage component", () => {
         await user.click(screen.getByRole("button", { name: "Submit" }));
 
         await waitFor(() => {
-            expect(ref).toHaveBeenCalledWith(storage, `/images/${isUser}/avatar`);
+            expect(ref).toHaveBeenCalledWith(storage, `/images/${loggedInUserId}/avatar`);
         });
 
         expect(uploadBytes).toHaveBeenCalledWith("mock-image-ref", mockFile);

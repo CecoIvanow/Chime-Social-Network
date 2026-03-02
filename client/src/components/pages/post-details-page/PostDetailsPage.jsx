@@ -26,7 +26,7 @@ export default function PostDetailsPage() {
     const [postText, setPostText] = useState('');
     const [isEditClicked, setIsEditClicked] = useState(shouldEdit);
 
-    const { isUser: currentUser } = useContext(UserContext);
+    const { loggedInUserId: currentUser } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
     const { deletePost, editPost, getPostWithComments, likePost, unlikePost, abortAll } = usePostServices()

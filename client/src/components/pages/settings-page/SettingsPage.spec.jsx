@@ -55,7 +55,7 @@ const ERR_MSG = {
     GET_USER_FIELDS: "Rejected getUserFields!"
 }
 
-const isUser = "userId";
+const loggedInUserId = "userId";
 
 const userData = {
     email: "example@email.com"
@@ -105,7 +105,7 @@ function setup(
 
     return render(
         <AlertContext.Provider value={{ setAlert }}>
-            <UserContext.Provider value={{ isUser }}>
+            <UserContext.Provider value={{ loggedInUserId }}>
                 <SettingsPage />
             </UserContext.Provider>
         </AlertContext.Provider>
@@ -149,7 +149,7 @@ describe("SettingsPage component", () => {
         await waitFor(() => {
             expect(useUserServicesMock.changeUserPassword).toHaveBeenCalled();
         });
-        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
+        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${loggedInUserId}`);
     });
 
     it("redirects to the user's profile on a successfull email change call", async () => {
@@ -161,7 +161,7 @@ describe("SettingsPage component", () => {
         await waitFor(() => {
             expect(useUserServicesMock.changeUserEmail).toHaveBeenCalled();
         });
-        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${isUser}`);
+        expect(reactRouterMock.navigateTo).toHaveBeenCalledWith(`/profile/${loggedInUserId}`);
     });
 
     it("does nothing when the password change call does not succeed", async () => {

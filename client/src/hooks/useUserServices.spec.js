@@ -25,7 +25,7 @@ vi.mock("../firebase/firebase-storage/config", () => ({
 
 const url = "/users";
 
-const setIsUser = vi.fn();
+const setLoggedInUserId = vi.fn();
 
 const useFetchApiCallMock = {
     fetchExecute: vi.fn(),
@@ -33,7 +33,7 @@ const useFetchApiCallMock = {
     abortFetchRequest: vi.fn(),
 };
 
-const userContextWrapper = ({ children }) => React.createElement(UserContext.Provider, { value: { setIsUser } }, children);
+const userContextWrapper = ({ children }) => React.createElement(UserContext.Provider, { value: { setLoggedInUserId } }, children);
 
 describe("useUserServices tests", () => {
     it("gets all user posts", async () => {
@@ -84,7 +84,7 @@ describe("useUserServices tests", () => {
 
         await result.current.register(testParams.payload);
 
-        expect(setIsUser).toHaveBeenCalledWith(testParams.userId);
+        expect(setLoggedInUserId).toHaveBeenCalledWith(testParams.userId);
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.payload);
     });
 
@@ -102,7 +102,7 @@ describe("useUserServices tests", () => {
 
         await result.current.login(testParams.payload);
 
-        expect(setIsUser).toHaveBeenCalledWith(testParams.userId);
+        expect(setLoggedInUserId).toHaveBeenCalledWith(testParams.userId);
         expect(useFetchApiCallMock.fetchExecute).toHaveBeenCalledWith(testParams.fullUrl, testParams.method, testParams.payload);
     });
 
@@ -111,7 +111,7 @@ describe("useUserServices tests", () => {
 
         await result.current.logout();
 
-        expect(setIsUser).toHaveBeenCalledWith(false);
+        expect(setLoggedInUserId).toHaveBeenCalledWith(false);
     });
 
     it("gets all users and reverses the result", async () => {

@@ -10,7 +10,7 @@ vi.mock("react-router", () => ({
 }));
 
 vi.mock("./profile-fullname/ProfileFullname", () => ({
-    default: ({userData}) => (
+    default: ({ userData }) => (
         <div data-testid="profile-fullname">
             {userData.fullName}
         </div>
@@ -18,7 +18,7 @@ vi.mock("./profile-fullname/ProfileFullname", () => ({
 }));
 
 vi.mock("./profile-info-labels-list/ProfileInfoLabelsList", () => ({
-    default: ({userData}) => (
+    default: ({ userData }) => (
         <div data-testid="profile-info">
             {userData.info}
         </div>
@@ -32,7 +32,7 @@ vi.mock("./edit-profile-button/EditProfileButton", () => ({
     )
 }));
 
-const userData ={
+const userData = {
     fullName: "Fullname test",
     info: "Info test"
 };
@@ -41,28 +41,28 @@ const reactRouterMock = {
     useParams: vi.fn(),
 };
 
-function setup(options={
-    isUserIsNull: false,
-    isUserIsMatching: false,
+function setup(options = {
+    loggedInUserIdIsNull: false,
+    loggedInUserIdIsMatching: false,
 }) {
-    const userId = "OriginalUser";
-    let isUser;
+    const profileId = "OriginalUser";
+    let loggedInUserId;
 
-    if (options.isUserIsNull) {
-        isUser = null;
-    } else if (options.isUserIsMatching) {
-        isUser = userId;
+    if (options.loggedInUserIdIsNull) {
+        loggedInUserId = null;
+    } else if (options.loggedInUserIdIsMatching) {
+        loggedInUserId = profileId;
     } else {
-        isUser = "randomId";
+        loggedInUserId = "randomId";
     };
 
-    reactRouterMock.useParams.mockReturnValue({ userId, });
+    reactRouterMock.useParams.mockReturnValue({ profileId, });
 
     render(
-        <UserContext.Provider value={{ isUser, }}>
+        <UserContext.Provider value={{ loggedInUserId, }}>
             <ProfileInfo userData={userData} />
         </UserContext.Provider>
-    );  
+    );
 };
 
 describe("ProfileInfo Component", () => {
@@ -75,8 +75,8 @@ describe("ProfileInfo Component", () => {
 
     it("does not render the profile edit button when user is not logged in or is logged in and not in their profile", () => {
         setup({
-            isUserIsMatching: false,
-            isUserIsNull: true,
+            loggedInUserIdIsMatching: false,
+            loggedInUserIdIsNull: true,
         })
 
         expect(screen.queryByTestId("edit-button")).not.toBeInTheDocument();
@@ -84,8 +84,8 @@ describe("ProfileInfo Component", () => {
 
     it("renders profile edit button when the user is logged in and in their profile page", () => {
         setup({
-            isUserIsMatching: true,
-            isUserIsNull: false,
+            loggedInUserIdIsMatching: true,
+            loggedInUserIdIsNull: false,
         });
 
         expect(screen.getByTestId("edit-button")).toBeInTheDocument();

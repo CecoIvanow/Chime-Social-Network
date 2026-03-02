@@ -5,13 +5,13 @@ import { UserContext } from "../../../../../../../contexts/user-context";
 
 
 export default function EditProfileButton() {
-    const { isUser } = useContext(UserContext)
+    const { loggedInUserId } = useContext(UserContext)
 
     return <>
-            <LinkButton
-                urlLink={`/profile/${isUser}/edit`}
-                btnStyle="edit-profile-btn"
-                buttonName="Edit Profile"
-            />
+        <LinkButton
+            urlLink={`/profile/${loggedInUserId}/edit`}
+            btnStyle="edit-profile-btn"
+            buttonName="Edit Profile"
+        />
     </>
 }

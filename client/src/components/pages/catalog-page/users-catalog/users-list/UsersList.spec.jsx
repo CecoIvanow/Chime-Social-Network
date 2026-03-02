@@ -23,7 +23,7 @@ const ERR_MSG = {
     REMOVE_FRIEND: "Rejected removeFriend call",
 };
 
-const isUser = "userId236";
+const loggedInUserId = "userId236";
 
 const mockProps = {
     matchingUsers: [
@@ -54,7 +54,7 @@ function setup(options = {
 
     return render(
         <AlertContext.Provider value={{ setAlert }}>
-            <UserContext.Provider value={{ isUser }}>
+            <UserContext.Provider value={{ loggedInUserId }}>
                 <UsersList {...mockProps} />
             </UserContext.Provider>
         </AlertContext.Provider>
@@ -79,7 +79,7 @@ describe("UsersList component", () => {
             await user.click(addFriendEls[i]);
 
             await waitFor(() => {
-                expect(useUserServicesMock.addFriend).toHaveBeenCalledWith(isUser, mockProps.matchingUsers[i]._id);
+                expect(useUserServicesMock.addFriend).toHaveBeenCalledWith(loggedInUserId, mockProps.matchingUsers[i]._id);
             });
         };
     });
@@ -108,7 +108,7 @@ describe("UsersList component", () => {
             await user.click(removeFriendEls[i]);
 
             await waitFor(() => {
-                expect(useUserServicesMock.removeFriend).toHaveBeenCalledWith(isUser, mockProps.matchingUsers[i]._id);
+                expect(useUserServicesMock.removeFriend).toHaveBeenCalledWith(loggedInUserId, mockProps.matchingUsers[i]._id);
             });
         };
     });

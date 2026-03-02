@@ -10,7 +10,7 @@ import { TotalPostsContext } from "../../../contexts/total-posts-context";
 import useUserServices from "../../../hooks/useUserServices";
 
 export default function ProfilePage() {
-    const { userId } = useParams();
+    const { profileId } = useParams();
 
     const [userData, setUserData] = useState({});
     const [totalPosts, setTotalPosts] = useState([]);
@@ -23,8 +23,8 @@ export default function ProfilePage() {
         async function fetchData() {
             try {
                 const [userData, userPosts] = await Promise.all([
-                    getUserData(userId),
-                    getUserPosts(userId),
+                    getUserData(profileId),
+                    getUserPosts(profileId),
                 ])
                 
                 setUserData(userData);
@@ -40,7 +40,7 @@ export default function ProfilePage() {
         return () => {
             abortAll();
         }
-    }, [getUserData, getUserPosts, userId, setAlert, abortAll]);
+    }, [getUserData, getUserPosts, profileId, setAlert, abortAll]);
 
     const totalPostsContextValues = {
         totalPosts,
