@@ -26,7 +26,7 @@ vi.mock("../posts-list/PostsList", () => ({
 }));
 
 const isUser = "loggedInUserId";
-const userId = "profileUserId";
+const profileId = "profileUserId";
 
 const reactRouterMock = {
     useParams: vi.fn(),
@@ -37,10 +37,10 @@ const mockProps = {
 };
 
 function setup(options = {
-    userId: null,
+    profileId: null,
     isLoading: false,
 }) {
-    reactRouterMock.useParams.mockReturnValue({ userId: options.userId });
+    reactRouterMock.useParams.mockReturnValue({ profileId: options.profileId });
 
     render(
         <UserContext.Provider value={{ isUser }}>
@@ -54,12 +54,12 @@ function setup(options = {
 
 describe("PostsSection component", () => {
     it.each([
-        { name: "renders the section with 'Friends Posts:' text content when not in a user profile", result: "Friends Posts:", userId: null },
-        { name: `renders the section with '${mockProps.userName}'s Posts:' text content when the user is logged in and in another user's profile`, result: `${mockProps.userName}'s Posts:`, userId, },
-        { name: `renders the section with 'My Posts:' text content when the user is logged in and in their profile`, result: "My Posts:", userId: isUser },
-    ])("$name", ({ result, userId }) => {
+        { name: "renders the section with 'Friends Posts:' text content when not in a user profile", result: "Friends Posts:", profileId: null },
+        { name: `renders the section with '${mockProps.userName}'s Posts:' text content when the user is logged in and in another user's profile`, result: `${mockProps.userName}'s Posts:`, profileId, },
+        { name: `renders the section with 'My Posts:' text content when the user is logged in and in their profile`, result: "My Posts:", profileId: isUser },
+    ])("$name", ({ result, profileId }) => {
         setup({
-            userId,
+            profileId,
             isLoading: false,
         });
 
@@ -67,15 +67,15 @@ describe("PostsSection component", () => {
     });
 
     it.each([
-        { name: "renders the post creation form on when the user is logged in and is in their profile", userId: isUser },
-        { name: "does not render the post creation form on when the user is either not logged in or is but not in their profile", userId, },
-    ])("$name", ({ userId }) => {
+        { name: "renders the post creation form on when the user is logged in and is in their profile", profileId: isUser },
+        { name: "does not render the post creation form on when the user is either not logged in or is but not in their profile", profileId, },
+    ])("$name", ({ profileId }) => {
         setup({
-            userId,
+            profileId,
             isLoading: false,
         });
 
-        if (isUser === userId) {
+        if (isUser === profileId) {
             expect(screen.getByTestId("post-form")).toBeInTheDocument();
         } else {
             expect(screen.queryByTestId("post-form")).not.toBeInTheDocument();
@@ -87,7 +87,7 @@ describe("PostsSection component", () => {
         { name: "renders posts instead of a loading spinner after data has loaded", isLoading: false },
     ])("$name", ({ isLoading }) => {
         setup({
-            userId,
+            profileId,
             isLoading,
         });
 

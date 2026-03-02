@@ -45,18 +45,18 @@ function setup(options={
     isUserIsNull: false,
     isUserIsMatching: false,
 }) {
-    const userId = "OriginalUser";
+    const profileId = "OriginalUser";
     let isUser;
 
     if (options.isUserIsNull) {
         isUser = null;
     } else if (options.isUserIsMatching) {
-        isUser = userId;
+        isUser = profileId;
     } else {
         isUser = "randomId";
     };
 
-    reactRouterMock.useParams.mockReturnValue({ userId, });
+    reactRouterMock.useParams.mockReturnValue({ profileId, });
 
     render(
         <UserContext.Provider value={{ isUser, }}>

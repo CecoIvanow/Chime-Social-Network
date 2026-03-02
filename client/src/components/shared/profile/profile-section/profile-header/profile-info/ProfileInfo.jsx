@@ -11,7 +11,7 @@ export default function ProfileInfo({
 }) {
     const { isUser } = useContext(UserContext);
 
-    const { userId } = useParams();
+    const { profileId } = useParams();
 
     return <>
         <div className="profile-info">
@@ -23,7 +23,7 @@ export default function ProfileInfo({
                 userData={userData}
             />
 
-            {((isUser && (isUser === userId)) || !userId) && (
+            {((isUser && (isUser === profileId)) || !profileId) && (
                 <EditProfileButton />
             )}
         </div>

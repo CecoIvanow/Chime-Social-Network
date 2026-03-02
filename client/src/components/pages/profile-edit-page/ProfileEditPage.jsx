@@ -25,7 +25,7 @@ export default function ProfileEditPage() {
 
     const { setAlert } = useContext(AlertContext);
     const { isUser: currentUser } = useContext(UserContext)
-    const { userId: profileId } = useParams();
+    const { profileId } = useParams();
 
     const { updateUser, getUserData, abortAll } = useUserServices();
 

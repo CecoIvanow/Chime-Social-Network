@@ -138,7 +138,7 @@ function setup(
     options = {
         updateUserSuccessfullCall: true,
         getUserSuccessfullCall: true,
-        chosenProfileId: isUser,
+        profileId: isUser,
     }
 ) {
     ref.mockReturnValue("mock-image-ref");
@@ -151,7 +151,7 @@ function setup(
         "https://firebase.mock/avatar.webp"
     );
 
-    reactRouterMock.useParams.mockReturnValue({ userId: options.chosenProfileId });
+    reactRouterMock.useParams.mockReturnValue({ profileId: options.profileId });
 
     userUserServicesMock.updateUser = options.updateUserSuccessfullCall ?
         userUserServicesMock.updateUser.mockResolvedValue(true) :
@@ -216,7 +216,7 @@ describe("ProfileEditPage component", () => {
         setup({
             getUserSuccessfullCall: false,
             updateUserSuccessfullCall: true,
-            chosenProfileId: isUser,
+            profileId: isUser,
         });
 
         await waitFor(() => {
@@ -228,7 +228,7 @@ describe("ProfileEditPage component", () => {
         setup({
             getUserSuccessfullCall: true,
             updateUserSuccessfullCall: true,
-            chosenProfileId: "differentId",
+            profileId: "differentId",
         });
 
         await waitFor(() => {
@@ -253,7 +253,7 @@ describe("ProfileEditPage component", () => {
         setup({
             updateUserSuccessfullCall: false,
             getUserSuccessfullCall: true,
-            chosenProfileId: isUser,
+            profileId: isUser,
         });
 
         await user.click(screen.getByRole("button", { name: "Submit" }));
