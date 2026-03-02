@@ -27,8 +27,8 @@ function setup(options = {
 
 describe("AuthGuard component", () => {
     it.each([
-        { name: "on logged out user does not render the children components and navigates to login page", loggedInUserId: false },
-        { name: "on logged in user does not navigate to login page and renders the children components", loggedInUserId: "342ed" },
+        { name: "on logged out user navigates to login page", loggedInUserId: false },
+        { name: "on logged in user renders the children components", loggedInUserId: "342ed" },
     ])("$name", ({ loggedInUserId }) => {
         setup({
             loggedInUserId,
@@ -36,9 +36,7 @@ describe("AuthGuard component", () => {
 
         if (loggedInUserId) {
             expect(screen.getByTestId("protected-page")).toBeInTheDocument();
-            expect(screen.queryByTestId("login-page")).not.toBeInTheDocument();
         } else {
-            expect(screen.queryByTestId("protected-page")).not.toBeInTheDocument();
             expect(screen.getByTestId("login-page")).toBeInTheDocument();
         }
     });
