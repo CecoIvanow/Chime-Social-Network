@@ -12,7 +12,7 @@ import { UserContext } from './contexts/user-context.js';
 
 import usePersistedState from './hooks/usePersistedState.js';
 
-import AuthGuard from './routes/auth-guard/AuthGuard';
+import AuthGuard from './guards/auth-guard/AuthGuard';
 
 import MenuBar from './components/layout/menu-bar/MenuBar.jsx';
 import LandingPage from './components/pages/landing-page/LandingPage.jsx';
@@ -29,7 +29,7 @@ import ProfileEditPage from './components/pages/profile-edit-page/ProfileEditPag
 import PostEditRedirect from './components/pages/post-edit-redirect/PostEditRedirect.jsx';
 import AlertNotification from './components/ui/alert-notification/AlertNotification.jsx';
 import ErrorBoundary from './components/layout/error-boundary/ErrorBoundary.jsx';
-import GuestGuard from './routes/guest-guard/GuestGuard';
+import GuestGuard from './guards/guest-guard/GuestGuard';
 
 export default function App() {
     const [loggedInUserId, setLoggedInUserId] = usePersistedState(false);
