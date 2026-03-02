@@ -13,7 +13,7 @@ import { UserContext } from './contexts/user-context.js';
 
 import usePersistedState from './hooks/usePersistedState.js';
 
-import AuthGuard from './routes/AuthGuard';
+import AuthGuard from './routes/auth-guard/AuthGuard';
 
 import MenuBar from './components/layout/menu-bar/MenuBar.jsx';
 import LandingPage from './components/pages/landing-page/LandingPage.jsx';
