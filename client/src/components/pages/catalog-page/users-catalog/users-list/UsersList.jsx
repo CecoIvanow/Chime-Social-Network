@@ -5,7 +5,7 @@ import useUserServices from "../../../../../hooks/useUserServices";
 import UserItem from "./user-item/UserItem";
 
 export default function UsersList({ matchingUsers }) {
-    const { isUser } = useContext(UserContext);
+    const { loggedInUserId } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
     const { addFriend, removeFriend, abortAll } = useUserServices();
 
@@ -13,7 +13,7 @@ export default function UsersList({ matchingUsers }) {
     const handleAddFriend = useCallback(
         async (user) => {
             try {
-                await addFriend(isUser, user._id);
+                await addFriend(loggedInUserId, user._id);
                 return true;
             } catch (error) {
                 console.error(error);
@@ -21,13 +21,13 @@ export default function UsersList({ matchingUsers }) {
                 return false;
             }
         },
-        [isUser, addFriend, setAlert] // Memoized function will be recomputed if these dependencies change
+        [loggedInUserId, addFriend, setAlert] // Memoized function will be recomputed if these dependencies change
     );
 
     const handleRemoveFriend = useCallback(
         async (user) => {
             try {
-                await removeFriend(isUser, user._id);
+                await removeFriend(loggedInUserId, user._id);
                 return true;
             } catch (error) {
                 console.error(error);
@@ -35,9 +35,9 @@ export default function UsersList({ matchingUsers }) {
                 return false;
             }
         },
-        [isUser, removeFriend, setAlert] // Dependencies: will re-create the callback if these change
+        [loggedInUserId, removeFriend, setAlert] // Dependencies: will re-create the callback if these change
     );
-    
+
     useEffect(() => {
         return () => {
             abortAll();

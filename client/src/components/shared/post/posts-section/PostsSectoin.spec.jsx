@@ -25,7 +25,7 @@ vi.mock("../posts-list/PostsList", () => ({
     default: () => <div data-testid="posts-list"></div>
 }));
 
-const isUser = "loggedInUserId";
+const loggedInUserId = "loggedInUserId";
 const profileId = "profileUserId";
 
 const reactRouterMock = {
@@ -43,7 +43,7 @@ function setup(options = {
     reactRouterMock.useParams.mockReturnValue({ profileId: options.profileId });
 
     render(
-        <UserContext.Provider value={{ isUser }}>
+        <UserContext.Provider value={{ loggedInUserId }}>
             <PostsSection
                 isLoading={options.isLoading}
                 {...mockProps}
@@ -56,7 +56,7 @@ describe("PostsSection component", () => {
     it.each([
         { name: "renders the section with 'Friends Posts:' text content when not in a user profile", result: "Friends Posts:", profileId: null },
         { name: `renders the section with '${mockProps.userName}'s Posts:' text content when the user is logged in and in another user's profile`, result: `${mockProps.userName}'s Posts:`, profileId, },
-        { name: `renders the section with 'My Posts:' text content when the user is logged in and in their profile`, result: "My Posts:", profileId: isUser },
+        { name: `renders the section with 'My Posts:' text content when the user is logged in and in their profile`, result: "My Posts:", profileId: loggedInUserId },
     ])("$name", ({ result, profileId }) => {
         setup({
             profileId,
@@ -67,7 +67,7 @@ describe("PostsSection component", () => {
     });
 
     it.each([
-        { name: "renders the post creation form on when the user is logged in and is in their profile", profileId: isUser },
+        { name: "renders the post creation form on when the user is logged in and is in their profile", profileId: loggedInUserId },
         { name: "does not render the post creation form on when the user is either not logged in or is but not in their profile", profileId, },
     ])("$name", ({ profileId }) => {
         setup({
@@ -75,7 +75,7 @@ describe("PostsSection component", () => {
             isLoading: false,
         });
 
-        if (isUser === profileId) {
+        if (loggedInUserId === profileId) {
             expect(screen.getByTestId("post-form")).toBeInTheDocument();
         } else {
             expect(screen.queryByTestId("post-form")).not.toBeInTheDocument();

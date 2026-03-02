@@ -19,7 +19,7 @@ const post = {
     _id: 1
 };
 
-const isUser = "User1";
+const loggedInUserId = "User1";
 
 const setLikes = vi.fn();
 
@@ -33,13 +33,13 @@ function setup(options = {
     onLikeEmptyReturn: false,
     onUnlikeEmptyReturn: false,
 }) {
-    const likes = options.isLikedByUser ? [isUser, "User2"] : ["User2"];
+    const likes = options.isLikedByUser ? [loggedInUserId, "User2"] : ["User2"];
 
     options.onLikeEmptyReturn ? actioncCtxMock.onLikeClickHandler.mockResolvedValue(null) : actioncCtxMock.onLikeClickHandler.mockResolvedValue(true);
     options.onUnlikeEmptyReturn ? actioncCtxMock.onUnlikeClickHandler.mockResolvedValue(null) : actioncCtxMock.onUnlikeClickHandler.mockResolvedValue(true);
 
     render(
-        <UserContext.Provider value={{ isUser }}>
+        <UserContext.Provider value={{ loggedInUserId }}>
             <PostContext.Provider value={{ post }}>
                 <ActionsContext.Provider value={{ ...actioncCtxMock }}>
                     <LikesContext.Provider value={{ likes, setLikes }}>
@@ -140,11 +140,11 @@ describe("PostLikeButtons component", () => {
 
         const setLikes = vi.fn((updater) => {
             const updatedLikes = updater(likes);
-            expect(updatedLikes).toEqual([...likes, isUser])
+            expect(updatedLikes).toEqual([...likes, loggedInUserId])
         })
 
         render(
-            <UserContext.Provider value={{ isUser }}>
+            <UserContext.Provider value={{ loggedInUserId }}>
                 <PostContext.Provider value={{ post }}>
                     <ActionsContext.Provider value={{ onLikeClickHandler, onUnlikeClickHandler: actioncCtxMock.onUnlikeClickHandler }}>
                         <LikesContext.Provider value={{ likes, setLikes }}>
@@ -161,17 +161,17 @@ describe("PostLikeButtons component", () => {
     });
     it("updates the amount of post likes on successful unlike", async () => {
         const user = userEvent.setup();
-        const likes = [isUser, "User2"];
+        const likes = [loggedInUserId, "User2"];
 
         const onUnlikeClickHandler = vi.fn().mockResolvedValue(true);
 
         const setLikes = vi.fn((updater) => {
             const updatedLikes = updater(likes);
-            expect(updatedLikes).toEqual(likes.filter(userLike => userLike !== isUser));
+            expect(updatedLikes).toEqual(likes.filter(userLike => userLike !== loggedInUserId));
         })
 
         render(
-            <UserContext.Provider value={{ isUser }}>
+            <UserContext.Provider value={{ loggedInUserId }}>
                 <PostContext.Provider value={{ post }}>
                     <ActionsContext.Provider value={{ onLikeClickHandler: actioncCtxMock.onLikeClickHandler, onUnlikeClickHandler }}>
                         <LikesContext.Provider value={{ likes, setLikes }}>

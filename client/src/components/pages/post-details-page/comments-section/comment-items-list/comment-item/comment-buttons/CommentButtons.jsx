@@ -7,15 +7,15 @@ import OwnerButtons from "../../../../../../shared/controls/owner-buttons/OwnerB
 export default function CommentButtons({
     comment
 }) {
-    const { isUser } = useContext(UserContext);
+    const { loggedInUserId } = useContext(UserContext);
 
     return <div className='button-div'>
         <div></div>
 
-            {(isUser && isUser === comment.owner._id) && (
-                <OwnerButtons
-                    itemId={comment._id}
-                />
-            )}
+        {(loggedInUserId && loggedInUserId === comment.owner._id) && (
+            <OwnerButtons
+                itemId={comment._id}
+            />
+        )}
     </div>
 }

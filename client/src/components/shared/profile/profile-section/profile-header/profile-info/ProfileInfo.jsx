@@ -9,7 +9,7 @@ import { useParams } from "react-router";
 export default function ProfileInfo({
     userData
 }) {
-    const { isUser } = useContext(UserContext);
+    const { loggedInUserId } = useContext(UserContext);
 
     const { profileId } = useParams();
 
@@ -23,7 +23,7 @@ export default function ProfileInfo({
                 userData={userData}
             />
 
-            {((isUser && (isUser === profileId)) || !profileId) && (
+            {((loggedInUserId && (loggedInUserId === profileId)) || !profileId) && (
                 <EditProfileButton />
             )}
         </div>

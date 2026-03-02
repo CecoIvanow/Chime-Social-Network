@@ -15,10 +15,10 @@ const mockProps = {
     },
 };
 
-function setup(options={
-    isUserDataUndefined: false,
+function setup(options = {
+    loggedInUserIdDataUndefined: false,
 }) {
-    const userData = options.isUserDataUndefined ? undefined : mockProps.userData;
+    const userData = options.loggedInUserIdDataUndefined ? undefined : mockProps.userData;
 
     render(
         <ProfileInfoLabel userData={userData} label={mockProps.label} />
@@ -37,7 +37,7 @@ describe("ProfileInfoLabel component", () => {
 
     it("renders the paragraph text with N\\A if the information is empty", () => {
         setup({
-            isUserDataUndefined: true,
+            loggedInUserIdDataUndefined: true,
         });
 
         expect(screen.getByText(mockProps.label.labelText)).toBeInTheDocument();

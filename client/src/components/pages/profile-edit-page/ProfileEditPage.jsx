@@ -24,7 +24,7 @@ export default function ProfileEditPage() {
     const [imageUpload, setImageUpload] = useState(null);
 
     const { setAlert } = useContext(AlertContext);
-    const { isUser: currentUser } = useContext(UserContext)
+    const { loggedInUserId: currentUser } = useContext(UserContext)
     const { profileId } = useParams();
 
     const { updateUser, getUserData, abortAll } = useUserServices();

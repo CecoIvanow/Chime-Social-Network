@@ -12,15 +12,15 @@ vi.mock("./guest-auth-menu/GuestAuthMenu", () => ({
     default: () => <div data-testid="guest-auth-menu"></div>
 }));
 
-function setup(options={
+function setup(options = {
     isLogged: true,
 }) {
-    const isUser = options.isLogged ?
+    const loggedInUserId = options.isLogged ?
         "userId" :
         null;
 
     render(
-        <UserContext.Provider value={{ isUser }}>
+        <UserContext.Provider value={{ loggedInUserId }}>
             <AuthMenu />
         </UserContext.Provider>
     );

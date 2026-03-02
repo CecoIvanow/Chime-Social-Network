@@ -22,7 +22,7 @@ vi.mock("./add-friend-button/AddFriendButton", () => ({
     ),
 }));
 
-const isUser = "userId111";
+const loggedInUserId = "userId111";
 
 const mockProps = {
     user: {
@@ -36,7 +36,7 @@ const mockProps = {
 
 function setup(options = {
     isAddedAsFriend: false,
-    isUserValue: isUser,
+    loggedInUserIdValue: loggedInUserId,
     handleAddFriendReturn: true,
     handleRemoveFriendReturn: true,
 }) {
@@ -44,7 +44,7 @@ function setup(options = {
         ...mockProps,
         user: {
             ...mockProps.user,
-            friends: options.isAddedAsFriend ? [...mockProps.user.friends, isUser] : [...mockProps.user.friends],
+            friends: options.isAddedAsFriend ? [...mockProps.user.friends, loggedInUserId] : [...mockProps.user.friends],
         },
     };
 
@@ -57,7 +57,7 @@ function setup(options = {
         mockProps.handleRemoveFriend.mockResolvedValue("");
 
     render(
-        <UserContext.Provider value={{ isUser: options.isUserValue }}>
+        <UserContext.Provider value={{ loggedInUserId: options.loggedInUserIdValue }}>
             <UserItem
                 {...userWithFriends}
             />
@@ -73,13 +73,13 @@ describe("UserItem component", () => {
     });
 
     it.each([
-        { name: "renders friend buttons when user is logged in and is not viewing their profile", isUserValue: isUser, shouldRender: true },
-        { name: "does not render friend buttons when user is logged in and is viewing their profile", isUserValue: mockProps.user._id, shouldRender: false },
-        { name: "does not render friend buttons when user is not logged in", isUserValue: "", shouldRender: false },
-    ])("$name", ({ isUserValue, shouldRender }) => {
+        { name: "renders friend buttons when user is logged in and is not viewing their profile", loggedInUserIdValue: loggedInUserId, shouldRender: true },
+        { name: "does not render friend buttons when user is logged in and is viewing their profile", loggedInUserIdValue: mockProps.user._id, shouldRender: false },
+        { name: "does not render friend buttons when user is not logged in", loggedInUserIdValue: "", shouldRender: false },
+    ])("$name", ({ loggedInUserIdValue, shouldRender }) => {
         setup({
             isAddedAsFriend: false,
-            isUserValue,
+            loggedInUserIdValue,
             handleAddFriendReturn: true,
             handleRemoveFriendReturn: true,
         });
@@ -97,7 +97,7 @@ describe("UserItem component", () => {
     ])("$name", ({ isAddedAsFriend }) => {
         setup({
             isAddedAsFriend,
-            isUserValue: isUser,
+            loggedInUserIdValue: loggedInUserId,
             handleAddFriendReturn: true,
             handleRemoveFriendReturn: true,
         });
@@ -129,7 +129,7 @@ describe("UserItem component", () => {
         const user = userEvent.setup();
         setup({
             isAddedAsFriend: false,
-            isUserValue: isUser,
+            loggedInUserIdValue: loggedInUserId,
             handleAddFriendReturn: false,
             handleRemoveFriendReturn: true,
         });
@@ -148,14 +148,14 @@ describe("UserItem component", () => {
         const user = userEvent.setup();
         setup({
             isAddedAsFriend: true,
-            isUserValue: isUser,
+            loggedInUserIdValue: loggedInUserId,
             handleAddFriendReturn: true,
             handleRemoveFriendReturn: true,
         });
 
         const userWithFriends = {
             ...mockProps.user,
-            friends: [...mockProps.user.friends, isUser]
+            friends: [...mockProps.user.friends, loggedInUserId]
         }
 
         await user.click(screen.getByRole("button", { name: "Unfriend" }));
@@ -172,14 +172,14 @@ describe("UserItem component", () => {
         const user = userEvent.setup();
         setup({
             isAddedAsFriend: true,
-            isUserValue: isUser,
+            loggedInUserIdValue: loggedInUserId,
             handleAddFriendReturn: true,
             handleRemoveFriendReturn: false,
         });
 
         const userWithFriends = {
             ...mockProps.user,
-            friends: [...mockProps.user.friends, isUser]
+            friends: [...mockProps.user.friends, loggedInUserId]
         }
 
         await user.click(screen.getByRole("button", { name: "Unfriend" }));

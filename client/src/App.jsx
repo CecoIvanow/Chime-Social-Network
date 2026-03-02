@@ -30,7 +30,7 @@ import AlertNotification from './components/ui/alert-notification/AlertNotificat
 import ErrorBoundary from './components/layout/error-boundary/ErrorBoundary.jsx';
 
 export default function App() {
-    const [isUser, setIsUser] = usePersistedState(false);
+    const [loggedInUserId, setLoggedInUserId] = usePersistedState(false);
     const [alert, setAlert] = useState(false);
 
     const location = useLocation();
@@ -41,8 +41,8 @@ export default function App() {
     }
 
     const userContextValues = {
-        isUser,
-        setIsUser
+        loggedInUserId,
+        setLoggedInUserId
     }
 
     return (
@@ -50,7 +50,7 @@ export default function App() {
             <AlertContext.Provider value={alertContextValues}>
                 <UserContext.Provider value={userContextValues}>
 
-                    {(isUser || (!isUser && location.pathname !== '/')) && (
+                    {(loggedInUserId || (!loggedInUserId && location.pathname !== '/')) && (
                         <MenuBar />
                     )}
 
@@ -60,17 +60,17 @@ export default function App() {
 
                     <Routes>
                         {/* State dependent pages */}
-                        <Route path='/' element={isUser ? <UserHomePage /> : <LandingPage />} />
+                        <Route path='/' element={loggedInUserId ? <UserHomePage /> : <LandingPage />} />
 
                         {/* User only pages */}
-                        <Route path='/profile/:profileId/edit' element={isUser ? <ProfileEditPage /> : <Navigate to="/login" />} />
-                        <Route path='/post/:postId/edit' element={isUser ? <PostEditRedirect /> : <Navigate to="/login" />} />
-                        <Route path='/settings' element={isUser ? <SettingsPage /> : <Navigate to="/login" />} />
-                        <Route path='/logout' element={isUser ? <Logout /> : <Navigate to="/" />} />
+                        <Route path='/profile/:profileId/edit' element={loggedInUserId ? <ProfileEditPage /> : <Navigate to="/login" />} />
+                        <Route path='/post/:postId/edit' element={loggedInUserId ? <PostEditRedirect /> : <Navigate to="/login" />} />
+                        <Route path='/settings' element={loggedInUserId ? <SettingsPage /> : <Navigate to="/login" />} />
+                        <Route path='/logout' element={loggedInUserId ? <Logout /> : <Navigate to="/" />} />
 
                         {/* Guest only pages */}
-                        <Route path='/register' element={!isUser ? <RegisterPage /> : <Navigate to="/" />} />
-                        <Route path='/login' element={!isUser ? <LoginPage /> : <Navigate to="/" />} />
+                        <Route path='/register' element={!loggedInUserId ? <RegisterPage /> : <Navigate to="/" />} />
+                        <Route path='/login' element={!loggedInUserId ? <LoginPage /> : <Navigate to="/" />} />
 
                         {/* Public pages */}
                         <Route path='/post/:postId/details' element={<PostDetailsPage />} />

@@ -21,10 +21,10 @@ const mockProps = {
 function setup(options = {
     isTheOwner: true
 }) {
-    const isUser = options.isTheOwner ? mockProps.comment.owner._id : "userId";
+    const loggedInUserId = options.isTheOwner ? mockProps.comment.owner._id : "userId";
 
     render(
-        <UserContext.Provider value={{ isUser }}>
+        <UserContext.Provider value={{ loggedInUserId }}>
             <CommentButtons {...mockProps} />
         </UserContext.Provider>
     );

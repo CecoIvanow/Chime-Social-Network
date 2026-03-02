@@ -41,7 +41,7 @@ vi.mock("../../input-fields/create-content-input-field/CreateContentInputField",
 const resolvedPostValue = { postId: 3 };
 const newInputValue = "This is a test!";
 
-const isUser = 42;
+const loggedInUserId = 42;
 
 const ERR_MSG = {
     CREATE_POST: "Rejected createPost API call"
@@ -76,7 +76,7 @@ function setup(options = {
 
     return render(
         <AlertContext.Provider value={{ setAlert, }}>
-            <UserContext.Provider value={{ isUser, }}>
+            <UserContext.Provider value={{ loggedInUserId, }}>
                 <TotalPostsContext.Provider value={totalPostsCtxProps}>
                     <PostCreateForm />
                 </TotalPostsContext.Provider>
@@ -115,7 +115,7 @@ describe("PostCreateForm component", () => {
         await waitFor(() => {
             expect(usePostServicesMock.createPost).toHaveBeenCalledWith({
                 text: newInputValue,
-                owner: isUser
+                owner: loggedInUserId
             });
         });
     });
@@ -169,7 +169,7 @@ describe("PostCreateForm component", () => {
         await waitFor(() => {
             expect(usePostServicesMock.createPost).toHaveBeenCalledWith({
                 text: newInputValue,
-                owner: isUser
+                owner: loggedInUserId
             });
         });
 

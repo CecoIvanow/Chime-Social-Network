@@ -11,12 +11,12 @@ vi.mock("../../../../../../ui/buttons/link-button/LinkButton", () => ({
     default: ({ urlLink, buttonName }) => <Link to={urlLink}>{buttonName}</Link>
 }));
 
-const isUser = "User123";
+const loggedInUserId = "User123";
 
 beforeEach(() => {
     render(
         <MemoryRouter>
-            <UserContext.Provider value={{ isUser, }}>
+            <UserContext.Provider value={{ loggedInUserId, }}>
                 <EditProfileButton />
             </UserContext.Provider>
         </MemoryRouter>
@@ -25,6 +25,6 @@ beforeEach(() => {
 
 describe("EditProfileButton component", () => {
     it("renders link button with correct text value and src attributes", () => {
-        expect(screen.getByRole("link", { value: "Edit Profile" })).toHaveAttribute("href", `/profile/${isUser}/edit`);
+        expect(screen.getByRole("link", { value: "Edit Profile" })).toHaveAttribute("href", `/profile/${loggedInUserId}/edit`);
     });
 });

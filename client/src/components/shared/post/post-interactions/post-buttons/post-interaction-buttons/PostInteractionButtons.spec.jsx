@@ -32,12 +32,12 @@ function setup(options = {
 }) {
     const postId = options.useParamsEmptyPostId ? null : "123";
 
-    const isUser = options.userIdEqualsPostOwnerId ? post.owner._id : "differentUserId";
+    const loggedInUserId = options.userIdEqualsPostOwnerId ? post.owner._id : "differentUserId";
 
     useParams.mockReturnValue({ postId });
 
     render(
-        <UserContext.Provider value={{ isUser }}>
+        <UserContext.Provider value={{ loggedInUserId }}>
             <PostContext.Provider value={{ post }}>
                 <PostInteractionButtons />
             </PostContext.Provider>

@@ -40,7 +40,7 @@ const ERR_MSG = {
     UNLIKE_POST: "Rejected unlikePost call!",
 };
 
-const isUser = "userId";
+const loggedInUserId = "userId";
 
 const setAlert = vi.fn();
 
@@ -76,7 +76,7 @@ function setup(options = {
 
     const { unmount } = render(
         <AlertContext.Provider value={{ setAlert }}>
-            <UserContext.Provider value={{ isUser }}>
+            <UserContext.Provider value={{ loggedInUserId }}>
                 <TotalPostsContext.Provider value={{ ...totalPostsCtxMock }}>
                     <PostsList />
                 </TotalPostsContext.Provider>
@@ -141,7 +141,7 @@ describe("PostsList component", () => {
         await user.click(screen.getAllByText('Like').at(FIRST_POST));
 
         await vi.waitFor(() => {
-            expect(usePostServicesMock.likePost).toHaveBeenCalledWith(isUser, totalPostsCtxMock.totalPosts.at(FIRST_POST)._id);
+            expect(usePostServicesMock.likePost).toHaveBeenCalledWith(loggedInUserId, totalPostsCtxMock.totalPosts.at(FIRST_POST)._id);
         });
     });
 
@@ -168,7 +168,7 @@ describe("PostsList component", () => {
         await user.click(screen.getAllByText('Unlike').at(FIRST_POST));
 
         await vi.waitFor(() => {
-            expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(isUser, totalPostsCtxMock.totalPosts.at(FIRST_POST)._id);
+            expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(loggedInUserId, totalPostsCtxMock.totalPosts.at(FIRST_POST)._id);
         });
     });
 

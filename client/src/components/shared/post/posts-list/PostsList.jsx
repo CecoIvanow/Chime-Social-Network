@@ -12,7 +12,7 @@ import usePostServices from "../../../../hooks/usePostServices";
 export default function PostsList() {
     const { totalPosts, setTotalPosts } = useContext(TotalPostsContext);
     const { setAlert } = useContext(AlertContext);
-    const { isUser: currentUser } = useContext(UserContext);
+    const { loggedInUserId: currentUser } = useContext(UserContext);
 
     const { deletePost, likePost, unlikePost, abortAll } = usePostServices();
 

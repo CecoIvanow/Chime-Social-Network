@@ -9,13 +9,13 @@ import { PostContext } from "../../../../../../contexts/post-context";
 
 export default function PostInteractionButtons() {
     const { post } = useContext(PostContext);
-    const { isUser } = useContext(UserContext);
+    const { loggedInUserId } = useContext(UserContext);
 
     const { postId } = useParams();
 
     return <div>
-        {isUser && <>
-            {(isUser !== post.owner._id) &&
+        {loggedInUserId && <>
+            {(loggedInUserId !== post.owner._id) &&
                 <PostLikeButtons />
             }
 

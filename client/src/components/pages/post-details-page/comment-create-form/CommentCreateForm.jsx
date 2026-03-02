@@ -12,7 +12,7 @@ export default function CreateCommentForm() {
     const [commentText, setCommentText] = useState('');
 
     const { post, setPost } = useContext(PostContext)
-    const { isUser } = useContext(UserContext);
+    const { loggedInUserId } = useContext(UserContext);
     const { setAlert } = useContext(AlertContext);
 
     const { createComment, abortAll } = useCommentServices();
@@ -27,7 +27,7 @@ export default function CreateCommentForm() {
         const commentData = Object.fromEntries(formData);
 
         commentData.onPost = location.pathname.split('/').at(2);
-        commentData.owner = isUser;
+        commentData.owner = loggedInUserId;
 
         try {
             const newComment = await createComment(commentData);

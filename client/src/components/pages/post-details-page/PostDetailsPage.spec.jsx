@@ -81,7 +81,7 @@ const POST_ID = "postId435";
 
 const UPDATED_POST_CONTENT = "Updated Content!";
 
-const isUser = "user123";
+const loggedInUserId = "user123";
 
 let location = {
     state: {
@@ -145,7 +145,7 @@ function setup(options = {
 
     return render(
         <AlertContext.Provider value={{ setAlert }}>
-            <UserContext.Provider value={{ isUser }}>
+            <UserContext.Provider value={{ loggedInUserId }}>
                 <PostDetailsPage />
             </UserContext.Provider>
         </AlertContext.Provider>
@@ -254,7 +254,7 @@ describe("PostDetailsPage component", () => {
         await user.click(await screen.findByRole("button", { name: "Like" }));
 
         await waitFor(() => {
-            expect(usePostServicesMock.likePost).toHaveBeenCalledWith(isUser, post._id);
+            expect(usePostServicesMock.likePost).toHaveBeenCalledWith(loggedInUserId, post._id);
         });
     });
 
@@ -283,7 +283,7 @@ describe("PostDetailsPage component", () => {
         await user.click(await screen.findByRole("button", { name: "Unlike" }));
 
         await waitFor(() => {
-            expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(isUser, post._id);
+            expect(usePostServicesMock.unlikePost).toHaveBeenCalledWith(loggedInUserId, post._id);
         });
     });
 
@@ -435,7 +435,7 @@ describe("PostDetailsPage component", () => {
             _id: POST_ID,
             text: "This is a post!",
             owner: {
-                _id: isUser,
+                _id: loggedInUserId,
             },
         };
 
