@@ -5,7 +5,6 @@ import {
     Routes,
     Route,
     useLocation,
-    Navigate
 } from 'react-router';
 
 import { AlertContext } from './contexts/alert-context.js';
@@ -13,9 +12,11 @@ import { UserContext } from './contexts/user-context.js';
 
 import usePersistedState from './hooks/usePersistedState.js';
 
+import AuthGuard from './guards/auth-guard/AuthGuard';
+import GuestGuard from './guards/guest-guard/GuestGuard';
+import HomePageGuard from './guards/home-page-guard/HomePageGuard';
+
 import MenuBar from './components/layout/menu-bar/MenuBar.jsx';
-import LandingPage from './components/pages/landing-page/LandingPage.jsx';
-import UserHomePage from './components/pages/user-home-page/UserHomePage.jsx';
 import LoginPage from './components/pages/login-page/LoginPage.jsx';
 import RegisterPage from './components/pages/register-page/RegisterPage.jsx';
 import NotFoundPage from './components/pages/not-found-page/NotFoundPage.jsx';
@@ -59,20 +60,20 @@ export default function App() {
                     )}
 
                     <Routes>
-                        {/* State dependent pages */}
-                        <Route path='/' element={loggedInUserId ? <UserHomePage /> : <LandingPage />} />
+                        <Route index element={<HomePageGuard />} />
 
-                        {/* User only pages */}
-                        <Route path='/profile/:profileId/edit' element={loggedInUserId ? <ProfileEditPage /> : <Navigate to="/login" />} />
-                        <Route path='/post/:postId/edit' element={loggedInUserId ? <PostEditRedirect /> : <Navigate to="/login" />} />
-                        <Route path='/settings' element={loggedInUserId ? <SettingsPage /> : <Navigate to="/login" />} />
-                        <Route path='/logout' element={loggedInUserId ? <Logout /> : <Navigate to="/" />} />
+                        <Route element={<AuthGuard />}>
+                            <Route path='/profile/:profileId/edit' element={<ProfileEditPage />} />
+                            <Route path='/post/:postId/edit' element={<PostEditRedirect />} />
+                            <Route path='/settings' element={<SettingsPage />} />
+                            <Route path='/logout' element={<Logout />} />
+                        </Route>
 
-                        {/* Guest only pages */}
-                        <Route path='/register' element={!loggedInUserId ? <RegisterPage /> : <Navigate to="/" />} />
-                        <Route path='/login' element={!loggedInUserId ? <LoginPage /> : <Navigate to="/" />} />
+                        <Route element={<GuestGuard />}>
+                            <Route path='/register' element={<RegisterPage />} />
+                            <Route path='/login' element={<LoginPage />} />
+                        </Route>
 
-                        {/* Public pages */}
                         <Route path='/post/:postId/details' element={<PostDetailsPage />} />
                         <Route path='/profile/:profileId' element={<ProfilePage />} />
                         <Route path='/catalog' element={<CatalogPage />} />
