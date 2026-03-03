@@ -83,11 +83,11 @@ const userPersistedStateMock = [
 ];
 
 function setup(options = {
-    loggedInUserIdIsValid: true,
+    isLoggedIn: true,
     initialEntries: "/",
 }) {
 
-    userPersistedStateMock[0] = options.loggedInUserIdIsValid ? USER_ID : null;
+    userPersistedStateMock[0] = options.isLoggedIn ? USER_ID : null;
 
     render(
         <MemoryRouter initialEntries={[options.initialEntries]}>
@@ -105,12 +105,12 @@ describe("App component", () => {
     })
 
     it.each([
-        { name: "renders MenuBar on on logged in user", loggedInUserIdIsValid: true, initialEntries: "/login", shouldRender: true },
-        { name: "renders MenuBar on guest user and not being on the home page", loggedInUserIdIsValid: false, initialEntries: "/login", shouldRender: true },
-        { name: "does not render MenuBar on guest user being on the home page", loggedInUserIdIsValid: false, initialEntries: "/", shouldRender: false },
-    ])("$name", ({ loggedInUserIdIsValid, initialEntries, shouldRender }) => {
+        { name: "renders MenuBar on on logged in user", isLoggedIn: true, initialEntries: "/login", shouldRender: true },
+        { name: "renders MenuBar on guest user and not being on the home page", isLoggedIn: false, initialEntries: "/login", shouldRender: true },
+        { name: "does not render MenuBar on guest user being on the home page", isLoggedIn: false, initialEntries: "/", shouldRender: false },
+    ])("$name", ({ isLoggedIn, initialEntries, shouldRender }) => {
         setup({
-            loggedInUserIdIsValid,
+            isLoggedIn,
             initialEntries,
         });
 
@@ -121,22 +121,22 @@ describe("App component", () => {
         };
     });
 
-    it("renders HomeGuardPage on user entry", ({ loggedInUserIdIsValid }) => {
+    it("renders HomeGuardPage on user entry", ({ isLoggedIn }) => {
         setup({
             initialEntries: "/",
-            loggedInUserIdIsValid,
+            isLoggedIn,
         });
 
         expect(screen.getByTestId("home-page-guard")).toBeInTheDocument();
     });
 
     it.each([
-        { name: "renders ProfileEditPage on when the user is logged in and being in their profile edit page", loggedInUserIdIsValid: true, shouldRender: true },
-        { name: "does not render ProfileEditPage and redirects to login when the user is not logged in and trying to access a profile edit page", loggedInUserIdIsValid: false, shouldRender: false },
-    ])("$name", ({ loggedInUserIdIsValid, shouldRender }) => {
+        { name: "renders ProfileEditPage on when the user is logged in and being in their profile edit page", isLoggedIn: true, shouldRender: true },
+        { name: "does not render ProfileEditPage and redirects to login when the user is not logged in and trying to access a profile edit page", isLoggedIn: false, shouldRender: false },
+    ])("$name", ({ isLoggedIn, shouldRender }) => {
         setup({
             initialEntries: `/profile/${USER_ID}/edit`,
-            loggedInUserIdIsValid,
+            isLoggedIn,
         });
 
         if (shouldRender) {
@@ -149,12 +149,12 @@ describe("App component", () => {
     });
 
     it.each([
-        { name: "renders PostEditRedirect on logged in user and being in their post edit page", loggedInUserIdIsValid: true, shouldRender: true },
-        { name: "does not render PostEditRedirect on logged out user trying to access a post edit page", loggedInUserIdIsValid: false, shouldRender: false },
-    ])("$name", ({ loggedInUserIdIsValid, shouldRender }) => {
+        { name: "renders PostEditRedirect on logged in user and being in their post edit page", isLoggedIn: true, shouldRender: true },
+        { name: "does not render PostEditRedirect on logged out user trying to access a post edit page", isLoggedIn: false, shouldRender: false },
+    ])("$name", ({ isLoggedIn, shouldRender }) => {
         setup({
             initialEntries: `/post/${POST_ID}/edit`,
-            loggedInUserIdIsValid,
+            isLoggedIn,
         });
 
         if (shouldRender) {
@@ -167,12 +167,12 @@ describe("App component", () => {
     });
 
     it.each([
-        { name: "renders SettingsPage on logged in user and being in their settings page", loggedInUserIdIsValid: true, shouldRender: true },
-        { name: "does not render SettingsPage and redirects to login page on logged out user trying to access settings page", loggedInUserIdIsValid: false, shouldRender: false },
-    ])("$name", ({ loggedInUserIdIsValid, shouldRender }) => {
+        { name: "renders SettingsPage on logged in user and being in their settings page", isLoggedIn: true, shouldRender: true },
+        { name: "does not render SettingsPage and redirects to login page on logged out user trying to access settings page", isLoggedIn: false, shouldRender: false },
+    ])("$name", ({ isLoggedIn, shouldRender }) => {
         setup({
             initialEntries: "/settings",
-            loggedInUserIdIsValid,
+            isLoggedIn,
         });
 
         if (shouldRender) {
@@ -185,12 +185,12 @@ describe("App component", () => {
     });
 
     it.each([
-        { name: "renders Logout on a logged in user being in the logout page", loggedInUserIdIsValid: true, shouldRender: true },
-        { name: "does not render Logout and redirects to login page on logged out user trying to access the logout page", loggedInUserIdIsValid: false, shouldRender: false },
-    ])("$name", ({ loggedInUserIdIsValid, shouldRender }) => {
+        { name: "renders Logout on a logged in user being in the logout page", isLoggedIn: true, shouldRender: true },
+        { name: "does not render Logout and redirects to login page on logged out user trying to access the logout page", isLoggedIn: false, shouldRender: false },
+    ])("$name", ({ isLoggedIn, shouldRender }) => {
         setup({
             initialEntries: "/logout",
-            loggedInUserIdIsValid,
+            isLoggedIn,
         });
 
         if (shouldRender) {
@@ -202,45 +202,45 @@ describe("App component", () => {
     });
 
     it.each([
-        { name: "renders RegisterPage on logged out user being in the register page", loggedInUserIdIsValid: true, shouldRender: true },
-        { name: "does not render RegisterPage and redirects to home page on logged in user trying to access the register page", loggedInUserIdIsValid: false, shouldRender: false },
-    ])("$name", ({ loggedInUserIdIsValid, shouldRender }) => {
+        { name: "renders RegisterPage on logged out user being in the register page", isLoggedIn: false, shouldRender: true },
+        { name: "does not render RegisterPage and redirects to home page on logged in user trying to access the register page", isLoggedIn: true, shouldRender: false },
+    ])("$name", ({ isLoggedIn, shouldRender }) => {
         setup({
             initialEntries: "/register",
-            loggedInUserIdIsValid,
+            isLoggedIn,
         });
 
         if (shouldRender) {
-            expect(screen.getByTestId("home-page-guard")).toBeInTheDocument();
-            expect(screen.queryByTestId("register-page")).not.toBeInTheDocument();
-        } else {
             expect(screen.getByTestId("register-page")).toBeInTheDocument();
             expect(screen.queryByTestId("home-page-guard")).not.toBeInTheDocument();
+        } else {
+            expect(screen.getByTestId("home-page-guard")).toBeInTheDocument();
+            expect(screen.queryByTestId("register-page")).not.toBeInTheDocument();
         };
     });
 
     it.each([
-        { name: "renders LoginPage on logged out user being in the login page", loggedInUserIdIsValid: true, shouldRender: true },
-        { name: "does not render LoginPage and redirects to home page on logged out user trying to access the login page", loggedInUserIdIsValid: false, shouldRender: false },
-    ])("$name", ({ loggedInUserIdIsValid, shouldRender }) => {
+        { name: "renders LoginPage on logged out user being in the login page", isLoggedIn: false, shouldRender: true },
+        { name: "does not render LoginPage and redirects to home page on logged out user trying to access the login page", isLoggedIn: true, shouldRender: false },
+    ])("$name", ({ isLoggedIn, shouldRender }) => {
         setup({
             initialEntries: "/login",
-            loggedInUserIdIsValid,
+            isLoggedIn,
         });
 
         if (shouldRender) {
-            expect(screen.getByTestId("home-page-guard")).toBeInTheDocument();
-            expect(screen.queryByTestId("login-page")).not.toBeInTheDocument();
-        } else {
             expect(screen.getByTestId("login-page")).toBeInTheDocument();
             expect(screen.queryByTestId("home-page-guard")).not.toBeInTheDocument();
+        } else {
+            expect(screen.getByTestId("home-page-guard")).toBeInTheDocument();
+            expect(screen.queryByTestId("login-page")).not.toBeInTheDocument();
         };
     });
 
     it("renders PostDetailsPage when accessing the post details page", () => {
         setup({
             initialEntries: `/post/${POST_ID}/details`,
-            loggedInUserIdIsValid: true,
+            isLoggedIn: true,
         });
 
         expect(screen.getByTestId("post-details-page")).toBeInTheDocument();
@@ -249,7 +249,7 @@ describe("App component", () => {
     it("renders ProfilePage when accessing a profile page", () => {
         setup({
             initialEntries: `/profile/${USER_ID}`,
-            loggedInUserIdIsValid: true,
+            isLoggedIn: true,
         });
 
         expect(screen.getByTestId("profile-page")).toBeInTheDocument();
@@ -258,7 +258,7 @@ describe("App component", () => {
     it("renders CatalogPage when accessing the catalog page", () => {
         setup({
             initialEntries: "/catalog",
-            loggedInUserIdIsValid: true,
+            isLoggedIn: true,
         });
 
         expect(screen.getByTestId("catalog-page")).toBeInTheDocument();
@@ -267,7 +267,7 @@ describe("App component", () => {
     it("renders NotFoundPage when trying to access an invalid page", () => {
         setup({
             initialEntries: "/tires",
-            loggedInUserIdIsValid: true,
+            isLoggedIn: true,
         });
 
         expect(screen.getByTestId("not-found-page")).toBeInTheDocument();
