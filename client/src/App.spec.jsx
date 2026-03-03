@@ -26,12 +26,8 @@ vi.mock("./components/ui/alert-notification/AlertNotification.jsx", () => ({
     default: () => <div data-testid="alert-notification"></div>
 }));
 
-vi.mock("./components/pages/user-home-page/UserHomePage.jsx", () => ({
-    default: () => <div data-testid="user-home-page"></div>
-}));
-
-vi.mock("./components/pages/landing-page/LandingPage.jsx", () => ({
-    default: () => <div data-testid="landing-page"></div>
+vi.mock("./guards/home-page-guard/HomePageGuard", () => ({
+    default: () => <div data-testid="home-page-guard"></div>
 }));
 
 vi.mock("./components/pages/profile-edit-page/ProfileEditPage.jsx", () => ({
@@ -125,22 +121,13 @@ describe("App component", () => {
         };
     });
 
-    it.each([
-        { name: "renders UserHomePage and not LandingPage on logged in user being on the home page", loggedInUserIdIsValid: true },
-        { name: "renders LandingPage and not UserHomePage on logged out user being on the home page", loggedInUserIdIsValid: false },
-    ])("$name", ({ loggedInUserIdIsValid }) => {
+    it("renders HomeGuardPage on user entry", ({ loggedInUserIdIsValid }) => {
         setup({
             initialEntries: "/",
             loggedInUserIdIsValid,
         });
 
-        if (loggedInUserIdIsValid) {
-            expect(screen.getByTestId("user-home-page")).toBeInTheDocument();
-            expect(screen.queryByTestId("landing-page")).not.toBeInTheDocument();
-        } else {
-            expect(screen.getByTestId("landing-page")).toBeInTheDocument();
-            expect(screen.queryByTestId("user-home-page")).not.toBeInTheDocument();
-        };
+        expect(screen.getByTestId("home-page-guard")).toBeInTheDocument();
     });
 
     it.each([
@@ -208,7 +195,6 @@ describe("App component", () => {
 
         if (shouldRender) {
             expect(screen.getByTestId("logout")).toBeInTheDocument();
-            expect(screen.queryByTestId("landing-page")).not.toBeInTheDocument();
         } else {
             expect(screen.getByTestId("login-page")).toBeInTheDocument();
             expect(screen.queryByTestId("logout")).not.toBeInTheDocument();
@@ -225,11 +211,11 @@ describe("App component", () => {
         });
 
         if (shouldRender) {
-            expect(screen.getByTestId("user-home-page")).toBeInTheDocument();
+            expect(screen.getByTestId("home-page-guard")).toBeInTheDocument();
             expect(screen.queryByTestId("register-page")).not.toBeInTheDocument();
         } else {
             expect(screen.getByTestId("register-page")).toBeInTheDocument();
-            expect(screen.queryByTestId("user-home-page")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("home-page-guard")).not.toBeInTheDocument();
         };
     });
 
@@ -243,11 +229,11 @@ describe("App component", () => {
         });
 
         if (shouldRender) {
-            expect(screen.getByTestId("user-home-page")).toBeInTheDocument();
+            expect(screen.getByTestId("home-page-guard")).toBeInTheDocument();
             expect(screen.queryByTestId("login-page")).not.toBeInTheDocument();
         } else {
             expect(screen.getByTestId("login-page")).toBeInTheDocument();
-            expect(screen.queryByTestId("user-home-page")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("home-page-guard")).not.toBeInTheDocument();
         };
     });
 
