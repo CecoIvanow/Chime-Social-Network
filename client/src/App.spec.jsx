@@ -1,4 +1,4 @@
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Navigate, Outlet } from "react-router";
 
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -7,6 +7,7 @@ import { AlertContext } from "./contexts/alert-context";
 
 import App from "./App";
 import { useContext } from "react";
+import { UserContext } from "./contexts/user-context";
 
 vi.mock("./hooks/usePersistedState.js", () => ({
     default: () => userPersistedStateMock
@@ -28,6 +29,30 @@ vi.mock("./components/ui/alert-notification/AlertNotification.jsx", () => ({
 
 vi.mock("./guards/home-page-guard/HomePageGuard", () => ({
     default: () => <div data-testid="home-page-guard"></div>
+}));
+
+vi.mock("./guards/auth-guard/AuthGuard", () => ({
+    default: function AuthGuard() {
+        const { loggedInUserId } = useContext(UserContext);
+
+        if (!loggedInUserId) {
+            return <Navigate to={"/login"} />
+        }
+
+        return <Outlet />;
+    }
+}));
+
+vi.mock("./guards/auth-guard/GuestGuard", () => ({
+    default: function GuestGuard() {
+        const { loggedInUserId } = useContext(UserContext);
+
+        if (loggedInUserId) {
+            return <Navigate to={"/"} />
+        }
+
+        return <Outlet />;
+    }
 }));
 
 vi.mock("./components/pages/profile-edit-page/ProfileEditPage.jsx", () => ({
