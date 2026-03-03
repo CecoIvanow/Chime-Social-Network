@@ -13,6 +13,8 @@ import { UserContext } from "../../../contexts/user-context"
 
 import ProfileEditPage from "./ProfileEditPage";
 
+vi.stubGlobal("FileReader", vi.fn(() => fileReaderMock));
+
 vi.mock("react-router", () => ({
     useNavigate: () => reactRouterMock.navigateTo,
     useParams: () => reactRouterMock.useParams(),
@@ -131,6 +133,12 @@ const reactRouterMock = {
     useParams: vi.fn(),
     navigateTo: vi.fn(),
 };
+
+const fileReaderMock = {
+    readAsDataURL: vi.fn(),
+    onerror: vi.fn(),
+    onload: vi.fn(),
+}
 
 const setAlert = vi.fn();
 
@@ -265,7 +273,9 @@ describe("ProfileEditPage component", () => {
         expect(setAlert).toHaveBeenCalledWith(ERR_MSG.UPDATE_USER);
     });
 
-    it("uploads image to Firebase storage on form submit when an image is selected", async () => {
+    it("uploads image to Firebase storage on form submit while in production mode", async () => {
+        vi.stubEnv("MODE", "production");
+
         const user = userEvent.setup();
         setup();
 
@@ -280,6 +290,22 @@ describe("ProfileEditPage component", () => {
 
         expect(uploadBytes).toHaveBeenCalledWith("mock-image-ref", mockFile);
         expect(getDownloadURL).toHaveBeenCalledWith("mock-image-ref");
+    });
+
+    it("generates image data url on form submit while in development mode", async () => {
+        vi.stubEnv("MODE", "development");
+
+        const user = userEvent.setup();
+        setup();
+
+        const mockFile = new File(["mock-content"], "avatar.png", { type: "image/png" });
+
+        await user.upload(screen.getByTestId("image-upload-input"), mockFile);
+        await user.click(screen.getByRole("button", { name: "Submit" }));
+
+        await waitFor(() => {
+            expect(fileReaderMock.readAsDataURL).toHaveBeenCalledWith(mockFile);
+        });
     });
 
     it("stops all ongoing calls on unmount", () => {

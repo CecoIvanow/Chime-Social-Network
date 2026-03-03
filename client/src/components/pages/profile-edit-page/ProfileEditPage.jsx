@@ -59,9 +59,14 @@ export default function ProfileEditPage() {
     const onEditSubmitClickHandler = async (formData) => {
         const data = Object.fromEntries(formData);
 
-        if (imageUpload) {
+        const uploadedImageInProd = imageUpload && import.meta.env.MODE === "production";
+        const uploadedImageInDev = imageUpload && import.meta.env.MODE === "development";
+
+        if (uploadedImageInProd) {
             data.imageUrl = await imageUploadToStorage();
-        }
+        } else if (uploadedImageInDev) {
+            data.imageUrl = await generateImageDataUrl();
+        };
 
         try {
             await updateUser(profileId, data);
@@ -73,6 +78,15 @@ export default function ProfileEditPage() {
 
         navigateTo(`/profile/${profileId}`);
     }
+
+    const generateImageDataUrl = async () => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(imageUpload);
+            reader.onerror = () => reject("Could not generate image data url");
+            reader.onload = () => resolve(reader.result);
+        });
+    };
 
     const imageUploadToStorage = async () => {
         const imageRef = ref(storage, `/images/${profileId}/avatar`);

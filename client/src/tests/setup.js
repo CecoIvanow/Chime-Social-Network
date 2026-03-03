@@ -5,4 +5,5 @@ beforeEach(() => {
     vi.resetAllMocks();
     vi.clearAllTimers();
     vi.spyOn(window.console, "error").mockImplementation(() => undefined);
+    vi.unstubAllEnvs();
 });
