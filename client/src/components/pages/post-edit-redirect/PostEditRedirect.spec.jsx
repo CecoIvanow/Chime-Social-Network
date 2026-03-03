@@ -10,7 +10,7 @@ vi.mock("react-router", () => ({
 
 const POST_ID = "randomUserId";
 const REDIRECT_URL = `/post/${POST_ID}/details`;
-const REDIRECT_OPTIONS = { state: { shouldEdit: true } };
+const REDIRECT_OPTIONS = { state: { shouldEdit: true }, replace: true };
 
 const reactRouterMock = {
     useNavigate: vi.fn(),

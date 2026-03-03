@@ -6,7 +6,7 @@ export default function PostEditRedirect() {
     const { postId } = useParams();
 
     useEffect(() => {
-        navigateTo(`/post/${postId}/details`, { state: { shouldEdit: true } });
+        navigateTo(`/post/${postId}/details`, { state: { shouldEdit: true }, replace: true });
     }, [navigateTo, postId])
 
     return null;
