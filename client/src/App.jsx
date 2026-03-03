@@ -15,8 +15,6 @@ import usePersistedState from './hooks/usePersistedState.js';
 import AuthGuard from './guards/auth-guard/AuthGuard';
 
 import MenuBar from './components/layout/menu-bar/MenuBar.jsx';
-import LandingPage from './components/pages/landing-page/LandingPage.jsx';
-import UserHomePage from './components/pages/user-home-page/UserHomePage.jsx';
 import LoginPage from './components/pages/login-page/LoginPage.jsx';
 import RegisterPage from './components/pages/register-page/RegisterPage.jsx';
 import NotFoundPage from './components/pages/not-found-page/NotFoundPage.jsx';
@@ -30,6 +28,7 @@ import PostEditRedirect from './components/pages/post-edit-redirect/PostEditRedi
 import AlertNotification from './components/ui/alert-notification/AlertNotification.jsx';
 import ErrorBoundary from './components/layout/error-boundary/ErrorBoundary.jsx';
 import GuestGuard from './guards/guest-guard/GuestGuard';
+import HomePageGuard from './guards/home-page-guard/HomePageGuard';
 
 export default function App() {
     const [loggedInUserId, setLoggedInUserId] = usePersistedState(false);
@@ -61,7 +60,7 @@ export default function App() {
                     )}
 
                     <Routes>
-                        <Route path='/' element={loggedInUserId ? <UserHomePage /> : <LandingPage />} />
+                        <Route index element={<HomePageGuard />} />
 
                         <Route element={<AuthGuard />}>
                             <Route path='/profile/:profileId/edit' element={<ProfileEditPage />} />
